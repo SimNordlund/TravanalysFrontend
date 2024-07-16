@@ -75,6 +75,7 @@ const BarChartComponent = () => {
   return (
     <div style={{ width: '1000px', height: '500px' }}>
       <Bar data={data} options={options} />
+      <hr className="mt-12"></hr>
     </div>
   );
 }

@@ -75,7 +75,7 @@ const SpiderChart = () => {
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
-      <div className="text-center mb-4">
+      <div className="text-center mb-4"> 
         <br></br>
         <button onClick={handleFetchFirstTen} className="bg-blue-500 hover:bg-blue-700 text-sm font-semibold text-white py-2 px-4 rounded ml-4 m-4">
           4 Starter
