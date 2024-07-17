@@ -69,9 +69,8 @@ const SpiderChart = () => {
     setDatasetUrl('http://localhost:8080/radar/find/all3');
   };
 
-  if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-  if (data.datasets.length === 0) return <div>No data available.</div>;
+  if (data.datasets.length === 0 && !loading) return <div>No data available.</div>;
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
@@ -87,8 +86,14 @@ const SpiderChart = () => {
           12 Starter
         </button>
       </div>
-      <div className="w-[600px] h-[600px]">
-        <Radar data={data} options={options} />
+      <div className="w-[600px] h-[600px] flex items-center justify-center">
+        {loading ? (
+          <div className="w-[600px] h-[600px] flex items-center justify-center">
+            <div>Loading...</div>
+          </div>
+        ) : (
+          <Radar data={data} options={options} />
+        )}
       </div>
     </div>
   );

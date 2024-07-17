@@ -14,7 +14,7 @@ export default function Present(){
             </h2>
             <hr className="mt-10"></hr>
             <p className="mt-6 text-lg leading-8 text-gray-600">
-              Bäst odds och statistik i travsektorn. Allt som krävs är en liten slant och en registrering. <br/>Signa upp via länken nedan eller testa graits!
+              Bäst odds och statistik i travsektorn. <br/>Signa upp via länken nedan eller testa gratis!
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link
@@ -32,7 +32,6 @@ export default function Present(){
               <a href="#" className=" rounded-md px-3.5 py-1.5 text-sm font-semibold leading-6 text-gray-900 shadow-sm border border-black  hover:bg-gray-100">
                 Testa gratis <span aria-hidden="true">→</span>
             </a>
-
             </div>
           </div>
           
