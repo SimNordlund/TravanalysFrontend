@@ -9,6 +9,7 @@ import Modal from './Modal';
 import HorseComponent from './Components/HorseComponent';
 import Settings from './Settings';
 import AboutUs from './AboutUs';
+import Swish from './Components/Swish';
 import SpiderChart from './Components/SpiderChart';
 
 export default function Home() {
@@ -69,7 +70,7 @@ export default function Home() {
       <Modal isOpen={isModalOpen} close={toggleModal}>
         <img src="src/Bilder/SwishFörLandet.png" alt="Modal Content" style={{ width: "100%", height: "auto" }} />
       </Modal>
-      <HorseComponent></HorseComponent>
+      <Swish></Swish>
     </div>
   );
 }
