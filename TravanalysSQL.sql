@@ -5,10 +5,11 @@ CREATE USER 'travanalys_admin'@'localhost' IDENTIFIED BY 'password';
 grant all on *.* to 'travanalys_admin'@'localhost' with grant option;
 
 SELECT * FROM travanalys.horse;
+
 SELECT * FROM travanalys.lap;
-SELECT * FROM travanalys.performance;
 SELECT * FROM travanalys.race;
-SELECT * FROM travanalys.radarhorse;
+SELECT * FROM travanalys.radar_horse;
+SELECT * FROM travanalys.race_type;
 
 SELECT * from travanalys.user;
 SELECT * from travanalys.role;
