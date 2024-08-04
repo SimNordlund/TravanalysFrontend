@@ -17,6 +17,7 @@ const SpiderChart = () => {
     { label: '2024-02-01', url: 'http://localhost:8080/radar/find/date2' },
     { label: '2024-03-01', url: 'http://localhost:8080/radar/find/date3' }
   ];
+  
 
   useEffect(() => {
     setLoading(true);
@@ -97,7 +98,7 @@ const SpiderChart = () => {
         <button onClick={handleFetchSecondTen} className="bg-indigo-500 hover:bg-indigo-700 text-sm font-semibold text-white py-2 px-4 rounded ml-4 m-4">
           8 Starter
         </button>
-        <button onClick={handleFetchThirdTen} className="bg-orange-500 hover:bg-orange-700 text-sm font-semibold text-white py-2 px-4 rounded ml-4 m-4">
+        <button onClick={handleFetchThirdTen} className="bg-orange-400 hover:bg-orange-700 text-sm font-semibold text-white py-2 px-4 rounded ml-4 m-4">
           12 Starter
         </button>
         <select value={selectedDate} onChange={handleDateChange} className="hover:bg-slate-50 ml-4 mt-4 p-2 border rounded">
