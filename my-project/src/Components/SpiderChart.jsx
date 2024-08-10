@@ -143,6 +143,14 @@ const SpiderChart = () => {
           ))}
         </select>
         <select className="hover:bg-slate-50 ml-4 mt-4 p-2 border rounded">
+          <option value="" disabled>Välj en spelform</option>
+          {dates.map(date => (
+            <option key={date.id} value={date.date}>
+              {date.date}
+            </option>
+          ))}
+        </select>
+        <select className="hover:bg-slate-50 ml-4 mt-4 p-2 border rounded">
           <option value="" disabled>Välj ett lopp</option>
           {dates.map(date => (
             <option key={date.id} value={date.date}>
