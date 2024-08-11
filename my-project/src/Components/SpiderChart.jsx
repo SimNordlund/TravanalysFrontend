@@ -4,20 +4,24 @@ import Chart from 'chart.js/auto';
 
 const SpiderChart = () => {
     const [data, setData] = useState({
-        labels: ['Value One', 'Value Two', 'Value Three', 'Value Four', 'Value Five'],
+        labels: ['Analys', 'Fart', 'Styrka', 'Klass', 'Prispengar', 'Kusk', 'Spår'],
         datasets: []
     });
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [datasetUrl, setDatasetUrl] = useState('http://localhost:8080/radar/find/all');
+
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTrack, setSelectedTrack] = useState('');
     const [selectedCompetition, setSelectedCompetition] = useState('');
+    const [selectedLap, setSelectedLap] = useState(''); // State for selected lap
+
     const [dates, setDates] = useState([]);
     const [tracks, setTracks] = useState([]);
     const [competitions, setCompetitions] = useState([]);
     const [laps, setLaps] = useState([]);
 
+    // Fetch available dates
     useEffect(() => {
         fetch('http://localhost:8080/track/dates')
             .then(response => response.json())
@@ -25,6 +29,7 @@ const SpiderChart = () => {
             .catch(error => console.error('Error fetching dates:', error));
     }, []);
 
+    // Fetch tracks based on selected date
     useEffect(() => {
         if (selectedDate) {
             fetch(`http://localhost:8080/track/locations/byDate?date=${selectedDate}`)
@@ -37,6 +42,7 @@ const SpiderChart = () => {
         }
     }, [selectedDate]);
 
+    // Fetch competitions based on selected track
     useEffect(() => {
         if (selectedTrack) {
             fetch(`http://localhost:8080/competition/findByTrack?trackId=${selectedTrack}`)
@@ -51,6 +57,7 @@ const SpiderChart = () => {
         }
     }, [selectedTrack]);
 
+    // Fetch laps based on selected competition
     useEffect(() => {
         if (selectedCompetition) {
             fetch(`http://localhost:8080/lap/findByCompetition?competitionId=${selectedCompetition}`)
@@ -65,20 +72,39 @@ const SpiderChart = () => {
         }
     }, [selectedCompetition]);
 
+    // Initial fetch for a default lap (e.g., lapId=2)
     useEffect(() => {
         setLoading(true);
-        fetch(datasetUrl)
+        fetch(`http://localhost:8080/completeHorse/findByLap?lapId=${2}`)
             .then(response => {
                 if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
                 return response.json();
             })
-            .then(fetchedData => {
-                const radarData = fetchedData.map(horse => ({
-                    label: horse.name,
-                    data: [horse.valueOne, horse.valueTwo, horse.valueThree, horse.valueFour, horse.valueFive],
-                    borderColor: `rgba(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255}, 1)`,
-                    backgroundColor: `rgba(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255}, 0.5)`,
-                }));
+            .then(completeHorses => {
+                const fourStartsPromises = completeHorses.map(horse => 
+                    fetch(`http://localhost:8080/fourStarts/findData?completeHorseId=${horse.id}`)
+                        .then(response => {
+                            if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
+                            return response.json();
+                        })
+                        .then(fourStartsData => ({
+                            label: horse.nameOfCompleteHorse,
+                            data: [
+                                fourStartsData.analys,
+                                fourStartsData.fart,
+                                fourStartsData.styrka,
+                                fourStartsData.klass,
+                                fourStartsData.prispengar,
+                                fourStartsData.kusk,
+                                fourStartsData.spar
+                            ],
+                            backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
+                        }))
+                );
+    
+                return Promise.all(fourStartsPromises);
+            })
+            .then(radarData => {
                 setData(previousData => ({
                     ...previousData,
                     datasets: radarData
@@ -90,7 +116,55 @@ const SpiderChart = () => {
                 setError(error.toString());
                 setLoading(false);
             });
-    }, [datasetUrl]);
+    }, []); // This runs once when the component mounts
+
+    // Fetch data when a lap is selected by the user
+    useEffect(() => {
+        if (selectedLap) {
+            setLoading(true);
+            fetch(`http://localhost:8080/completeHorse/findByLap?lapId=${selectedLap}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
+                    return response.json();
+                })
+                .then(completeHorses => {
+                    const fourStartsPromises = completeHorses.map(horse => 
+                        fetch(`http://localhost:8080/fourStarts/findData?completeHorseId=${horse.id}`)
+                            .then(response => {
+                                if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
+                                return response.json();
+                            })
+                            .then(fourStartsData => ({
+                                label: horse.nameOfCompleteHorse,
+                                data: [
+                                    fourStartsData.analys,
+                                    fourStartsData.fart,
+                                    fourStartsData.styrka,
+                                    fourStartsData.klass,
+                                    fourStartsData.prispengar,
+                                    fourStartsData.kusk,
+                                    fourStartsData.spar
+                                ],
+                                backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
+                            }))
+                    );
+        
+                    return Promise.all(fourStartsPromises);
+                })
+                .then(radarData => {
+                    setData(previousData => ({
+                        ...previousData,
+                        datasets: radarData
+                    }));
+                    setLoading(false);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    setError(error.toString());
+                    setLoading(false);
+                });
+        }
+    }, [selectedLap]); // This runs whenever a lap is selected by the user
 
     const handleDateChange = event => {
         setSelectedDate(event.target.value);
@@ -102,6 +176,10 @@ const SpiderChart = () => {
 
     const handleCompetitionChange = event => {
         setSelectedCompetition(event.target.value);
+    };
+
+    const handleLapChange = event => {
+        setSelectedLap(event.target.value);
     };
 
     if (error) return <div>Error: {error}</div>;
@@ -128,7 +206,7 @@ const SpiderChart = () => {
                         <option key={competition.id} value={competition.id}>{competition.nameOfCompetition}</option>
                     ))}
                 </select>
-                <select className="hover:bg-slate-50 ml-4 mt-4 p-2 border rounded">
+                <select value={selectedLap} onChange={handleLapChange} className="hover:bg-slate-50 ml-4 mt-4 p-2 border rounded">
                     <option value="" disabled>Select a lap</option>
                     {laps.map(lap => (
                         <option key={lap.id} value={lap.id}>{lap.nameOfLap}</option>
