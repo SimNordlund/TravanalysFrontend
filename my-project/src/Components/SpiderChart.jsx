@@ -186,35 +186,41 @@ const SpiderChart = () => {
     if (data.datasets.length === 0 && !loading) return <div>No data available.</div>;
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center">
-            <div className="text-center mb-4">
-                <select value={selectedDate} onChange={handleDateChange} className="hover:bg-slate-50 ml-4 mt-4 p-2 border rounded">
-                    <option value="" disabled>Select a date</option>
-                    {dates.map(date => (
-                        <option key={date.id} value={date.date}>{date.date}</option>
-                    ))}
-                </select>
-                <select value={selectedTrack} onChange={handleTrackChange} className="hover:bg-slate-50 ml-4 mt-4 p-2 border rounded">
-                    <option value="" disabled>Select a track</option>
-                    {tracks.map(track => (
-                        <option key={track.id} value={track.id}>{track.nameOfTrack}</option>
-                    ))}
-                </select>
-                <select value={selectedCompetition} onChange={handleCompetitionChange} className="hover:bg-slate-50 ml-4 mt-4 p-2 border rounded">
-                    <option value="" disabled>Select a competition</option>
-                    {competitions.map(competition => (
-                        <option key={competition.id} value={competition.id}>{competition.nameOfCompetition}</option>
-                    ))}
-                </select>
-                <select value={selectedLap} onChange={handleLapChange} className="hover:bg-slate-50 ml-4 mt-4 p-2 border rounded">
-                    <option value="" disabled>Select a lap</option>
-                    {laps.map(lap => (
-                        <option key={lap.id} value={lap.id}>{lap.nameOfLap}</option>
-                    ))}
-                </select>
-            </div>
-            <div className="w-[600px] h-[600px] flex items-center justify-center">
-                {loading ? <div>Loading...</div> : <Radar data={data} options={{ scales: { r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100 } }, elements: { line: { borderWidth: 3 } } }} />}
+        <div className="w-full h-full flex items-center justify-center">
+            <div className="flex justify-center items-start">
+                {/* Dropdowns */}
+                <div className="mr-8 flex flex-col space-y-4">
+                    <select value={selectedDate} onChange={handleDateChange} className="hover:bg-slate-50 p-2 border rounded">
+                        <option value="" disabled>Select a date</option>
+                        {dates.map(date => (
+                            <option key={date.id} value={date.date}>{date.date}</option>
+                        ))}
+                    </select>
+                    <select value={selectedTrack} onChange={handleTrackChange} className="hover:bg-slate-50 p-2 border rounded">
+                        <option value="" disabled>Select a track</option>
+                        {tracks.map(track => (
+                            <option key={track.id} value={track.id}>{track.nameOfTrack}</option>
+                        ))}
+                    </select>
+                    <select value={selectedCompetition} onChange={handleCompetitionChange} className="hover:bg-slate-50 p-2 border rounded">
+                        <option value="" disabled>Select a competition</option>
+                        {competitions.map(competition => (
+                            <option key={competition.id} value={competition.id}>{competition.nameOfCompetition}</option>
+                        ))}
+                    </select>
+                    <select value={selectedLap} onChange={handleLapChange} className="hover:bg-slate-50 p-2 border rounded">
+                        <option value="" disabled>Select a lap</option>
+                        {laps.map(lap => (
+                            <option key={lap.id} value={lap.id}>{lap.nameOfLap}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* Radar Chart */}
+                <div className="w-[600px] h-[600px] flex items-center justify-center">
+                    <Radar data={data} options={{ scales: { r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100 } }, elements: { line: { borderWidth: 3 } } }} />
+                    {loading && <div>Loading...</div>}
+                </div>
             </div>
         </div>
     );
