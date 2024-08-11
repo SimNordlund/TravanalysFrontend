@@ -187,9 +187,9 @@ const SpiderChart = () => {
 
     return (
         <div className="w-full h-full flex items-center justify-center">
-            <div className="flex justify-center items-start">
+            <div className="flex justify-center items-start mt-1">
                 {/* Dropdowns */}
-                <div className="mr-8 flex flex-col space-y-4">
+                <div className="mr-8 flex flex-col space-y-4 mt-24 ">
                     <select value={selectedDate} onChange={handleDateChange} className="hover:bg-slate-50 p-2 border rounded">
                         <option value="" disabled>Select a date</option>
                         {dates.map(date => (
