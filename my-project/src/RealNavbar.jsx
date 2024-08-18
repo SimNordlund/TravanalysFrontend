@@ -7,7 +7,7 @@ const navigation = [
   { name: 'Startsida', href: '/', current: false },
   { name: 'Tjänster', href: '/', current: false },
   { name: 'Kontakt', href: '/', current: false },
-  { name: 'Om oss', href: '/', current: false },
+  { name: 'Om oss', href: '/AboutUs', current: false },
 ]
 
 function classNames(...classes) {

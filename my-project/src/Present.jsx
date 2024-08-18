@@ -5,16 +5,18 @@ import { Link } from 'react-router-dom';
 export default function Present(){
 
   return (
-          <div className="text-center m-20">
+          <div className="text-center m-10">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
               Travanalys
             </h1>
             <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               - The game changer
             </h2>
-            <hr className="mt-6"></hr>
+            <hr className="mt-4"></hr>
             <p className="mt-2 text-lg leading-8 text-gray-600">
-              Bäst odds och statistik i travsektorn.
+              Bäst odds och statistik i travsektorn. 
+              <br></br>
+              Sortera på datum, bana, spelform och lopp.
             </p>
             {/*
             <div className="mt-10 flex items-center justify-center gap-x-6">

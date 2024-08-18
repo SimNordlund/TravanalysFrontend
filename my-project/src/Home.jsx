@@ -47,19 +47,22 @@ export default function Home() {
 
   return (
     <div>
-      {isLoggedIn && (
+    {/*  {isLoggedIn && (
         <h2 className='text-center m-7 text-4xl font-bold tracking-tight text-gray-600 sm:text-4xl'>Var hälsad {username}!</h2>
-      )}
+      )} */}
       <Present />
       <ToggleComponent /> 
-      <Preview />
+      <Newsletter />
+     {/* 
+     <AboutUs></AboutUs>
+     <Preview />
       <Marketing />
       <Pricing onAccessClick={toggleModal} />
       <Newsletter />
       <Modal isOpen={isModalOpen} close={toggleModal}>
         <img src="src/Bilder/SwishFörLandet.png" alt="Modal Content" style={{ width: "100%", height: "auto" }} />
       </Modal>
-      <Swish />
+      <Swish /> */}
     </div>
   );
 }
