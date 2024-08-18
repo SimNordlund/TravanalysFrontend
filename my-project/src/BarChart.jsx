@@ -229,7 +229,7 @@ const handleLapChange = event => {
                     </select>
       </div>
   
-      <div style={{ width: '1000px', height: '500px' }}>
+      <div className="w-[600px] h-[550px] flex items-center justify-center">
         <Bar data={data} options={options} />
       </div>
     </div>
