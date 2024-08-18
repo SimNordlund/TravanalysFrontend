@@ -51,10 +51,7 @@ export default function Home() {
         <h2 className='text-center m-7 text-4xl font-bold tracking-tight text-gray-600 sm:text-4xl'>Var hälsad {username}!</h2>
       )}
       <Present />
-      <div className="flex justify-center m-16">
-        <BarChart datasets={datasets} labels={labels} />
-      </div>
-      <ToggleComponent />  // Here is where the toggle component is used
+      <ToggleComponent /> 
       <Preview />
       <Marketing />
       <Pricing onAccessClick={toggleModal} />
