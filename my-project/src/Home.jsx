@@ -10,7 +10,7 @@ import HorseComponent from './Components/HorseComponent';
 import Settings from './Settings';
 import AboutUs from './AboutUs';
 import Swish from './Components/Swish';
-import SpiderChart from './Components/SpiderChart';
+import ToggleComponent from './Components/ToggleComponent'; // Import ToggleComponent
 
 export default function Home() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -30,10 +30,6 @@ export default function Home() {
         'rgba(75, 192, 192, 0.2)',
         'rgba(153, 102, 255, 0.2)',
         'rgba(255, 159, 64, 0.2)',
-        'rgba(255, 159, 64, 0.2)',
-        'rgba(255, 159, 64, 0.2)',
-        'rgba(255, 159, 64, 0.2)',
-        'rgba(255, 159, 64, 0.2)',
       ],
       borderColor: [
         'rgba(255, 99, 132, 1)',
@@ -42,27 +38,23 @@ export default function Home() {
         'rgba(75, 192, 192, 1)',
         'rgba(153, 102, 255, 1)',
         'rgba(255, 159, 64, 1)',
-        'rgba(255, 159, 64, 1)',
-        'rgba(255, 159, 64, 1)',
-        'rgba(255, 159, 64, 1)',
-        'rgba(255, 159, 64, 1)',
       ],
       borderWidth: 2,
     },
   ];
 
-  const labels = ['Röd', 'Blå', 'Gul', 'Grön', 'Lila', 'Orange', 'Orange', 'Orange', 'Orange', 'Orange'];
+  const labels = ['Röd', 'Blå', 'Gul', 'Grön', 'Lila', 'Orange'];
 
   return (
     <div>
       {isLoggedIn && (
         <h2 className='text-center m-7 text-4xl font-bold tracking-tight text-gray-600 sm:text-4xl'>Var hälsad {username}!</h2>
       )}
-    {  <Present /> }
+      <Present />
       <div className="flex justify-center m-16">
         <BarChart datasets={datasets} labels={labels} />
       </div>
-      <SpiderChart/>
+      <ToggleComponent />  // Here is where the toggle component is used
       <Preview />
       <Marketing />
       <Pricing onAccessClick={toggleModal} />
@@ -70,7 +62,7 @@ export default function Home() {
       <Modal isOpen={isModalOpen} close={toggleModal}>
         <img src="src/Bilder/SwishFörLandet.png" alt="Modal Content" style={{ width: "100%", height: "auto" }} />
       </Modal>
-      <Swish></Swish>
+      <Swish />
     </div>
   );
 }
