@@ -81,7 +81,8 @@ useEffect(() => {
         return response.json();
       })
       .then(completeHorses => {
-        const fourStartsPromises = completeHorses.map(horse => 
+        const labels = completeHorses.map(horse => horse.nameOfCompleteHorse); // Properly define labels within the same .then block where it's used
+        const fourStartsPromises = completeHorses.map((horse, index) =>
           fetch(`http://localhost:8080/fourStarts/findData?completeHorseId=${horse.id}`)
             .then(response => {
               if (!response.ok) {
@@ -91,27 +92,19 @@ useEffect(() => {
             })
             .then(fourStartsData => ({
               label: horse.nameOfCompleteHorse,
-              data: [
-                fourStartsData.analys,
-                fourStartsData.fart,
-                fourStartsData.styrka,
-                fourStartsData.klass,
-                fourStartsData.prispengar,
-                fourStartsData.kusk,
-                fourStartsData.spar
-              ],
+              data: Array(completeHorses.length).fill(null).map((_, idx) => idx === index ? fourStartsData.analys : null), // Ensure only 'analys' is plotted at the correct index
               backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
             }))
         );
 
-        return Promise.all(fourStartsPromises);
-      })
-      .then(radarData => {
-        setData({
-          labels: radarData.map(dataset => dataset.label), // Assuming you want the labels to be the names of complete horses
-          datasets: radarData
-        });
-        setLoading(false);
+        return Promise.all(fourStartsPromises)
+          .then(chartData => {
+            setData({
+              labels: labels, // Use labels array here
+              datasets: chartData
+            });
+            setLoading(false);
+          });
       })
       .catch(error => {
         console.error('Error fetching data:', error);
@@ -119,11 +112,12 @@ useEffect(() => {
         setLoading(false);
       });
   }
-}, [selectedLap]); // This runs whenever a lap is selected by the user
+}, [selectedLap]); // Include selectedLap in the dependency array to ensure useEffect is called when it changes
+
 
 useEffect(() => {
   setLoading(true);
-  fetch(`http://localhost:8080/completeHorse/findByLap?lapId=${2}`) // Hardcoded to lapId = 2
+  fetch(`http://localhost:8080/completeHorse/findByLap?lapId=${1}`) // Assuming lapId is hardcoded to 1
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok: ' + response.statusText);
@@ -131,7 +125,8 @@ useEffect(() => {
       return response.json();
     })
     .then(completeHorses => {
-      const fourStartsPromises = completeHorses.map(horse => 
+      const labels = completeHorses.map(horse => horse.nameOfCompleteHorse);
+      const datasets = completeHorses.map((horse, index) => 
         fetch(`http://localhost:8080/fourStarts/findData?completeHorseId=${horse.id}`)
           .then(response => {
             if (!response.ok) {
@@ -141,25 +136,17 @@ useEffect(() => {
           })
           .then(fourStartsData => ({
             label: horse.nameOfCompleteHorse,
-            data: [
-              fourStartsData.analys,
-              fourStartsData.fart,
-              fourStartsData.styrka,
-              fourStartsData.klass,
-              fourStartsData.prispengar,
-              fourStartsData.kusk,
-              fourStartsData.spar
-            ],
+            data: Array(completeHorses.length).fill(null).map((_, idx) => idx === index ? fourStartsData.analys : null), // Put the value at its corresponding label
             backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
           }))
       );
 
-      return Promise.all(fourStartsPromises);
+      return Promise.all(datasets);
     })
-    .then(radarData => {
+    .then(chartData => {
       setData({
-        labels: radarData.map(dataset => dataset.label), // Assuming you want the labels to be the names of complete horses
-        datasets: radarData
+        labels: chartData.map(dataset => dataset.label), // Labels are the names of the horses
+        datasets: chartData
       });
       setLoading(false);
     })
@@ -169,6 +156,8 @@ useEffect(() => {
       setLoading(false);
     });
 }, []); // Empty dependency array to run only once on component mount
+
+
 
   const options = {
     scales: {
