@@ -72,78 +72,44 @@ useEffect(() => {
 
 useEffect(() => {
   if (selectedLap) {
-      setLoading(true);
-      fetch(`http://localhost:8080/completeHorse/findByLap?lapId=${selectedLap}`)
-          .then(response => {
-              if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
-              return response.json();
-          })
-          .then(completeHorses => {
-              const fourStartsPromises = completeHorses.map(horse => 
-                  fetch(`http://localhost:8080/fourStarts/findData?completeHorseId=${horse.id}`)
-                      .then(response => {
-                          if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
-                          return response.json();
-                      })
-                      .then(fourStartsData => ({
-                          label: horse.nameOfCompleteHorse,
-                          data: [
-                              fourStartsData.analys,
-                              fourStartsData.fart,
-                              fourStartsData.styrka,
-                              fourStartsData.klass,
-                              fourStartsData.prispengar,
-                              fourStartsData.kusk,
-                              fourStartsData.spar
-                          ],
-                          backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
-                      }))
-              );
-  
-              return Promise.all(fourStartsPromises);
-          })
-          .then(radarData => {
-              setData(previousData => ({
-                  ...previousData,
-                  datasets: radarData
-              }));
-              setLoading(false);
-          })
-          .catch(error => {
-              console.error('Error fetching data:', error);
-              setError(error.toString());
-              setLoading(false);
-          });
-  }
-}, [selectedLap]); // This runs whenever a lap is selected by the user
-
-  useEffect(() => {
-    fetch('http://localhost:8080/radar/find/all3')
+    setLoading(true);
+    fetch(`http://localhost:8080/completeHorse/findByLap?lapId=${selectedLap}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok: ' + response.statusText);
         }
         return response.json();
       })
-      .then(fetchedData => {
-        const labels = fetchedData.map(horse => horse.name);
-        const datasets = fetchedData.map((horse, index) => {
-          const backgroundColor = `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.5)`;
-          const borderColor = backgroundColor.replace('0.5', '1');
+      .then(completeHorses => {
+        const fourStartsPromises = completeHorses.map(horse => 
+          fetch(`http://localhost:8080/fourStarts/findData?completeHorseId=${horse.id}`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+              }
+              return response.json();
+            })
+            .then(fourStartsData => ({
+              label: horse.nameOfCompleteHorse,
+              data: [
+                fourStartsData.analys,
+                fourStartsData.fart,
+                fourStartsData.styrka,
+                fourStartsData.klass,
+                fourStartsData.prispengar,
+                fourStartsData.kusk,
+                fourStartsData.spar
+              ],
+              backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
+            }))
+        );
 
-          return {
-            label: horse.name,
-            data: labels.map((_, i) => i === index ? horse.valueOne : 0), // Position the bar correctly
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 4,
-            hidden: false
-          };
-        });
-
+        return Promise.all(fourStartsPromises);
+      })
+      .then(radarData => {
         setData({
-          labels: labels,
-          datasets: datasets
+          labels: radarData.map(dataset => dataset.label), // Assuming you want the labels to be the names of complete horses
+          datasets: radarData
         });
         setLoading(false);
       })
@@ -152,7 +118,57 @@ useEffect(() => {
         setError(error.toString());
         setLoading(false);
       });
-  }, []);
+  }
+}, [selectedLap]); // This runs whenever a lap is selected by the user
+
+useEffect(() => {
+  setLoading(true);
+  fetch(`http://localhost:8080/completeHorse/findByLap?lapId=${2}`) // Hardcoded to lapId = 2
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
+      }
+      return response.json();
+    })
+    .then(completeHorses => {
+      const fourStartsPromises = completeHorses.map(horse => 
+        fetch(`http://localhost:8080/fourStarts/findData?completeHorseId=${horse.id}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok: ' + response.statusText);
+            }
+            return response.json();
+          })
+          .then(fourStartsData => ({
+            label: horse.nameOfCompleteHorse,
+            data: [
+              fourStartsData.analys,
+              fourStartsData.fart,
+              fourStartsData.styrka,
+              fourStartsData.klass,
+              fourStartsData.prispengar,
+              fourStartsData.kusk,
+              fourStartsData.spar
+            ],
+            backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
+          }))
+      );
+
+      return Promise.all(fourStartsPromises);
+    })
+    .then(radarData => {
+      setData({
+        labels: radarData.map(dataset => dataset.label), // Assuming you want the labels to be the names of complete horses
+        datasets: radarData
+      });
+      setLoading(false);
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+      setError(error.toString());
+      setLoading(false);
+    });
+}, []); // Empty dependency array to run only once on component mount
 
   const options = {
     scales: {
