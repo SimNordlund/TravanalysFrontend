@@ -93,7 +93,9 @@ useEffect(() => {
             .then(fourStartsData => ({
               label: horse.nameOfCompleteHorse,
               data: Array(completeHorses.length).fill(null).map((_, idx) => idx === index ? fourStartsData.analys : null), // Ensure only 'analys' is plotted at the correct index
-              backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
+              backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`,
+              borderColor: 'rgba(0, 0, 0, 1)', // Black border for all bars
+              borderWidth: 0.5
             }))
         );
 
@@ -137,7 +139,9 @@ useEffect(() => {
           .then(fourStartsData => ({
             label: horse.nameOfCompleteHorse,
             data: Array(completeHorses.length).fill(null).map((_, idx) => idx === index ? fourStartsData.analys : null), // Put the value at its corresponding label
-            backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
+            backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`,
+            borderColor: 'rgba(0, 0, 0, 1)', // Black border for all bars
+            borderWidth: 0.5
           }))
       );
 

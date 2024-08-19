@@ -98,7 +98,7 @@ const SpiderChart = () => {
                                 fourStartsData.kusk,
                                 fourStartsData.spar
                             ],
-                            backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
+                            backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`, 
                         }))
                 );
     
