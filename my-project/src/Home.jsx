@@ -11,6 +11,8 @@ import Settings from './Settings';
 import AboutUs from './AboutUs';
 import Swish from './Components/Swish';
 import ToggleComponent from './Components/ToggleComponent'; // Import ToggleComponent
+import Slideshow from './Components/Slideshow';
+
 
 export default function Home() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -53,6 +55,7 @@ export default function Home() {
       <Present />
       <ToggleComponent /> 
       <Newsletter />
+      <Slideshow/>
      {/* 
      <AboutUs></AboutUs>
      <Preview />
