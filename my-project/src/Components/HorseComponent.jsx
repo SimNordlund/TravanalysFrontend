@@ -4,9 +4,10 @@ function HorseComponent() {
     const [horses, setHorses] = useState([]);  // Change to array for multiple horses
     const [loading, setLoading] = useState(true);  // Tracks loading state
     const [error, setError] = useState(null);  // Tracks error state
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/horses')  // Fetch all horses
+        fetch(`${API_BASE_URL}/api/horses`)  // Fetch all horses
             .then(response => {
                 if (!response.ok) {  // Check if response is successful
                     throw new Error('Network response was not ok: ' + response.statusText);
