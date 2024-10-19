@@ -23,8 +23,10 @@ const BarChartComponent = () => {
   const [selectedLap, setSelectedLap] = useState('');
   const [laps, setLaps] = useState([]);
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   useEffect(() => {
-    fetch(`${API_BASE_URL}:8080/track/dates`)
+    fetch(`${API_BASE_URL}/track/dates`)
         .then(response => response.json())
         .then(data => setDates(data))
         .catch(error => console.error('Error fetching dates:', error));

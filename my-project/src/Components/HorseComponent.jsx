@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 function HorseComponent() {
-    const [horse, setHorse] = useState(null);
+    const [horses, setHorses] = useState([]);  // Change to array for multiple horses
     const [loading, setLoading] = useState(true);  // Tracks loading state
     const [error, setError] = useState(null);  // Tracks error state
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/horses/1')
+        fetch('http://localhost:8080/api/horses')  // Fetch all horses
             .then(response => {
                 if (!response.ok) {  // Check if response is successful
                     throw new Error('Network response was not ok: ' + response.statusText);
@@ -14,7 +14,7 @@ function HorseComponent() {
                 return response.json();
             })
             .then(data => {
-                setHorse(data);
+                setHorses(data);  // Store the horses array
                 setLoading(false);
             })
             .catch(error => {
@@ -26,13 +26,19 @@ function HorseComponent() {
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
-    if (!horse) return <div>No horse data available.</div>;
+    if (horses.length === 0) return <div>No horse data available.</div>;  // Handle empty array case
 
     return (
         <div>
-            <h1>Horse Details</h1>
-            <p>ID: {horse.id}</p>
-            <p>Name: {horse.name}</p>
+            <h1>All Horses</h1>
+            <ul>
+                {horses.map(horse => (
+                    <li key={horse.id}>
+                        <p>ID: {horse.id}</p>
+                        <p>Name: {horse.name}</p>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }
