@@ -21,9 +21,11 @@ const SpiderChart = () => {
     const [competitions, setCompetitions] = useState([]);
     const [laps, setLaps] = useState([]);
 
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
     // Fetch available dates
     useEffect(() => {
-        fetch('http://localhost:8080/track/dates')
+        fetch(`${API_BASE_URL}/track/dates`)
             .then(response => response.json())
             .then(data => setDates(data))
             .catch(error => console.error('Error fetching dates:', error));
@@ -32,7 +34,7 @@ const SpiderChart = () => {
     // Fetch tracks based on selected date
     useEffect(() => {
         if (selectedDate) {
-            fetch(`http://localhost:8080/track/locations/byDate?date=${selectedDate}`)
+            fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`)
                 .then(response => response.json())
                 .then(data => {
                     setTracks(data);
@@ -45,7 +47,7 @@ const SpiderChart = () => {
     // Fetch competitions based on selected track
     useEffect(() => {
         if (selectedTrack) {
-            fetch(`http://localhost:8080/competition/findByTrack?trackId=${selectedTrack}`)
+            fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`)
                 .then(response => response.json())
                 .then(data => {
                     setCompetitions(data);
@@ -60,7 +62,7 @@ const SpiderChart = () => {
     // Fetch laps based on selected competition
     useEffect(() => {
         if (selectedCompetition) {
-            fetch(`http://localhost:8080/lap/findByCompetition?competitionId=${selectedCompetition}`)
+            fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`)
                 .then(response => response.json())
                 .then(data => setLaps(data))
                 .catch(error => {
@@ -75,14 +77,14 @@ const SpiderChart = () => {
     // Initial fetch for a default lap (e.g., lapId=2)
     useEffect(() => {
         setLoading(true);
-        fetch(`http://localhost:8080/completeHorse/findByLap?lapId=${2}`)
+        fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${2}`)
             .then(response => {
                 if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
                 return response.json();
             })
             .then(completeHorses => {
                 const fourStartsPromises = completeHorses.map(horse => 
-                    fetch(`http://localhost:8080/fourStarts/findData?completeHorseId=${horse.id}`)
+                    fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`)
                         .then(response => {
                             if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
                             return response.json();
@@ -122,14 +124,14 @@ const SpiderChart = () => {
     useEffect(() => {
         if (selectedLap) {
             setLoading(true);
-            fetch(`http://localhost:8080/completeHorse/findByLap?lapId=${selectedLap}`)
+            fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`)
                 .then(response => {
                     if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
                     return response.json();
                 })
                 .then(completeHorses => {
                     const fourStartsPromises = completeHorses.map(horse => 
-                        fetch(`http://localhost:8080/fourStarts/findData?completeHorseId=${horse.id}`)
+                        fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`)
                             .then(response => {
                                 if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
                                 return response.json();

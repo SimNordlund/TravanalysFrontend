@@ -24,7 +24,7 @@ const BarChartComponent = () => {
   const [laps, setLaps] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/track/dates')
+    fetch(`${API_BASE_URL}:8080/track/dates`)
         .then(response => response.json())
         .then(data => setDates(data))
         .catch(error => console.error('Error fetching dates:', error));
@@ -32,7 +32,7 @@ const BarChartComponent = () => {
 
 useEffect(() => {
   if (selectedDate) {
-      fetch(`http://localhost:8080/track/locations/byDate?date=${selectedDate}`)
+      fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`)
           .then(response => response.json())
           .then(data => {
               setTracks(data);
@@ -44,7 +44,7 @@ useEffect(() => {
 
 useEffect(() => {
   if (selectedTrack) {
-      fetch(`http://localhost:8080/competition/findByTrack?trackId=${selectedTrack}`)
+      fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`)
           .then(response => response.json())
           .then(data => {
               setCompetitions(data);
@@ -58,7 +58,7 @@ useEffect(() => {
 
 useEffect(() => {
   if (selectedCompetition) {
-      fetch(`http://localhost:8080/lap/findByCompetition?competitionId=${selectedCompetition}`)
+      fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`)
           .then(response => response.json())
           .then(data => setLaps(data))
           .catch(error => {
@@ -73,7 +73,7 @@ useEffect(() => {
 useEffect(() => {
   if (selectedLap) {
     setLoading(true);
-    fetch(`http://localhost:8080/completeHorse/findByLap?lapId=${selectedLap}`)
+    fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok: ' + response.statusText);
@@ -83,7 +83,7 @@ useEffect(() => {
       .then(completeHorses => {
         const labels = completeHorses.map(horse => horse.nameOfCompleteHorse); // Properly define labels within the same .then block where it's used
         const fourStartsPromises = completeHorses.map((horse, index) =>
-          fetch(`http://localhost:8080/fourStarts/findData?completeHorseId=${horse.id}`)
+          fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`)
             .then(response => {
               if (!response.ok) {
                 throw new Error('Network response was not ok: ' + response.statusText);
@@ -119,7 +119,7 @@ useEffect(() => {
 
 useEffect(() => {
   setLoading(true);
-  fetch(`http://localhost:8080/completeHorse/findByLap?lapId=${1}`) // Assuming lapId is hardcoded to 1
+  fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${1}`) // Assuming lapId is hardcoded to 1
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok: ' + response.statusText);
@@ -129,7 +129,7 @@ useEffect(() => {
     .then(completeHorses => {
       const labels = completeHorses.map(horse => horse.nameOfCompleteHorse);
       const datasets = completeHorses.map((horse, index) => 
-        fetch(`http://localhost:8080/fourStarts/findData?completeHorseId=${horse.id}`)
+        fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`)
           .then(response => {
             if (!response.ok) {
               throw new Error('Network response was not ok: ' + response.statusText);
