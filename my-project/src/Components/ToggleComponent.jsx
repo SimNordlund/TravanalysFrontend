@@ -15,7 +15,7 @@ const ToggleComponent = () => {
       </button>
       <div className="w-full max-w-4xl mx-auto mt-8">
         <div className="relative w-full h-[600px]">
-          {showSpiderChart ? <SpiderChart /> : <BarChart />}
+          {showSpiderChart ? <BarChart /> : <SpiderChart />}
         </div>
       </div>
     </div>

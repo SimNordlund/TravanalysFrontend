@@ -2,6 +2,9 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirecting to different routes
+import travhorsi from './Bilder/travhorsi2.png';
+import pappaCrazy from './Bilder/PappaCrazy.png';
+
 
 const navigation = [
   { name: 'Startsida', href: '/', current: false },
@@ -46,7 +49,7 @@ export default function Example() {
                 <div className="flex flex-shrink-0 items-center">
                   <img
                     className="h-10 w-auto"
-                    src="src/Bilder/travhorsi2.png"
+                    src={travhorsi}
                     alt="Your Company"
                   />
                 </div>
@@ -86,7 +89,7 @@ export default function Example() {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src="src/Bilder/PappaCrazy.png"
+                        src={pappaCrazy}
                         alt=""
                       />
                     </Menu.Button>
