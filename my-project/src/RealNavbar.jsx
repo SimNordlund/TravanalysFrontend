@@ -8,8 +8,8 @@ import pappaCrazy from './Bilder/PappaCrazy.png';
 
 const navigation = [
   { name: 'Startsida', href: '/', current: false },
-  { name: 'Tjänster', href: '/', current: false },
-  { name: 'Kontakt', href: '/', current: false },
+  { name: 'Tjänster', href: '/SignIn', current: false },
+  { name: 'Registrera', href: '/SignUp', current: false },
   { name: 'Om oss', href: '/AboutUs', current: false },
 ]
 

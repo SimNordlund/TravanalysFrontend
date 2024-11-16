@@ -55,7 +55,6 @@ export default function Home() {
       <Present />
       <ToggleComponent /> 
       <Newsletter />
-      <HorseComponent />
      {/* 
      <AboutUs></AboutUs>
      <Preview />

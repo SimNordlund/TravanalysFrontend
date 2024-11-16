@@ -211,9 +211,17 @@ const handleLapChange = event => {
   if (!data.datasets.length) return <div>No data available.</div>;
 
   return (
-    <div className="flex justify-center items-start mt-1">
+
+    
+    <div className="flex flex-col justify-center items-center mt-1">
+    {/* Chart Container */}
+    <div className="w-full overflow-x-auto">
+      <div className="min-w-[500px]" style={{ height: '50vh' }}>
+        <Bar data={data} options={options} />
+      </div>
+    </div>
       {/* Dropdowns */}
-      <div className="mr-8 flex flex-col space-y-4 mt-24">
+      <div className="flex flex-wrap justify-center space-x-4 mt-4">
         <select value={selectedDate} onChange={handleDateChange} className="hover:bg-slate-50 p-2 border rounded">
           <option value="" disabled>Select a date</option>
           {dates.map(date => (
@@ -240,9 +248,8 @@ const handleLapChange = event => {
                     </select>
       </div>
   
-      <div className="w-[600px] h-[550px] flex items-center justify-center">
-        <Bar data={data} options={options} />
-      </div>
+
+
     </div>
   );
 };
