@@ -14,7 +14,7 @@ const SpiderChart = () => {
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTrack, setSelectedTrack] = useState('');
     const [selectedCompetition, setSelectedCompetition] = useState('');
-    const [selectedLap, setSelectedLap] = useState(''); // State for selected lap
+    const [selectedLap, setSelectedLap] = useState('');
 
     const [dates, setDates] = useState([]);
     const [tracks, setTracks] = useState([]);
@@ -23,7 +23,6 @@ const SpiderChart = () => {
 
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-    // Fetch available dates
     useEffect(() => {
         fetch(`${API_BASE_URL}/track/dates`)
             .then(response => response.json())
@@ -31,7 +30,6 @@ const SpiderChart = () => {
             .catch(error => console.error('Error fetching dates:', error));
     }, []);
 
-    // Fetch tracks based on selected date
     useEffect(() => {
         if (selectedDate) {
             fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`)
@@ -44,7 +42,6 @@ const SpiderChart = () => {
         }
     }, [selectedDate]);
 
-    // Fetch competitions based on selected track
     useEffect(() => {
         if (selectedTrack) {
             fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`)
@@ -59,7 +56,6 @@ const SpiderChart = () => {
         }
     }, [selectedTrack]);
 
-    // Fetch laps based on selected competition
     useEffect(() => {
         if (selectedCompetition) {
             fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`)
@@ -74,7 +70,7 @@ const SpiderChart = () => {
         }
     }, [selectedCompetition]);
 
-    // Initial fetch for a default lap (e.g., lapId=2)
+    // Initial fetch for default lap (e.g. lapId=2)
     useEffect(() => {
         setLoading(true);
         fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${2}`)
@@ -100,7 +96,7 @@ const SpiderChart = () => {
                                 fourStartsData.kusk,
                                 fourStartsData.spar
                             ],
-                            backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`, 
+                            backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
                         }))
                 );
     
@@ -118,7 +114,7 @@ const SpiderChart = () => {
                 setError(error.toString());
                 setLoading(false);
             });
-    }, []); // This runs once when the component mounts
+    }, []);
 
     // Fetch data when a lap is selected by the user
     useEffect(() => {
@@ -166,7 +162,7 @@ const SpiderChart = () => {
                     setLoading(false);
                 });
         }
-    }, [selectedLap]); // This runs whenever a lap is selected by the user
+    }, [selectedLap]);
 
     const handleDateChange = event => {
         setSelectedDate(event.target.value);
@@ -188,10 +184,10 @@ const SpiderChart = () => {
     if (data.datasets.length === 0 && !loading) return <div>No data available.</div>;
 
     return (
-        <div className="w-full h-full flex items-center justify-center">
-            <div className="flex justify-center items-start mt-1">
+        <div className="w-full h-full flex items-center justify-center px-2">
+            <div className="flex justify-center items-start mt-1 flex-wrap">
                 {/* Dropdowns */}
-                <div className="mr-8 flex flex-col space-y-4 mt-24 ">
+                <div className="mr-8 flex flex-col space-y-4 mt-24">
                     <select value={selectedDate} onChange={handleDateChange} className="hover:bg-slate-50 p-2 border rounded">
                         <option value="" disabled>Select a date</option>
                         {dates.map(date => (
@@ -219,8 +215,22 @@ const SpiderChart = () => {
                 </div>
 
                 {/* Radar Chart */}
-                <div className="w-[600px] h-[600px] flex items-center justify-center">
-                    <Radar data={data} options={{ scales: { r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100 } }, elements: { line: { borderWidth: 3 } } }} />
+                <div className="relative w-full sm:w-[300px] md:w-[500px] h-auto sm:h-[40vh] md:h-[50vh] flex items-center justify-center">
+                    <Radar 
+                      data={data} 
+                      options={{ 
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { 
+                          r: { 
+                            angleLines: { display: false }, 
+                            suggestedMin: 0, 
+                            suggestedMax: 100 
+                          } 
+                        }, 
+                        elements: { line: { borderWidth: 3 } } 
+                      }} 
+                    />
                     {loading && <div>Loading...</div>}
                 </div>
             </div>

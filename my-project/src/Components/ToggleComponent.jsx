@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import SpiderChart from './SpiderChart'; // Ensure the path is correct
+import SpiderChart from './SpiderChart';
 import BarChart from '../BarChart'; // Ensure the path is correct
 
 const ToggleComponent = () => {
-  const [showSpiderChart, setShowSpiderChart] = useState(true); // Toggle state
+  const [showSpiderChart, setShowSpiderChart] = useState(true);
 
   return (
     <div className="text-center">
@@ -14,7 +14,8 @@ const ToggleComponent = () => {
         {showSpiderChart ? 'Switch to Spider Chart' : 'Switch to Bar Chart'}
       </button>
       <div className="w-full max-w-4xl mx-auto mt-8">
-        <div className="relative w-full h-[600px]">
+        {/* Responsive container for the chart */}
+        <div className="relative w-full h-auto sm:h-[40vh] md:h-[50vh]">
           {showSpiderChart ? <BarChart /> : <SpiderChart />}
         </div>
       </div>
