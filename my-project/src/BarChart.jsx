@@ -214,7 +214,7 @@ const BarChartComponent = () => {
       </div>
 
       {/* Dropdowns */}
-      <div className="flex flex-wrap justify-center space-x-4 mt-4">
+      <div className="flex flex-col items-center space-y-4 mt-4 sm:flex-row sm:space-y-0 sm:space-x-4">
         <select value={selectedDate} onChange={handleDateChange} className="hover:bg-slate-50 p-2 border rounded">
           <option value="" disabled>Select a date</option>
           {dates.map(date => (
