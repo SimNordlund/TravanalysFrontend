@@ -7,7 +7,7 @@ function HorseComponent() {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
-        fetch(`${API_BASE_URL}/api/horses`)  // Fetch all horses
+        fetch(`${API_BASE_URL}/api/horses`)
             .then(response => {
                 if (!response.ok) {  // Check if response is successful
                     throw new Error('Network response was not ok: ' + response.statusText);
