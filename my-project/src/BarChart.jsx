@@ -209,7 +209,7 @@ const BarChartComponent = () => {
   return (
     <div className="flex flex-col justify-center items-center mt-1 px-2">
       {/* Responsive Chart Container */}
-      <div className="w-full h-auto sm:h-[40vh] md:h-[50vh] relative">
+      <div className="w-full h-[40vh] sm:h-[50vh] md:h-[50vh] relative">
         <Bar data={data} options={options} />
       </div>
 
