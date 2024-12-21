@@ -8,7 +8,7 @@ import pappaCrazy from './Bilder/PappaCrazy.png';
 
 const navigation = [
   { name: 'Startsida', href: '/', current: false },
-  { name: 'Tjänster', href: '/SignIn', current: false },
+  { name: 'Reducerat System', href: '/SignIn', current: false },
   { name: 'Registrera', href: '/SignUp', current: false },
   { name: 'Om oss', href: '/AboutUs', current: false },
 ]
@@ -72,14 +72,9 @@ export default function Example() {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <button
-                  type="button"
-                  className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                >
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
+                    <div>
+                    <dt className="mt-0 font-semibold text-white">Travanalys</dt>
+                    </div>
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
