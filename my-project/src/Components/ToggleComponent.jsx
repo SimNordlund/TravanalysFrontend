@@ -11,7 +11,7 @@ const ToggleComponent = () => {
         className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
         onClick={() => setShowSpiderChart(!showSpiderChart)}
       >
-        {showSpiderChart ? 'Switch to Spider Chart' : 'Switch to Bar Chart'}
+        {showSpiderChart ? 'Byt till spindeldiagram' : 'Byt till vanligt diagram'}
       </button>
       <div className="w-full max-w-4xl mx-auto mt-8">
         {/* Responsive container for the chart */}

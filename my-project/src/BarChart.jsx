@@ -176,6 +176,7 @@ const BarChartComponent = () => {
     plugins: {
       legend: {
         display: true,
+        position: 'right',
         onClick: (e, legendItem) => {
           const ci = legendItem.chart;
           const index = legendItem.datasetIndex;
@@ -216,25 +217,25 @@ const BarChartComponent = () => {
       {/* Dropdowns */}
       <div className="flex flex-col items-center space-y-4 mt-4 sm:flex-row sm:space-y-0 sm:space-x-4">
         <select value={selectedDate} onChange={handleDateChange} className="hover:bg-slate-50 p-2 border rounded">
-          <option value="" disabled>Select a date</option>
+          <option value="" disabled>Välj datum</option>
           {dates.map(date => (
             <option key={date.id} value={date.date}>{date.date}</option>
           ))}
         </select>
         <select value={selectedTrack} onChange={handleTrackChange} className="hover:bg-slate-50 p-2 border rounded">
-          <option value="" disabled>Select a track</option>
+          <option value="" disabled>Välj bana</option>
           {tracks.map(track => (
             <option key={track.id} value={track.id}>{track.nameOfTrack}</option>
           ))}
         </select>
         <select value={selectedCompetition} onChange={handleCompetitionChange} className="hover:bg-slate-50 p-2 border rounded">
-          <option value="" disabled>Select a competition</option>
+          <option value="" disabled>Välj spelform</option>
           {competitions.map(competition => (
             <option key={competition.id} value={competition.id}>{competition.nameOfCompetition}</option>
           ))}
         </select>
         <select value={selectedLap} onChange={handleLapChange} className="hover:bg-slate-50 p-2 border rounded">
-          <option value="" disabled>Select a lap</option>
+          <option value="" disabled>Välj lopp</option>
           {laps.map(lap => (
             <option key={lap.id} value={lap.id}>{lap.nameOfLap}</option>
           ))}

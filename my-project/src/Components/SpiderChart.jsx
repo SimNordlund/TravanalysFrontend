@@ -4,7 +4,7 @@ import Chart from 'chart.js/auto';
 
 const SpiderChart = () => {
     const [data, setData] = useState({
-        labels: ['Analys', 'Fart', 'Styrka', 'Klass', 'Prispengar', 'Kusk', 'Spår'],
+        labels: ['Analys', 'Fart', 'Styrka', 'Klass', 'Prispengar', 'Kusk'],
         datasets: []
     });
 
@@ -93,8 +93,7 @@ const SpiderChart = () => {
                                 fourStartsData.styrka,
                                 fourStartsData.klass,
                                 fourStartsData.prispengar,
-                                fourStartsData.kusk,
-                                fourStartsData.spar
+                                fourStartsData.kusk
                             ],
                             backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
                         }))
@@ -140,8 +139,7 @@ const SpiderChart = () => {
                                     fourStartsData.styrka,
                                     fourStartsData.klass,
                                     fourStartsData.prispengar,
-                                    fourStartsData.kusk,
-                                    fourStartsData.spar
+                                    fourStartsData.kusk
                                 ],
                                 backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
                             }))
@@ -189,25 +187,25 @@ const SpiderChart = () => {
                 {/* Dropdowns */}
                 <div className="mr-8 flex flex-col space-y-4 mt-24">
                     <select value={selectedDate} onChange={handleDateChange} className="hover:bg-slate-50 p-2 border rounded">
-                        <option value="" disabled>Select a date</option>
+                        <option value="" disabled>Välj datum</option>
                         {dates.map(date => (
                             <option key={date.id} value={date.date}>{date.date}</option>
                         ))}
                     </select>
                     <select value={selectedTrack} onChange={handleTrackChange} className="hover:bg-slate-50 p-2 border rounded">
-                        <option value="" disabled>Select a track</option>
+                        <option value="" disabled>Välj bana</option>
                         {tracks.map(track => (
                             <option key={track.id} value={track.id}>{track.nameOfTrack}</option>
                         ))}
                     </select>
                     <select value={selectedCompetition} onChange={handleCompetitionChange} className="hover:bg-slate-50 p-2 border rounded">
-                        <option value="" disabled>Select a competition</option>
+                        <option value="" disabled>Välj spelform</option>
                         {competitions.map(competition => (
                             <option key={competition.id} value={competition.id}>{competition.nameOfCompetition}</option>
                         ))}
                     </select>
                     <select value={selectedLap} onChange={handleLapChange} className="hover:bg-slate-50 p-2 border rounded">
-                        <option value="" disabled>Select a lap</option>
+                        <option value="" disabled>Välj lopp</option>
                         {laps.map(lap => (
                             <option key={lap.id} value={lap.id}>{lap.nameOfLap}</option>
                         ))}
