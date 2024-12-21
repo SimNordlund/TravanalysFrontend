@@ -9,7 +9,7 @@ export default function Present(){
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
               Travanalys
             </h1>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
+            <h2 className="text-1xl sm:text-3xl md:text-4xl italic tracking-tight text-gray-900">
   The game changer
 </h2>
             <hr className="mt-4"></hr>
