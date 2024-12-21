@@ -11,6 +11,7 @@ import AboutUs from './AboutUs';
 import Swish from './Components/Swish';
 import ToggleComponent from './Components/ToggleComponent';
 import Slideshow from './Components/Slideshow';
+import ReducedSystemButton from './Components/ReducedSystemButton';
 
 export default function Home() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -23,6 +24,7 @@ export default function Home() {
     <div>
       <Present />
       <ToggleComponent />
+      <ReducedSystemButton/>
       <Newsletter />
       {/*
       <AboutUs />
@@ -35,7 +37,6 @@ export default function Home() {
       </Modal>
       <Swish />
       */}
-      <div>Reducerat System: https://travanalys.onrender.com/s1?id=1</div>
     </div>
   );
 }
