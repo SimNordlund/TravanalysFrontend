@@ -35,6 +35,7 @@ export default function Home() {
       </Modal>
       <Swish />
       */}
+      <div>Reducerat System: https://travanalys.onrender.com/s1?id=1</div>
     </div>
   );
 }
