@@ -6,11 +6,13 @@ export default function ProfessionalButton() {
   };
 
   return (
+    <div className="text-center m-2">
     <button
       onClick={handleClick}
       className="px-4 py-2 bg-orange-600 text-white font-semibold rounded shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-opacity-50 transition-colors"
     >
       Tryck för att få reducerat system
     </button>
+    </div>
   );
 }
