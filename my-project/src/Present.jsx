@@ -9,9 +9,9 @@ export default function Present(){
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
               Travanalys
             </h1>
-            <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              - The game changer
-            </h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
+  The game changer
+</h2>
             <hr className="mt-4"></hr>
             <p className="mt-2 text-lg leading-8 text-gray-600">
               Bäst odds och statistik i travsektorn. 
