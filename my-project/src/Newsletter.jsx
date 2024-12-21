@@ -56,7 +56,7 @@ export default function Newsletter() {
               <div className="rounded-md bg-white/5 p-2 ring-1 ring-white/10">
                 <HandRaisedIcon className="h-6 w-6 text-white" aria-hidden="true" />
               </div>
-              <dt className="mt-4 font-semibold text-white">Knuthöjds-Stopp</dt>
+              <dt className="mt-4 font-semibold text-white">Fruntimmer-Stopp</dt>
               <dd className="mt-2 leading-7 text-gray-400">
                 Pass på dass.
               </dd>
