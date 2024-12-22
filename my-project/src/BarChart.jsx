@@ -126,13 +126,18 @@ const BarChartComponent = () => {
                 }
                 return response.json();
               })
-              .then(fourStartsData => ({
-                label: horse.nameOfCompleteHorse,
-                data: Array(completeHorses.length).fill(null).map((_, idx) => idx === index ? fourStartsData.analys : null),
-                backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`,
-                borderColor: 'rgba(0, 0, 0, 1)',
-                borderWidth: 0.5
-              }))
+              .then(fourStartsData => {
+                const colorIndex = index % horseColors.length;  // safe guard to wrap around if needed
+                return {
+                  label: horse.nameOfCompleteHorse,
+                  data: Array(completeHorses.length).fill(null).map((_, idx) => 
+                    idx === index ? fourStartsData.analys : null
+                  ),
+                  backgroundColor: horseColors[colorIndex],
+                  borderColor: 'rgba(0, 0, 0, 1)',
+                  borderWidth: 0.5
+                };
+              })
           );
 
           return Promise.all(fourStartsPromises)
