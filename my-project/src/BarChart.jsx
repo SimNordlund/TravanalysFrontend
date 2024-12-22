@@ -25,6 +25,40 @@ const BarChartComponent = () => {
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+  const horseColors = [
+    //  1. Blue
+    'rgba(0, 0, 255, 0.5)',
+    //  2. Orange
+    'rgba(255, 165, 0, 0.5)',
+    //  3. Red
+    'rgba(255, 0, 0, 0.5)',
+    //  4. Dark green
+    'rgba(0, 100, 0, 0.5)',
+    //  5. Light gray
+    'rgba(211, 211, 211, 0.5)',
+    //  6. Black
+    'rgba(0, 0, 0, 0.5)',
+    //  7. Yellow
+    'rgba(255, 255, 0, 0.5)',
+    //  8. Light blue
+    'rgba(173, 216, 230, 0.5)',
+    //  9. Brown
+    'rgba(165, 42, 42, 0.5)',
+    // 10. Dark blue
+    'rgba(0, 0, 139, 0.5)',
+    // 11. Dark yellow (Gold-ish)
+    'rgba(204, 204, 0, 0.5)',
+    // 12. Dark gray
+    'rgba(105, 105, 105, 0.5)',
+    // 13. Pink
+    'rgba(255, 192, 203, 0.5)',
+    // 14. Dark orange
+    'rgba(255, 140, 0, 0.5)',
+    // 15. Purple
+    'rgba(128, 0, 128, 0.5)',
+  ];
+  
+
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
         .then(response => response.json())
@@ -137,13 +171,18 @@ const BarChartComponent = () => {
               }
               return response.json();
             })
-            .then(fourStartsData => ({
-              label: horse.nameOfCompleteHorse,
-              data: Array(completeHorses.length).fill(null).map((_, idx) => idx === index ? fourStartsData.analys : null),
-              backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`,
-              borderColor: 'rgba(0, 0, 0, 1)',
-              borderWidth: 0.5
-            }))
+            .then(fourStartsData => {
+              const colorIndex = index % horseColors.length;  // safe guard to wrap around if needed
+              return {
+                label: horse.nameOfCompleteHorse,
+                data: Array(completeHorses.length).fill(null).map((_, idx) => 
+                  idx === index ? fourStartsData.analys : null
+                ),
+                backgroundColor: horseColors[colorIndex],
+                borderColor: 'rgba(0, 0, 0, 1)',
+                borderWidth: 0.5
+              };
+            })
         );
 
         return Promise.all(datasets)
