@@ -8,7 +8,7 @@ const ToggleComponent = () => {
   return (
     <div className="text-center pb-32">
        <button 
-        className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+        className="bg-indigo-500 hover:bg-indigo-700 text-white font-semibold rounded shadow py-2 px-8 focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
         onClick={() => setShowSpiderChart(!showSpiderChart)}
       >
         {showSpiderChart ? 'Byt till spindeldiagram' : 'Byt till vanligt diagram'}
