@@ -35,7 +35,7 @@ export default function ProfessionalButton() {
     const url = `https://travanalyserver-latest.onrender.com/s1?id=${id}`; // The URL to copy
     try {
       await navigator.clipboard.writeText(url);
-      alert(`URL for ID ${id} copied to clipboard!`);
+      alert(`URL för system ${id} är kopierad!`);
     } catch (error) {
       console.error("Failed to copy URL:", error);
       alert(`Failed to copy the URL for ID ${id}.`);
