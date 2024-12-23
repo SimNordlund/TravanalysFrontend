@@ -52,13 +52,13 @@ export default function ProfessionalButton() {
         <div key={id} className="m-2">
           <button
             onClick={() => handleDownload(id)}
-            className="px-4 py-2 bg-green-600 text-white font-semibold rounded shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-opacity-50 transition-colors m-2"
+            className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-opacity-50 transition-colors m-2"
           >
             Ladda ner reducerad fil {id}
           </button>
           <button
             onClick={() => handleCopyUrl(id)}
-            className="px-4 py-2 bg-orange-600 text-white font-semibold rounded shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-opacity-50 transition-colors m-2"
+            className="px-4 py-2 bg-gray-800 text-white font-semibold rounded shadow hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50 transition-colors m-2"
           >
             Kopiera URL för reducerat system {id}
           </button>
