@@ -30,8 +30,15 @@ export default function ProfessionalButton() {
     }
   };
 
-  const handleShowUrl = () => {
-    alert("https://travanalyserver-latest.onrender.com/s1?id=1");
+  const handleCopyUrl = async () => {
+    const url = "https://travanalyserver-latest.onrender.com/s1?id=1"; // The URL to copy
+    try {
+      await navigator.clipboard.writeText(url);
+      alert("URL kopierad!");
+    } catch (error) {
+      console.error("Failed to copy URL:", error);
+      alert("Failed to copy the URL.");
+    }
   };
 
   return (
@@ -43,10 +50,10 @@ export default function ProfessionalButton() {
         Ladda ner reducerad fil
       </button>
       <button
-        onClick={handleShowUrl}
+        onClick={handleCopyUrl}
         className="px-4 py-2 bg-orange-600 text-white font-semibold rounded shadow hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-opacity-50 transition-colors m-2"
       >
-        Visa URL för reducerat system
+        Kopiera URL för reducerat system
       </button>
     </div>
   );
