@@ -8,7 +8,7 @@ import pappaCrazy from './Bilder/PappaCrazy.png';
 
 const navigation = [
   { name: 'Startsida', href: '/', current: false },
-  { name: 'Reducerat System', href: '/SignIn', current: false },
+  { name: 'Reducerat System', href: '/Components/ReducedButtons', current: false },
   { name: 'Registrera', href: '/SignUp', current: false },
   { name: 'Om oss', href: '/AboutUs', current: false },
 ]

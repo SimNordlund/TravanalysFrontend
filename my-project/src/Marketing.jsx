@@ -15,7 +15,7 @@ export default function Marketing() {
   return (
     <div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32">
       <img
-        src="src/Bilder/grattisHehe.webp"
+        src="/grattisHehe.webp"
         alt=""
         className="absolute inset-0 -z-10 h-full w-full object-cover object-right md:object-center"
       />
@@ -45,7 +45,7 @@ export default function Marketing() {
       </div>
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:mx-0">
-        <h2 style={{ textShadow: '6px 4px 6px rgba(0, 0, 1, 5)' }} className="text-8xl font-bold tracking-tight text-white sm:text-6xl">Beslutsunderlag idag!</h2>
+        <h2 style={{ textShadow: '6px 4px 6px rgba(0, 0, 1, 5)' }} className="text-4xl font-bold tracking-tight text-white sm:text-6xl">Beslutsunderlag idag!</h2>
           <p style={{ textShadow: '6px 4px 6px rgba(0, 0, 1, 5)' }} className="mt-6 text-lg leading-8 text-white">
             Få ditt dags aktuella beslutsunderlag idag. Garanterar rättvisare odds än storsajterna.
           </p>
