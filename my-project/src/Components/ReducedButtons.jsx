@@ -1,5 +1,6 @@
 import React from "react";
 import Marketing from "../Marketing";
+import { PaperClipIcon } from '@heroicons/react/20/solid';
 
 export default function ProfessionalButton() {
   const handleDownload = async (id) => {
@@ -46,19 +47,20 @@ export default function ProfessionalButton() {
   const buttonIds = [1, 2, 3, 4, 5];
 
   return (
-    <div className="text-center m-2">
+    <div className="text-center mb-10">
       <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-4xl mt-10 mb-10">Reducerade System</h2>
       {buttonIds.map((id) => (
-        <div key={id} className="m-2">
+        <div key={id} className="m-2 inline-block">
           <button
             onClick={() => handleDownload(id)}
-            className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-opacity-50 transition-colors m-2"
+            className="flex items-center justify-center px-4 py-2 bg-indigo-600 text-white font-semibold rounded shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-opacity-50 transition-colors m-2 mt-4"
           >
+            <PaperClipIcon aria-hidden="true" className="w-5 h-5 mr-2 text-gray-200" />
             Ladda ner reducerad fil {id}
           </button>
           <button
             onClick={() => handleCopyUrl(id)}
-            className="px-4 py-2 bg-gray-800 text-white font-semibold rounded shadow hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50 transition-colors m-2"
+            className="px-4 py-2 bg-gray-800 text-white font-semibold rounded shadow hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50 transition-colors m-2 mb-6"
           >
             Kopiera URL för reducerat system {id}
           </button>
