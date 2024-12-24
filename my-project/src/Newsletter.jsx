@@ -47,9 +47,9 @@ export default function Newsletter() {
               <div className="rounded-md bg-white/5 p-2 ring-1 ring-white/10">
                 <CalendarDaysIcon className="h-6 w-6 text-white" aria-hidden="true" />
               </div>
-              <dt className="mt-4 font-semibold text-white">Vecko-Tips</dt>
+              <dt className="mt-4 font-semibold text-white">Dagliga vidunder</dt>
               <dd className="mt-2 leading-7 text-gray-400">
-              Håll koll på tider och skrällar!
+              Skräll detektor. Call 11-knut
               </dd>
             </div>
             <div className="flex flex-col items-start">
