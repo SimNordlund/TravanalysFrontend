@@ -23,86 +23,92 @@ const BarChartComponent = () => {
   const [selectedLap, setSelectedLap] = useState('');
   const [laps, setLaps] = useState([]);
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
+  // Our color palette for the horses
   const horseColors = [
-    //  1. Blue
-    'rgba(0, 0, 255, 0.5)',
-    //  2. Orange
-    'rgba(255, 165, 0, 0.5)',
-    //  3. Red
-    'rgba(255, 0, 0, 0.5)',
-    //  4. Dark green
-    'rgba(0, 100, 0, 0.5)',
-    //  5. Light gray
-    'rgba(211, 211, 211, 0.5)',
-    //  6. Black
-    'rgba(0, 0, 0, 0.5)',
-    //  7. Yellow
-    'rgba(255, 255, 0, 0.5)',
-    //  8. Light blue
-    'rgba(173, 216, 230, 0.5)',
-    //  9. Brown
-    'rgba(165, 42, 42, 0.5)',
-    // 10. Dark blue
-    'rgba(0, 0, 139, 0.5)',
-    // 11. Dark yellow (Gold-ish)
-    'rgba(204, 204, 0, 0.5)',
-    // 12. Dark gray
-    'rgba(105, 105, 105, 0.5)',
-    // 13. Pink
-    'rgba(255, 192, 203, 0.5)',
-    // 14. Dark orange
-    'rgba(255, 140, 0, 0.5)',
-    // 15. Purple
-    'rgba(128, 0, 128, 0.5)',
+    'rgba(0, 0, 255, 0.5)',      // Blue
+    'rgba(255, 165, 0, 0.5)',    // Orange
+    'rgba(255, 0, 0, 0.5)',      // Red
+    'rgba(0, 100, 0, 0.5)',      // Dark green
+    'rgba(211, 211, 211, 0.5)',  // Light gray
+    'rgba(0, 0, 0, 0.5)',        // Black
+    'rgba(255, 255, 0, 0.5)',    // Yellow
+    'rgba(173, 216, 230, 0.5)',  // Light blue
+    'rgba(165, 42, 42, 0.5)',    // Brown
+    'rgba(0, 0, 139, 0.5)',      // Dark blue
+    'rgba(204, 204, 0, 0.5)',    // Dark yellow (Gold-ish)
+    'rgba(105, 105, 105, 0.5)',  // Dark gray
+    'rgba(255, 192, 203, 0.5)',  // Pink
+    'rgba(255, 140, 0, 0.5)',    // Dark orange
+    'rgba(128, 0, 128, 0.5)',    // Purple
   ];
-  
+
+  // --- Dynamic Legend Position ---
+  const [legendPosition, setLegendPosition] = useState('right');
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setLegendPosition('top');  // For < 640px screens
+      } else {
+        setLegendPosition('right');
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Run once on mount to set initial position
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  // ------------------------------
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
-        .then(response => response.json())
-        .then(data => setDates(data))
-        .catch(error => console.error('Error fetching dates:', error));
+      .then(response => response.json())
+      .then(data => setDates(data))
+      .catch(error => console.error('Error fetching dates:', error));
   }, []);
 
   useEffect(() => {
     if (selectedDate) {
-        fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`)
-            .then(response => response.json())
-            .then(data => {
-                setTracks(data);
-                setSelectedTrack('');
-            })
-            .catch(error => console.error('Error fetching tracks:', error));
+      fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`)
+        .then(response => response.json())
+        .then(data => {
+          setTracks(data);
+          setSelectedTrack('');
+        })
+        .catch(error => console.error('Error fetching tracks:', error));
     }
   }, [selectedDate]);
 
   useEffect(() => {
     if (selectedTrack) {
-        fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`)
-            .then(response => response.json())
-            .then(data => {
-                setCompetitions(data);
-                setSelectedCompetition('');
-            })
-            .catch(error => console.error('Error fetching competitions:', error));
+      fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`)
+        .then(response => response.json())
+        .then(data => {
+          setCompetitions(data);
+          setSelectedCompetition('');
+        })
+        .catch(error => console.error('Error fetching competitions:', error));
     } else {
-        setCompetitions([]);
+      setCompetitions([]);
     }
   }, [selectedTrack]);
 
   useEffect(() => {
     if (selectedCompetition) {
-        fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`)
-            .then(response => response.json())
-            .then(data => setLaps(data))
-            .catch(error => {
-                console.error('Error fetching laps:', error);
-                setLaps([]);
-            });
+      fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`)
+        .then(response => response.json())
+        .then(data => setLaps(data))
+        .catch(error => {
+          console.error('Error fetching laps:', error);
+          setLaps([]);
+        });
     } else {
-        setLaps([]);
+      setLaps([]);
     }
   }, [selectedCompetition]);
 
@@ -127,10 +133,10 @@ const BarChartComponent = () => {
                 return response.json();
               })
               .then(fourStartsData => {
-                const colorIndex = index % horseColors.length;  // safe guard to wrap around if needed
+                const colorIndex = index % horseColors.length;
                 return {
                   label: horse.nameOfCompleteHorse,
-                  data: Array(completeHorses.length).fill(null).map((_, idx) => 
+                  data: Array(completeHorses.length).fill(null).map((_, idx) =>
                     idx === index ? fourStartsData.analys : null
                   ),
                   backgroundColor: horseColors[colorIndex],
@@ -157,6 +163,7 @@ const BarChartComponent = () => {
     }
   }, [selectedLap]);
 
+  // Initial fetch with lapId=1
   useEffect(() => {
     setLoading(true);
     fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${1}`)
@@ -168,7 +175,7 @@ const BarChartComponent = () => {
       })
       .then(completeHorses => {
         const labels = completeHorses.map(horse => horse.nameOfCompleteHorse);
-        const datasets = completeHorses.map((horse, index) => 
+        const datasets = completeHorses.map((horse, index) =>
           fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`)
             .then(response => {
               if (!response.ok) {
@@ -177,10 +184,10 @@ const BarChartComponent = () => {
               return response.json();
             })
             .then(fourStartsData => {
-              const colorIndex = index % horseColors.length;  // safe guard to wrap around if needed
+              const colorIndex = index % horseColors.length;
               return {
                 label: horse.nameOfCompleteHorse,
-                data: Array(completeHorses.length).fill(null).map((_, idx) => 
+                data: Array(completeHorses.length).fill(null).map((_, idx) =>
                   idx === index ? fourStartsData.analys : null
                 ),
                 backgroundColor: horseColors[colorIndex],
@@ -206,6 +213,7 @@ const BarChartComponent = () => {
       });
   }, []);
 
+  // --- Chart.js Options ---
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -214,23 +222,24 @@ const BarChartComponent = () => {
         beginAtZero: true
       },
       x: {
-        stacked: true,
+        stacked: true
       }
     },
     plugins: {
       legend: {
         display: true,
-        position: 'right',
+        position: legendPosition, // Dynamically set legend position
         onClick: (e, legendItem) => {
           const ci = legendItem.chart;
           const index = legendItem.datasetIndex;
           ci.getDatasetMeta(index).hidden = !ci.getDatasetMeta(index).hidden;
           ci.update();
-        },
+        }
       }
-    },
+    }
   };
 
+  // --- Event Handlers ---
   const handleDateChange = event => {
     setSelectedDate(event.target.value);
   };
@@ -247,6 +256,7 @@ const BarChartComponent = () => {
     setSelectedLap(event.target.value);
   };
 
+  // --- Rendering ---
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!data.datasets.length) return <div>No data available.</div>;
