@@ -1,5 +1,6 @@
 import React from "react";
 import Marketing from "../Marketing";
+import Newsletter from "../Newsletter";
 import { PaperClipIcon } from '@heroicons/react/20/solid';
 
 export default function ProfessionalButton() {
@@ -67,6 +68,8 @@ export default function ProfessionalButton() {
         </div>
       ))}
       <Marketing></Marketing>
+       <Newsletter />
+      
     </div>
   );
 }

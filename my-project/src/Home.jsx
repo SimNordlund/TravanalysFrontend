@@ -24,7 +24,6 @@ export default function Home() {
     <div>
       <Present />
       <ToggleComponent />
-      <ReducedSystemButton/>
       <Newsletter />
       {/*
       <AboutUs />
