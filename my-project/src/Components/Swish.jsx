@@ -1,61 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const SwishPaymentButton = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const handleSwishPayment = () => {
+    // Construct the JSON object for Swish
+    const swishData = {
+      version: 1,
+      payee: '0703776228',         // The phone number you want pre-filled
+      amount: '100',               // The amount (in SEK)
+      message: 'Payment for order Ipa'
+    };
 
-  const handleSwishPayment = async () => {
-    setLoading(true);
-    setError(null);
+    // URL-encode the JSON
+    const encodedSwishData = encodeURIComponent(JSON.stringify(swishData));
 
-    try {
-      const response = await fetch('https://api.swish.nu/paymentrequests', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Add your Swish API authentication headers here
-        },
-        body: JSON.stringify({
-          payeePaymentReference: '1234567890',
-          callbackUrl: 'https://your-callback-url.com',
-          payeeAlias: '1231181189',
-          amount: '100',
-          currency: 'SEK',
-          message: 'Payment for order #1234',
-        }),
-      });
+    // Construct the swish:// URL
+    const swishUrl = `swish://payment?data=${encodedSwishData}`;
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok: ' + response.statusText);
-      }
-
-      const data = await response.json();
-      const paymentRequestToken = data.id; // Get the payment request token from the response
-
-      // Construct the Swish URL
-      const swishUrl = `swish://paymentrequest?token=${paymentRequestToken}`;
-
-      // Redirect the user to the Swish app
-      window.location.href = swishUrl;
-    } catch (error) {
-      console.error('Error initiating Swish payment:', error);
-      setError(error.toString());
-    } finally {
-      setLoading(false);
-    }
+    // Attempt to open the Swish app
+    window.location.href = swishUrl;
   };
 
   return (
-    <div>
-      <button
-        onClick={handleSwishPayment}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        disabled={loading}
-      >
-        {loading ? 'Processing...' : 'Pay with Swish'}
-      </button>
-      {error && <div className="text-red-500 mt-2">{error}</div>}
-    </div>
+    <button
+      onClick={handleSwishPayment}
+      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+    >
+      Donera en ipa
+    </button>
   );
 };
 
