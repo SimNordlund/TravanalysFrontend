@@ -5,19 +5,20 @@ const SwishPaymentButton = () => {
     // Create the JSON object the Swish app expects
     const swishData = {
       version: 1,
-      payee: '46703776228',   // see next section on phone format
+      payee: '46703776228',    // Replace the leading '0' with '46'
       amount: '100',
-      currency: 'SEK',        // <--- Add this
+      currency: 'SEK',         // Include currency
       message: 'Payment for order #1234'
     };
 
-    // Convert the JSON to a string
+    // Convert to JSON string
     const jsonString = JSON.stringify(swishData);
-    // Base64-encode the string (btoa = “browser to ASCII base64”)
+
+    // Base64-encode the string
+    // (If you might have non-ASCII characters, consider a UTF-8 safe approach)
     const base64EncodedData = btoa(jsonString);
 
-    // Construct the final Swish URL
-    // NOTE: "payment" not "paymentrequest", since we’re sending raw JSON data
+    // Construct the Swish URL
     const swishUrl = `swish://payment?data=${base64EncodedData}`;
 
     // Redirect the user to the Swish app
