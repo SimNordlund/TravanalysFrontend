@@ -6,7 +6,7 @@ const SwishPaymentButton = () => {
     const swishData = {
       version: 1,
       payee: '46703776228',    // Replace the leading '0' with '46'
-      amount: '50',
+      amount: '10',
       currency: 'SEK',         // Include currency
       message: 'Payment for order 1234'
     };
@@ -30,7 +30,7 @@ const SwishPaymentButton = () => {
       onClick={handleSwishPayment}
       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
     >
-      Pay with Swish
+      Donera via Swish
     </button>
   );
 };
