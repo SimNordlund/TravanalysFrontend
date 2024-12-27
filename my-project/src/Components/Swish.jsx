@@ -5,7 +5,7 @@ const SwishPaymentButton = () => {
     // Create the JSON object the Swish app expects
     const swishData = {
       version: 1,
-      payee: '46703776228',  // The phone number/Swish number
+      payee: '0703776228',  // The phone number/Swish number
       amount: '100',        // Amount in SEK
       message: 'Payment for order #1234'
     };
