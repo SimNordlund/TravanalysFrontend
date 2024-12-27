@@ -2,21 +2,24 @@ import React from 'react';
 
 const SwishPaymentButton = () => {
   const handleSwishPayment = () => {
-    // Construct the JSON object for Swish
+    // Create the JSON object the Swish app expects
     const swishData = {
       version: 1,
-      payee: '0703776228',         // The phone number you want pre-filled
-      amount: '100',               // The amount (in SEK)
-      message: 'Payment for order Ipa'
+      payee: '46703776228',  // The phone number/Swish number
+      amount: '100',        // Amount in SEK
+      message: 'Payment for order #1234'
     };
 
-    // URL-encode the JSON
-    const encodedSwishData = encodeURIComponent(JSON.stringify(swishData));
+    // Convert the JSON to a string
+    const jsonString = JSON.stringify(swishData);
+    // Base64-encode the string (btoa = “browser to ASCII base64”)
+    const base64EncodedData = btoa(jsonString);
 
-    // Construct the swish:// URL
-    const swishUrl = `swish://payment?data=${encodedSwishData}`;
+    // Construct the final Swish URL
+    // NOTE: "payment" not "paymentrequest", since we’re sending raw JSON data
+    const swishUrl = `swish://payment?data=${base64EncodedData}`;
 
-    // Attempt to open the Swish app
+    // Redirect the user to the Swish app
     window.location.href = swishUrl;
   };
 
@@ -25,7 +28,7 @@ const SwishPaymentButton = () => {
       onClick={handleSwishPayment}
       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
     >
-      Donera en ipa
+      Pay with Swish
     </button>
   );
 };
