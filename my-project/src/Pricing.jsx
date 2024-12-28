@@ -1,4 +1,5 @@
 import React from 'react';
+import Swish from './Components/Swish';
 import { CheckIcon } from '@heroicons/react/20/solid';
 
 const includedFeatures = [
@@ -55,12 +56,7 @@ export default function Pricing({ onAccessClick }) {
                   <span className="text-5xl font-bold tracking-tight text-gray-900">10</span>
                   <span className="text-sm font-semibold leading-6 tracking-wide text-gray-600">KR</span>
                 </p>
-                <button
-                  onClick={onAccessClick}
-                  className="mt-10 block w-full rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50"
-                >
-                  Donera en slant
-                </button>
+                <Swish></Swish>
                 <p className="mt-6 text-xs leading-5 text-gray-600">
                   Stötta oss via Swish eller PayPal med en 10:a eller valfri slant.
                 </p>

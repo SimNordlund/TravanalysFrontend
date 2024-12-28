@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SwishPaymentButton = () => {
+const Swish = () => {
   const handleSwishPayment = () => {
     // Create the JSON object the Swish app expects
     const swishData = {
@@ -25,7 +25,7 @@ const SwishPaymentButton = () => {
   };
 
   return (
-    <div className="text-center pb-4">
+    <div className="text-center pb-4 mt-3">
     <button
       onClick={handleSwishPayment}
       className=" bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-14 rounded"
@@ -36,4 +36,4 @@ const SwishPaymentButton = () => {
   );
 };
 
-export default SwishPaymentButton;
+export default Swish;
