@@ -24,6 +24,7 @@ export default function Home() {
     <div>
       <Present />
       <ToggleComponent />
+      <Pricing></Pricing>
       <Newsletter />
       {/*
       <AboutUs />

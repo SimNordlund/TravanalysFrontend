@@ -25,12 +25,14 @@ const SwishPaymentButton = () => {
   };
 
   return (
+    <div className="text-center pb-4">
     <button
       onClick={handleSwishPayment}
-      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      className=" bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-14 rounded"
     >
       Donera via Swish
     </button>
+    </div>
   );
 };
 
