@@ -7,7 +7,8 @@ const Swish = () => {
       version: 1,
       payee: '46701234567', // Replace with your own number in international format (e.g., '4670XXXXXXX')
       amount: '100',        // Adjust as needed
-      message: 'Hello from Swish!' // Optional text that appears in the Swish app
+      message: 'Hello from Swish!', // Optional text that appears in the Swish app
+      callbackUrl: 'https://travanalys.onrender.com/'
     };
 
     // Convert the object to a JSON string
