@@ -7,6 +7,7 @@ const Swish = () => {
       version: 1,
       payee: '46703776228',
       amount: '100',
+      currency: 'SEK',
       message: 'Test'
     };
 
