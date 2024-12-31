@@ -6,7 +6,7 @@ const Swish = () => {
     const swishData = {
       version: 1,
       payeeAlias: "46701234567", // Replace with your own number in international format (e.g., '4670XXXXXXX')
-      amount: "100"        // Adjust as needed
+      amount: 100        // Adjust as needed
     };
 
     // Convert the object to a JSON string
