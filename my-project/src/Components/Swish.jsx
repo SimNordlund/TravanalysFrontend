@@ -6,7 +6,7 @@ const Swish = () => {
     const swishData = {
       version: 1,
       payeeAlias: "46703776228",
-      amount: 100,
+      amount: "100",
       currency: "SEK",       
       callbackUrl: "https://travanalys.onrender.com/"
     };
