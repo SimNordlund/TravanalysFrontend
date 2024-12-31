@@ -5,7 +5,7 @@ const Swish = () => {
     // Create the JSON object that the Swish app expects
     const swishData = {
       version: 1,
-      payee: '46703776228',
+      payee: '0703776228',
       amount: '100',
       currency: 'SEK',
       message: 'Test',
