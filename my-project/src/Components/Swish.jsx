@@ -8,7 +8,8 @@ const Swish = () => {
       payee: '46703776228',
       amount: '100',
       currency: 'SEK',
-      message: 'Test'
+      message: 'Test',
+      callbackUrl: 'https://travanalys.onrender.com/'
     };
 
     // Convert the object to a JSON string
