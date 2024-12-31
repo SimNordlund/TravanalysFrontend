@@ -4,11 +4,9 @@ const Swish = () => {
   const handleSwishPayment = () => {
     // Create the JSON object that the Swish app expects
     const swishData = {
-      version: 2,
-      payeeAlias: '46701234567', // Replace with your own number in international format (e.g., '4670XXXXXXX')
-      amount: '100',        // Adjust as needed
-      currency: 'SEK',
-      callbackUrl: 'https://travanalys.onrender.com/'
+      version: 1,
+      payeeAlias: "46701234567", // Replace with your own number in international format (e.g., '4670XXXXXXX')
+      amount: "100"        // Adjust as needed
     };
 
     // Convert the object to a JSON string
