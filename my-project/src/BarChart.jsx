@@ -25,21 +25,21 @@ const BarChartComponent = () => {
 
   // Our color palette for the horses
   const horseColors = [
-    'rgba(0, 0, 255, 0.5)',      // Blue
-    'rgba(255, 165, 0, 0.5)',    // Orange
-    'rgba(255, 0, 0, 0.5)',      // Red
-    'rgba(0, 100, 0, 0.5)',      // Dark green
-    'rgba(211, 211, 211, 0.5)',  // Light gray
-    'rgba(0, 0, 0, 0.5)',        // Black
-    'rgba(255, 255, 0, 0.5)',    // Yellow
-    'rgba(173, 216, 230, 0.5)',  // Light blue
-    'rgba(165, 42, 42, 0.5)',    // Brown
-    'rgba(0, 0, 139, 0.5)',      // Dark blue
-    'rgba(204, 204, 0, 0.5)',    // Dark yellow (Gold-ish)
-    'rgba(105, 105, 105, 0.5)',  // Dark gray
-    'rgba(255, 192, 203, 0.5)',  // Pink
-    'rgba(255, 140, 0, 0.5)',    // Dark orange
-    'rgba(128, 0, 128, 0.5)',    // Purple
+    'rgba(0, 0, 255, 0.5)',
+    'rgba(255, 165, 0, 0.5)',
+    'rgba(255, 0, 0, 0.5)',
+    'rgba(0, 100, 0, 0.5)',
+    'rgba(211, 211, 211, 0.5)',
+    'rgba(0, 0, 0, 0.5)',
+    'rgba(255, 255, 0, 0.5)',
+    'rgba(173, 216, 230, 0.5)',
+    'rgba(165, 42, 42, 0.5)',
+    'rgba(0, 0, 139, 0.5)',
+    'rgba(204, 204, 0, 0.5)',
+    'rgba(105, 105, 105, 0.5)',
+    'rgba(255, 192, 203, 0.5)',
+    'rgba(255, 140, 0, 0.5)',
+    'rgba(128, 0, 128, 0.5)',
   ];
 
   // --- Dynamic Legend Position ---
@@ -48,14 +48,14 @@ const BarChartComponent = () => {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) {
-        setLegendPosition('top');  // For < 640px screens
+        setLegendPosition('top');
       } else {
         setLegendPosition('right');
       }
     };
 
     window.addEventListener('resize', handleResize);
-    handleResize(); // Run once on mount to set initial position
+    handleResize(); // Run once on mount
 
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -136,9 +136,9 @@ const BarChartComponent = () => {
                 const colorIndex = index % horseColors.length;
                 return {
                   label: horse.nameOfCompleteHorse,
-                  data: Array(completeHorses.length).fill(null).map((_, idx) =>
-                    idx === index ? fourStartsData.analys : null
-                  ),
+                  data: Array(completeHorses.length)
+                    .fill(null)
+                    .map((_, idx) => (idx === index ? fourStartsData.analys : null)),
                   backgroundColor: horseColors[colorIndex],
                   borderColor: 'rgba(0, 0, 0, 1)',
                   borderWidth: 0.5
@@ -163,10 +163,10 @@ const BarChartComponent = () => {
     }
   }, [selectedLap]);
 
-  // Initial fetch with lapId=1
+  // Initial fetch with lapId=1 (example)
   useEffect(() => {
     setLoading(true);
-    fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${1}`)
+    fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=1`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok: ' + response.statusText);
@@ -187,9 +187,9 @@ const BarChartComponent = () => {
               const colorIndex = index % horseColors.length;
               return {
                 label: horse.nameOfCompleteHorse,
-                data: Array(completeHorses.length).fill(null).map((_, idx) =>
-                  idx === index ? fourStartsData.analys : null
-                ),
+                data: Array(completeHorses.length)
+                  .fill(null)
+                  .map((_, idx) => (idx === index ? fourStartsData.analys : null)),
                 backgroundColor: horseColors[colorIndex],
                 borderColor: 'rgba(0, 0, 0, 1)',
                 borderWidth: 0.5
@@ -197,14 +197,13 @@ const BarChartComponent = () => {
             })
         );
 
-        return Promise.all(datasets)
-          .then(chartData => {
-            setData({
-              labels: chartData.map(dataset => dataset.label),
-              datasets: chartData
-            });
-            setLoading(false);
+        Promise.all(datasets).then(chartData => {
+          setData({
+            labels: chartData.map(dataset => dataset.label),
+            datasets: chartData
           });
+          setLoading(false);
+        });
       })
       .catch(error => {
         console.error('Error fetching data:', error);
@@ -228,7 +227,7 @@ const BarChartComponent = () => {
     plugins: {
       legend: {
         display: true,
-        position: legendPosition, // Dynamically set legend position
+        position: legendPosition,
         onClick: (e, legendItem) => {
           const ci = legendItem.chart;
           const index = legendItem.datasetIndex;
@@ -238,6 +237,15 @@ const BarChartComponent = () => {
       }
     }
   };
+
+  // --- Helpers to derive "labels" ---
+  const selectedDateLabel = selectedDate || '';
+  const selectedTrackLabel =
+    selectedTrack ? tracks.find(track => track.id === +selectedTrack)?.nameOfTrack ?? '' : '';
+  const selectedCompetitionLabel =
+    selectedCompetition ? competitions.find(c => c.id === +selectedCompetition)?.nameOfCompetition ?? '' : '';
+  const selectedLapLabel =
+    selectedLap ? laps.find(l => l.id === +selectedLap)?.nameOfLap ?? '' : '';
 
   // --- Event Handlers ---
   const handleDateChange = event => {
@@ -263,32 +271,57 @@ const BarChartComponent = () => {
 
   return (
     <div className="flex flex-col justify-center items-center mt-1 px-2">
-      {/* Responsive Chart Container */}
+
+      {/* Your new dynamic text */}
+      <p className="text-lg mt-4 mb-4 font-semibold">
+        {/* Concatenate the labels with spaces, or handle empty values as you prefer */}
+        {selectedDateLabel} {selectedTrackLabel} {selectedCompetitionLabel} {selectedLapLabel}
+      </p>
+
       <div className="w-full h-[40vh] sm:h-[50vh] md:h-[50vh] relative">
         <Bar data={data} options={options} />
       </div>
 
       {/* Dropdowns */}
-      <div className="flex flex-col items-startgit space-y-4 mt-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-        <select value={selectedDate} onChange={handleDateChange} className="hover:bg-slate-50 p-2 border rounded">
+      <div className="flex flex-col items-start space-y-4 mt-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+        <select
+          value={selectedDate}
+          onChange={handleDateChange}
+          className="hover:bg-slate-50 p-2 border rounded"
+        >
           <option value="" disabled>Välj datum</option>
           {dates.map(date => (
             <option key={date.id} value={date.date}>{date.date}</option>
           ))}
         </select>
-        <select value={selectedTrack} onChange={handleTrackChange} className="hover:bg-slate-50 p-2 border rounded">
+
+        <select
+          value={selectedTrack}
+          onChange={handleTrackChange}
+          className="hover:bg-slate-50 p-2 border rounded"
+        >
           <option value="" disabled>Välj bana</option>
           {tracks.map(track => (
             <option key={track.id} value={track.id}>{track.nameOfTrack}</option>
           ))}
         </select>
-        <select value={selectedCompetition} onChange={handleCompetitionChange} className="hover:bg-slate-50 p-2 border rounded">
+
+        <select
+          value={selectedCompetition}
+          onChange={handleCompetitionChange}
+          className="hover:bg-slate-50 p-2 border rounded"
+        >
           <option value="" disabled>Välj spelform</option>
           {competitions.map(competition => (
             <option key={competition.id} value={competition.id}>{competition.nameOfCompetition}</option>
           ))}
         </select>
-        <select value={selectedLap} onChange={handleLapChange} className="hover:bg-slate-50 p-2 border rounded">
+
+        <select
+          value={selectedLap}
+          onChange={handleLapChange}
+          className="hover:bg-slate-50 p-2 border rounded"
+        >
           <option value="" disabled>Välj lopp</option>
           {laps.map(lap => (
             <option key={lap.id} value={lap.id}>{lap.nameOfLap}</option>
