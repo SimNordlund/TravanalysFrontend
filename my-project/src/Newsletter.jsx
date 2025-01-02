@@ -36,7 +36,7 @@ export default function Newsletter() {
               <dt className="mt-4 font-semibold text-white">Ring oss</dt>
               <dd className="mt-2 leading-7 text-gray-300">
               <a href="tel:07012345678" className="text-gray-300 hover:text-white">
-                070-12345678
+              070-6493763
               </a>
               </dd>
             </div>
@@ -47,7 +47,7 @@ export default function Newsletter() {
               <dt className="mt-4 font-semibold text-white">Mejla oss</dt>
               <dd className="mt-2 leading-7 text-gray-400">
               <a href="mailto:travanalys.info@test.se" className="text-gray-300 hover:text-white">
-              travanalys.info@test.se
+              travanalys@gmail.com
               </a>
               </dd>
             </div>

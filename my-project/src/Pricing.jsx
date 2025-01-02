@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Swish from './Components/Swish';
 import { CheckIcon } from '@heroicons/react/20/solid';
 
@@ -9,12 +9,13 @@ const includedFeatures = [
   'Tillgång till medlemsforum',
 ];
 
-export default function Pricing({ onAccessClick }) {
+export default function Pricing() {
+  const [copyStatus, setCopyStatus] = useState('Klicka för att kopiera 070-6493763');
 
-  const openSwishApp = () => {
-    // This is a placeholder URL. You'll need to replace it with the actual Swish URL scheme and parameters
-    const swishUrl = 'swish://paymentrequest?token=<token>&callbackurl=<callbackURL>';
-    window.location.href = swishUrl;
+  const handleCopyClick = () => {
+    navigator.clipboard.writeText('070-6493763');
+    setCopyStatus('Nummer kopierat!');
+    setTimeout(() => setCopyStatus('Klicka för att kopiera 070-6493763'), 5000); // Reset after 2 seconds
   };
 
   return (
@@ -58,8 +59,14 @@ export default function Pricing({ onAccessClick }) {
                   <span className="text-sm font-semibold leading-6 tracking-wide text-gray-600">KR</span>
                 </p>
                 <Swish></Swish>
+                <a
+                  onClick={handleCopyClick}
+                  className="block cursor-pointer text-gray-600 hover:underline"
+                >
+                  {copyStatus}
+                </a>
                 <p className="mt-6 text-xs leading-5 text-gray-600">
-                  Stötta oss via Swish med en 10:a eller valfri slant.
+                  Stötta oss på Travanalys via Swish med en 10:a eller valfri slant.
                 </p>
               </div>
             </div>
