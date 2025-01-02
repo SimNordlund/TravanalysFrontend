@@ -18,7 +18,8 @@ export default function Pricing({ onAccessClick }) {
   };
 
   return (
-    <div className="bg-white py-6 sm:py-32">
+    <div className="bg-white py-6 sm:py-2">
+      <hr className="mb-6"></hr>
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl sm:text-center">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Tillgång till allt efter en snabb swish!</h2>
@@ -26,7 +27,7 @@ export default function Pricing({ onAccessClick }) {
             Du får tillgång till all statistik och odds för samtliga avdelningar på ett bestämt datum och ort. Du väljer själv.
           </p>
         </div>
-        <div className="mx-auto mt-16 max-w-2xl rounded-3xl ring-1 ring-gray-200 sm:mt-20 lg:mx-0 lg:flex lg:max-w-none">
+        <div className="mx-auto mt-16 max-w-2xl rounded-3xl ring-1 ring-gray-200 sm:mt-14 sm:mb-6 lg:mx-0 lg:flex lg:max-w-none">
           <div className="p-8 sm:p-10 lg:flex-auto">
             <h3 className="text-2xl font-bold tracking-tight text-gray-900">Bli en i gänget idag:</h3>
             <p className="mt-6 text-base leading-7 text-gray-600">
@@ -58,7 +59,7 @@ export default function Pricing({ onAccessClick }) {
                 </p>
                 <Swish></Swish>
                 <p className="mt-6 text-xs leading-5 text-gray-600">
-                  Stötta oss via Swish eller PayPal med en 10:a eller valfri slant.
+                  Stötta oss via Swish med en 10:a eller valfri slant.
                 </p>
               </div>
             </div>
