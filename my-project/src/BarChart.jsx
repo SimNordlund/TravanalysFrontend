@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
+import pappaCrazy from './Bilder/PappaCrazy.png';
 import Chart from 'chart.js/auto';
 
 const BarChartComponent = () => {
@@ -265,7 +266,17 @@ const BarChartComponent = () => {
   };
 
   // --- Rendering ---
-  if (loading) return <div>Loading...</div>;
+  if (loading) return (
+    <div className="flex flex-col justify-center items-center">
+      <div className="block text-center mb-4">Laddar...</div>
+      <img
+        className="h-24 w-24 rounded-full animate-spin"
+        src={pappaCrazy}
+        alt="Loading animation"
+      />
+    </div>
+  );
+  
   if (error) return <div>Error: {error}</div>;
   if (!data.datasets.length) return <div>No data available.</div>;
 
