@@ -65,7 +65,7 @@ export default function Pricing() {
                 >
                   {copyStatus}
                 </a>
-                <p className="mt-6 text-xs leading-5 text-gray-600">
+                <p className="mt-6 text-xs leading-5 text-gray-600 ">
                   Stötta oss på Travanalys via Swish med en 10:a eller valfri slant.
                 </p>
               </div>
