@@ -182,10 +182,28 @@ const SpiderChart = () => {
     if (data.datasets.length === 0 && !loading) return <div>No data available.</div>;
 
     return (
-        <div className="w-full h-full flex items-center justify-center px-2">
-            <div className="flex justify-center items-start mt-1 flex-wrap">
+        <div className="flex flex-col justify-center items-center mt-1 px-2">
+                {/* Radar Chart */}
+             <div className="relative w-full sm:w-[300px] md:w-[500px] h-auto sm:h-[40vh] md:h-[50vh] flex items-center justify-center">
+                    <Radar 
+                      data={data} 
+                      options={{ 
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { 
+                          r: { 
+                            angleLines: { display: false }, 
+                            suggestedMin: 0, 
+                            suggestedMax: 100 
+                          } 
+                        }, 
+                        elements: { line: { borderWidth: 3 } } 
+                      }} 
+                    />
+                    {loading && <div>Loading...</div>}
+            </div>
+            <div className="flex flex-col items-start space-y-4 mt-4 sm:flex-row sm:space-y-0 sm:space-x-4">
                 {/* Dropdowns */}
-                <div className="mr-8 flex flex-col space-y-4 mt-24">
                     <select value={selectedDate} onChange={handleDateChange} className="hover:bg-slate-50 p-2 border rounded">
                         <option value="" disabled>Välj datum</option>
                         {dates.map(date => (
@@ -210,27 +228,6 @@ const SpiderChart = () => {
                             <option key={lap.id} value={lap.id}>{lap.nameOfLap}</option>
                         ))}
                     </select>
-                </div>
-
-                {/* Radar Chart */}
-                <div className="relative w-full sm:w-[300px] md:w-[500px] h-auto sm:h-[40vh] md:h-[50vh] flex items-center justify-center">
-                    <Radar 
-                      data={data} 
-                      options={{ 
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: { 
-                          r: { 
-                            angleLines: { display: false }, 
-                            suggestedMin: 0, 
-                            suggestedMax: 100 
-                          } 
-                        }, 
-                        elements: { line: { borderWidth: 3 } } 
-                      }} 
-                    />
-                    {loading && <div>Loading...</div>}
-                </div>
             </div>
         </div>
     );
