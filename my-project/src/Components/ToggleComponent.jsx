@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import SpiderChart from './SpiderChart';
 import BarChart from '../BarChart'; // Ensure the path is correc
+import GitHubLoginButton from './GitHubLoginButton';
 
 const ToggleComponent = () => {
   const [showSpiderChart, setShowSpiderChart] = useState(true);
@@ -13,6 +14,7 @@ const ToggleComponent = () => {
       >
         {showSpiderChart ? 'Byt till spindeldiagram' : 'Byt till vanligt diagram'}
       </button> 
+      <GitHubLoginButton/>
       <div className="w-full max-w-4xl mx-auto mt-8">
         {/* Responsive container for the chart */}
         <div className="relative w-full h-auto sm:h-[40vh] md:h-[50vh]">

@@ -15,7 +15,6 @@ import ReducedSystemButton from './Components/ReducedSystemButton';
 
 export default function Home() {
   const [isModalOpen, setModalOpen] = useState(false);
-  const toggleModal = () => setModalOpen(!isModalOpen);
 
   // const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
   // const username = localStorage.getItem('username');
@@ -25,18 +24,8 @@ export default function Home() {
       <Present />
       <ToggleComponent />
       <Pricing></Pricing>
-      <Newsletter />
-      {/*
-      <AboutUs />
       <Preview />
-      <Marketing />
-      <Pricing onAccessClick={toggleModal} />
       <Newsletter />
-      <Modal isOpen={isModalOpen} close={toggleModal}>
-        <img src="src/Bilder/SwishFörLandet.png" alt="Modal Content" style={{ width: "100%", height: "auto" }} />
-      </Modal>
-      <Swish />
-      */}
     </div>
   );
 }

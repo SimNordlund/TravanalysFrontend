@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import React, { useState } from 'react';
+import GitHubLoginButton from "./Components/GitHubLoginButton";
 
 export default function SignIn() {
   const navigateSignIn = useNavigate();
@@ -116,6 +117,7 @@ export default function SignIn() {
           <a href="/signup" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
             Skapa ett konto här
           </a>
+          <GitHubLoginButton/>
         </p>
       </div>
     </div>

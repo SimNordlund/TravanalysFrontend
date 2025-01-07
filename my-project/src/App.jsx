@@ -6,6 +6,8 @@ import SignUp from './SignUp';
 import SignIn from './SignIn';
 import AboutUs from './AboutUs';
 import ReducedButtons from './Components/ReducedButtons';
+import SkrytComponent from './Components/SkrytComponent';
+import GitHubLoginButton from './Components/GitHubLoginButton';
 
 export default function App() {
   return (
@@ -15,8 +17,9 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
-        <Route path="/AboutUs" element={<AboutUs/>}  />
+        <Route path="/Components/SkrytComponent" element={<SkrytComponent/>}  />
         <Route path="/Components/ReducedButtons" element={<ReducedButtons/>}  />
+        <Route path="/Components/GitHubLoginButton" element={<Home/>} />
       </Routes>
     </>
   );

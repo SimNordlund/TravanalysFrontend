@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirecting to different routes
 import travhorsi from './Bilder/travhorsi2.png';
 import pappaCrazy from './Bilder/PappaCrazy.png';
@@ -9,8 +9,8 @@ import pappaCrazy from './Bilder/PappaCrazy.png';
 const navigation = [
   { name: 'Startsida', href: '/', current: false },
   { name: 'Reducerat System', href: '/Components/ReducedButtons', current: false },
-  { name: 'Registrera', href: '/SignUp', current: false },
-  { name: 'Om oss', href: '/AboutUs', current: false },
+  { name: 'Om oss', href: '/Components/SkrytComponent', current: false },
+  { name: 'Logga in', href: '/SignIn', current: false },
 ]
 
 function classNames(...classes) {
@@ -54,7 +54,7 @@ export default function Example() {
                   />
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
-                  <div className="flex space-x-4">
+                  <div className="flex space-x-1">
                     {navigation.map((item) => (
                       <a
                         key={item.name}

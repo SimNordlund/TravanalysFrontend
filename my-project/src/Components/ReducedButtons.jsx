@@ -49,8 +49,8 @@ export default function ProfessionalButton() {
   const buttonIds = [1, 2, 3, 4, 5];
 
   return (
-    <div className="text-center mb-10">
-      <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-4xl mt-10 mb-10">Reducerade System</h2>
+    <div className="text-center">
+      <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-4xl mt-10 mb-6">Reducerade System</h2>
       {buttonIds.map((id) => (
         <div key={id} className="m-2 inline-block">
           <button
@@ -68,7 +68,6 @@ export default function ProfessionalButton() {
           </button>
         </div>
       ))}
-      <Swish></Swish>
       <Marketing></Marketing>
        <Newsletter />
       
