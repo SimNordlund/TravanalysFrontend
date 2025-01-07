@@ -3,7 +3,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirecting to different routes
 import travhorsi from './Bilder/travhorsi2.png';
-import pappaCrazy from './Bilder/PappaCrazy.png';
+import picke1 from './Bilder/picke1.png';
 
 
 const navigation = [
@@ -84,7 +84,7 @@ export default function Example() {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src={pappaCrazy}
+                        src={picke1}
                         alt=""
                       />
                     </Menu.Button>
