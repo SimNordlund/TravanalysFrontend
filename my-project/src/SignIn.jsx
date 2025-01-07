@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import React, { useState } from 'react';
 import GitHubLoginButton from "./Components/GitHubLoginButton";
+import travhorsi from './Bilder/travhorsi2.png';
 
 export default function SignIn() {
   const navigateSignIn = useNavigate();
@@ -46,7 +47,7 @@ export default function SignIn() {
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <img
           className="mx-auto h-114 w-auto"
-          src="src/Bilder/travhorsi2.png"
+          src={travhorsi}
           alt="Your Company"
         />
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
