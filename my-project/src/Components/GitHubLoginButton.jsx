@@ -1,9 +1,11 @@
 import React from 'react';
 
+const API_GITHUB_URL = import.meta.env.VITE_API_GITHUB_URL;
+
 const GitHubLoginButton = () => {
     const handleLogin = () => {
         // Redirect the user to the Spring Boot backend's GitHub OAuth2 endpoint
-        window.location.href = 'http://localhost:8080/oauth2/authorization/github';
+        window.location.href = API_GITHUB_URL;
     };
 
     return (
