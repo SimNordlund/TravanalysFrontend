@@ -1,6 +1,6 @@
 import React from 'react';
 
-const API_GOOGLE_URL = import.meta.env.VITE_API_GITHUB_URL;
+const API_GOOGLE_URL = import.meta.env.VITE_API_GOOGLE_URL;
 
 const GoogleLoginButton = () => {
     const handleLogin = () => {
