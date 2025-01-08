@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState } from 'react';
 import GitHubLoginButton from "./Components/GitHubLoginButton";
 import travhorsi from './Bilder/travhorsi2.png';
+import GoogleLoginButton from "./Components/GoogleLoginButton";
 
 export default function SignIn() {
   const navigateSignIn = useNavigate();
@@ -119,6 +120,7 @@ export default function SignIn() {
             Skapa ett konto här
           </a>
           <GitHubLoginButton/>
+          <GoogleLoginButton/>
         </p>
       </div>
     </div>
