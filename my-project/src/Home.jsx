@@ -12,6 +12,7 @@ import Swish from './Components/Swish';
 import ToggleComponent from './Components/ToggleComponent';
 import Slideshow from './Components/Slideshow';
 import ReducedSystemButton from './Components/ReducedSystemButton';
+import UserProfile from './Components/UserProfile';
 
 export default function Home() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -23,6 +24,7 @@ export default function Home() {
     <div>
       <Present />
       <ToggleComponent />
+      <UserProfile />
       <Pricing></Pricing>
       <Preview />
       <Newsletter />

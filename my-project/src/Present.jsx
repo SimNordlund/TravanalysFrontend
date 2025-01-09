@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import UserProfile from './Components/UserProfile';
 
 
 export default function Present(){
@@ -10,8 +10,12 @@ export default function Present(){
               Travanalys
             </h1>
             <h2 className="text-1xl sm:text-2xl md:text-1x4 italic tracking-tight text-gray-900 mt-2">
-  The game changer
-</h2>
+            The game changer  
+            </h2>
+
+            <div className="mt-5">
+            <UserProfile></UserProfile>
+            </div>
             <hr className="mt-4"></hr>
             {/*
             <div className="mt-10 flex items-center justify-center gap-x-6">
