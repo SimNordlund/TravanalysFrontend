@@ -290,7 +290,7 @@ const BarChartComponent = () => {
         {selectedDateLabel} {selectedTrackLabel} {selectedCompetitionLabel} {selectedLapLabel}
       </p>
 
-      <div className="w-full h-[40vh] sm:h-[50vh] md:h-[50vh] relative">
+      <div className="w-full h-[70vh] sm:h-[50vh] md:h-[50vh] relative">
         <Bar data={data} options={options} />
       </div>
 
