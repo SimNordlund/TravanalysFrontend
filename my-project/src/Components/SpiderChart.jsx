@@ -184,7 +184,7 @@ const SpiderChart = () => {
     return (
         <div className="flex flex-col justify-center items-center mt-1 px-2">
                 {/* Radar Chart */}
-             <div className="relative w-full sm:w-[300px] md:w-[500px] h-[50vh] sm:h-[40vh] md:h-[50vh] flex items-center justify-center">
+             <div className="relative w-full sm:w-[300px] md:w-[500px] h-[60vh] sm:h-[40vh] md:h-[50vh] flex items-center justify-center">
                     <Radar 
                       data={data} 
                       options={{ 
