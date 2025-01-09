@@ -219,7 +219,8 @@ const BarChartComponent = () => {
     maintainAspectRatio: false,
     scales: {
       y: {
-        beginAtZero: true
+        beginAtZero: true,
+        minBarLength: 10, // Set a minimum bar length (e.g., 5 pixels)
       },
       x: {
         stacked: true
