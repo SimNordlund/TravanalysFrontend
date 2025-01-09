@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react';
 const UserProfile = () => {
     const [userEmail, setUserEmail] = useState(null);
     const [error, setError] = useState(null);
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         // Fetch the logged-in user's email
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/g-login/email`, {
+        fetch(`${API_BASE_URL}/g-login/email`, {
             credentials: 'include', // Include cookies for session authentication
         })
             .then((response) => {
