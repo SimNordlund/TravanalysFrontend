@@ -11,7 +11,7 @@ const UserProfile = () => {
         })
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error('Failed to fetch user email');
+                    throw new Error('Github suger kuk');
                 }
                 return response.text();
             })
