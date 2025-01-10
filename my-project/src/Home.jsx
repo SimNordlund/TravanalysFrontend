@@ -12,6 +12,7 @@ import Swish from './Components/Swish';
 import ToggleComponent from './Components/ToggleComponent';
 import Slideshow from './Components/Slideshow';
 import ReducedSystemButton from './Components/ReducedSystemButton';
+import Avdelning5Table from './Components/Avdelning5Table';
 
 export default function Home() {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -23,8 +24,8 @@ export default function Home() {
     <div>
       <Present />
       <ToggleComponent />
-      <Pricing></Pricing>
       <Preview />
+      <Pricing></Pricing>
       <Newsletter />
     </div>
   );

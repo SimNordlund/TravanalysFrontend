@@ -19,8 +19,7 @@ export default function Pricing() {
   };
 
   return (
-    <div className="bg-white py-6 sm:py-2">
-      <hr className="mb-10"></hr>
+    <div className="bg-white py-6 sm:py-2 mt-10">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 mt">
         <div className="mx-auto max-w-2xl sm:text-center">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Tillgång till allt efter en snabb swish!</h2>

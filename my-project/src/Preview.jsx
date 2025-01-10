@@ -16,19 +16,19 @@ const callouts = [
   {
     name: 'V75',
     description: 'Solvalla',
-    href: '#',
+    href: '/Components/Avdelning5Table',
     bgColor: 'bg-blue-500',
   },
   {
     name: 'V86',
     description: 'Romme',
-    href: '#',
+    href: '/Components/Avdelning5Table',
     bgColor: 'bg-purple-500',
   },
   {
     name: 'V64',
     description: 'Färjestad',
-    href: '#',
+    href: '/Components/Avdelning5Table',
     bgColor: 'bg-orange-500',
   },
 ];
@@ -36,9 +36,9 @@ const callouts = [
 export default function Example() {
   return (
     <div className="bg-gray-100">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-3xl sm-mx-10">
         <div className="mx-auto max-w-2xl py-2 sm:py-24 lg:max-w-none lg:py-32 ">
-          <div className="mt-2 lg:grid lg:grid-cols-3 lg:gap-x-6 lg:space-y-0 grid grid-cols-3 gap-x-6">
+          <div className="mt-14 mb-14 lg:mb-0 lg:mt-0 lg:grid lg:grid-cols-3 lg:gap-x-6 lg:space-y-0 grid grid-cols-3 gap-x-6">
             {callouts.map((callout) => (
               <div key={callout.name} className="group relative">
                 <div className={`${callout.bgColor} relative h-80 w-full overflow-hidden rounded-lg sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 flex items-center justify-center group-hover:opacity-75 transition-opacity duration-300 shadow-lg`}>
