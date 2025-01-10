@@ -163,8 +163,12 @@ const Avdelning5Table = () => {
       </p>
 
       {/* Actual table */}
+      {/* 
+        "overflow-x-auto" => horizontal scroll if the table doesn't fit in smaller screens
+        "w-full" => ensures the table stretches to 100% width
+      */}
       <div className="overflow-x-auto border border-gray-200 rounded">
-        <table className="min-w-full border-collapse text-sm">
+        <table className="w-full min-w-max border-collapse text-sm">
           <thead className="bg-gray-100 text-gray-700 text-left border-b border-gray-200">
             <tr>
               <th className="py-2 px-2 font-semibold w-12">#</th>
