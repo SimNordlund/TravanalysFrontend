@@ -29,7 +29,7 @@ const Swish = () => {
     <div className="text-center pb-4 mt-3">
       <button
         onClick={handleSwishPayment}
-        className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-14 rounded"
+        className="bg-indigo-500 hover:bg-indigo-700 text-white font-semibold rounded shadow py-2 px-8 focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
       >
         Donera via Swish
       </button>
