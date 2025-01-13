@@ -3,7 +3,7 @@ import PaginatedLapTable from "./Components/PaginatedLapTable";
 import Preview from "./Preview";
 
 export default function Tables() {
-  const [selectedCompetionId, setSelectedCompetitionId] = useState(null);
+  const [selectedCompetionId, setSelectedCompetitionId] = useState(1);
 
   const handleCompetitionSelect = (id) => {
     setSelectedCompetitionId(id);
