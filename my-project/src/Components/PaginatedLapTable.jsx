@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
-const PaginatedLapTable = () => {
-  const [laps, setLaps] = useState([]); // Available laps for the competition
-  const [selectedLap, setSelectedLap] = useState(null); // Current selected lap
-  const [lapData, setLapData] = useState([]); // Data for the current lap
+const PaginatedLapTable = ({ competitionId }) => {
+  const [laps, setLaps] = useState([]);
+  const [selectedLap, setSelectedLap] = useState(null);
+  const [lapData, setLapData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -11,10 +11,11 @@ const PaginatedLapTable = () => {
 
   // Fetch laps for a selected competition
   useEffect(() => {
+    if (!competitionId) return; // Do nothing if competitionId is null
     const fetchLaps = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=1`);
+        const response = await fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${competitionId}`);
         const data = await response.json();
         setLaps(data);
         if (data.length > 0) setSelectedLap(data[0].id); // Automatically select the first lap
@@ -25,7 +26,7 @@ const PaginatedLapTable = () => {
       }
     };
     fetchLaps();
-  }, []);
+  }, [competitionId]); // Add competitionId as a dependency
 
   // Fetch data for the selected lap
   useEffect(() => {
@@ -49,6 +50,7 @@ const PaginatedLapTable = () => {
     setSelectedLap(lapId);
   };
 
+  if (!competitionId) return <div>Please select a competition.</div>;
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 

@@ -9,6 +9,7 @@ import picke1 from './Bilder/picke1.png';
 const navigation = [
   { name: 'Startsida', href: '/', current: false },
   { name: 'Reducerat System', href: '/Components/ReducedButtons', current: false },
+  { name: 'Tabell', href: '/Tables', current: false },
   { name: 'Om oss', href: '/Components/SkrytComponent', current: false },
   { name: 'Logga in', href: '/SignIn', current: false },
 ]
@@ -31,10 +32,10 @@ export default function Example() {
     <Disclosure as="nav" className="bg-gray-800 sticky top-0 z-50">
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-1">
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                {/* Mobile menu button*/}
+                {/* Mobil meny*/}
                 <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="absolute -inset-0.5" />
                   <span className="sr-only">Open main menu</span>
@@ -76,7 +77,7 @@ export default function Example() {
                     <a href="/" className="mt-0 font-semibold text-white">Travanalys</a>
                     </div>
 
-                {/* Profile dropdown */}
+                {/* dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">

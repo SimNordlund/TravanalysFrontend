@@ -8,7 +8,7 @@ const ToggleComponent = () => {
   const [showSpiderChart, setShowSpiderChart] = useState(true);
 
   return (
-    <div className="text-center sm:pb-32 pb-8">
+    <div className="text-center sm:pb-32 pb-8 ">
        <button 
         className="bg-indigo-500 hover:bg-indigo-700 text-white font-semibold rounded shadow py-2 px-8 focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
         onClick={() => setShowSpiderChart(!showSpiderChart)}
