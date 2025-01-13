@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import SpiderChart from './SpiderChart';
 import BarChart from '../BarChart'; // Ensure the path is correct
-import GitHubLoginButton from './GitHubLoginButton';
-import GoogleLoginButton from './GoogleLoginButton';
 
 const ToggleComponent = () => {
   const [showSpiderChart, setShowSpiderChart] = useState(true);
