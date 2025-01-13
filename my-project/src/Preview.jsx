@@ -22,8 +22,8 @@ const callouts = [
 export default function Example() {
   return (
     <div className="bg-gray-100">
-      <div className="mx-auto max-w-3xl sm-mx-10">
-        <div className="mx-auto max-w-2xl py-2 sm:py-24 lg:max-w-none lg:py-32 ">
+      <div className="mx-10 max-w-1xl">
+        <div className="mx-auto max-w-2xl py-1 sm:py-10 lg:max-w-none lg:py-16 ">
           <div className="mt-14 mb-14 lg:mb-0 lg:mt-0 lg:grid lg:grid-cols-3 lg:gap-x-6 lg:space-y-0 grid grid-cols-3 gap-x-6">
             {callouts.map((callout) => (
               <div key={callout.name} className="group relative">
