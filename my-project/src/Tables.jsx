@@ -5,8 +5,8 @@ export default function Tables() {
 
 return (
   <div>
-    <Preview/>
     <PaginatedLapTable/>
+    <Preview/>
   </div>
 );
 } 

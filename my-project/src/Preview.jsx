@@ -1,34 +1,20 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/aspect-ratio'),
-    ],
-  }
-  ```
-*/
 const callouts = [
   {
     name: 'V75',
     description: 'Solvalla',
-    href: '/Components/Avdelning5Table',
+    href: '/Tables',
     bgColor: 'bg-blue-500',
   },
   {
     name: 'V86',
     description: 'Romme',
-    href: '/Components/Avdelning5Table',
+    href: '/Tables',
     bgColor: 'bg-purple-500',
   },
   {
     name: 'V64',
     description: 'Färjestad',
-    href: '/Components/Avdelning5Table',
+    href: '/Tables',
     bgColor: 'bg-orange-500',
   },
 ];
@@ -42,7 +28,6 @@ export default function Example() {
             {callouts.map((callout) => (
               <div key={callout.name} className="group relative">
                 <div className={`${callout.bgColor} relative h-80 w-full overflow-hidden rounded-lg sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 flex items-center justify-center group-hover:opacity-75 transition-opacity duration-300 shadow-lg`}>
-                  {/* Ensure text inside this div is initially white and changes if needed */}
                   <div className="text-center">
                     <h3 className="text-4xl font-semibold text-grey-900">{callout.name}</h3>
                     <p className="mt-2 text-xl text-white">{callout.description}</p>
