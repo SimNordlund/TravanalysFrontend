@@ -12,7 +12,7 @@ const UserProfile = () => {
         })
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error('Github suger kuk');
+                    throw new Error('');
                 }
                 return response.text();
             })
