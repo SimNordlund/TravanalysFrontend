@@ -10,7 +10,6 @@ export default function Home() {
     <div>
       <Present />
       <ToggleComponent />
-      <Preview />
       <Pricing></Pricing>
       <Newsletter />
     </div>

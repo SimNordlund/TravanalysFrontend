@@ -52,10 +52,10 @@ const PaginatedLapTable = ({ competitionId }) => {
 
   return (
     <div className="mx-auto max-w-screen-lg px-4 py-6 relative">
-      <h2 className="text-xl font-bold mb-2">Lap {selectedLap}</h2>
+      <h2 className="text-xl font-bold mb-2">Lopp {selectedLap}</h2>
 
       {/* Buttons with reserved height */}
-      <div className="flex justify-between items-center mb-4 min-h-[50px]">
+      <div className="flex justify-start items-center mb-4 min-h-[50px]">
         {laps.length > 0 ? (
           laps.map((lap) => (
             <button
@@ -64,7 +64,7 @@ const PaginatedLapTable = ({ competitionId }) => {
               disabled={loading}
               className={`px-3 py-2 rounded ${
                 lap.id === selectedLap
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-indigo-500 hover:bg-indigo-700 text-white font-semibold rounded shadow py-2 px-2 focus:outline-none focus:shadow-outline transition duration-300 ease-in-out'
                   : 'bg-gray-200 text-gray-700 hover:bg-blue-100'
               } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
