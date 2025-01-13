@@ -3,19 +3,19 @@ const callouts = [
     id: 1,
     name: 'V75',
     description: 'Solvalla',
-    bgColor: 'bg-blue-500',
+    bgColor: 'bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600',
   },
   {
     id: 2,
     name: 'V86',
     description: 'Romme',
-    bgColor: 'bg-purple-500',
+    bgColor: 'bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600',
   },
   {
     id: 3,
     name: 'V64',
     description: 'Färjestad',
-    bgColor: 'bg-orange-500',
+    bgColor: 'bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600',
   },
 ];
 
