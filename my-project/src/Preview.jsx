@@ -27,25 +27,25 @@ export default function Preview({ onCompetitionSelect }) {
 
   return (
     <div className="bg-gray-100">
-      <div className="mx-10 max-w-1xl">
-        <div className="mx-auto max-w-2xl py-1 sm:py-10 lg:max-w-none lg:py-16">
-          <div className="mt-14 mb-14 lg:mb-0 lg:mt-0 lg:grid lg:grid-cols-3 lg:gap-x-6 lg:space-y-0 grid grid-cols-3 gap-x-6">
+      <div className="mx-4 max-w-1xl">
+        <div className="mx-auto max-w-1x4 py-1 sm:py-10 lg:max-w-none lg:py-16">
+          <div className="mt-12 mb-12 lg:mb-0 lg:mt-0 flex justify-center lg:gap-x-10 gap-x-6 flex-wrap">
             {callouts.map((callout) => (
               <div
                 key={callout.id}
                 className="group relative cursor-pointer"
-                onClick={() => handleButtonClick(callout.id)} // Call handleButtonClick
+                onClick={() => handleButtonClick(callout.id)}
               >
                 <div
-                  className={`${callout.bgColor} relative h-80 w-full overflow-hidden rounded-lg sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 flex items-center justify-center group-hover:opacity-75 transition-opacity duration-300 shadow-lg`}
+                  className={`${callout.bgColor} relative h-24 w-24 sm:w-72 sm:h-28 overflow-hidden rounded-lg lg:aspect-h-1 lg:aspect-w-1 flex items-center justify-center group-hover:opacity-65 transition-opacity duration-300 shadow-xl`}
                 >
                   <div className="text-center">
-                    <h3 className="text-4xl font-semibold text-grey-900">{callout.name}</h3>
+                    <h3 className="text-4xl font-semibold text-white">{callout.name}</h3>
                     <p className="mt-2 text-xl text-white">{callout.description}</p>
                   </div>
                 </div>
-                <h3 className="mt-6 text-sm text-gray-500">{callout.name}</h3>
-                <p className="text-base font-semibold text-gray-900">{callout.description}</p>
+                <h3 className="mt-4 text-sm text-gray-500 text-center">{callout.name}</h3>
+                <p className="text-base font-semibold text-gray-900 text-center">{callout.description}</p>
               </div>
             ))}
           </div>

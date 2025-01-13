@@ -8,6 +8,7 @@ import ReducedButtons from './Components/ReducedButtons';
 import SkrytComponent from './Components/SkrytComponent';
 import Avdelning5Table from './Components/Avdelning5Table';
 import Tables from './Tables';
+import Newsletter from './Newsletter';
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/Components/Avdelning5Table" element={<Avdelning5Table/>} />
         <Route path="/Tables" element={<Tables/>} />
       </Routes>
+      <Newsletter/>
     </>
   );
 }

@@ -46,16 +46,16 @@ export default function ProfessionalButton() {
   };
 
   // Generate buttons for IDs 1 to 5
-  const buttonIds = [1, 2, 3, 4, 5];
+  const buttonIds = [1, 2, 3, 4, 5, 6, 7];
 
   return (
-    <div className="text-center">
-      <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-4xl mt-10 mb-6">Reducerade System</h2>
+    <div className="text-center mb-16 mt-12">
+      <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-4xl mt-16 mb-6">Reducerade System</h2>
       {buttonIds.map((id) => (
         <div key={id} className="m-2 inline-block">
           <button
             onClick={() => handleDownload(id)}
-            className="flex items-center justify-center px-10 py-2 bg-indigo-600 text-white font-semibold rounded shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-opacity-50 transition-colors m-2 mt-4"
+            className="flex items-center justify-center px-10 py-2 bg-indigo-600 text-white font-semibold rounded shadow-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-opacity-50 transition-colors m-2 mt-4"
           >
             <PaperClipIcon aria-hidden="true" className="w-5 h-5 mr-2 text-gray-200" />
             Ladda ner reducerad fil {id}
@@ -68,9 +68,6 @@ export default function ProfessionalButton() {
           </button>
         </div>
       ))}
-      <Marketing></Marketing>
-       <Newsletter />
-      
     </div>
   );
 }

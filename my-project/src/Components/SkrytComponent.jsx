@@ -33,7 +33,6 @@ export default function Example() {
     <div className="mt-2">
     <FAQComponent/>
     </div>
-     <NewsLetter/>
      </div>
   )
 }

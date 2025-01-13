@@ -11,7 +11,6 @@ export default function Home() {
       <Present />
       <ToggleComponent />
       <Pricing></Pricing>
-      <Newsletter />
     </div>
   );
 }
