@@ -54,7 +54,6 @@ const PaginatedLapTable = ({ competitionId, competitionName }) => {
     <div className="mx-auto max-w-screen-lg px-4 py-6 relative">
       <h2 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">{competitionName}</h2>
 
-      {/* Buttons with reserved height */}
       <div className="flex justify-start items-center mb-4 min-h-[50px]">
         {laps.length > 0 ? (
           laps.map((lap) => (
@@ -83,7 +82,7 @@ const PaginatedLapTable = ({ competitionId, competitionName }) => {
         )}
       </div>
 
-      {/* Table */}
+      {/* Tabellen */}
       <div className="overflow-x-auto border border-gray-200 rounded relative">
         {loading && (
           <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-75">
@@ -95,7 +94,7 @@ const PaginatedLapTable = ({ competitionId, competitionName }) => {
             <tr>
               <th className="py-2 px-2 font-semibold">#</th>
               <th className="py-2 px-2 font-semibold">Häst / Kusk</th>
-              <th className="py-2 px-2 font-semibold">V75%</th>
+              <th className="py-2 px-2 font-semibold">{competitionName}%</th>
               <th className="py-2 px-2 font-semibold">Trend%</th>
               <th className="py-2 px-2 font-semibold">V-Odds</th>
               <th className="py-2 px-2 font-semibold">Tränare</th>
