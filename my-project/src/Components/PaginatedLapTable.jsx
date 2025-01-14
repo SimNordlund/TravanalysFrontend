@@ -34,7 +34,7 @@ const PaginatedLapTable = ({ competitionId, competitionName }) => {
     const fetchLapData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`);
+        const response = await fetch(`${API_BASE_URL}/completeHorse/findByLapAnalys?lapId=${selectedLap}`);
         const data = await response.json();
         setLapData(data);
       } catch (err) {
@@ -111,7 +111,7 @@ const PaginatedLapTable = ({ competitionId, competitionName }) => {
               >
                 <td className="py-2 px-2">{index + 1}</td>
                 <td className="py-2 px-2">{row.nameOfCompleteHorse}</td>
-                <td className="py-2 px-2">{row.v75}</td>
+                <td className="py-2 px-2">{row.fourStartsAnalys}</td>
                 <td className="py-2 px-2">{row.trend}</td>
                 <td className="py-2 px-2">{row.vOdds}</td>
                 <td className="py-2 px-2">{row.trainer}</td>
