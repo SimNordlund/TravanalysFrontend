@@ -4,7 +4,6 @@ const API_GOOGLE_URL = import.meta.env.VITE_API_GOOGLE_URL;
 
 const GoogleLoginButton = () => {
     const handleLogin = () => {
-        // Redirect the user to the Spring Boot backend's GitHub OAuth2 endpoint
         window.location.href = API_GOOGLE_URL;
     };
 

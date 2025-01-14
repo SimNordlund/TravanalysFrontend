@@ -1,8 +1,5 @@
 import React from "react";
-import Marketing from "../Marketing";
-import Newsletter from "../Newsletter";
 import { PaperClipIcon } from '@heroicons/react/20/solid';
-import Swish from "../Components/Swish";
 
 export default function ProfessionalButton() {
   const handleDownload = async (id) => {

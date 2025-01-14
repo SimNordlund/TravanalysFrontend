@@ -6,7 +6,6 @@ import SignUp from './SignUp';
 import SignIn from './SignIn';
 import ReducedButtons from './Components/ReducedButtons';
 import SkrytComponent from './Components/SkrytComponent';
-import Avdelning5Table from './Components/Avdelning5Table';
 import Tables from './Tables';
 import Newsletter from './Newsletter';
 import ChartPage from './ChartPage';
@@ -22,7 +21,6 @@ export default function App() {
         <Route path="/Components/SkrytComponent" element={<SkrytComponent/>}  />
         <Route path="/Components/ReducedButtons" element={<ReducedButtons/>}  />
         <Route path="/Components/GitHubLoginButton" element={<Home/>} />
-        <Route path="/Components/Avdelning5Table" element={<Avdelning5Table/>} />
         <Route path="/Tables" element={<Tables/>} />
         <Route path="/ChartPage" element={<ChartPage/>}/>
       </Routes>

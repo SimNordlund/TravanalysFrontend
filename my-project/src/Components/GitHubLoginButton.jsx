@@ -4,7 +4,6 @@ const API_GITHUB_URL = import.meta.env.VITE_API_GITHUB_URL;
 
 const GitHubLoginButton = () => {
     const handleLogin = () => {
-        // Redirect the user to the Spring Boot backend's GitHub OAuth2 endpoint
         window.location.href = API_GITHUB_URL;
     };
 

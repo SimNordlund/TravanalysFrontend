@@ -9,7 +9,7 @@ const PaginatedLapTable = ({ competitionId, competitionName }) => {
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // Fetch laps for a selected competition
+  // Fetch lopp för tävling
   useEffect(() => {
     if (!competitionId) return;
     const fetchLaps = async () => {
@@ -18,7 +18,7 @@ const PaginatedLapTable = ({ competitionId, competitionName }) => {
         const response = await fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${competitionId}`);
         const data = await response.json();
         setLaps(data);
-        if (data.length > 0) setSelectedLap(data[0].id); // Automatically select the first lap
+        if (data.length > 0) setSelectedLap(data[0].id); // Väljer det första loppet yo
       } catch (err) {
         setError('Failed to fetch laps.');
       } finally {
@@ -28,7 +28,7 @@ const PaginatedLapTable = ({ competitionId, competitionName }) => {
     fetchLaps();
   }, [competitionId]);
 
-  // Fetch data for the selected lap
+  // Fetch data för bestämda loppet
   useEffect(() => {
     if (!selectedLap) return;
     const fetchLapData = async () => {

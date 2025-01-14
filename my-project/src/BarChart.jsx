@@ -285,7 +285,7 @@ const BarChartComponent = () => {
     <div className="flex flex-col justify-center items-center mt-1 px-2">
 
       {/* Your new dynamic text */}
-      <p className="text-lg mt-4 mb-4 font-semibold">
+      <p className="text-2xl font-bold tracking-tight text-gray-900">
         {/* Concatenate the labels with spaces, or handle empty values as you prefer */}
         {selectedDateLabel} {selectedTrackLabel} {selectedCompetitionLabel} {selectedLapLabel}
       </p>
