@@ -20,8 +20,8 @@ const callouts = [
 ];
 
 export default function Preview({ onCompetitionSelect }) {
-  const handleButtonClick = (id) => {
-    onCompetitionSelect(id); // Select the competition
+  const handleButtonClick = (id, name) => {
+    onCompetitionSelect(id, name); // Select the competition
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to the top of the page
   };
 
@@ -34,7 +34,7 @@ export default function Preview({ onCompetitionSelect }) {
               <div
                 key={callout.id}
                 className="group relative cursor-pointer"
-                onClick={() => handleButtonClick(callout.id)}
+                onClick={() => handleButtonClick(callout.id, callout.name)}
               >
                 <div
                   className={`${callout.bgColor} relative h-24 w-24 sm:w-72 sm:h-28 overflow-hidden rounded-lg lg:aspect-h-1 lg:aspect-w-1 flex items-center justify-center group-hover:opacity-65 transition-opacity duration-300 shadow-xl`}
