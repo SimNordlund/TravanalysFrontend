@@ -22,7 +22,7 @@ export default function Pricing() {
     <div className="bg-white py-6 sm:py-0 sm:mt-10 sm:mb-20 mt-2">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 mt">
         <div className="mx-auto max-w-2xl sm:text-center text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Gratis beslutsunderlag!</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Vägledande beslutsunderlag!</h2>
           <p className="mt-6 text-lg leading-8 text-gray-600">
             Nyttja vår kraftfulla algoritm via statistik och reducerade system. Klicka ovan på knapparna för att hitta skrällarna i den form som passar dig.
           </p>

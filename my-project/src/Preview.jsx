@@ -15,7 +15,7 @@ const callouts = [
     id: 3,
     name: 'V64',
     description: 'Färjestad',
-    bgColor: 'bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600',
+    bgColor: 'bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600',
   },
 ];
 
