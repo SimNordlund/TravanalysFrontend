@@ -43,7 +43,7 @@ export default function ProfessionalButton() {
   };
 
   // Generate buttons for IDs 1 to 5
-  const buttonIds = [1, 2, 3, 4, 5, 6, 7];
+  const buttonIds = [10, 11, 12, 13, 14, 15, 16];
 
   return (
     <div className="text-center mb-16 mt-12">
