@@ -1,6 +1,7 @@
 import Pricing from './Pricing';
 import Present from './Present';
 import PreviewFrontPage from './PreviewHomePage';
+import ToggleComponent from './Components/ToggleComponent'
 import MessengerChat from './Components/MessengerChat';
 
 export default function Home() {
@@ -8,7 +9,8 @@ export default function Home() {
   return (
     <div>
       {/*<Present />*/}
-      <PreviewFrontPage/>
+      {/*<PreviewFrontPage/>*/}
+      <ToggleComponent></ToggleComponent>
       <Pricing></Pricing>
       <MessengerChat></MessengerChat>
     </div>

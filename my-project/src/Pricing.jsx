@@ -24,7 +24,7 @@ export default function Pricing() {
         <div className="mx-auto max-w-2xl sm:text-center text-center">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Vägledande beslutsunderlag!</h2>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Nyttja vår kraftfulla algoritm via statistik och reducerade system. Klicka ovan på knapparna för att hitta skrällarna i den form som passar dig.
+            Nyttja vår kraftfulla algoritm via statistik och reducerade system. Upptäck skrällarna och utforska underlaget i den form som passar dig.
           </p>
         </div>
         <div className="mx-auto mt-10 max-w-2xl rounded-3xl ring-1 ring-gray-200 sm:mt-8 sm:mb-6 lg:mx-0 lg:flex lg:max-w-none">
