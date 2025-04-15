@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import pappaCrazy from './Bilder/PappaCrazy.png';
-import Chart from 'chart.js/auto';
 
 const BarChartComponent = () => {
   const [data, setData] = useState({
@@ -48,7 +47,7 @@ const BarChartComponent = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 640) {
+      if (window.innerWidth < 140) { //640 egenltigen
         setLegendPosition('top');
       } else {
         setLegendPosition('right');
@@ -269,7 +268,7 @@ const BarChartComponent = () => {
   // --- Rendering ---
   if (loading) return (
     <div className="flex flex-col justify-center items-center">
-      <div className="block text-center mb-4">Laddar...</div>
+      <div className="block text-center mb-4">Grubblar...</div>
       <img
         className="h-24 w-24 rounded-full animate-spin"
         src={pappaCrazy}
@@ -285,7 +284,7 @@ const BarChartComponent = () => {
     <div className="flex flex-col justify-center items-center mt-1 px-2 pb-10">
 
       {/* Your new dynamic text */}
-      <p className="sm:text-lg text-base font-sans tracking-tight text-gray-900 mt-3 mb-3 sm:mb-0 sm:mt-0">
+      <p className="sm:text-lg text-base font-semibold text-gray-700 mt-3 mb-3 sm:mb-1 sm:mt-0">
         {/* Concatenate the labels with spaces, or handle empty values as you prefer */}
         {selectedDateLabel} {selectedTrackLabel} {selectedCompetitionLabel} {selectedLapLabel}
       </p>
