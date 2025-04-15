@@ -75,7 +75,7 @@ export default function Example() {
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                     <div>
-                    <a href="/" className="mt-0 font-semibold text-white">Travanalys</a>
+                    <a href="/" className="mt-0 font-semibold text-sm sm:text-xl text-white">Travanalys </a>
                     </div>
 
                 {/* dropdown */}
