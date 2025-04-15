@@ -182,7 +182,7 @@ const SpiderChart = () => {
     if (data.datasets.length === 0 && !loading) return <div>No data available.</div>;
 
     return (
-        <div className="flex flex-col justify-center items-center mt-1 px-2">
+        <div className="flex flex-col justify-center items-center mt-1 px-2 pb-10">
                 {/* Radar Chart */}
              <div className="relative w-full sm:w-[300px] md:w-[500px] h-[60vh] sm:h-[40vh] md:h-[50vh] flex items-center justify-center">
                     <Radar 
@@ -202,7 +202,7 @@ const SpiderChart = () => {
                     />
                     {loading && <div>Loading...</div>}
             </div>
-            <div className="flex flex-col w-full sm:w-auto space-y-4 mt-8 sm:flex-row sm:space-y-0 sm:space-x-6 border-spacing-x-80 bg-white sm:p-4 rounded-xl border shadow-md">
+            <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 border-spacing-x-80 bg-slate-50 sm:p-4 rounded-xl border shadow-md">
                 {/* Dropdowns */}
                     <select value={selectedDate} onChange={handleDateChange} className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg">
                         <option value="" disabled>Välj datum</option>

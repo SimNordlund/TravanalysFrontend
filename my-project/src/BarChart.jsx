@@ -241,13 +241,13 @@ const BarChartComponent = () => {
   };
 
   // --- Helpers to derive "labels" ---
-  const selectedDateLabel = selectedDate || '';
+  const selectedDateLabel = selectedDate || 'Idag';
   const selectedTrackLabel =
-    selectedTrack ? tracks.find(track => track.id === +selectedTrack)?.nameOfTrack ?? '' : '';
+    selectedTrack ? tracks.find(track => track.id === +selectedTrack)?.nameOfTrack ?? '' : 'Färjestad';
   const selectedCompetitionLabel =
-    selectedCompetition ? competitions.find(c => c.id === +selectedCompetition)?.nameOfCompetition ?? '' : '';
+    selectedCompetition ? competitions.find(c => c.id === +selectedCompetition)?.nameOfCompetition ?? '' : 'v75';
   const selectedLapLabel =
-    selectedLap ? laps.find(l => l.id === +selectedLap)?.nameOfLap ?? '' : '';
+    selectedLap ? laps.find(l => l.id === +selectedLap)?.nameOfLap ?? '' : 'Lopp 1';
 
   // --- Event Handlers ---
   const handleDateChange = event => {
@@ -282,20 +282,19 @@ const BarChartComponent = () => {
   if (!data.datasets.length) return <div>No data available.</div>;
 
   return (
-    <div className="flex flex-col justify-center items-center mt-1 px-2">
+    <div className="flex flex-col justify-center items-center mt-1 px-2 pb-10">
 
       {/* Your new dynamic text */}
-      <p className="text-2xl font-bold tracking-tight text-gray-900">
+      <p className="sm:text-lg text-base font-sans tracking-tight text-gray-900 mt-3 mb-3 sm:mb-0 sm:mt-0">
         {/* Concatenate the labels with spaces, or handle empty values as you prefer */}
         {selectedDateLabel} {selectedTrackLabel} {selectedCompetitionLabel} {selectedLapLabel}
       </p>
-
-      <div className="w-full h-[60vh] sm:h-[50vh] md:h-[50vh] relative">
+      <div className=" sm:w-[90vh] w-[40vh] sm:h-[45vh] h-[40vh]  relative">
         <Bar data={data} options={options} />
       </div>
 
       {/* Dropdowns */}
-      <div className="flex flex-col w-full sm:w-auto space-y-4 mt-8 sm:flex-row sm:space-y-0 sm:space-x-6 border-spacing-x-80 bg-white sm:p-4 rounded-xl border shadow-md">
+      <div className="flex flex-col w-full sm:w-auto space-y-4 mt-8 sm:flex-row sm:space-y-0 sm:space-x-6 border-spacing-x-80 bg-slate-50 sm:p-4 rounded-xl border shadow-md">
         <select
           value={selectedDate}
           onChange={handleDateChange}
