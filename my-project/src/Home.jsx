@@ -7,7 +7,7 @@ import MessengerChat from './Components/MessengerChat';
 export default function Home() {
 
   return (
-    <div>
+    <div className="bg-slate-100">
       {/*<Present />*/}
       {/*<PreviewFrontPage/>*/}
       <ToggleComponent></ToggleComponent>

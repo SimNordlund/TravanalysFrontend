@@ -202,27 +202,27 @@ const SpiderChart = () => {
                     />
                     {loading && <div>Loading...</div>}
             </div>
-            <div className="flex flex-col items-start space-y-4 mt-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+            <div className="flex flex-col w-full sm:w-auto space-y-4 mt-8 sm:flex-row sm:space-y-0 sm:space-x-6 border-spacing-x-80 bg-white sm:p-4 rounded-xl border shadow-md">
                 {/* Dropdowns */}
-                    <select value={selectedDate} onChange={handleDateChange} className="hover:bg-slate-50 p-2 border rounded">
+                    <select value={selectedDate} onChange={handleDateChange} className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg">
                         <option value="" disabled>Välj datum</option>
                         {dates.map(date => (
                             <option key={date.id} value={date.date}>{date.date}</option>
                         ))}
                     </select>
-                    <select value={selectedTrack} onChange={handleTrackChange} className="hover:bg-slate-50 p-2 border rounded">
+                    <select value={selectedTrack} onChange={handleTrackChange} className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg">
                         <option value="" disabled>Välj bana</option>
                         {tracks.map(track => (
                             <option key={track.id} value={track.id}>{track.nameOfTrack}</option>
                         ))}
                     </select>
-                    <select value={selectedCompetition} onChange={handleCompetitionChange} className="hover:bg-slate-50 p-2 border rounded">
+                    <select value={selectedCompetition} onChange={handleCompetitionChange} className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg">
                         <option value="" disabled>Välj spelform</option>
                         {competitions.map(competition => (
                             <option key={competition.id} value={competition.id}>{competition.nameOfCompetition}</option>
                         ))}
                     </select>
-                    <select value={selectedLap} onChange={handleLapChange} className="hover:bg-slate-50 p-2 border rounded">
+                    <select value={selectedLap} onChange={handleLapChange} className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg">
                         <option value="" disabled>Välj lopp</option>
                         {laps.map(lap => (
                             <option key={lap.id} value={lap.id}>{lap.nameOfLap}</option>

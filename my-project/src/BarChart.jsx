@@ -295,11 +295,11 @@ const BarChartComponent = () => {
       </div>
 
       {/* Dropdowns */}
-      <div className="flex flex-col w-full sm:w-auto space-y-4 mt-6 sm:flex-row sm:space-y-0 sm:space-x-10 border bg-slate-100 p-3 rounded-md">
+      <div className="flex flex-col w-full sm:w-auto space-y-4 mt-8 sm:flex-row sm:space-y-0 sm:space-x-6 border-spacing-x-80 bg-white sm:p-4 rounded-xl border shadow-md">
         <select
           value={selectedDate}
           onChange={handleDateChange}
-          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded"
+          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg"
         >
           <option value="" disabled>Välj datum</option>
           {dates.map(date => (
@@ -310,7 +310,7 @@ const BarChartComponent = () => {
         <select
           value={selectedTrack}
           onChange={handleTrackChange}
-          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded"
+          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg"
         >
           <option value="" disabled>Välj bana</option>
           {tracks.map(track => (
@@ -321,7 +321,7 @@ const BarChartComponent = () => {
         <select
           value={selectedCompetition}
           onChange={handleCompetitionChange}
-          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded"
+          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg"
         >
           <option value="" disabled>Välj spelform</option>
           {competitions.map(competition => (
@@ -332,7 +332,7 @@ const BarChartComponent = () => {
         <select
           value={selectedLap}
           onChange={handleLapChange}
-          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded"
+          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg"
         >
           <option value="" disabled>Välj lopp</option>
           {laps.map(lap => (
