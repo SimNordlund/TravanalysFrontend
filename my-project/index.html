@@ -5,6 +5,25 @@
     <link rel="icon" type="image/svg+xml" href="/trav.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Travanalys</title>
+    <!-- Facebook SDK -->
+    <script>
+      window.fbAsyncInit = function () {
+        FB.init({
+          xfbml: true,
+          version: 'v16.0', // Use the latest available version
+        });
+      };
+
+      (function (d, s, id) {
+        var js,
+          fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+        fjs.parentNode.insertBefore(js, fjs);
+      })(document, 'script', 'facebook-jssdk');
+    </script>
   </head>
   <body>
     <div id="root"></div>

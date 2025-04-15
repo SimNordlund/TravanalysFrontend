@@ -10,7 +10,7 @@ export default function Present(){
             </h1>
             <h2 className="text-1xl sm:text-2xl md:text-1x4 italic tracking-tight text-gray-900 mt-2">
             The game changer  
-            </h2>
+            </h2> 
             <div className="mt-5">
             <UserProfile></UserProfile>
             </div>
