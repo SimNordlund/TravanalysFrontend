@@ -300,8 +300,12 @@ const BarChartComponent = () => {
           </div>
         )}
       </div>
-      <div className=" sm:w-[90vh] w-[40vh] sm:h-[45vh] h-[40vh]  relative">
-        <Bar data={data} options={options} />
+      <div className="w-full flex justify-center">
+        {" "}
+        {/* NEW wrapper to center it */}
+        <div className="sm:w-[90vh] w-[40vh] sm:h-[45vh] h-[40vh] relative">
+          <Bar data={data} options={options} />
+        </div>
       </div>
 
       {/* Dropdowns */}

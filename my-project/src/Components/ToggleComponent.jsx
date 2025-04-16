@@ -45,7 +45,7 @@ const ToggleComponent = () => {
                transition-all duration-300 shadow-xl
               ${
                 selectedView === callout.view
-                  ? "ring-2 ring-slate-500 scale-110 opacity-100 cursor-default"
+                  ? "ring-2 ring-slate-400 scale-110 opacity-100 cursor-default"
                   : "hover:opacity-80 cursor-pointer"
               }`}
             >
