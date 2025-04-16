@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import pappaCrazy from "./Bilder/PappaCrazy.png";
+import Chart from "chart.js/auto";
 
 const BarChartComponent = () => {
   const [data, setData] = useState({
@@ -262,17 +263,17 @@ const BarChartComponent = () => {
   if (!data.datasets.length) return <div>No data available.</div>;
 
   return (
-    <div className="flex flex-col justify-center items-center mt-1 px-2 pb-10">
+    <div className="flex flex-col mt-1 px-2 pb-10">
       {/* Your new dynamic text */}
       <p
         className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 
-       px-4 py-2"
+       px-4 py-2 flex flex-col justify-center items-center"
       >
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}{" "}
         | {selectedLapLabel}
         <hr className="w-full border-t-2 border-gray-200" />
       </p>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex justify-start items-center gap-1 mb-4">
         {laps.length > 0 ? (
           laps.map((lap) => (
             <button
@@ -304,51 +305,55 @@ const BarChartComponent = () => {
       </div>
 
       {/* Dropdowns */}
-      <div className="flex flex-col w-full sm:w-auto space-y-4 mt-8 sm:flex-row sm:space-y-0 sm:space-x-6 border-spacing-x-80 bg-slate-50 sm:p-4 rounded-xl border shadow-md">
-        <select
-          value={selectedDate}
-          onChange={handleDateChange}
-          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg"
-        >
-          <option value="" disabled>
-            Välj datum
-          </option>
-          {dates.map((date) => (
-            <option key={date.id} value={date.date}>
-              {date.date}
+      <div className="w-full flex justify-center">
+        {" "}
+        {/* NEW wrapper to center */}
+        <div className="flex flex-col justify-center items-center w-full sm:w-[50%] space-y-4 mt-8 sm:mt-4 sm:flex-row sm:space-y-0 sm:space-x-2 border-spacing-x-80 bg-slate-50 sm:p-4 rounded-xl border shadow-md">
+          <select
+            value={selectedDate}
+            onChange={handleDateChange}
+            className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg"
+          >
+            <option value="" disabled>
+              Välj datum
             </option>
-          ))}
-        </select>
+            {dates.map((date) => (
+              <option key={date.id} value={date.date}>
+                {date.date}
+              </option>
+            ))}
+          </select>
 
-        <select
-          value={selectedTrack}
-          onChange={handleTrackChange}
-          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg"
-        >
-          <option value="" disabled>
-            Välj bana
-          </option>
-          {tracks.map((track) => (
-            <option key={track.id} value={track.id}>
-              {track.nameOfTrack}
+          <select
+            value={selectedTrack}
+            onChange={handleTrackChange}
+            className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg"
+          >
+            <option value="" disabled>
+              Välj bana
             </option>
-          ))}
-        </select>
+            {tracks.map((track) => (
+              <option key={track.id} value={track.id}>
+                {track.nameOfTrack}
+              </option>
+            ))}
+          </select>
 
-        <select
-          value={selectedCompetition}
-          onChange={handleCompetitionChange}
-          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg"
-        >
-          <option value="" disabled>
-            Välj spelform
-          </option>
-          {competitions.map((competition) => (
-            <option key={competition.id} value={competition.id}>
-              {competition.nameOfCompetition}
+          <select
+            value={selectedCompetition}
+            onChange={handleCompetitionChange}
+            className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg"
+          >
+            <option value="" disabled>
+              Välj spelform
             </option>
-          ))}
-        </select>
+            {competitions.map((competition) => (
+              <option key={competition.id} value={competition.id}>
+                {competition.nameOfCompetition}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
     </div>
   );
