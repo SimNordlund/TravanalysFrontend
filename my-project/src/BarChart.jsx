@@ -20,7 +20,7 @@ const BarChartComponent = () => {
   const [selectedCompetition, setSelectedCompetition] = useState(''); 
   const [competitions, setCompetitions] = useState([]); 
 
-  const [selectedLap, setSelectedLap] = useState('');
+  const [selectedLap, setSelectedLap] = useState('1');
   const [laps, setLaps] = useState([]);
 
   // Our color palette for the horses
@@ -162,55 +162,6 @@ const BarChartComponent = () => {
         });
     }
   }, [selectedLap]);
-
-  // Initial fetch with lapId=1 (example)
-  useEffect(() => {
-    setLoading(true);
-    fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=1`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok: ' + response.statusText);
-        }
-        return response.json();
-      })
-      .then(completeHorses => {
-        const labels = completeHorses.map(horse => horse.nameOfCompleteHorse);
-        const datasets = completeHorses.map((horse, index) =>
-          fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`)
-            .then(response => {
-              if (!response.ok) {
-                throw new Error('Network response was not ok: ' + response.statusText);
-              }
-              return response.json();
-            })
-            .then(fourStartsData => {
-              const colorIndex = index % horseColors.length;
-              return {
-                label: horse.nameOfCompleteHorse,
-                data: Array(completeHorses.length)
-                  .fill(null)
-                  .map((_, idx) => (idx === index ? fourStartsData.analys : null)),
-                backgroundColor: horseColors[colorIndex],
-                borderColor: 'rgba(0, 0, 0, 1)',
-                borderWidth: 0.5
-              };
-            })
-        );
-
-        Promise.all(datasets).then(chartData => {
-          setData({
-            labels: chartData.map(dataset => dataset.label),
-            datasets: chartData
-          });
-          setLoading(false);
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-        setError(error.toString());
-        setLoading(false);
-      });
-  }, []);
 
   // --- Chart.js Options ---
   const options = {
