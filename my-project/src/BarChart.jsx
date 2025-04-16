@@ -69,7 +69,13 @@ const BarChartComponent = () => {
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
       .then((response) => response.json())
-      .then((data) => setDates(data))
+      .then((data) => {
+        setDates(data);
+        //Changed! Automatically set the first date as selected:
+        if (data.length > 0) {
+          setSelectedDate(data[0].date);
+        }
+      })
       .catch((error) => console.error("Error fetching dates:", error));
   }, []);
 
@@ -79,7 +85,9 @@ const BarChartComponent = () => {
         .then((response) => response.json())
         .then((data) => {
           setTracks(data);
-          setSelectedTrack("");
+          if (data.length > 0) {
+            setSelectedTrack(data[0].id);
+          }
         })
         .catch((error) => console.error("Error fetching tracks:", error));
     }
@@ -91,7 +99,9 @@ const BarChartComponent = () => {
         .then((response) => response.json())
         .then((data) => {
           setCompetitions(data);
-          setSelectedCompetition("");
+          if (data.length > 0) {
+            setSelectedCompetition(data[0].id);
+          }
         })
         .catch((error) => console.error("Error fetching competitions:", error));
     } else {
@@ -105,13 +115,16 @@ const BarChartComponent = () => {
         `${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`
       )
         .then((response) => response.json())
-        .then((data) => setLaps(data))
+        .then((data) => {
+          setLaps(data);
+          if (data.length > 0) {
+            setSelectedLap(data[0].id); // Auto-select first lap //Changed!
+          }
+        })
         .catch((error) => {
           console.error("Error fetching laps:", error);
           setLaps([]);
         });
-    } else {
-      setLaps([]);
     }
   }, [selectedCompetition]);
 
@@ -257,32 +270,32 @@ const BarChartComponent = () => {
         {selectedLapLabel}
       </p>
       <div className="flex flex-wrap gap-2">
-          {laps.length > 0 ? (
-            laps.map((lap) => (
-              <button
-                key={lap.id}
-                onClick={() => setSelectedLap(lap.id)} //Changed!
-                disabled={loading}
-                className={`px-3 py-2 rounded ${
-                  lap.id === +selectedLap
-                    ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-              >
-                {lap.nameOfLap}
-              </button>
-            ))
-          ) : (
-            <div className="flex gap-2">
-              {[...Array(3)].map((_, idx) => (
-                <div
-                  key={idx}
-                  className="bg-gray-300 rounded w-20 h-8 animate-pulse"
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        {laps.length > 0 ? (
+          laps.map((lap) => (
+            <button
+              key={lap.id}
+              onClick={() => setSelectedLap(lap.id)} //Changed!
+              disabled={loading}
+              className={`px-3 py-2 rounded ${
+                lap.id === +selectedLap
+                  ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                  : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+            >
+              {lap.nameOfLap}
+            </button>
+          ))
+        ) : (
+          <div className="flex gap-2">
+            {[...Array(3)].map((_, idx) => (
+              <div
+                key={idx}
+                className="bg-gray-300 rounded w-20 h-8 animate-pulse"
+              />
+            ))}
+          </div>
+        )}
+      </div>
       <div className=" sm:w-[90vh] w-[40vh] sm:h-[45vh] h-[40vh]  relative">
         <Bar data={data} options={options} />
       </div>
