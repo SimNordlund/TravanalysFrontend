@@ -58,7 +58,7 @@ const ToggleComponent = () => {
       </div>
 
       {/* Chart/Table Toggle Display */}
-      <div className="sm:w-full sm:max-w-3xl sm:mx-auto bg-white ml-3 mr-3 sm:pl-4 sm:pr-4 sm:p-2 rounded-xl shadow-lg">
+      <div className="sm:w-full sm:max-w-3xl sm:mx-auto bg-white ml-3 mr-3 sm:pl-4 sm:pr-4 sm:p-11 rounded-xl shadow-lg">
         <div className="relative w-auto h-auto sm:h-[50vh]">
           {selectedView === "bar" && <BarChart />}
           {selectedView === "spider" && <SpiderChart />}
