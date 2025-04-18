@@ -270,10 +270,10 @@ const BarChartComponent = () => {
        px-4 py-2 flex flex-col justify-center items-center"
       >
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}{" "}
-        | {selectedLapLabel}
+        
         <hr className="w-full border-t-2 border-gray-200" />
       </p>
-      <div className="flex justify-start items-center gap-1 mb-4">
+      <div className="flex flex-wrap justify-start items-center gap-1 mb-4">
         {laps.length > 0 ? (
           laps.map((lap) => (
             <button
