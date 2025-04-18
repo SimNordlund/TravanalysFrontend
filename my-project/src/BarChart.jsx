@@ -48,7 +48,7 @@ const BarChartComponent = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 140) {
+      if (window.innerWidth < 640) {
         //640 egenltigen
         setLegendPosition("top");
       } else {
@@ -143,7 +143,7 @@ const BarChartComponent = () => {
         })
         .then((completeHorses) => {
           const labels = completeHorses.map(
-            (horse) => horse.nameOfCompleteHorse
+            (_, index) => `${index + 1}.`
           );
           const fourStartsPromises = completeHorses.map((horse, index) =>
             fetch(
