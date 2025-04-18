@@ -28,7 +28,7 @@ const ToggleComponent = () => {
   ];
 
   return (
-    <div className="text-center pt-8 pb-12 sm:pt-12 sm:pb-32">
+    <div className="text-center pt-8 pb-12 sm:pt-12 sm:pb-14">
       {/* Buttons */}
       <div className="flex justify-center gap-x-5 sm:gap-x-7 flex-wrap mb-5 sm:mb-8">
         {callouts.map((callout) => (
@@ -58,8 +58,8 @@ const ToggleComponent = () => {
       </div>
 
       {/* Chart/Table Toggle Display */}
-      <div className="sm:max-w-4xl sm:mx-auto bg-white ml-4 mr-4 sm:pl-8 sm:pr-8 sm:pb-20 rounded-xl shadow-lg">
-        <div className="relative w-auto h-auto sm:h-[50vh]">
+      <div className="sm:max-w-4xl sm:mx-auto bg-white ml-4 mr-4 sm:pl-8 sm:pr-8 sm:pb-2 rounded-xl shadow-lg">
+        <div className="relative w-auto h-auto">
           {selectedView === "bar" && <BarChart />}
           {selectedView === "spider" && <SpiderChart />}
           {selectedView === "table" && (
