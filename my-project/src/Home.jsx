@@ -13,6 +13,8 @@ export default function Home() {
       <ToggleComponent></ToggleComponent>
       <Pricing></Pricing>
       <MessengerChat></MessengerChat>
+
+      
     </div>
   );
 }
