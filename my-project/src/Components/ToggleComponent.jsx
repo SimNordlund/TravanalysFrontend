@@ -63,10 +63,7 @@ const ToggleComponent = () => {
           {selectedView === "bar" && <BarChart />}
           {selectedView === "spider" && <SpiderChart />}
           {selectedView === "table" && (
-            <PaginatedLapTable
-              competitionId={"1"} // Replace with dynamic ID if needed
-              competitionName={"V75"} // Replace as needed
-            />
+            <PaginatedLapTable/>
           )}
         </div>
       </div>

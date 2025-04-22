@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-const PaginatedLapTable = ({ competitionId, competitionName }) => {
+const PaginatedLapTable = () => {
+  const [competitionName, setCompetitionName] = useState("");
   const [laps, setLaps] = useState([]);
   const [selectedLap, setSelectedLap] = useState(null);
   const [lapData, setLapData] = useState([]);
@@ -9,26 +10,45 @@ const PaginatedLapTable = ({ competitionId, competitionName }) => {
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // Fetch lopp för tävling
+  // Fetch lopp för tävling. Hittar lopp by competion
   useEffect(() => {
-    if (!competitionId) return;
-    const fetchLaps = async () => {
+    const fetchInitialData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${competitionId}`);
-        const data = await response.json();
-        setLaps(data);
-        if (data.length > 0) setSelectedLap(data[0].id); // Väljer det första loppet yo
+  
+        // 1. Fetch tracks
+        const trackRes = await fetch(`${API_BASE_URL}/track/all`);
+        const tracks = await trackRes.json();
+        if (tracks.length === 0) return;
+        const selectedTrack = tracks[0]; // or sort by date if needed
+  
+        // 2. Fetch competitions by track
+        const compRes = await fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack.id}`);
+        const competitions = await compRes.json();
+        if (competitions.length === 0) return;
+        const selectedCompetition = competitions[0];
+  
+        // 3. Fetch laps by competition
+        const lapRes = await fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition.id}`);
+        const laps = await lapRes.json();
+        setLaps(laps);
+        if (laps.length === 0) return;
+  
+        // 4. Auto-select first lap
+        setSelectedLap(laps[0].id);
+        setCompetitionName(selectedCompetition.nameOfCompetition); // if you want to show it
       } catch (err) {
-        setError('Failed to fetch laps.');
+        setError('Något gick fel vid hämtning.');
       } finally {
         setLoading(false);
       }
     };
-    fetchLaps();
-  }, [competitionId]);
+  
+    fetchInitialData();
+  }, []);
+  
 
-  // Fetch data för bestämda loppet
+  // Fetch data för bestämda loppet. Hittar häst
   useEffect(() => {
     if (!selectedLap) return;
     const fetchLapData = async () => {
