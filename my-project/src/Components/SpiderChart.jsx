@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Radar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
 
+// ▶ SpiderChart – auto‑selects the first available date → track → competition → lap
+//   so a radar diagram is shown immediately on first render. //Changed!
+
 const SpiderChart = () => {
   const [data, setData] = useState({
     labels: ["Analys", "Fart", "Styrka", "Klass", "Prispengar", "Kusk"],
     datasets: [],
   });
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); //Changed! start with spinner on
   const [error, setError] = useState(null);
 
   const [selectedDate, setSelectedDate] = useState("");
@@ -21,13 +24,7 @@ const SpiderChart = () => {
   const [competitions, setCompetitions] = useState([]);
   const [laps, setLaps] = useState([]);
 
-  const getLegendPosition = () => {
-    if (window.innerWidth >= 640) {
-      return "right"; // for medium+ screens
-    }
-    return "top"; // fallback for small screens
-  };
-
+  const getLegendPosition = () => (window.innerWidth >= 640 ? "right" : "top");
   const [legendPosition, setLegendPosition] = useState(getLegendPosition());
 
   useEffect(() => {
@@ -38,280 +35,200 @@ const SpiderChart = () => {
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+  // ──────────────────────────────────────────────────────────────────
+  // 1. Dates → auto‑pick first date //Changed!
+  // ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
-      .then((response) => response.json())
-      .then((data) => setDates(data))
-      .catch((error) => console.error("Error fetching dates:", error));
+      .then((res) => res.json())
+      .then((data) => {
+        setDates(data);
+        if (!selectedDate && data.length) setSelectedDate(data[0].date); //Changed!
+      })
+      .catch((err) => console.error("Error fetching dates:", err));
   }, []);
 
+  // ──────────────────────────────────────────────────────────────────
+  // 2. Tracks for chosen date → auto‑pick first track //Changed!
+  // ──────────────────────────────────────────────────────────────────
   useEffect(() => {
-    if (selectedDate) {
-      fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setTracks(data);
-          setSelectedTrack("");
-        })
-        .catch((error) => console.error("Error fetching tracks:", error));
-    }
+    if (!selectedDate) return;
+
+    fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setTracks(data);
+        if (data.length) setSelectedTrack(data[0].id); //Changed!
+      })
+      .catch((err) => console.error("Error fetching tracks:", err));
   }, [selectedDate]);
 
+  // ──────────────────────────────────────────────────────────────────
+  // 3. Competitions for chosen track → auto‑pick first competition //Changed!
+  // ──────────────────────────────────────────────────────────────────
   useEffect(() => {
-    if (selectedTrack) {
-      fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setCompetitions(data);
-          setSelectedCompetition("");
-        })
-        .catch((error) => console.error("Error fetching competitions:", error));
-    } else {
-      setCompetitions([]);
-    }
+    if (!selectedTrack) return;
+
+    fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setCompetitions(data);
+        if (data.length) setSelectedCompetition(data[0].id); //Changed!
+      })
+      .catch((err) => console.error("Error fetching competitions:", err));
   }, [selectedTrack]);
 
+  // ──────────────────────────────────────────────────────────────────
+  // 4. Laps for chosen competition → auto‑pick first lap //Changed!
+  // ──────────────────────────────────────────────────────────────────
   useEffect(() => {
-    if (selectedCompetition) {
-      fetch(
-        `${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`
-      )
-        .then((response) => response.json())
-        .then((data) => setLaps(data))
-        .catch((error) => {
-          console.error("Error fetching laps:", error);
-          setLaps([]);
-        });
-    } else {
-      setLaps([]);
-    }
+    if (!selectedCompetition) return;
+
+    fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setLaps(data);
+        if (data.length) setSelectedLap(data[0].id); //Changed!
+      })
+      .catch((err) => {
+        console.error("Error fetching laps:", err);
+        setLaps([]);
+      });
   }, [selectedCompetition]);
 
-  // Initial fetch for default lap (e.g. lapId=2)
+  // ──────────────────────────────────────────────────────────────────
+  // 5. Fetch horse + four‑starts data whenever a lap is selected //Changed!
+  // ──────────────────────────────────────────────────────────────────
   useEffect(() => {
+    if (!selectedLap) return;
+
     setLoading(true);
-    fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${2}`)
-      .then((response) => {
-        if (!response.ok)
-          throw new Error(
-            "Network response was not ok: " + response.statusText
-          );
-        return response.json();
-      })
-      .then((completeHorses) => {
-        const fourStartsPromises = completeHorses.map((horse) =>
-          fetch(
-            `${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`
-          )
-            .then((response) => {
-              if (!response.ok)
-                throw new Error(
-                  "Network response was not ok: " + response.statusText
-                );
-              return response.json();
-            })
-            .then((fourStartsData) => ({
-              label: horse.nameOfCompleteHorse,
-              data: [
-                fourStartsData.analys,
-                fourStartsData.fart,
-                fourStartsData.styrka,
-                fourStartsData.klass,
-                fourStartsData.prispengar,
-                fourStartsData.kusk,
-              ],
-              backgroundColor: `rgba(${Math.random() * 255}, ${
-                Math.random() * 255
-              }, ${Math.random() * 255}, 0.5)`,
-            }))
-        );
 
-        return Promise.all(fourStartsPromises);
+    fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Horse fetch failed: " + res.statusText);
+        return res.json();
       })
-      .then((radarData) => {
-        setData((previousData) => ({
-          ...previousData,
-          datasets: radarData,
-        }));
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        setError(error.toString());
-        setLoading(false);
-      });
-  }, []);
-
-  // Fetch data when a lap is selected by the user
-  useEffect(() => {
-    if (selectedLap) {
-      setLoading(true);
-      fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`)
-        .then((response) => {
-          if (!response.ok)
-            throw new Error(
-              "Network response was not ok: " + response.statusText
-            );
-          return response.json();
-        })
-        .then((completeHorses) => {
-          const fourStartsPromises = completeHorses.map((horse) =>
+      .then((completeHorses) =>
+        Promise.all(
+          completeHorses.map((horse) =>
             fetch(
               `${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`
             )
-              .then((response) => {
-                if (!response.ok)
-                  throw new Error(
-                    "Network response was not ok: " + response.statusText
-                  );
-                return response.json();
+              .then((res) => {
+                if (!res.ok)
+                  throw new Error("Four‑starts fetch failed: " + res.statusText);
+                return res.json();
               })
-              .then((fourStartsData) => ({
+              .then((fs) => ({
                 label: horse.nameOfCompleteHorse,
-                data: [
-                  fourStartsData.analys,
-                  fourStartsData.fart,
-                  fourStartsData.styrka,
-                  fourStartsData.klass,
-                  fourStartsData.prispengar,
-                  fourStartsData.kusk,
-                ],
-                backgroundColor: `rgba(${Math.random() * 255}, ${
+                data: [fs.analys, fs.fart, fs.styrka, fs.klass, fs.prispengar, fs.kusk],
+                backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${
                   Math.random() * 255
-                }, ${Math.random() * 255}, 0.5)`,
+                }, 0.5)`,
               }))
-          );
-
-          return Promise.all(fourStartsPromises);
-        })
-        .then((radarData) => {
-          setData((previousData) => ({
-            ...previousData,
-            datasets: radarData,
-          }));
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-          setError(error.toString());
-          setLoading(false);
-        });
-    }
+          )
+        )
+      )
+      .then((radarData) => {
+        setData((prev) => ({ ...prev, datasets: radarData }));
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching data:", err);
+        setError(err.message);
+        setLoading(false);
+      });
   }, [selectedLap]);
 
-  const handleDateChange = (event) => {
-    setSelectedDate(event.target.value);
-  };
+  // ──────────────────────────────────────────────────────────────────
+  // Handlers
+  // ──────────────────────────────────────────────────────────────────
+  const handleDateChange = (e) => setSelectedDate(e.target.value);
+  const handleTrackChange = (e) => setSelectedTrack(e.target.value);
+  const handleCompetitionChange = (e) => setSelectedCompetition(e.target.value);
+  const handleLapChange = (e) => setSelectedLap(e.target.value);
 
-  const handleTrackChange = (event) => {
-    setSelectedTrack(event.target.value);
-  };
-
-  const handleCompetitionChange = (event) => {
-    setSelectedCompetition(event.target.value);
-  };
-
-  const handleLapChange = (event) => {
-    setSelectedLap(event.target.value);
-  };
-
-  if (error) return <div>Error: {error}</div>;
-  if (data.datasets.length === 0 && !loading)
-    return <div>No data available.</div>;
-
+  // ──────────────────────────────────────────────────────────────────
+  // JSX
+  // ──────────────────────────────────────────────────────────────────
   return (
     <div className="flex flex-col justify-center items-center mt-1 px-2 pb-10">
-      {/* Your new dynamic text */}
-      <p
-        className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 
-       px-4 py-2"
-      >
+      <p className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 px-4 py-2">
         V75 Färjestad
         <hr className="w-full border-t-2 border-gray-200" />
       </p>
-      {/* Radar Chart */}
+
+      {/* Radar Chart / placeholder / spinner */}
       <div className="relative w-full sm:w-[300px] md:w-[500px] h-[60vh] sm:h-[40vh] md:h-[50vh] flex items-center justify-center">
-        <Radar
-          data={data}
-          options={{
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: legendPosition, //Changed!
-              },
-            },
-            scales: {
-              r: {
-                angleLines: { display: false },
-                suggestedMin: 0,
-                suggestedMax: 100,
-              },
-            },
-            elements: { line: { borderWidth: 3 } },
-          }}
-        />
-        {loading && <div>Loading...</div>}
+        {data.datasets.length > 0 && !loading && (
+          <Radar
+            data={data}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { position: legendPosition } },
+              scales: { r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100 } },
+              elements: { line: { borderWidth: 3 } },
+            }}
+          />
+        )}
+
+        {!loading && data.datasets.length === 0 && (
+          <div className="text-sm text-slate-500">No data found for this lap.</div>
+        )}
+
+        {loading && <div>Loading…</div>}
       </div>
-      <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 border-spacing-x-80 bg-slate-50 sm:p-4 rounded-xl border shadow-md sm:mt-8">
-        {/* Dropdowns */}
-        <select
-          value={selectedDate}
-          onChange={handleDateChange}
-          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg"
-        >
+
+      {/* Dropdowns */}
+      <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md sm:mt-8">
+        <select value={selectedDate} onChange={handleDateChange} className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg">
           <option value="" disabled>
             Välj datum
           </option>
-          {dates.map((date) => (
-            <option key={date.id} value={date.date}>
-              {date.date}
+          {dates.map((d) => (
+            <option key={d.id} value={d.date}>
+              {d.date}
             </option>
           ))}
         </select>
-        <select
-          value={selectedTrack}
-          onChange={handleTrackChange}
-          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg"
-        >
+
+        <select value={selectedTrack} onChange={handleTrackChange} className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg">
           <option value="" disabled>
             Välj bana
           </option>
-          {tracks.map((track) => (
-            <option key={track.id} value={track.id}>
-              {track.nameOfTrack}
+          {tracks.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.nameOfTrack}
             </option>
           ))}
         </select>
-        <select
-          value={selectedCompetition}
-          onChange={handleCompetitionChange}
-          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg"
-        >
+
+        <select value={selectedCompetition} onChange={handleCompetitionChange} className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg">
           <option value="" disabled>
             Välj spelform
           </option>
-          {competitions.map((competition) => (
-            <option key={competition.id} value={competition.id}>
-              {competition.nameOfCompetition}
+          {competitions.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.nameOfCompetition}
             </option>
           ))}
         </select>
-        <select
-          value={selectedLap}
-          onChange={handleLapChange}
-          className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg"
-        >
+
+        <select value={selectedLap} onChange={handleLapChange} className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg">
           <option value="" disabled>
             Välj lopp
           </option>
-          {laps.map((lap) => (
-            <option key={lap.id} value={lap.id}>
-              {lap.nameOfLap}
+          {laps.map((l) => (
+            <option key={l.id} value={l.id}>
+              {l.nameOfLap}
             </option>
           ))}
         </select>
       </div>
+
+      {error && <div className="text-red-600 mt-4">Error: {error}</div>}
     </div>
   );
 };
