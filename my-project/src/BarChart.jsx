@@ -72,9 +72,12 @@ const BarChartComponent = () => {
       .then((response) => response.json())
       .then((data) => {
         setDates(data);
-        //Changed! Automatically set the first date as selected:
-        if (data.length > 0) {
-          setSelectedDate(data[0].date);
+        const todayStr = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+        const todayDate = data.find((d) => d.date === todayStr);
+        if (todayDate) {
+          setSelectedDate(todayDate.date); //Changed!
+        } else if (data.length > 0) {
+          setSelectedDate(data[0].date); // fallback to earliest
         }
       })
       .catch((error) => console.error("Error fetching dates:", error));
@@ -216,37 +219,37 @@ const BarChartComponent = () => {
 
   // --- Helpers to derive "labels" ---
 
-const today = new Date();
-const todayStr = today.toISOString().split("T")[0]; // "YYYY-MM-DD"
+  const today = new Date();
+  const todayStr = today.toISOString().split("T")[0]; // "YYYY-MM-DD"
 
-const yesterday = new Date(today);
-yesterday.setDate(today.getDate() - 1);
-const yesterdayStr = yesterday.toISOString().split("T")[0];
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split("T")[0];
 
-const tomorrow = new Date(today);
-tomorrow.setDate(today.getDate() + 1);
-const tomorrowStr = tomorrow.toISOString().split("T")[0];
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  const tomorrowStr = tomorrow.toISOString().split("T")[0];
 
-// Set the label
-let selectedDateLabel;
-const formatDateInSwedish = (dateStr) => {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("sv-SE", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  }); // e.g., "onsdag 23 april"
-};
+  // Set the label
+  let selectedDateLabel;
+  const formatDateInSwedish = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("sv-SE", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    }); // e.g., "onsdag 23 april"
+  };
 
-if (selectedDate === todayStr) {
-  selectedDateLabel = `Idag, ${formatDateInSwedish(selectedDate)}`; //Changed!
-} else if (selectedDate === yesterdayStr) {
-  selectedDateLabel = `Igår, ${formatDateInSwedish(selectedDate)}`; //Changed!
-} else if (selectedDate === tomorrowStr) {
-  selectedDateLabel = `Imorgon, ${formatDateInSwedish(selectedDate)}`; //Changed!
-} else {
-  selectedDateLabel = formatDateInSwedish(selectedDate); //Changed!
-}
+  if (selectedDate === todayStr) {
+    selectedDateLabel = `Idag, ${formatDateInSwedish(selectedDate)}`; //Changed!
+  } else if (selectedDate === yesterdayStr) {
+    selectedDateLabel = `Igår, ${formatDateInSwedish(selectedDate)}`; //Changed!
+  } else if (selectedDate === tomorrowStr) {
+    selectedDateLabel = `Imorgon, ${formatDateInSwedish(selectedDate)}`; //Changed!
+  } else {
+    selectedDateLabel = formatDateInSwedish(selectedDate); //Changed!
+  }
 
   const selectedTrackLabel = selectedTrack
     ? tracks.find((track) => track.id === +selectedTrack)?.nameOfTrack ?? ""

@@ -43,7 +43,14 @@ const SpiderChart = () => {
       .then((res) => res.json())
       .then((data) => {
         setDates(data);
-        if (!selectedDate && data.length) setSelectedDate(data[0].date); //Changed!
+        const todayStr = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
+      
+        const todayDate = data.find((d) => d.date === todayStr);
+        if (todayDate) {
+          setSelectedDate(todayDate.date); //Changed!
+        } else if (data.length > 0) {
+          setSelectedDate(data[0].date); // fallback to earliest
+        }
       })
       .catch((err) => console.error("Error fetching dates:", err));
   }, []);
