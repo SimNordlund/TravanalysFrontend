@@ -30,7 +30,7 @@ const ToggleComponent = () => {
   return (
     <div className="text-center pt-12 pb-12 sm:pt-16 sm:pb-14">
       {/* Buttons */}
-      <div className="flex justify-center gap-x-5 sm:gap-x-7 flex-wrap mb-5 sm:mb-8">
+      <div className="flex justify-center gap-x-5 sm:gap-x-14 flex-wrap mb-5 sm:mb-8">
         {callouts.map((callout) => (
           <div
             key={callout.id}
