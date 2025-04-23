@@ -160,7 +160,7 @@ const BarChartComponent = () => {
               .then((fourStartsData) => {
                 const colorIndex = index % horseColors.length;
                 return {
-                  label: horse.nameOfCompleteHorse,
+                  label: `${index + 1}. ${horse.nameOfCompleteHorse}`,
                   data: Array(completeHorses.length)
                     .fill(null)
                     .map((_, idx) =>
@@ -260,7 +260,7 @@ const BarChartComponent = () => {
     );
 
   if (error) return <div>Error: {error}</div>;
-  if (!data.datasets.length) return <div>No data available.</div>;
+  if (!data.datasets.length) return <div>Finns ingen data.</div>;
 
   return (
     <div className="flex flex-col mt-1 px-2 pb-10">
