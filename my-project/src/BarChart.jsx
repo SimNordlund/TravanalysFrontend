@@ -142,9 +142,7 @@ const BarChartComponent = () => {
           return response.json();
         })
         .then((completeHorses) => {
-          const labels = completeHorses.map(
-            (_, index) => `${index + 1}.`
-          );
+          const labels = completeHorses.map((_, index) => `${index + 1}.`);
           const fourStartsPromises = completeHorses.map((horse, index) =>
             fetch(
               `${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`
@@ -217,7 +215,39 @@ const BarChartComponent = () => {
   };
 
   // --- Helpers to derive "labels" ---
-  const selectedDateLabel = selectedDate || "Idag";
+
+const today = new Date();
+const todayStr = today.toISOString().split("T")[0]; // "YYYY-MM-DD"
+
+const yesterday = new Date(today);
+yesterday.setDate(today.getDate() - 1);
+const yesterdayStr = yesterday.toISOString().split("T")[0];
+
+const tomorrow = new Date(today);
+tomorrow.setDate(today.getDate() + 1);
+const tomorrowStr = tomorrow.toISOString().split("T")[0];
+
+// Set the label
+let selectedDateLabel;
+const formatDateInSwedish = (dateStr) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("sv-SE", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }); // e.g., "onsdag 23 april"
+};
+
+if (selectedDate === todayStr) {
+  selectedDateLabel = `Idag, ${formatDateInSwedish(selectedDate)}`; //Changed!
+} else if (selectedDate === yesterdayStr) {
+  selectedDateLabel = `Igår, ${formatDateInSwedish(selectedDate)}`; //Changed!
+} else if (selectedDate === tomorrowStr) {
+  selectedDateLabel = `Imorgon, ${formatDateInSwedish(selectedDate)}`; //Changed!
+} else {
+  selectedDateLabel = formatDateInSwedish(selectedDate); //Changed!
+}
+
   const selectedTrackLabel = selectedTrack
     ? tracks.find((track) => track.id === +selectedTrack)?.nameOfTrack ?? ""
     : "Färjestad";
@@ -270,7 +300,6 @@ const BarChartComponent = () => {
        px-4 py-2 flex flex-col justify-center items-center"
       >
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}{" "}
-        
         <hr className="w-full border-t-2 border-gray-200" />
       </p>
       <div className="flex flex-wrap justify-start items-center gap-1 mb-4">

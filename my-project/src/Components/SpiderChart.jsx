@@ -141,6 +141,50 @@ const SpiderChart = () => {
       });
   }, [selectedLap]);
 
+    // --- Helpers to derive "labels" ---
+const today = new Date();
+const todayStr = today.toISOString().split("T")[0]; // "YYYY-MM-DD"
+
+const yesterday = new Date(today);
+yesterday.setDate(today.getDate() - 1);
+const yesterdayStr = yesterday.toISOString().split("T")[0];
+
+const tomorrow = new Date(today);
+tomorrow.setDate(today.getDate() + 1);
+const tomorrowStr = tomorrow.toISOString().split("T")[0];
+
+// Set the label
+let selectedDateLabel;
+const formatDateInSwedish = (dateStr) => {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("sv-SE", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }); // e.g., "onsdag 23 april"
+};
+
+if (selectedDate === todayStr) {
+  selectedDateLabel = `Idag, ${formatDateInSwedish(selectedDate)}`; //Changed!
+} else if (selectedDate === yesterdayStr) {
+  selectedDateLabel = `Igår, ${formatDateInSwedish(selectedDate)}`; //Changed!
+} else if (selectedDate === tomorrowStr) {
+  selectedDateLabel = `Imorgon, ${formatDateInSwedish(selectedDate)}`; //Changed!
+} else {
+  selectedDateLabel = formatDateInSwedish(selectedDate); //Changed!
+}
+
+    const selectedTrackLabel = selectedTrack
+      ? tracks.find((track) => track.id === +selectedTrack)?.nameOfTrack ?? ""
+      : "Färjestad";
+    const selectedCompetitionLabel = selectedCompetition
+      ? competitions.find((c) => c.id === +selectedCompetition)
+          ?.nameOfCompetition ?? ""
+      : "v75";
+    const selectedLapLabel = selectedLap
+      ? laps.find((l) => l.id === +selectedLap)?.nameOfLap ?? ""
+      : "Lopp 1";
+
   // ──────────────────────────────────────────────────────────────────
   // Handlers
   // ──────────────────────────────────────────────────────────────────
@@ -154,11 +198,14 @@ const SpiderChart = () => {
   // ──────────────────────────────────────────────────────────────────
   return (
     <div className="flex flex-col justify-center items-center mt-1 px-2 pb-10">
-      <p className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 px-4 py-2">
-        V75 Färjestad
+            <p
+        className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 
+       px-4 py-2 flex flex-col justify-center items-center"
+      >
+        {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}{" "}
+        
         <hr className="w-full border-t-2 border-gray-200" />
       </p>
-
       {/* Radar Chart / placeholder / spinner */}
       <div className="relative w-full sm:w-[300px] md:w-[500px] h-[60vh] sm:h-[40vh] md:h-[50vh] flex items-center justify-center">
         {data.datasets.length > 0 && !loading && (
