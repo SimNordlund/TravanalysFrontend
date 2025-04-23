@@ -10,7 +10,7 @@ const includedFeatures = [
 ];
 
 export default function Pricing() {
-  const [copyStatus, setCopyStatus] = useState('Klicka för att kopiera 070-6493763');
+  const [copyStatus, setCopyStatus] = useState('Klicka för att kopiera 070-649 37 63');
 
   const handleCopyClick = () => {
     navigator.clipboard.writeText('070-6493763');
@@ -22,7 +22,7 @@ export default function Pricing() {
     <div className="bg-white py-6 sm:py-0 sm:mt-2 sm:mb-20 mb-8 mt-2 sm:pt-8">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 mt">
         <div className="mx-auto max-w-2xl sm:text-center text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Viill du stötta gänget på travanalys?</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Viill du stötta med en ipa?</h2>
         </div>
         <div className="mx-auto mt-10 max-w-2xl rounded-3xl ring-1 ring-gray-200 sm:mt-8 sm:mb-6 lg:mx-0 lg:flex lg:max-w-none shadow-md">
           <div className="p-8 sm:p-10 lg:flex-auto">
