@@ -111,7 +111,7 @@ const SpiderChart = () => {
       })
       .then((completeHorses) =>
         Promise.all(
-          completeHorses.map((horse) =>
+          completeHorses.map((horse, index) =>
             fetch(
               `${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`
             )
@@ -121,7 +121,7 @@ const SpiderChart = () => {
                 return res.json();
               })
               .then((fs) => ({
-                label: horse.nameOfCompleteHorse,
+                label: `${index + 1}. ${horse.nameOfCompleteHorse}`,
                 data: [fs.analys, fs.fart, fs.styrka, fs.klass, fs.prispengar, fs.kusk],
                 backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${
                   Math.random() * 255
