@@ -299,7 +299,7 @@ const BarChartComponent = () => {
     <div className="flex flex-col mt-1 px-2 pb-10">
       {/* Your new dynamic text */}
       <p
-        className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 
+        className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-7 
        px-4 py-2 flex flex-col justify-center items-center"
       >
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}{" "}
