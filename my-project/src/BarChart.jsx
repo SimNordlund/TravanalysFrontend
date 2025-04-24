@@ -306,32 +306,33 @@ const BarChartComponent = () => {
         <hr className="w-full border-t-2 border-gray-200" />
       </p>
       <div className="flex flex-wrap justify-start items-center gap-1 mb-4">
-        {laps.length > 0 ? (
-          laps.map((lap) => (
-            <button
-              key={lap.id}
-              onClick={() => setSelectedLap(lap.id)} //Changed!
-              disabled={loading}
-              className={`px-3 py-2 rounded ${
-                lap.id === +selectedLap
-                  ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                  : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-              } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              {lap.nameOfLap}
-            </button>
-          ))
-        ) : (
-          <div className="flex gap-2">
-            {[...Array(3)].map((_, idx) => (
-              <div
-                key={idx}
-                className="bg-gray-300 rounded w-20 h-8 animate-pulse"
-              />
-            ))}
-          </div>
-        )}
-      </div>
+  {laps.length > 0 ? (
+    laps.map((lap) => (
+      <button
+        key={lap.id}
+        onClick={() => setSelectedLap(lap.id)} //Changed!
+        disabled={loading}
+        className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+          lap.id === +selectedLap
+            ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+            : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+        } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+      >
+        {lap.nameOfLap}
+      </button>
+    ))
+  ) : (
+    <div className="flex gap-2">
+      {[...Array(3)].map((_, idx) => (
+        <div
+          key={idx}
+          className="bg-gray-300 rounded w-16 h-6 sm:w-20 sm:h-8 animate-pulse"
+        />
+      ))}
+    </div>
+  )}
+</div>
+
       <div className="w-full flex justify-center">
         {" "}
         {/* NEW wrapper to center it */}
