@@ -57,7 +57,6 @@ const BarChartComponent = () => {
     return () => window.removeEventListener("resize", onResize); // Changed!
   }, []); // Changed!
 
-
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
@@ -194,6 +193,14 @@ const BarChartComponent = () => {
       },
       x: {
         stacked: true,
+        ticks: {
+          //Changed!
+          autoSkip: false, //Changed!  ← show every label
+          maxRotation: 0, //Changed!  ← keep them horizontal
+          padding: 2, //Changed!  ← a little breathing room
+          // You can also shrink the font if you want:
+          // font: { size: 10 },
+        },
       },
     },
     plugins: {
@@ -202,14 +209,15 @@ const BarChartComponent = () => {
         display: !isSmallScreen, // Changed!
         position: isSmallScreen ? "top" : "right", // Changed!
         align: "start", // Changed! (rows start at x 0)
-           labels: {                      // Changed!
-               boxWidth: 42,                // ← default is 40 — make it 50, 60, etc.
-               // boxHeight: 16,            // optional – leave out to keep it square
-               // padding: 9,              // optional – gap between box and text
-               // If you’re using dots instead of squares:
-               // usePointStyle: true,
-               // pointStyleWidth: 30,
-             }, 
+        labels: {
+          // Changed!
+          boxWidth: 42, // ← default is 40 — make it 50, 60, etc.
+          // boxHeight: 16,            // optional – leave out to keep it square
+          // padding: 9,              // optional – gap between box and text
+          // If you’re using dots instead of squares:
+          // usePointStyle: true,
+          // pointStyleWidth: 30,
+        },
       },
     },
   };
@@ -364,9 +372,9 @@ const BarChartComponent = () => {
         )}
       </div>
 
-                 {/* Changed! */}
+      {/* Changed! */}
       <ul
-        ref={legendRef}                                        // Changed!
+        ref={legendRef} // Changed!
         className={`${
           isSmallScreen
             ? "grid grid-cols-3 gap-x-2 gap-y-1 mb-2 text-xs"
@@ -377,7 +385,7 @@ const BarChartComponent = () => {
         {" "}
         {/* NEW wrapper to center it */}
         <div className="sm:w-[90vh] w-full sm:h-[45vh] h-[30vh] relative">
-                  <Bar                                               // Changed!
+          <Bar // Changed!
             data={data}
             options={options}
             plugins={isSmallScreen ? [htmlLegendPlugin] : []} // Changed!
