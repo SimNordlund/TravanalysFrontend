@@ -253,9 +253,8 @@ const SpiderChart = () => {
   ──────────────────────────────── */
   return (
     <div className="flex flex-col justify-center items-center mt-1 px-2 pb-10">
-      <p className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 px-4 py-2 flex flex-col justify-center items-center">
+      <p className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 px-4 py-2 flex flex-col justify-center items-center bg-slate-100">
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
-        <hr className="w-full border-t-2 border-gray-200" />
       </p>
 
       {/* Custom legend (only visible <640 px) */}

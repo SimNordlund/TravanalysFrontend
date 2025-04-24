@@ -5,7 +5,7 @@ const features = [
   {
     name: 'Överlägset beslutsunderlag. ',
     description:
-      'Nyttja vår kraftfulla algoritm via statistik och reducerade system. Upptäck skrällarna och utforska underlaget i den form som passar dig.',
+      'Nyttja vår kraftfulla algoritm via statistik och reducerade system. Utforska underlaget i den form som passar dig.',
     icon: CloudArrowUpIcon,
   },
   {
@@ -32,7 +32,7 @@ export default function IntroComponent() {
               Skrällarsytt underlag
               </p>
               <p className="mt-6 text-lg/8 text-gray-600">
-                Utnyttja verktyget för att hitta skrällarna. Nedan kan du utforska vår Skräll-detector. Välj fritt hur du vill tolka data, tabell, diagram eller fördjupad analys.
+                Utnyttja verktyget för att hitta skrällarna. Nedan kan du utforska vår Skräll-detector. Välj mellan tabell, diagram eller fördjupad analys.
               </p>
               <dl className="mt-10 max-w-xl space-y-8 text-base/7 text-gray-600 lg:max-w-none">
                 {features.map((feature) => (

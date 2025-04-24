@@ -328,14 +328,13 @@ const BarChartComponent = () => {
   if (!data.datasets.length) return <div>Finns ingen data.</div>;
 
   return (
-    <div className="flex flex-col mt-1 px-2 pb-10">
+    <div className="flex flex-col mt-1 px-2 pb-10 justify-center items-center">
       {/* Your new dynamic text */}
       <p
         className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-7 
-       px-4 py-2 flex flex-col justify-center items-center"
+       px-4 py-2 flex flex-col justify-center items-center bg-slate-100"
       >
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}{" "}
-        <hr className="w-full border-t-2 border-gray-200" />
       </p>
       <div className="flex flex-wrap justify-start items-center gap-1 mb-4">
         {laps.length > 0 ? (
