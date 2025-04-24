@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";               //Changed!
+import React, { useState, useEffect, useRef } from "react";               
 import { Radar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
 
@@ -15,6 +15,7 @@ const SpiderChart = () => {
   });
 
   const [loading, setLoading] = useState(true);
+  const [showSpinner, setShowSpinner] = useState(false);
   const [error, setError] = useState(null);
 
   const [selectedDate, setSelectedDate] = useState("");
@@ -28,16 +29,16 @@ const SpiderChart = () => {
   const [laps, setLaps] = useState([]);
 
   /* ---- Legend responsiveness (same approach as BarChart) ---- */
-  const legendRef = useRef(null);                                         //Changed!
-  const [isSmallScreen, setIsSmallScreen] = useState(                     //Changed!
-    window.innerWidth < 640                                               //Changed!
-  );                                                                      //Changed!
+  const legendRef = useRef(null);                                         
+  const [isSmallScreen, setIsSmallScreen] = useState(                     
+    window.innerWidth < 640                                               
+  );                                                                      
 
-  useEffect(() => {                                                       //Changed!
-    const onResize = () => setIsSmallScreen(window.innerWidth < 640);     //Changed!
-    window.addEventListener("resize", onResize);                          //Changed!
-    return () => window.removeEventListener("resize", onResize);          //Changed!
-  }, []);                                                                 //Changed!
+  useEffect(() => {                                                       
+    const onResize = () => setIsSmallScreen(window.innerWidth < 640);     
+    window.addEventListener("resize", onResize);                          
+    return () => window.removeEventListener("resize", onResize);          
+  }, []);                                                                 
 
   /* ---- OPTIONAL: keep “right” legend on larger viewports ---- */
   const getLegendPosition = () => (window.innerWidth >= 640 ? "right" : "top");
@@ -62,7 +63,7 @@ const SpiderChart = () => {
         setDates(data);
         const todayStr = new Date().toISOString().split("T")[0];
         const todayDate = data.find((d) => d.date === todayStr);
-        if (todayDate) setSelectedDate(todayDate.date);                  //Changed!
+        if (todayDate) setSelectedDate(todayDate.date);                  
         else if (data.length) setSelectedDate(data[0].date);
       })
       .catch((err) => console.error("Error fetching dates:", err));
@@ -77,7 +78,7 @@ const SpiderChart = () => {
       .then((res) => res.json())
       .then((data) => {
         setTracks(data);
-        if (data.length) setSelectedTrack(data[0].id);                  //Changed!
+        if (data.length) setSelectedTrack(data[0].id);                  
       })
       .catch((err) => console.error("Error fetching tracks:", err));
   }, [selectedDate]);
@@ -91,7 +92,7 @@ const SpiderChart = () => {
       .then((res) => res.json())
       .then((data) => {
         setCompetitions(data);
-        if (data.length) setSelectedCompetition(data[0].id);            //Changed!
+        if (data.length) setSelectedCompetition(data[0].id);            
       })
       .catch((err) => console.error("Error fetching competitions:", err));
   }, [selectedTrack]);
@@ -105,7 +106,7 @@ const SpiderChart = () => {
       .then((res) => res.json())
       .then((data) => {
         setLaps(data);
-        if (data.length) setSelectedLap(data[0].id);                    //Changed!
+        if (data.length) setSelectedLap(data[0].id);                    
       })
       .catch((err) => {
         console.error("Error fetching laps:", err);
@@ -152,56 +153,67 @@ const SpiderChart = () => {
       });
   }, [selectedLap]);
 
+    /* ───── Delay spinner by 3 s ───── */                      
+  useEffect(() => {                                           
+    let timer;                                                
+    if (loading) {                                            
+      timer = setTimeout(() => setShowSpinner(true), 3000);   
+    } else {                                                  
+      setShowSpinner(false);                                  
+    }                                                         
+    return () => clearTimeout(timer);   
+    }, [loading]);                      
+
   /* ────────────────────────────────
      Custom HTML legend - same logic as BarChart
   ──────────────────────────────── */
-  const htmlLegendPlugin = {                                              //Changed!
-    id: "htmlLegend",                                                     //Changed!
-    afterUpdate(chart) {                                                  //Changed!
-      const ul = legendRef.current;                                       //Changed!
-      if (!ul) return;                                                    //Changed!
+  const htmlLegendPlugin = {                                              
+    id: "htmlLegend",                                                     
+    afterUpdate(chart) {                                                  
+      const ul = legendRef.current;                                       
+      if (!ul) return;                                                    
 
-      while (ul.firstChild) ul.firstChild.remove();                       //Changed!
+      while (ul.firstChild) ul.firstChild.remove();                       
 
-      chart.legend.legendItems.forEach((item) => {                        //Changed!
-        const li = document.createElement("li");                          //Changed!
-        li.className = "flex items-center cursor-pointer";                //Changed!
-        li.style.opacity = item.hidden ? 0.5 : 1;                         //Changed!
+      chart.legend.legendItems.forEach((item) => {                        
+        const li = document.createElement("li");                          
+        li.className = "flex items-center cursor-pointer";                
+        li.style.opacity = item.hidden ? 0.5 : 1;                         
 
-        li.onclick = () => {                                              //Changed!
-          chart.toggleDataVisibility(item.datasetIndex);                  //Changed!
-          chart.update();                                                 //Changed!
-        };                                                                //Changed!
+        li.onclick = () => {                                              
+          chart.toggleDataVisibility(item.datasetIndex);                  
+          chart.update();                                                 
+        };                                                                
 
-        const box = document.createElement("span");                       //Changed!
-        box.className = "inline-block w-7 h-3 mr-2 rounded";              //Changed!
-        box.style.background = item.fillStyle;                            //Changed!
+        const box = document.createElement("span");                       
+        box.className = "inline-block w-7 h-3 mr-2 rounded";              
+        box.style.background = item.fillStyle;                            
 
-        const text = document.createElement("span");                      //Changed!
-        text.textContent = item.text;                                     //Changed!
+        const text = document.createElement("span");                      
+        text.textContent = item.text;                                     
 
-        li.appendChild(box);                                              //Changed!
-        li.appendChild(text);                                             //Changed!
-        ul.appendChild(li);                                               //Changed!
-      });                                                                 //Changed!
-    },                                                                    //Changed!
-  };                                                                      //Changed!
+        li.appendChild(box);                                              
+        li.appendChild(text);                                             
+        ul.appendChild(li);                                               
+      });                                                                 
+    },                                                                    
+  };                                                                      
 
   /* ────────────────────────────────
      Options (hide default legend on mobile)
   ──────────────────────────────── */
-  const options = {                                                       //Changed!
-    responsive: true,                                                     //Changed!
-    maintainAspectRatio: false,                                           //Changed!
-    plugins: {                                                            //Changed!
-      legend: {                                                           //Changed!
-        display: !isSmallScreen,                                          //Changed!
-        position: isSmallScreen ? "top" : legendPosition,                 //Changed!
-      },                                                                  //Changed!
-    },                                                                    //Changed!
+  const options = {                                                       
+    responsive: true,                                                     
+    maintainAspectRatio: false,                                           
+    plugins: {                                                            
+      legend: {                                                           
+        display: !isSmallScreen,                                          
+        position: isSmallScreen ? "top" : legendPosition,                 
+      },                                                                  
+    },                                                                    
     scales: { r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100 } },
     elements: { line: { borderWidth: 3 } },
-  };                                                                      //Changed!
+  };                                                                      
 
   /* ────────────────────────────────
      Helpers to derive nice Swedish labels
@@ -258,13 +270,13 @@ const SpiderChart = () => {
       </p>
 
       {/* Custom legend (only visible <640 px) */}
-      <ul                                                            //Changed!
-        ref={legendRef}                                              //Changed!
-        className={`${                                              //Changed!
-          isSmallScreen                                              //Changed!
-            ? "grid grid-cols-3 gap-x-2 gap-y-1 text-xs"        //Changed!
-            : "hidden"                                               //Changed!
-        }`}                                                          //Changed!
+      <ul                                                            
+        ref={legendRef}                                              
+        className={`${                                              
+          isSmallScreen                                              
+            ? "grid grid-cols-3 gap-x-2 gap-y-1 text-xs"        
+            : "hidden"                                               
+        }`}                                                          
       />                                                             
 
       {/* Radar Chart / placeholder / spinner */}
@@ -272,8 +284,8 @@ const SpiderChart = () => {
         {data.datasets.length > 0 && !loading && (
           <Radar
             data={data}
-            options={options}                                         //Changed!
-            plugins={isSmallScreen ? [htmlLegendPlugin] : []}        //Changed!
+            options={options}                                         
+            plugins={isSmallScreen ? [htmlLegendPlugin] : []}        
           />
         )}
 
@@ -281,7 +293,12 @@ const SpiderChart = () => {
           <div className="text-sm text-slate-500">No data found for this lap.</div>
         )}
 
-        {loading && <div>Loading…</div>}
+        {showSpinner && loading && (                          //Changed!
+          <div className="flex flex-col items-center">        //Changed!
+            <div className="animate-spin h-10 w-10 border-4 border-indigo-400 border-t-transparent rounded-full" /> {/* use your own image if you prefer */} //Changed!
+            <span className="mt-2 text-sm text-slate-500">Grubblar…</span>  //Changed!
+          </div>
+        )}
       </div>
 
       {/* Dropdowns */}

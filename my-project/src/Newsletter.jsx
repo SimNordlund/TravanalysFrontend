@@ -6,7 +6,7 @@ export default function Newsletter() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-2">
           <div className="max-w-xl lg:max-w-lg">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Prenumerera på vårt nyhetsbrev.</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Prenumerera på skräll-detektorn.</h2>
             <div className="mt-6 flex max-w-md gap-x-4">
               <label htmlFor="email-address" className="sr-only">
                 Email address
@@ -35,8 +35,8 @@ export default function Newsletter() {
               </div>
               <dt className="mt-4 font-semibold text-white">Ring oss</dt>
               <dd className="mt-2 leading-7 text-gray-300">
-              <a href="tel:07012345678" className="text-gray-300 hover:text-white">
-              070-6493763
+              <a href="tel:0706493763" className="text-gray-300 hover:text-white">
+              070-649 37 63
               </a>
               </dd>
             </div>
@@ -46,7 +46,7 @@ export default function Newsletter() {
               </div>
               <dt className="mt-4 font-semibold text-white">Mejla oss</dt>
               <dd className="mt-2 leading-7 text-gray-400">
-              <a href="mailto:travanalys.info@test.se" className="text-gray-300 hover:text-white">
+              <a href="travanalys@gmail.com" className="text-gray-300 hover:text-white">
               travanalys@gmail.com
               </a>
               </dd>

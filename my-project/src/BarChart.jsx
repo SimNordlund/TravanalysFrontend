@@ -10,7 +10,8 @@ const BarChartComponent = () => {
     datasets: [],
   });
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading]       = useState(true);   // ← put it back  //Changed!
+  const [showSpinner, setShowSpinner] = useState(false);
   const [error, setError] = useState(null);
 
   const [selectedDate, setSelectedDate] = useState("");
@@ -182,6 +183,17 @@ const BarChartComponent = () => {
     }
   }, [selectedLap]);
 
+  /* ───── Delay spinner by 3 s ───── */ 
+  useEffect(() => {
+    let timer; 
+    if (loading) {
+      timer = setTimeout(() => setShowSpinner(true), 3000); 
+    } else {
+      setShowSpinner(false); 
+    } 
+    return () => clearTimeout(timer); 
+  }, [loading]); 
+
   // --- Chart.js Options ---
   const options = {
     responsive: true,
@@ -195,8 +207,8 @@ const BarChartComponent = () => {
         stacked: true,
         ticks: {
           //Changed!
-          autoSkip: false, //Changed!  ← show every label
-          maxRotation: 0, //Changed!  ← keep them horizontal
+          autoSkip: false, //Changed  ← show every label
+          maxRotation: 0, //Changed  ← keep them horizontal
           padding: 2, //Changed!  ← a little breathing room
           // You can also shrink the font if you want:
           // font: { size: 10 },
@@ -222,9 +234,8 @@ const BarChartComponent = () => {
     },
   };
 
-  // --- Helpers to derive "labels" ---
+  // --- Helpers to derive "labels" and other helpers for htmlLegend etc.---
 
-  // Changed! – put this just above your existing helpers / options
   const htmlLegendPlugin = {
     id: "htmlLegend",
     afterUpdate(chart) {
@@ -319,21 +330,8 @@ const BarChartComponent = () => {
     setSelectedLap(event.target.value);
   };
 
-  // --- Rendering ---
-  if (loading)
-    return (
-      <div className="flex flex-col justify-center items-center">
-        <div className="block text-center mb-4">Grubblar...</div>
-        <img
-          className="h-24 w-24 rounded-full animate-spin"
-          src={pappaCrazy}
-          alt="Loading animation"
-        />
-      </div>
-    );
-
-  if (error) return <div>Error: {error}</div>;
-  if (!data.datasets.length) return <div>Finns ingen data.</div>;
+  // --- Early bailout only for hard errors ---
+  if (error) return <div className="text-red-600">Error: {error}</div>; //Changed!
 
   return (
     <div className="flex flex-col mt-1 px-2 pb-10 justify-center items-center">
@@ -382,14 +380,36 @@ const BarChartComponent = () => {
         }`}
       />
       <div className="w-full flex justify-center">
-        {" "}
-        {/* NEW wrapper to center it */}
-        <div className="sm:w-[90vh] w-full sm:h-[45vh] h-[30vh] relative">
-          <Bar // Changed!
-            data={data}
-            options={options}
-            plugins={isSmallScreen ? [htmlLegendPlugin] : []} // Changed!
-          />
+        {/* chart wrapper (acts like SpiderChart) */}
+        <div className="sm:w-[90vh] w-full sm:h-[45vh] h-[30vh] relative flex items-center justify-center">
+          {" "}
+          {/*Changed!*/}
+          {/*   Bar appears only when we’re done loading AND have data */}
+          {data.datasets.length > 0 &&
+            !loading && ( //Changed!
+              <Bar //Changed!
+                data={data}
+                options={options}
+                plugins={isSmallScreen ? [htmlLegendPlugin] : []}
+              />
+            )}
+          {/*   “No data” placeholder (same spot) */}
+          {!loading &&
+            data.datasets.length === 0 && ( //Changed!
+              <div className="text-sm text-slate-500">Finns ingen data.</div>
+            )}
+          {/*   Spinner + text while loading */}
+          {showSpinner && loading && ( 
+            <div className="flex flex-col items-center">
+              {" "}
+              <img
+                src={pappaCrazy}
+                alt="Loading…"
+                className="h-24 w-24 animate-spin"
+              />
+              <span className="mt-2 text-sm text-slate-500">Grubblar…</span>
+            </div>
+          )}
         </div>
       </div>
 
