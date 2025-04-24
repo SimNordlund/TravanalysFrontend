@@ -376,7 +376,7 @@ const BarChartComponent = () => {
       <div className="w-full flex justify-center">
         {" "}
         {/* NEW wrapper to center it */}
-        <div className="sm:w-[90vh] w-[40vh] sm:h-[45vh] h-[40vh] relative">
+        <div className="sm:w-[90vh] w-full sm:h-[45vh] h-[30vh] relative">
                   <Bar                                               // Changed!
             data={data}
             options={options}
