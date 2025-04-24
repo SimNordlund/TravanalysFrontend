@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Bar } from "react-chartjs-2";
 import pappaCrazy from "./Bilder/PappaCrazy.png";
 import Chart from "chart.js/auto";
 
 const BarChartComponent = () => {
+  const legendRef = useRef(null);
   const [data, setData] = useState({
     labels: [],
     datasets: [],
@@ -44,26 +45,18 @@ const BarChartComponent = () => {
   ];
 
   // --- Dynamic Legend Position ---
-  const [legendPosition, setLegendPosition] = useState("right");
+  const [isSmallScreen, setIsSmallScreen] = useState(
+    // Changed!
+    window.innerWidth < 640 // Changed!
+  ); // Changed!
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 640) {
-        //640 egenltigen
-        setLegendPosition("top");
-      } else {
-        setLegendPosition("right");
-      }
-    };
+    // Changed!
+    const onResize = () => setIsSmallScreen(window.innerWidth < 640); // Changed!
+    window.addEventListener("resize", onResize); // Changed!
+    return () => window.removeEventListener("resize", onResize); // Changed!
+  }, []); // Changed!
 
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Run once on mount
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-  // ------------------------------
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -205,19 +198,58 @@ const BarChartComponent = () => {
     },
     plugins: {
       legend: {
-        display: true,
-        position: legendPosition,
-        onClick: (e, legendItem) => {
-          const ci = legendItem.chart;
-          const index = legendItem.datasetIndex;
-          ci.getDatasetMeta(index).hidden = !ci.getDatasetMeta(index).hidden;
-          ci.update();
-        },
+        // Changed!
+        display: !isSmallScreen, // Changed!
+        position: isSmallScreen ? "top" : "right", // Changed!
+        align: "start", // Changed! (rows start at x 0)
+           labels: {                      // Changed!
+               boxWidth: 42,                // ← default is 40 — make it 50, 60, etc.
+               // boxHeight: 16,            // optional – leave out to keep it square
+               // padding: 9,              // optional – gap between box and text
+               // If you’re using dots instead of squares:
+               // usePointStyle: true,
+               // pointStyleWidth: 30,
+             }, 
       },
     },
   };
 
   // --- Helpers to derive "labels" ---
+
+  // Changed! – put this just above your existing helpers / options
+  const htmlLegendPlugin = {
+    id: "htmlLegend",
+    afterUpdate(chart) {
+      const ul = legendRef.current;
+      if (!ul) return;
+
+      // empty it
+      while (ul.firstChild) ul.firstChild.remove();
+
+      // build <li> elements
+      chart.legend.legendItems.forEach((item) => {
+        const li = document.createElement("li");
+        li.className = "flex items-center cursor-pointer";
+        li.style.opacity = item.hidden ? 0.5 : 1;
+
+        li.onclick = () => {
+          chart.toggleDataVisibility(item.datasetIndex);
+          chart.update();
+        };
+
+        const box = document.createElement("span");
+        box.className = "inline-block w-7 h-3 mr-2 rounded";
+        box.style.background = item.fillStyle;
+
+        const text = document.createElement("span");
+        text.textContent = item.text;
+
+        li.appendChild(box);
+        li.appendChild(text);
+        ul.appendChild(li);
+      });
+    },
+  };
 
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0]; // "YYYY-MM-DD"
@@ -306,38 +338,51 @@ const BarChartComponent = () => {
         <hr className="w-full border-t-2 border-gray-200" />
       </p>
       <div className="flex flex-wrap justify-start items-center gap-1 mb-4">
-  {laps.length > 0 ? (
-    laps.map((lap) => (
-      <button
-        key={lap.id}
-        onClick={() => setSelectedLap(lap.id)} //Changed!
-        disabled={loading}
-        className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-          lap.id === +selectedLap
-            ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-            : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-        } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-      >
-        {lap.nameOfLap}
-      </button>
-    ))
-  ) : (
-    <div className="flex gap-2">
-      {[...Array(3)].map((_, idx) => (
-        <div
-          key={idx}
-          className="bg-gray-300 rounded w-16 h-6 sm:w-20 sm:h-8 animate-pulse"
-        />
-      ))}
-    </div>
-  )}
-</div>
+        {laps.length > 0 ? (
+          laps.map((lap) => (
+            <button
+              key={lap.id}
+              onClick={() => setSelectedLap(lap.id)} //Changed!
+              disabled={loading}
+              className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+                lap.id === +selectedLap
+                  ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                  : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+            >
+              {lap.nameOfLap}
+            </button>
+          ))
+        ) : (
+          <div className="flex gap-2">
+            {[...Array(3)].map((_, idx) => (
+              <div
+                key={idx}
+                className="bg-gray-300 rounded w-16 h-6 sm:w-20 sm:h-8 animate-pulse"
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
+                 {/* Changed! */}
+      <ul
+        ref={legendRef}                                        // Changed!
+        className={`${
+          isSmallScreen
+            ? "grid grid-cols-3 gap-x-2 gap-y-1 mb-2 text-xs"
+            : "hidden"
+        }`}
+      />
       <div className="w-full flex justify-center">
         {" "}
         {/* NEW wrapper to center it */}
         <div className="sm:w-[90vh] w-[40vh] sm:h-[45vh] h-[40vh] relative">
-          <Bar data={data} options={options} />
+                  <Bar                                               // Changed!
+            data={data}
+            options={options}
+            plugins={isSmallScreen ? [htmlLegendPlugin] : []} // Changed!
+          />
         </div>
       </div>
 
@@ -345,7 +390,7 @@ const BarChartComponent = () => {
       <div className="w-full flex justify-center">
         {" "}
         {/* NEW wrapper to center */}
-        <div className="flex flex-col justify-center items-center w-full sm:w-[50%] space-y-4 mt-8 sm:mt-4 sm:flex-row sm:space-y-0 sm:space-x-2 border-spacing-x-80 bg-slate-50 sm:p-4 rounded-xl border shadow-md">
+        <div className="flex flex-col justify-center items-center w-full sm:w-[55%] space-y-4 mt-8 sm:mt-4 sm:flex-row sm:space-y-0 sm:space-x-2 border-spacing-x-80 bg-slate-50 sm:p-4 rounded-xl border shadow-md">
           <select
             value={selectedDate}
             onChange={handleDateChange}

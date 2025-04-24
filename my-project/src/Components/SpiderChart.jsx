@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";               //Changed!
 import { Radar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
 
-// ▶ SpiderChart – auto‑selects the first available date → track → competition → lap
-//   so a radar diagram is shown immediately on first render. //Changed!
+// ▶ SpiderChart – auto-selects the first available date → track → competition → lap
+//   so a radar diagram is shown immediately on first render.
 
 const SpiderChart = () => {
+  /* ────────────────────────────────
+     State & refs
+  ──────────────────────────────── */
   const [data, setData] = useState({
     labels: ["Analys", "Fart", "Styrka", "Klass", "Prispengar", "Kusk"],
     datasets: [],
   });
 
-  const [loading, setLoading] = useState(true); //Changed! start with spinner on
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [selectedDate, setSelectedDate] = useState("");
@@ -24,6 +27,19 @@ const SpiderChart = () => {
   const [competitions, setCompetitions] = useState([]);
   const [laps, setLaps] = useState([]);
 
+  /* ---- Legend responsiveness (same approach as BarChart) ---- */
+  const legendRef = useRef(null);                                         //Changed!
+  const [isSmallScreen, setIsSmallScreen] = useState(                     //Changed!
+    window.innerWidth < 640                                               //Changed!
+  );                                                                      //Changed!
+
+  useEffect(() => {                                                       //Changed!
+    const onResize = () => setIsSmallScreen(window.innerWidth < 640);     //Changed!
+    window.addEventListener("resize", onResize);                          //Changed!
+    return () => window.removeEventListener("resize", onResize);          //Changed!
+  }, []);                                                                 //Changed!
+
+  /* ---- OPTIONAL: keep “right” legend on larger viewports ---- */
   const getLegendPosition = () => (window.innerWidth >= 640 ? "right" : "top");
   const [legendPosition, setLegendPosition] = useState(getLegendPosition());
 
@@ -33,69 +49,63 @@ const SpiderChart = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  /* ---- REST -- API base url ---- */
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // ──────────────────────────────────────────────────────────────────
-  // 1. Dates → auto‑pick first date //Changed!
-  // ──────────────────────────────────────────────────────────────────
+  /* ────────────────────────────────
+     1. Dates → auto-pick first date
+  ──────────────────────────────── */
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
       .then((res) => res.json())
       .then((data) => {
         setDates(data);
-        const todayStr = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
-      
+        const todayStr = new Date().toISOString().split("T")[0];
         const todayDate = data.find((d) => d.date === todayStr);
-        if (todayDate) {
-          setSelectedDate(todayDate.date); //Changed!
-        } else if (data.length > 0) {
-          setSelectedDate(data[0].date); // fallback to earliest
-        }
+        if (todayDate) setSelectedDate(todayDate.date);                  //Changed!
+        else if (data.length) setSelectedDate(data[0].date);
       })
       .catch((err) => console.error("Error fetching dates:", err));
   }, []);
 
-  // ──────────────────────────────────────────────────────────────────
-  // 2. Tracks for chosen date → auto‑pick first track //Changed!
-  // ──────────────────────────────────────────────────────────────────
+  /* ────────────────────────────────
+     2. Tracks → auto-pick first track
+  ──────────────────────────────── */
   useEffect(() => {
     if (!selectedDate) return;
-
     fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`)
       .then((res) => res.json())
       .then((data) => {
         setTracks(data);
-        if (data.length) setSelectedTrack(data[0].id); //Changed!
+        if (data.length) setSelectedTrack(data[0].id);                  //Changed!
       })
       .catch((err) => console.error("Error fetching tracks:", err));
   }, [selectedDate]);
 
-  // ──────────────────────────────────────────────────────────────────
-  // 3. Competitions for chosen track → auto‑pick first competition //Changed!
-  // ──────────────────────────────────────────────────────────────────
+  /* ────────────────────────────────
+     3. Competitions → auto-pick first competition
+  ──────────────────────────────── */
   useEffect(() => {
     if (!selectedTrack) return;
-
     fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`)
       .then((res) => res.json())
       .then((data) => {
         setCompetitions(data);
-        if (data.length) setSelectedCompetition(data[0].id); //Changed!
+        if (data.length) setSelectedCompetition(data[0].id);            //Changed!
       })
       .catch((err) => console.error("Error fetching competitions:", err));
   }, [selectedTrack]);
 
-  // ──────────────────────────────────────────────────────────────────
-  // 4. Laps for chosen competition → auto‑pick first lap //Changed!
-  // ──────────────────────────────────────────────────────────────────
+  /* ────────────────────────────────
+     4. Laps → auto-pick first lap
+  ──────────────────────────────── */
   useEffect(() => {
     if (!selectedCompetition) return;
-
     fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`)
       .then((res) => res.json())
       .then((data) => {
         setLaps(data);
-        if (data.length) setSelectedLap(data[0].id); //Changed!
+        if (data.length) setSelectedLap(data[0].id);                    //Changed!
       })
       .catch((err) => {
         console.error("Error fetching laps:", err);
@@ -103,12 +113,11 @@ const SpiderChart = () => {
       });
   }, [selectedCompetition]);
 
-  // ──────────────────────────────────────────────────────────────────
-  // 5. Fetch horse + four‑starts data whenever a lap is selected //Changed!
-  // ──────────────────────────────────────────────────────────────────
+  /* ────────────────────────────────
+     5. Fetch horse & four-starts data
+  ──────────────────────────────── */
   useEffect(() => {
     if (!selectedLap) return;
-
     setLoading(true);
 
     fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`)
@@ -118,21 +127,16 @@ const SpiderChart = () => {
       })
       .then((completeHorses) =>
         Promise.all(
-          completeHorses.map((horse, index) =>
-            fetch(
-              `${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`
-            )
+          completeHorses.map((horse, idx) =>
+            fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`)
               .then((res) => {
-                if (!res.ok)
-                  throw new Error("Four‑starts fetch failed: " + res.statusText);
+                if (!res.ok) throw new Error("Four-starts fetch failed: " + res.statusText);
                 return res.json();
               })
               .then((fs) => ({
-                label: `${index + 1}. ${horse.nameOfCompleteHorse}`,
+                label: `${idx + 1}. ${horse.nameOfCompleteHorse}`,
                 data: [fs.analys, fs.fart, fs.styrka, fs.klass, fs.prispengar, fs.kusk],
-                backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${
-                  Math.random() * 255
-                }, 0.5)`,
+                backgroundColor: `rgba(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255}, 0.5)`,
               }))
           )
         )
@@ -148,83 +152,129 @@ const SpiderChart = () => {
       });
   }, [selectedLap]);
 
-    // --- Helpers to derive "labels" ---
-const today = new Date();
-const todayStr = today.toISOString().split("T")[0]; // "YYYY-MM-DD"
+  /* ────────────────────────────────
+     Custom HTML legend - same logic as BarChart
+  ──────────────────────────────── */
+  const htmlLegendPlugin = {                                              //Changed!
+    id: "htmlLegend",                                                     //Changed!
+    afterUpdate(chart) {                                                  //Changed!
+      const ul = legendRef.current;                                       //Changed!
+      if (!ul) return;                                                    //Changed!
 
-const yesterday = new Date(today);
-yesterday.setDate(today.getDate() - 1);
-const yesterdayStr = yesterday.toISOString().split("T")[0];
+      while (ul.firstChild) ul.firstChild.remove();                       //Changed!
 
-const tomorrow = new Date(today);
-tomorrow.setDate(today.getDate() + 1);
-const tomorrowStr = tomorrow.toISOString().split("T")[0];
+      chart.legend.legendItems.forEach((item) => {                        //Changed!
+        const li = document.createElement("li");                          //Changed!
+        li.className = "flex items-center cursor-pointer";                //Changed!
+        li.style.opacity = item.hidden ? 0.5 : 1;                         //Changed!
 
-// Set the label
-let selectedDateLabel;
-const formatDateInSwedish = (dateStr) => {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("sv-SE", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  }); // e.g., "onsdag 23 april"
-};
+        li.onclick = () => {                                              //Changed!
+          chart.toggleDataVisibility(item.datasetIndex);                  //Changed!
+          chart.update();                                                 //Changed!
+        };                                                                //Changed!
 
-if (selectedDate === todayStr) {
-  selectedDateLabel = `Idag, ${formatDateInSwedish(selectedDate)}`; //Changed!
-} else if (selectedDate === yesterdayStr) {
-  selectedDateLabel = `Igår, ${formatDateInSwedish(selectedDate)}`; //Changed!
-} else if (selectedDate === tomorrowStr) {
-  selectedDateLabel = `Imorgon, ${formatDateInSwedish(selectedDate)}`; //Changed!
-} else {
-  selectedDateLabel = formatDateInSwedish(selectedDate); //Changed!
-}
+        const box = document.createElement("span");                       //Changed!
+        box.className = "inline-block w-7 h-3 mr-2 rounded";              //Changed!
+        box.style.background = item.fillStyle;                            //Changed!
 
-    const selectedTrackLabel = selectedTrack
-      ? tracks.find((track) => track.id === +selectedTrack)?.nameOfTrack ?? ""
-      : "Färjestad";
-    const selectedCompetitionLabel = selectedCompetition
-      ? competitions.find((c) => c.id === +selectedCompetition)
-          ?.nameOfCompetition ?? ""
-      : "v75";
-    const selectedLapLabel = selectedLap
-      ? laps.find((l) => l.id === +selectedLap)?.nameOfLap ?? ""
-      : "Lopp 1";
+        const text = document.createElement("span");                      //Changed!
+        text.textContent = item.text;                                     //Changed!
 
-  // ──────────────────────────────────────────────────────────────────
-  // Handlers
-  // ──────────────────────────────────────────────────────────────────
+        li.appendChild(box);                                              //Changed!
+        li.appendChild(text);                                             //Changed!
+        ul.appendChild(li);                                               //Changed!
+      });                                                                 //Changed!
+    },                                                                    //Changed!
+  };                                                                      //Changed!
+
+  /* ────────────────────────────────
+     Options (hide default legend on mobile)
+  ──────────────────────────────── */
+  const options = {                                                       //Changed!
+    responsive: true,                                                     //Changed!
+    maintainAspectRatio: false,                                           //Changed!
+    plugins: {                                                            //Changed!
+      legend: {                                                           //Changed!
+        display: !isSmallScreen,                                          //Changed!
+        position: isSmallScreen ? "top" : legendPosition,                 //Changed!
+      },                                                                  //Changed!
+    },                                                                    //Changed!
+    scales: { r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100 } },
+    elements: { line: { borderWidth: 3 } },
+  };                                                                      //Changed!
+
+  /* ────────────────────────────────
+     Helpers to derive nice Swedish labels
+  ──────────────────────────────── */
+  const today = new Date();
+  const todayStr = today.toISOString().split("T")[0];
+
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split("T")[0];
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  const tomorrowStr = tomorrow.toISOString().split("T")[0];
+
+  const formatDateInSwedish = (d) =>
+    new Date(d).toLocaleDateString("sv-SE", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    });
+
+  const selectedDateLabel =
+    selectedDate === todayStr
+      ? `Idag, ${formatDateInSwedish(selectedDate)}`
+      : selectedDate === yesterdayStr
+      ? `Igår, ${formatDateInSwedish(selectedDate)}`
+      : selectedDate === tomorrowStr
+      ? `Imorgon, ${formatDateInSwedish(selectedDate)}`
+      : formatDateInSwedish(selectedDate);
+
+  const selectedTrackLabel =
+    tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad";
+  const selectedCompetitionLabel =
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "v75";
+  const selectedLapLabel =
+    laps.find((l) => l.id === +selectedLap)?.nameOfLap ?? "Lopp 1";
+
+  /* ────────────────────────────────
+     Handlers
+  ──────────────────────────────── */
   const handleDateChange = (e) => setSelectedDate(e.target.value);
   const handleTrackChange = (e) => setSelectedTrack(e.target.value);
   const handleCompetitionChange = (e) => setSelectedCompetition(e.target.value);
   const handleLapChange = (e) => setSelectedLap(e.target.value);
 
-  // ──────────────────────────────────────────────────────────────────
-  // JSX
-  // ──────────────────────────────────────────────────────────────────
+  /* ────────────────────────────────
+     JSX
+  ──────────────────────────────── */
   return (
     <div className="flex flex-col justify-center items-center mt-1 px-2 pb-10">
-            <p
-        className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 
-       px-4 py-2 flex flex-col justify-center items-center"
-      >
-        {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}{" "}
-        
+      <p className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 px-4 py-2 flex flex-col justify-center items-center">
+        {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
         <hr className="w-full border-t-2 border-gray-200" />
       </p>
+
+      {/* Custom legend (only visible <640 px) */}
+      <ul                                                            //Changed!
+        ref={legendRef}                                              //Changed!
+        className={`${                                              //Changed!
+          isSmallScreen                                              //Changed!
+            ? "grid grid-cols-3 gap-x-2 gap-y-1 text-xs"        //Changed!
+            : "hidden"                                               //Changed!
+        }`}                                                          //Changed!
+      />                                                             
+
       {/* Radar Chart / placeholder / spinner */}
-      <div className="relative w-full sm:w-[300px] md:w-[500px] h-[60vh] sm:h-[40vh] md:h-[50vh] flex items-center justify-center">
+      <div className="relative w-full sm:w-[300px] md:w-[500px] h-[40vh] sm:h-[40vh] md:h-[50vh] flex items-center justify-center">
         {data.datasets.length > 0 && !loading && (
           <Radar
             data={data}
-            options={{
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: { legend: { position: legendPosition } },
-              scales: { r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100 } },
-              elements: { line: { borderWidth: 3 } },
-            }}
+            options={options}                                         //Changed!
+            plugins={isSmallScreen ? [htmlLegendPlugin] : []}        //Changed!
           />
         )}
 
