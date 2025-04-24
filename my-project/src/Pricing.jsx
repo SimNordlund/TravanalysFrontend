@@ -6,6 +6,8 @@ const includedFeatures = [
   'Goa Ipas',
   'Tip-Top statistik',
   'Skräll-detektor',
+  'Ölstuga',
+  'Obräckbart underlag',
   'Tillgång till medlemsforum',
 ];
 
@@ -27,9 +29,6 @@ export default function Pricing() {
         <div className="mx-auto mt-10 max-w-2xl rounded-3xl ring-1 ring-gray-200 sm:mt-8 sm:mb-6 lg:mx-0 lg:flex lg:max-w-none shadow-md">
           <div className="p-8 sm:p-10 lg:flex-auto">
             <h3 className="text-2xl font-bold tracking-tight text-gray-900">Bli en i gänget idag:</h3>
-            <p className="mt-6 text-base leading-7 text-gray-600">
-              Dennis bjuder oftast på stark Åbro.
-            </p>
             <div className="mt-10 flex items-center gap-x-4">
               <h4 className="flex-none text-sm font-semibold leading-6 text-indigo-600">Men vad ingår då?</h4>
               <div className="h-px flex-auto bg-gray-100"></div>

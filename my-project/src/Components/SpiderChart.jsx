@@ -285,7 +285,7 @@ const SpiderChart = () => {
       </div>
 
       {/* Dropdowns */}
-      <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md sm:mt-8">
+      <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md mt-4 sm:mt-8">
         <select value={selectedDate} onChange={handleDateChange} className="w-full sm:w-auto hover:bg-slate-50 p-2 border rounded-lg">
           <option value="" disabled>
             Välj datum
