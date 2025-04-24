@@ -15,7 +15,7 @@ const ToggleComponent = () => {
     },
     {
       id: 2,
-      name: "Tabeller",
+      name: "Tabell",
       bgColor: "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600",
       view: "table",
     },
