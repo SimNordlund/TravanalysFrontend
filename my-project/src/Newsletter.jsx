@@ -1,13 +1,37 @@
-import { PhoneIcon, EnvelopeIcon  } from '@heroicons/react/24/outline'
+import { useState } from 'react' 
+import { PhoneIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
 
 export default function Newsletter() {
+  const [email, setEmail] = useState('') 
+
+  const handleSubmit = async (e) => { 
+    e.preventDefault() 
+    try {
+      const response = await fetch('http://localhost:8080/travanalys/saveEmail', { 
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify({ email }), 
+      }) 
+      if (response.ok) {
+        console.log('Det gick yo!') 
+        setEmail('')  //– Clear the input field
+      } else {
+        console.error('Misslyckade att spara till Skräll-detektor') 
+      }
+    } catch (error) {
+      console.error('Error:', error) 
+    }
+  } 
+
   return (
     <div className="relative isolate overflow-hidden bg-gray-900 py-16 sm:py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-2">
           <div className="max-w-xl lg:max-w-lg">
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Prenumerera på skräll-detektorn.</h2>
-            <div className="mt-6 flex max-w-md gap-x-4">
+            <form onSubmit={handleSubmit} className="mt-6 flex max-w-md gap-x-4"> 
               <label htmlFor="email-address" className="sr-only">
                 Email address
               </label>
@@ -17,6 +41,8 @@ export default function Newsletter() {
                 type="email"
                 autoComplete="email"
                 required
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)} 
                 className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 placeholder="Skriv in din mejl"
               />
@@ -26,7 +52,7 @@ export default function Newsletter() {
               >
                 Prenumerera
               </button>
-            </div>
+            </form>
           </div>
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:pt-2">
             <div className="flex flex-col items-center">
@@ -35,20 +61,20 @@ export default function Newsletter() {
               </div>
               <dt className="mt-4 font-semibold text-white">Ring oss</dt>
               <dd className="mt-2 leading-7 text-gray-300">
-              <a href="tel:0706493763" className="text-gray-300 hover:text-white">
-              070-649 37 63
-              </a>
+                <a href="tel:0706493763" className="text-gray-300 hover:text-white">
+                  070-649 37 63
+                </a>
               </dd>
             </div>
             <div className="flex flex-col items-center">
               <div className="rounded-md bg-white/5 p-2 ring-1 ring-white/10">
-                <EnvelopeIcon  className="h-8 w-8 text-white" aria-hidden="true" />
+                <EnvelopeIcon className="h-8 w-8 text-white" aria-hidden="true" />
               </div>
               <dt className="mt-4 font-semibold text-white">Mejla oss</dt>
               <dd className="mt-2 leading-7 text-gray-400">
-              <a href="travanalys@gmail.com" className="text-gray-300 hover:text-white">
-              travanalys@gmail.com
-              </a>
+                <a href="travanalys@gmail.com" className="text-gray-300 hover:text-white">
+                  travanalys@gmail.com
+                </a>
               </dd>
             </div>
           </dl>
