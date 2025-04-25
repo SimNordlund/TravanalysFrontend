@@ -4,6 +4,10 @@ import BarChart from "../BarChart";
 import PaginatedLapTable from "./PaginatedLapTable"; // Adjust path if needed
 
 const ToggleComponent = () => {
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTrack, setSelectedTrack] = useState("");
+  const [selectedCompetition, setSelectedCompetition] = useState("");
+  const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState("bar");
 
   const callouts = [
@@ -60,10 +64,41 @@ const ToggleComponent = () => {
       {/* Chart/Table Toggle Display */}
       <div className="sm:max-w-4xl sm:mx-auto bg-white ml-4 mr-4 sm:pl-8 sm:pr-8 sm:pb-2 rounded-xl shadow-lg">
         <div className="relative w-auto h-auto">
-          {selectedView === "bar" && <BarChart />}
-          {selectedView === "spider" && <SpiderChart />}
+          {selectedView === "bar" && (
+            <BarChart
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+              selectedTrack={selectedTrack}
+              setSelectedTrack={setSelectedTrack}
+              selectedCompetition={selectedCompetition}
+              setSelectedCompetition={setSelectedCompetition}
+              selectedLap={selectedLap}
+              setSelectedLap={setSelectedLap}
+            />
+          )}
+          {selectedView === "spider" && (
+            <SpiderChart
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+              selectedTrack={selectedTrack}
+              setSelectedTrack={setSelectedTrack}
+              selectedCompetition={selectedCompetition}
+              setSelectedCompetition={setSelectedCompetition}
+              selectedLap={selectedLap}
+              setSelectedLap={setSelectedLap}
+            />
+          )}
           {selectedView === "table" && (
-            <PaginatedLapTable/>
+            <PaginatedLapTable
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+              selectedTrack={selectedTrack}
+              setSelectedTrack={setSelectedTrack}
+              selectedCompetition={selectedCompetition}
+              setSelectedCompetition={setSelectedCompetition}
+              selectedLap={selectedLap}
+              setSelectedLap={setSelectedLap}
+            />
           )}
         </div>
       </div>

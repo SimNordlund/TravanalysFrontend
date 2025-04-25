@@ -3,27 +3,29 @@ import { Bar } from "react-chartjs-2";
 import pappaCrazy from "./Bilder/PappaCrazy.png";
 import Chart from "chart.js/auto";
 
-const BarChartComponent = () => {
+const BarChartComponent = ({
+  selectedDate,
+  setSelectedDate,
+  selectedTrack,
+  setSelectedTrack,
+  selectedCompetition,
+  setSelectedCompetition,
+  selectedLap,
+  setSelectedLap,
+}) => {
   const legendRef = useRef(null);
   const [data, setData] = useState({
     labels: [],
     datasets: [],
   });
 
-  const [loading, setLoading]       = useState(true);   // ← put it back  //Changed!
+  const [loading, setLoading] = useState(true);
   const [showSpinner, setShowSpinner] = useState(false);
   const [error, setError] = useState(null);
 
-  const [selectedDate, setSelectedDate] = useState("");
   const [dates, setDates] = useState([]);
-
-  const [selectedTrack, setSelectedTrack] = useState("");
   const [tracks, setTracks] = useState([]);
-
-  const [selectedCompetition, setSelectedCompetition] = useState("");
   const [competitions, setCompetitions] = useState([]);
-
-  const [selectedLap, setSelectedLap] = useState("1");
   const [laps, setLaps] = useState([]);
 
   // Our color palette for the horses
@@ -62,15 +64,15 @@ const BarChartComponent = () => {
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
-      .then((response) => response.json())
+      .then((res) => res.json())
       .then((data) => {
         setDates(data);
-        const todayStr = new Date().toISOString().split("T")[0]; // "YYYY-MM-DD"
-        const todayDate = data.find((d) => d.date === todayStr);
-        if (todayDate) {
-          setSelectedDate(todayDate.date); //Changed!
-        } else if (data.length > 0) {
-          setSelectedDate(data[0].date); // fallback to earliest
+        if (!selectedDate) {
+          // Only set if NOT already chosen
+          const todayStr = new Date().toISOString().split("T")[0];
+          const todayDate = data.find((d) => d.date === todayStr);
+          if (todayDate) setSelectedDate(todayDate.date);
+          else if (data.length) setSelectedDate(data[0].date);
         }
       })
       .catch((error) => console.error("Error fetching dates:", error));
@@ -107,23 +109,26 @@ const BarChartComponent = () => {
   }, [selectedTrack]);
 
   useEffect(() => {
-    if (selectedCompetition) {
-      fetch(
-        `${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          setLaps(data);
-          if (data.length > 0) {
-            setSelectedLap(data[0].id); // Auto-select first lap //Changed!
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching laps:", error);
-          setLaps([]);
-        });
-    }
-  }, [selectedCompetition]);
+    if (!selectedCompetition) return;
+
+    fetch(
+      `${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setLaps(data);
+
+        // Only auto-select first lap if none is selected or it's not in the new list
+        const lapExists = data.some((lap) => lap.id === +selectedLap);
+        if (!selectedLap || !lapExists) {
+          if (data.length > 0) setSelectedLap(data[0].id); //Changed!
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching laps:", err);
+        setLaps([]);
+      });
+  }, [selectedCompetition]); //Changed!
 
   useEffect(() => {
     if (selectedLap) {
@@ -183,16 +188,16 @@ const BarChartComponent = () => {
     }
   }, [selectedLap]);
 
-  /* ───── Delay spinner by 3 s ───── */ 
+  /* ───── Delay spinner by 3 s ───── */
   useEffect(() => {
-    let timer; 
+    let timer;
     if (loading) {
-      timer = setTimeout(() => setShowSpinner(true), 3000); 
+      timer = setTimeout(() => setShowSpinner(true), 3000);
     } else {
-      setShowSpinner(false); 
-    } 
-    return () => clearTimeout(timer); 
-  }, [loading]); 
+      setShowSpinner(false);
+    }
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   // --- Chart.js Options ---
   const options = {
@@ -399,7 +404,7 @@ const BarChartComponent = () => {
               <div className="text-sm text-slate-500">Finns ingen data.</div>
             )}
           {/*   Spinner + text while loading */}
-          {showSpinner && loading && ( 
+          {showSpinner && loading && (
             <div className="flex flex-col items-center">
               {" "}
               <img
