@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 
 const PaginatedLapTable = () => {
   /* ─── state ─────────────────────────────────────────────── */
-  const [dates, setDates] = useState([]);                              //Changed!
-  const [selectedDate, setSelectedDate] = useState("");                //Changed!
+  const [dates, setDates] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
 
-  const [tracks, setTracks] = useState([]);                            //Changed!
-  const [selectedTrack, setSelectedTrack] = useState(null);            //Changed!
+  const [tracks, setTracks] = useState([]);
+  const [selectedTrack, setSelectedTrack] = useState(null);
 
-  const [competitions, setCompetitions] = useState([]);                //Changed!
-  const [selectedCompetition, setSelectedCompetition] = useState(null);//Changed!
+  const [competitions, setCompetitions] = useState([]);
+  const [selectedCompetition, setSelectedCompetition] = useState(null);
   const [competitionName, setCompetitionName] = useState("");
 
   const [laps, setLaps] = useState([]);
@@ -22,7 +22,7 @@ const PaginatedLapTable = () => {
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  /* ─── 0. fetch all dates, default to today ───────────────── */      //Changed!
+  /* ─── 0. dates (default = i dag or latest) ──────────────── */
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
       .then((r) => r.json())
@@ -36,10 +36,9 @@ const PaginatedLapTable = () => {
       .catch(() => setError("Kunde inte hämta datum."));
   }, []);
 
-  /* ─── 1. tracks when date changes ───────────────────────── */       //Changed!
+  /* ─── 1. tracks for selected date ───────────────────────── */
   useEffect(() => {
     if (!selectedDate) return;
-
     const fetchTracks = async () => {
       try {
         setLoading(true);
@@ -60,15 +59,13 @@ const PaginatedLapTable = () => {
         setLoading(false);
       }
     };
-
     fetchTracks();
   }, [selectedDate]);
 
-  /* ─── 2. competitions when track changes ────────────────── */       //Changed!
+  /* ─── 2. competitions for track ─────────────────────────── */
   useEffect(() => {
     if (!selectedTrack) return;
-
-    const fetchCompetitions = async () => {
+    const fetchComps = async () => {
       try {
         setLoading(true);
         const res = await fetch(
@@ -89,14 +86,12 @@ const PaginatedLapTable = () => {
         setLoading(false);
       }
     };
-
-    fetchCompetitions();
+    fetchComps();
   }, [selectedTrack]);
 
-  /* ─── 3. laps when competition changes ──────────────────── */       //Changed!
+  /* ─── 3. laps for competition ───────────────────────────── */
   useEffect(() => {
     if (!selectedCompetition) return;
-
     const fetchLaps = async () => {
       try {
         setLoading(true);
@@ -113,69 +108,85 @@ const PaginatedLapTable = () => {
         setLoading(false);
       }
     };
-
     fetchLaps();
   }, [selectedCompetition]);
 
-  /* ─── 4. table rows when lap changes ────────────────────── */
+  /* ─── 4. horses + four-starts for lap (NEW logic) ───────── */ //Changed!
   useEffect(() => {
     if (!selectedLap) return;
 
-    const fetchLapData = async () => {
+    const fetchData = async () => {
       setLoading(true);
       try {
+        /* A. complete horses for the lap */
         const res = await fetch(
-          `${API_BASE_URL}/completeHorse/findByLapAnalys?lapId=${selectedLap}`
+          `${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}` //Changed!
         );
-        setLapData(await res.json());
+        const horses = await res.json();
+
+        /* B. for each horse fetch four-starts block (analys, fart, …) */
+        const rows = await Promise.all(
+          horses.map(async (h) => {
+            const fsRes = await fetch(
+              `${API_BASE_URL}/fourStarts/findData?completeHorseId=${h.id}` //Changed!
+            );
+            const fs = await fsRes.json();
+            return {
+              ...h,           // ← keep any existing fields (trend, vOdds, etc)
+              ...fs,          // ← adds analys, fart, styrka, klass, prispengar, kusk
+            };
+          })
+        );
+        setLapData(rows);
       } catch {
         setError("Failed to fetch lap data.");
+        setLapData([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchLapData();
+    fetchData();
   }, [selectedLap]);
 
-  /* ─── arrow nav helpers ─────────────────────────────────── */
+  /* ─── arrow helpers ─────────────────────────────────────── */
   const idx = dates.findIndex((d) => d.date === selectedDate);
-  const prevDisabled = idx <= 0;
-  const nextDisabled = idx === -1 || idx >= dates.length - 1;
-  const goPrev = () => !prevDisabled && setSelectedDate(dates[idx - 1].date);
-  const goNext = () => !nextDisabled && setSelectedDate(dates[idx + 1].date);
+  const goPrev = () =>
+    idx > 0 && setSelectedDate(dates[idx - 1].date);
+  const goNext = () =>
+    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
-  /* ─── Swedish date label (Idag / Igår / Imorgon) ────────── */
-  const todayStr = new Date().toISOString().split("T")[0];
-  const yesterdayStr = new Date(Date.now() - 864e5)
+  /* ─── Swedish nice date (Idag / Igår / Imorgon) ─────────── */
+  const today = new Date().toISOString().split("T")[0];
+  const yesterday = new Date(Date.now() - 864e5)
     .toISOString()
     .split("T")[0];
-  const tomorrowStr = new Date(Date.now() + 864e5)
+  const tomorrow = new Date(Date.now() + 864e5)
     .toISOString()
     .split("T")[0];
-
   const sv = (d) =>
     new Date(d).toLocaleDateString("sv-SE", {
       weekday: "long",
       day: "numeric",
       month: "long",
     });
-
-  let niceDate = "";
-  if (selectedDate === todayStr) niceDate = `Idag, ${sv(selectedDate)}`;
-  else if (selectedDate === yesterdayStr) niceDate = `Igår, ${sv(selectedDate)}`;
-  else if (selectedDate === tomorrowStr)
-    niceDate = `Imorgon, ${sv(selectedDate)}`;
-  else niceDate = sv(selectedDate);
+  const niceDate =
+    selectedDate === today
+      ? `Idag, ${sv(selectedDate)}`
+      : selectedDate === yesterday
+      ? `Igår, ${sv(selectedDate)}`
+      : selectedDate === tomorrow
+      ? `Imorgon, ${sv(selectedDate)}`
+      : sv(selectedDate);
 
   /* ─── JSX ───────────────────────────────────────────────── */
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
-      {/* arrows + date */}
+      {/* 1. arrows + date */}
       <div className="flex items-center justify-between mb-3">
         <button
           onClick={goPrev}
-          disabled={prevDisabled || loading}
+          disabled={idx <= 0 || loading}
           className="p-1 text-4xl md:text-5xl disabled:opacity-40"
         >
           &#8592;
@@ -187,15 +198,15 @@ const PaginatedLapTable = () => {
 
         <button
           onClick={goNext}
-          disabled={nextDisabled || loading}
+          disabled={idx >= dates.length - 1 || loading}
           className="p-1 text-4xl md:text-5xl disabled:opacity-40"
         >
           &#8594;
         </button>
       </div>
 
-      {/* track pills */}
-      <div className="flex flex-wrap items-center gap-1 mb-2 min-h-[44px]"> {/*Changed!*/}
+      {/* 2. track pills */}
+      <div className="flex flex-wrap gap-1 mb-2">
         {tracks.map((t) => (
           <button
             key={t.id}
@@ -205,15 +216,15 @@ const PaginatedLapTable = () => {
               t.id === selectedTrack
                 ? "bg-emerald-500 text-white font-semibold shadow"
                 : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+            }`}
           >
             {t.nameOfTrack}
           </button>
         ))}
       </div>
 
-      {/* competition pills */}
-      <div className="flex flex-wrap items-center gap-1 mb-3 min-h-[44px]"> {/*Changed!*/}
+      {/* 3. competition pills */}
+      <div className="flex flex-wrap gap-1 mb-2">
         {competitions.map((c) => (
           <button
             key={c.id}
@@ -226,60 +237,51 @@ const PaginatedLapTable = () => {
               c.id === selectedCompetition
                 ? "bg-teal-600 text-white font-semibold shadow"
                 : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+            }`}
           >
             {c.nameOfCompetition}
           </button>
         ))}
       </div>
 
-      {/* lap pills */}
-      <div className="flex flex-wrap items-center gap-1 mb-3 min-h-[44px]">
-        {laps.length ? (
-          laps.map((lap) => (
-            <button
-              key={lap.id}
-              onClick={() => setSelectedLap(lap.id)}
-              disabled={loading}
-              className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                lap.id === selectedLap
-                  ? "bg-indigo-500 text-white font-semibold shadow"
-                  : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-              } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              {lap.nameOfLap}
-            </button>
-          ))
-        ) : (
-          <div className="flex gap-2">
-            {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-gray-300 rounded w-20 h-8 animate-pulse"
-              />
-            ))}
-          </div>
-        )}
+      {/* 4. lap pills */}
+      <div className="flex flex-wrap gap-1 mb-3">
+        {laps.map((lap) => (
+          <button
+            key={lap.id}
+            onClick={() => setSelectedLap(lap.id)}
+            disabled={loading}
+            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+              lap.id === selectedLap
+                ? "bg-indigo-500 text-white font-semibold shadow"
+                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+            }`}
+          >
+            {lap.nameOfLap}
+          </button>
+        ))}
       </div>
 
-      {/* table */}
+      {/* 5. data table */}
       <div className="overflow-x-auto border border-gray-200 rounded relative">
         {loading && (
           <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-75">
-            <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-10 w-10"></div>
+            <div className="loader rounded-full border-4 border-t-4 border-gray-200 h-10 w-10" />
           </div>
         )}
 
         <table className="w-full min-w-max border-collapse text-sm">
-          <thead className="bg-gray-100 text-gray-700 text-left border-b border-gray-200">
+          <thead className="bg-gray-100 border-b border-gray-200">
             <tr>
               <th className="py-2 px-2 font-semibold">#</th>
               <th className="py-2 px-2 font-semibold">Häst / Kusk</th>
-              <th className="py-2 px-2 font-semibold">{competitionName}%</th>
-              <th className="py-2 px-2 font-semibold">Trend%</th>
+              <th className="py-2 px-2 font-semibold">
+                {competitionName || "Procent"}%
+              </th>
+              <th className="py-2 px-2 font-semibold">Trend %</th>
               <th className="py-2 px-2 font-semibold">V-Odds</th>
               <th className="py-2 px-2 font-semibold">Tränare</th>
-              <th className="py-2 px-2 font-semibold">Tipskommentar</th>
+              <th className="py-2 px-2 font-semibold">Tips</th>
               <th className="py-2 px-2 font-semibold">Skor</th>
               <th className="py-2 px-2 font-semibold">Vagn</th>
             </tr>
@@ -292,13 +294,13 @@ const PaginatedLapTable = () => {
               >
                 <td className="py-2 px-2">{i + 1}</td>
                 <td className="py-2 px-2">{row.nameOfCompleteHorse}</td>
-                <td className="py-2 px-2">{row.fourStartsAnalys}</td>
-                <td className="py-2 px-2">{row.trend}</td>
-                <td className="py-2 px-2">{row.vOdds}</td>
-                <td className="py-2 px-2">{row.trainer}</td>
-                <td className="py-2 px-2">{row.tips}</td>
-                <td className="py-2 px-2">{row.skor}</td>
-                <td className="py-2 px-2">{row.vagn}</td>
+                <td className="py-2 px-2">{row.analys}</td>      {/* from fourStarts */}
+                <td className="py-2 px-2">{row.fart}</td>        
+                <td className="py-2 px-2">{row.styrka}</td>      
+                <td className="py-2 px-2">{row.klass}</td>       
+                <td className="py-2 px-2">{row.prispengar}</td>  
+                <td className="py-2 px-2">{"C C"}</td>
+                <td className="py-2 px-2">Gungig</td>        
               </tr>
             ))}
           </tbody>
