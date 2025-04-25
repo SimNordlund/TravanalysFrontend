@@ -46,18 +46,21 @@ export default function SignIn() {
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+      <h1 className="mt-10 text-center text-3xl font-bold mb-4 leading-9 tracking-tight text-gray-900" >
+          Logga in på Travanalys och få tillgång till ännu mer data och underlag. 
+        </h1>
         <img
           className="mx-auto h-114 w-auto"
           src={travhorsi}
           alt="Your Company"
         />
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Logga in på ditt konto
+          Nedan ser du inloggningssätt:
         </h2>
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" onSubmit={handleSignIn}>
+       {/* <form className="space-y-6" onSubmit={handleSignIn}>
           {showError && (
             <div id="wrongPW" className="block font-medium leading-6 text-red-600 text-lg text-center border-red-400 border-4 py-2 rounded-lg">
               Användarnamnet eller lösenordet är felaktigt alternativt finns inte.
@@ -112,13 +115,15 @@ export default function SignIn() {
               Logga in
             </button>
           </div>
-        </form>
+        </form> */}
 
-        <p className="mt-10 text-center text-sm text-gray-500">
-          Har du inget konto?{' '}
+        <p className="text-center text-sm text-gray-500 sm:mb-10">
+         {/*  Har du inget konto?{' '}
           <a href="/signup" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
             Skapa ett konto här
-          </a>
+          </a> */}
+
+
           <GitHubLoginButton/>
           <GoogleLoginButton/>
         </p>
