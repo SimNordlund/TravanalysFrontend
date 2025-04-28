@@ -6,7 +6,7 @@ import {
   Maximize2,
   Minimize2,
   MessageCircle,
-} from "lucide-react"; //Changed!
+} from "lucide-react"; 
 
 /**
  * TravChat – React component that chats with your Spring-Boot back-end.
