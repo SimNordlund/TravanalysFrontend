@@ -14,6 +14,7 @@ export default function Home() {
       <IntroComponent></IntroComponent>
       <ToggleComponent></ToggleComponent>
       <Pricing></Pricing>
+      <ChatBox></ChatBox>
        {/*<ChatBox></ChatBox>*/}
     </div>
   );

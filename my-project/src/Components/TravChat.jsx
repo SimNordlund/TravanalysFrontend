@@ -13,6 +13,8 @@ export default function TravChat() {
   const [isMaximized, setIsMaximized] = useState(false) //Changed!
   const tailRef = useRef(null)
 
+  const CHATBOT_URL = import.meta.env.VITE_CHATBOT_URL;
+
   /* Send user message and stream assistant reply */
   const sendMessage = async () => {
     if (!input.trim()) return
@@ -23,7 +25,7 @@ export default function TravChat() {
     setStreaming(true)
 
     try {
-      const res = await fetch('/chat-stream?message=' + encodeURIComponent(user.content))
+      const res = await fetch(`${CHATBOT_URL}/chat-stream?message=${encodeURIComponent(user.content)}`);
       const reader = res.body.getReader()
       const dec = new TextDecoder('utf-8')
 
