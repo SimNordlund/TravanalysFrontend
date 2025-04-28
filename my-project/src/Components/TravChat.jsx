@@ -33,7 +33,7 @@ export default function TravChat() {
 
     try {
       const res = await fetch(
-        `${CHATBOT_URL}/chat-stream?message=${encodeURIComponent(user.content)}`
+        `https://trav-bot.onrender.com/chat-stream?message=${encodeURIComponent(user.content)}`
       );
       const reader = res.body.getReader();
       const dec = new TextDecoder("utf-8");
