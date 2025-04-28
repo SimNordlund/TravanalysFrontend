@@ -3,6 +3,7 @@ import Present from './Present';
 import PreviewFrontPage from './PreviewHomePage';
 import ToggleComponent from './Components/ToggleComponent'
 import IntroComponent from './Components/IntroComponent';
+import ChatBox from './Components/TravChat';
 
 export default function Home() {
 
@@ -13,6 +14,7 @@ export default function Home() {
       <IntroComponent></IntroComponent>
       <ToggleComponent></ToggleComponent>
       <Pricing></Pricing>
+       {/*<ChatBox></ChatBox>*/}
     </div>
   );
 }

@@ -1,8 +1,7 @@
-import ToggleComponent from "./Components/ToggleComponent";
+import Test from "./Components/TravChat"; // Capitalize Test
 
 export default function ChartPage() {
-
   return (
-    <ToggleComponent/>
+    <Test /> // Capitalized usage
   );
 }
