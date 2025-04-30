@@ -19,6 +19,7 @@ const PaginatedLapTable = ({
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" }); //Changed!
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -144,6 +145,26 @@ const PaginatedLapTable = ({
     fetchData();
   }, [selectedLap]);
 
+  const requestSort = (key) => { //Changed!
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedLapData = [...lapData].sort((a, b) => { //Changed!
+    if (!sortConfig.key) return 0;
+    const aVal = a[sortConfig.key];
+    const bVal = b[sortConfig.key];
+    if (aVal === undefined || bVal === undefined) return 0;
+    const aStr = typeof aVal === "string" ? aVal.toLowerCase() : aVal;
+    const bStr = typeof bVal === "string" ? bVal.toLowerCase() : bVal;
+    if (aStr < bStr) return sortConfig.direction === "asc" ? -1 : 1;
+    if (aStr > bStr) return sortConfig.direction === "asc" ? 1 : -1;
+    return 0;
+  });
+
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
   const goNext = () =>
@@ -256,12 +277,10 @@ const PaginatedLapTable = ({
           <thead className="bg-gray-100 border-b border-gray-200">
             <tr>
               <th className="py-2 px-2 font-semibold">#</th>
-              <th className="py-2 px-2 font-semibold">Häst / Kusk</th>
-              <th className="py-2 px-2 font-semibold">
-                {competitionName || "Procent"}%
-              </th>
-              <th className="py-2 px-2 font-semibold">Trend %</th>
-              <th className="py-2 px-2 font-semibold">V-Odds</th>
+              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("nameOfCompleteHorse")}>Häst / Kusk</th> {/* Changed! */}
+              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("analys")}>{competitionName || "Procent"}%</th> {/* Changed! */}
+              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("fart")}>Trend %</th> {/* Changed! */}
+              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("styrka")}>V-Odds</th> {/* Changed! */}
               <th className="py-2 px-2 font-semibold">Tränare</th>
               <th className="py-2 px-2 font-semibold">Tips</th>
               <th className="py-2 px-2 font-semibold">Skor</th>
@@ -269,7 +288,7 @@ const PaginatedLapTable = ({
             </tr>
           </thead>
           <tbody>
-            {lapData.map((row, i) => (
+            {sortedLapData.map((row, i) => (
               <tr
                 key={row.id}
                 className="border-b last:border-b-0 border-gray-200 hover:bg-gray-50"
