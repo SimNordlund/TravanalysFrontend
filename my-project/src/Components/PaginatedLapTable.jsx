@@ -277,14 +277,11 @@ const PaginatedLapTable = ({
           <thead className="bg-gray-100 border-b border-gray-200">
             <tr>
               <th className="py-2 px-2 font-semibold">#</th>
-              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("nameOfCompleteHorse")}>Häst / Kusk</th> {/* Changed! */}
+              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("nameOfCompleteHorse")}>Häst</th> {/* Changed! */}
               <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("analys")}>{competitionName || "Procent"}%</th> {/* Changed! */}
-              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("fart")}>Trend %</th> {/* Changed! */}
-              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("styrka")}>V-Odds</th> {/* Changed! */}
-              <th className="py-2 px-2 font-semibold">Tränare</th>
-              <th className="py-2 px-2 font-semibold">Tips</th>
-              <th className="py-2 px-2 font-semibold">Skor</th>
-              <th className="py-2 px-2 font-semibold">Vagn</th>
+              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("fart")}>Fart</th> {/* Changed! */}
+              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("styrka")}>Prestation</th> {/* Changed! */}
+              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("klass")}>Motstånd</th> {/* Changed! */}
             </tr>
           </thead>
           <tbody>
@@ -299,9 +296,6 @@ const PaginatedLapTable = ({
                 <td className="py-2 px-2">{row.fart}</td>
                 <td className="py-2 px-2">{row.styrka}</td>
                 <td className="py-2 px-2">{row.klass}</td>
-                <td className="py-2 px-2">{row.prispengar}</td>
-                <td className="py-2 px-2">{"C C"}</td>
-                <td className="py-2 px-2">Gungig</td>
               </tr>
             ))}
           </tbody>
