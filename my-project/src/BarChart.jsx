@@ -311,7 +311,7 @@ const BarChartComponent = ({
 
       {/* dropdowns */}
       <div className="w-full flex justify-center">
-        <div className="flex flex-col justify-center items-center w-full sm:w-[55%] space-y-4 mt-8 sm:mt-4 sm:flex-row sm:space-y-0 sm:space-x-2 bg-slate-50 sm:p-4 rounded-xl border shadow-md">
+        <div className="flex flex-col justify-center items-center w-full sm:w-[65%] space-y-4 mt-8 sm:mt-4 sm:flex-row sm:space-y-0 sm:space-x-2 bg-slate-50 sm:p-4 rounded-xl border shadow-md">
           <select value={selectedDate} onChange={onDate}  className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
             <option value="" disabled>Välj datum</option>
             {dates.map((d) => <option key={d.id} value={d.date}>{d.date}</option>)}
