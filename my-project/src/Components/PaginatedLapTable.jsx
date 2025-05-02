@@ -279,7 +279,7 @@ const PaginatedLapTable = ({
               <th className="py-2 px-2 font-semibold">#</th>
               <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("nameOfCompleteHorse")}>Häst</th> {/* Changed! */}
               <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("analys")}>{competitionName || "Procent"}%</th> {/* Changed! */}
-              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("fart")}>Fart</th> {/* Changed! */}
+              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("fart")}>Tid</th> {/* Changed! */}
               <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("styrka")}>Prestation</th> {/* Changed! */}
               <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("klass")}>Motstånd</th> {/* Changed! */}
             </tr>
