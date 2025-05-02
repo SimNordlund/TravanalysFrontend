@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   Send as PaperPlaneIcon,
   Loader2,
@@ -6,19 +6,30 @@ import {
   Maximize2,
   Minimize2,
   MessageCircle,
-} from "lucide-react"; 
+} from "lucide-react";
 
 /**
  * TravChat – React component that chats with your Spring-Boot back-end.
  * Streams tokens with fetch + ReadableStream (no EventSource, no spacing hacks).
  */
 export default function TravChat() {
-  const [messages, setMessages] = useState([]); // { role, content }
+  const [messages, setMessages] = useState([
+    {
+      role: "assistant",
+      content:
+        "Tjenixen! Jag är Skrällvard och är Sveriges sämsta Travbot. Hur kan jag stå till tjänst?",
+    },
+  ]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [isOpen, setIsOpen] = useState(false); //Changed!
   const [isMaximized, setIsMaximized] = useState(false); //Changed!
   const tailRef = useRef(null);
+
+    // scroll to bottom whenever messages change
+  useEffect(() => {
+    tailRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const CHATBOT_URL = import.meta.env.VITE_API_CHATBOT_URL;
 
@@ -82,7 +93,7 @@ export default function TravChat() {
                  isMaximized
                    ? "w-[90vw] h-[90vh]"
                    : "w-[90vw] max-w-[400px] h-[80vh] max-h-[600px]"
-               }`} 
+               }`}
         >
           {/* Header */}
           <div className="flex items-center justify-between bg-blue-600 text-white p-3">
