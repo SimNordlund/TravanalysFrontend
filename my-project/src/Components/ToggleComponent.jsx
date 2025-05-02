@@ -108,7 +108,7 @@ const ToggleComponent = () => {
             setSelectedCompetition={setSelectedCompetition}
             selectedLap={selectedLap}
             setSelectedLap={setSelectedLap}
-            /* new → */ selectedHorse={selectedHorse} //Changed!
+            /* new → */ selectedHorse={selectedHorse} 
           />
         )}
 
