@@ -126,7 +126,10 @@ const ToggleComponent = () => {
         )}
 
         {selectedView === "skrallar" && (
-          <Skrallar selectedDate={selectedDate} />
+          <Skrallar
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          /> // Corrected!
         )}
       </div>
     </div>
