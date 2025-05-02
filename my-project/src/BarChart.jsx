@@ -250,7 +250,7 @@ const BarChartComponent = ({
   /* ---------- JSX ---------- */
   return (
     <div className="flex flex-col mt-1 px-2 pb-10 justify-center items-center">
-      <p className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-7 px-4 py-2 flex flex-col justify-center items-center bg-slate-100">
+      <p className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-7 px-4 py-2 flex flex-col justify-center items-center bg-slate-100 rounded-xl border">
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
       </p>
 

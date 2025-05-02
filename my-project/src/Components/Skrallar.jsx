@@ -77,7 +77,9 @@ const Skrallar = ({ selectedDate, setSelectedDate }) => {
 
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
+              <h1 className="text-center text-2xl sm:text-4xl font-semibold bg-slate-50 sm:p-4 rounded-xl border">Topp 5 Skrällar</h1>
       <div className="flex items-center justify-between mb-3">
+        
         <button onClick={goPrev} disabled={idx <= 0 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
           &#8592;
         </button>

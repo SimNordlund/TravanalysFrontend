@@ -199,7 +199,7 @@ const PaginatedLapTable = ({
           &#8592;
         </button>
 
-        <h2 className="text-center text-lg sm:text-2xl font-semibold">
+        <h2 className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 px-4 py-2 flex flex-col justify-center items-center bg-slate-100 rounded-xl border">
           {niceDate}
         </h2>
 
