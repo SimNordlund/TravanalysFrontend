@@ -23,7 +23,7 @@ export default function TravChat() {
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [isOpen, setIsOpen] = useState(false); //Changed!
-  const [isMaximized, setIsMaximized] = useState(false); //Changed!
+  const [isMaximized, setIsMaximized] = useState(false); 
   const tailRef = useRef(null);
 
     // scroll to bottom whenever messages change
