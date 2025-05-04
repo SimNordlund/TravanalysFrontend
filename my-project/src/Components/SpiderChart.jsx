@@ -1,10 +1,13 @@
-// SpiderChart.jsx
-
 import React, { useState, useEffect, useRef } from "react";
 import { Radar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
 
+// ▶ SpiderChart – auto-selects first date → track → competition → lap
+//   and (if selectedHorse !== null) hides all horses except that one,
+//   otherwise shows only the top 5 by analys on initial load.
+
 const SpiderChart = ({
+  /* navigation props from ToggleComponent */
   selectedDate,
   setSelectedDate,
   selectedTrack,
@@ -13,64 +16,69 @@ const SpiderChart = ({
   setSelectedCompetition,
   selectedLap,
   setSelectedLap,
-  selectedHorse,
+  /* one-horse filter coming from BarChart or Skrallar */
+  selectedHorse, //Changed!
 }) => {
+  /* ---------- colour palette ---------- */
   const horseColors = [
-    "rgba(0, 0, 255, 0.5)",   "rgba(255, 165, 0, 0.5)",
-    "rgba(255, 0, 0, 0.5)",   "rgba(0, 100, 0, 0.5)",
-    "rgba(211, 211, 211, 0.5)","rgba(0, 0, 0, 0.5)",
-    "rgba(255, 255, 0, 0.5)", "rgba(173, 216, 230, 0.5)",
-    "rgba(165, 42, 42, 0.5)", "rgba(0, 0, 139, 0.5)",
-    "rgba(204, 204, 0, 0.5)", "rgba(105, 105, 105, 0.5)",
-    "rgba(255, 192, 203, 0.5)","rgba(255, 140, 0, 0.5)",
-    "rgba(128, 0, 128, 0.5)",
+    "rgba(0, 0, 255, 0.5)",  "rgba(255, 165, 0, 0.5)", "rgba(255, 0, 0, 0.5)",
+    "rgba(0, 100, 0, 0.5)",  "rgba(211, 211, 211, 0.5)", "rgba(0, 0, 0, 0.5)",
+    "rgba(255, 255, 0, 0.5)","rgba(173, 216, 230, 0.5)", "rgba(165, 42, 42, 0.5)",
+    "rgba(0, 0, 139, 0.5)",  "rgba(204, 204, 0, 0.5)",  "rgba(105, 105, 105, 0.5)",
+    "rgba(255, 192, 203, 0.5)","rgba(255, 140, 0, 0.5)","rgba(128, 0, 128, 0.5)",
   ];
 
+  /* ---------- state ---------- */
   const [data, setData] = useState({
     labels: ["Analys", "Tid", "Prestation", "Motstånd"],
     datasets: [],
   });
-  const [loading, setLoading]     = useState(true);
+  const [loading, setLoading]         = useState(true);
   const [showSpinner, setShowSpinner] = useState(false);
-  const [error, setError]         = useState(null);
+  const [error, setError]             = useState(null);
 
-  const [dates, setDates]         = useState([]);
-  const [tracks, setTracks]       = useState([]);
+  const [dates, setDates]             = useState([]);
+  const [tracks, setTracks]           = useState([]);
   const [competitions, setCompetitions] = useState([]);
-  const [laps, setLaps]           = useState([]);
+  const [laps, setLaps]               = useState([]);
 
+  /* ---------- responsive legend ---------- */
   const legendRef = useRef(null);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640);
-  const getLegendPosition = () => (window.innerWidth >= 640 ? "right" : "top");
-  const [legendPosition, setLegendPosition] = useState(getLegendPosition());
-
   useEffect(() => {
-    const onResize = () => {
-      setIsSmallScreen(window.innerWidth < 640);
-      setLegendPosition(getLegendPosition());
-    };
+    const onResize = () => setIsSmallScreen(window.innerWidth < 640);
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-  // 1. Dates
+  const getLegendPosition = () => (window.innerWidth >= 640 ? "right" : "top");
+  const [legendPosition, setLegendPosition] = useState(getLegendPosition());
   useEffect(() => {
-    fetch(`${API_BASE_URL}/track/dates`)
-      .then((r) => r.json())
-      .then((d) => {
-        setDates(d);
-        if (!selectedDate && d.length) {
-          const todayStr = new Date().toISOString().split("T")[0];
-          const found = d.find((x) => x.date === todayStr);
-          setSelectedDate(found ? found.date : d[0].date);
-        }
-      })
-      .catch(console.error);
+    const r = () => setLegendPosition(getLegendPosition());
+    window.addEventListener("resize", r);
+    return () => window.removeEventListener("resize", r);
   }, []);
 
-  // 2. Tracks
+  /* ---------- API base ---------- */
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  /* ───────── 1. Dates ───────── */
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/track/dates`)
+      .then((res) => res.json())
+      .then((d) => {
+        setDates(d);
+        if (!selectedDate) {
+          const todayStr = new Date().toISOString().split("T")[0];
+          const today = d.find((x) => x.date === todayStr);
+          if (today) setSelectedDate(today.date);
+          else if (d.length) setSelectedDate(d[0].date);
+        }
+      })
+      .catch((err) => console.error("dates:", err));
+  }, []);
+
+  /* ───────── 2. Tracks ───────── */
   useEffect(() => {
     if (!selectedDate) return;
     fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`)
@@ -79,10 +87,10 @@ const SpiderChart = ({
         setTracks(d);
         if (d.length) setSelectedTrack(d[0].id);
       })
-      .catch(console.error);
+      .catch((err) => console.error("tracks:", err));
   }, [selectedDate]);
 
-  // 3. Competitions
+  /* ───────── 3. Competitions ───────── */
   useEffect(() => {
     if (!selectedTrack) return;
     fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`)
@@ -91,71 +99,71 @@ const SpiderChart = ({
         setCompetitions(d);
         if (d.length) setSelectedCompetition(d[0].id);
       })
-      .catch(console.error);
+      .catch((err) => console.error("competitions:", err));
   }, [selectedTrack]);
 
-  // 4. Laps
+  /* ───────── 4. Laps ───────── */
   useEffect(() => {
     if (!selectedCompetition) return;
     fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`)
       .then((r) => r.json())
       .then((d) => {
         setLaps(d);
-        if (d.length) setSelectedLap(d[0].id);
+        const ok = d.some((l) => l.id === +selectedLap);
+        if (!selectedLap || !ok) if (d.length) setSelectedLap(d[0].id);
       })
-      .catch(console.error);
+      .catch((err) => { console.error("laps:", err); setLaps([]); });
   }, [selectedCompetition]);
 
-  // 5. Horse data + top5 logic
+  /* ───────── 5. Horses + four-starts with top5 and filter ───────── */
   useEffect(() => {
     if (!selectedLap) return;
     setLoading(true);
 
     fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`)
       .then((r) => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
-      .then((horses) =>
+      .then((completeHorses) =>
         Promise.all(
-          horses.map((h, idx) =>
-            fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${h.id}`)
+          completeHorses.map((horse, idx) =>
+            fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`)
               .then((r) => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
-              .then((fs) => ({ idx, name: h.nameOfCompleteHorse, fs }))
+              .then((fs) => ({ idx, horse, fs }))
           )
         )
       )
       .then((arr) => {
-        const raw = arr.map(({ idx, name, fs }) => ({
-          label: `${idx + 1}. ${name}`,
+        // build raw datasets
+        const rawDatasets = arr.map(({ idx, horse, fs }) => ({
+          label: `${idx+1}. ${horse.nameOfCompleteHorse}`,
           data: [fs.analys, fs.fart, fs.klass, fs.styrka],
           backgroundColor: horseColors[idx % horseColors.length],
-          borderColor: horseColors[idx % horseColors.length].replace("0.5", "1"),
+          borderColor: horseColors[idx % horseColors.length].replace("0.5","1"),
           borderWidth: 2,
           pointRadius: 2,
         }));
 
-        // determine top 5 by analys
-        const top5 = raw
-          .map((ds, i) => ({ i, val: ds.data[0] }))
-          .sort((a, b) => b.val - a.val)
-          .slice(0, 5)
-          .map((x) => x.i);
+        // top 5 by analys
+        const top5Idx = rawDatasets
+          .map((ds,i) => ({ i, val: ds.data[0] }))
+          .sort((a,b) => b.val - a.val)
+          .slice(0,5)
+          .map(x => x.i);
 
-        // hide logic
-        const datasets = raw.map((ds, i) => ({
+        // apply hidden: if selectedHorse, show only that; else show only top5
+        const datasets = rawDatasets.map((ds,i) => ({
           ...ds,
-          hidden: selectedHorse !== null ? i !== selectedHorse : !top5.includes(i),
+          hidden: selectedHorse!==null
+            ? i!==selectedHorse
+            : !top5Idx.includes(i),
         }));
 
-        setData((d) => ({ ...d, datasets }));
+        setData(p => ({ ...p, datasets }));
         setLoading(false);
       })
-      .catch((err) => {
-        console.error(err);
-        setError(err.message);
-        setLoading(false);
-      });
-  }, [selectedLap, selectedHorse]);
+      .catch((err) => { console.error("data:", err); setError(err.message); setLoading(false); });
+  }, [selectedLap, selectedHorse]); //Changed!
 
-  // spinner delay
+  // spinner
   useEffect(() => {
     let t;
     if (loading) t = setTimeout(() => setShowSpinner(true), 3000);
@@ -163,30 +171,35 @@ const SpiderChart = ({
     return () => clearTimeout(t);
   }, [loading]);
 
-  // custom HTML legend
+  /* ---------- custom HTML legend ---------- */
   const htmlLegendPlugin = {
     id: "htmlLegend",
-    afterUpdate: (chart) => {
+    afterUpdate(chart) {
       const ul = legendRef.current;
       if (!ul) return;
-      ul.innerHTML = "";
-      chart.data.datasets.forEach((ds, i) => {
+      while (ul.firstChild) ul.firstChild.remove();
+      chart.data.datasets.forEach((ds, idx) => {
         const li = document.createElement("li");
         li.className = "flex items-center cursor-pointer select-none whitespace-nowrap";
-        const vis = chart.isDatasetVisible(i);
-        li.style.opacity = vis ? 1 : 0.35;
-        li.onclick = () => (vis ? chart.hide(i) : chart.show(i));
+        const visible = chart.isDatasetVisible(idx);
+        li.style.opacity = visible ? 1 : 0.35;
+        li.onclick = () => {
+          chart.setDatasetVisibility(idx, !chart.isDatasetVisible(idx));
+          chart.update();
+        };
         const box = document.createElement("span");
         box.className = "inline-block w-7 h-3 mr-2 rounded";
         box.style.background = ds.backgroundColor;
-        const txt = document.createElement("span");
-        txt.textContent = ds.label;
-        li.append(box, txt);
-        ul.append(li);
+        const text = document.createElement("span");
+        text.textContent = ds.label;
+        li.appendChild(box);
+        li.appendChild(text);
+        ul.appendChild(li);
       });
     },
   };
 
+  /* ---------- chart options ---------- */
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -199,62 +212,84 @@ const SpiderChart = ({
     elements: { line: { borderWidth: 2 } },
   };
 
+  /* ---------- nice Swedish labels ---------- */
+  const today = new Date();
+  const todayStr = today.toISOString().split("T")[0];
+  const yesterdayStr = new Date(today - 864e5).toISOString().split("T")[0];
+  const tomorrowStr = new Date(+today + 864e5).toISOString().split("T")[0];
+  const fmt = d => new Date(d).toLocaleDateString("sv-SE", { weekday: "long", day: "numeric", month: "long" });
+
+  const selectedDateLabel =
+    selectedDate === todayStr ? `Idag, ${fmt(selectedDate)}` :
+    selectedDate === yesterdayStr ? `Igår, ${fmt(selectedDate)}` :
+    selectedDate === tomorrowStr  ? `Imorgon, ${fmt(selectedDate)}` :
+    fmt(selectedDate);
+
+  const selectedTrackLabel =
+    tracks.find(t=>t.id===+selectedTrack)?.nameOfTrack || "Färjestad";
+  const selectedCompetitionLabel =
+    competitions.find(c=>c.id===+selectedCompetition)?.nameOfCompetition || "v75";
+  const selectedLapLabel =
+    laps.find(l=>l.id===+selectedLap)?.nameOfLap || "Lopp 1";
+
+  /* ---------- handlers ---------- */
+  const handleDate = e => setSelectedDate(e.target.value);
+  const handleTrack = e => setSelectedTrack(e.target.value);
+  const handleComp = e => setSelectedCompetition(e.target.value);
+  const handleLap = e => setSelectedLap(e.target.value);
+
+  /* ---------- JSX ---------- */
   return (
-    <div className="flex flex-col items-center px-4 py-6">
-      {/* Title */}
-      <p className="mb-4 px-4 py-2 bg-slate-100 rounded-xl border text-center font-semibold">
-        {selectedDate} | {selectedTrack} | {selectedCompetition}
+    <div className="flex flex-col justify-center items-center mt-1 px-2 pb-10">
+      <p className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 px-4 py-2 flex flex-col justify-center items-center bg-slate-100 rounded-xl border">
+        {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
       </p>
 
-      {/* custom legend (small screens) */}
-      <ul
-        ref={legendRef}
-        className={isSmallScreen ? "grid grid-cols-3 gap-2 text-xs mb-4" : "hidden"}
-      />
+      {/* custom legend on small screens */}
+      <ul ref={legendRef} className={isSmallScreen ? "relative z-10 grid grid-cols-3 gap-2 text-xs" : "hidden"} />
 
-      {/* chart or spinner */}
-      <div className="w-full max-w-md h-64 sm:h-80">
-        {data.datasets.length > 0 && !loading ? (
+      {/* radar / placeholders */}
+      <div className="relative w-full sm:w-[300px] md:w-[500px] h-[40vh] sm:h-[40vh] md:h-[50vh] flex items-center justify-center">
+        {data.datasets.length > 0 && !loading && (
           <Radar data={data} options={options} plugins={[htmlLegendPlugin]} />
-        ) : loading && showSpinner ? (
+        )}
+
+        {!loading && data.datasets.length === 0 && (
+          <div className="text-sm text-slate-500">No data found for this lap.</div>
+        )}
+
+        {showSpinner && loading && (
           <div className="flex flex-col items-center">
             <div className="animate-spin h-10 w-10 border-4 border-indigo-400 border-t-transparent rounded-full" />
-            <p className="mt-2 text-sm text-slate-500">Laddar…</p>
+            <span className="mt-2 text-sm text-slate-500">Grubblar…</span>
           </div>
-        ) : (
-          <p className="text-sm text-slate-500">Ingen data hittades.</p>
         )}
       </div>
 
-      {/* selectors */}
-      <div className="mt-6 flex flex-wrap gap-2 bg-slate-50 p-4 rounded-xl border shadow">
-        <select value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="p-2 border rounded">
-          {dates.map((d) => (
-            <option key={d.id} value={d.date}>{d.date}</option>
-          ))}
+      {/* dropdowns */}
+      <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md mt-4 sm:mt-8">
+        <select value={selectedDate} onChange={handleDate} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
+          <option value="" disabled>Välj datum</option>
+          {dates.map(d => <option key={d.id} value={d.date}>{d.date}</option>)}
         </select>
-        <select value={selectedTrack} onChange={(e) => setSelectedTrack(e.target.value)} className="p-2 border rounded">
-          {tracks.map((t) => (
-            <option key={t.id} value={t.id}>{t.nameOfTrack}</option>
-          ))}
+
+        <select value={selectedTrack} onChange={handleTrack} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
+          <option value="" disabled>Välj bana</option>
+          {tracks.map(t => <option key={t.id} value={t.id}>{t.nameOfTrack}</option>)}
         </select>
-        <select
-          value={selectedCompetition}
-          onChange={(e) => setSelectedCompetition(e.target.value)}
-          className="p-2 border rounded"
-        >
-          {competitions.map((c) => (
-            <option key={c.id} value={c.id}>{c.nameOfCompetition}</option>
-          ))}
+
+        <select value={selectedCompetition} onChange={handleComp} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
+          <option value="" disabled>Välj spelform</option>
+          {competitions.map(c => <option key={c.id} value={c.id}>{c.nameOfCompetition}</option>)}
         </select>
-        <select value={selectedLap} onChange={(e) => setSelectedLap(e.target.value)} className="p-2 border rounded">
-          {laps.map((l) => (
-            <option key={l.id} value={l.id}>{l.nameOfLap}</option>
-          ))}
+
+        <select value={selectedLap} onChange={handleLap} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
+          <option value="" disabled>Välj lopp</option>
+          {laps.map(l => <option key={l.id} value={l.id}>{l.nameOfLap}</option>)}
         </select>
       </div>
 
-      {error && <p className="mt-4 text-red-600">Error: {error}</p>}
+      {error && <div className="text-red-600 mt-4">Error: {error}</div>}
     </div>
   );
 };
