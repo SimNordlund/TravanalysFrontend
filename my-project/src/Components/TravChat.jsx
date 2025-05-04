@@ -17,7 +17,7 @@ export default function TravChat() {
     {
       role: "assistant",
       content:
-        "Tjenixen! Jag är Skrällvard och är Sveriges sämsta Travbot. Hur kan jag stå till tjänst?",
+        "Hej! Jag är Skrällvard och är en travbot. Du kan fråga mig om trav, tips och mycket mer!",
     },
   ]);
   const [input, setInput] = useState("");

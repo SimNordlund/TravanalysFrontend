@@ -19,15 +19,25 @@ const SpiderChart = ({
   selectedLap,
   setSelectedLap,
   /* one-horse filter coming from BarChart */
-  selectedHorse, //Changed!
+  selectedHorse,
 }) => {
   /* ---------- colour palette ---------- */
   const horseColors = [
-    "rgba(0, 0, 255, 0.5)",  "rgba(255, 165, 0, 0.5)", "rgba(255, 0, 0, 0.5)",
-    "rgba(0, 100, 0, 0.5)",  "rgba(211, 211, 211, 0.5)", "rgba(0, 0, 0, 0.5)",
-    "rgba(255, 255, 0, 0.5)","rgba(173, 216, 230, 0.5)", "rgba(165, 42, 42, 0.5)",
-    "rgba(0, 0, 139, 0.5)",  "rgba(204, 204, 0, 0.5)",  "rgba(105, 105, 105, 0.5)",
-    "rgba(255, 192, 203, 0.5)","rgba(255, 140, 0, 0.5)","rgba(128, 0, 128, 0.5)",
+    "rgba(0, 0, 255, 0.5)",
+    "rgba(255, 165, 0, 0.5)",
+    "rgba(255, 0, 0, 0.5)",
+    "rgba(0, 100, 0, 0.5)",
+    "rgba(211, 211, 211, 0.5)",
+    "rgba(0, 0, 0, 0.5)",
+    "rgba(255, 255, 0, 0.5)",
+    "rgba(173, 216, 230, 0.5)",
+    "rgba(165, 42, 42, 0.5)",
+    "rgba(0, 0, 139, 0.5)",
+    "rgba(204, 204, 0, 0.5)",
+    "rgba(105, 105, 105, 0.5)",
+    "rgba(255, 192, 203, 0.5)",
+    "rgba(255, 140, 0, 0.5)",
+    "rgba(128, 0, 128, 0.5)",
   ];
 
   /* ---------- state ---------- */
@@ -35,14 +45,14 @@ const SpiderChart = ({
     labels: ["Analys", "Tid", "Prestation", "Motstånd"],
     datasets: [],
   });
-  const [loading, setLoading]       = useState(true);
+  const [loading, setLoading] = useState(true);
   const [showSpinner, setShowSpinner] = useState(false);
-  const [error, setError]           = useState(null);
+  const [error, setError] = useState(null);
 
-  const [dates, setDates]           = useState([]);
-  const [tracks, setTracks]         = useState([]);
+  const [dates, setDates] = useState([]);
+  const [tracks, setTracks] = useState([]);
   const [competitions, setCompetitions] = useState([]);
-  const [laps, setLaps]             = useState([]);
+  const [laps, setLaps] = useState([]);
 
   /* ---------- responsive legend ---------- */
   const legendRef = useRef(null);
@@ -107,7 +117,9 @@ const SpiderChart = ({
   /* ───────── 4. Laps ───────── */
   useEffect(() => {
     if (!selectedCompetition) return;
-    fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`)
+    fetch(
+      `${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`
+    )
       .then((r) => r.json())
       .then((d) => {
         setLaps(d);
@@ -133,19 +145,24 @@ const SpiderChart = ({
       .then((completeHorses) =>
         Promise.all(
           completeHorses.map((horse, idx) =>
-            fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`)
+            fetch(
+              `${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`
+            )
               .then((r) => {
                 if (!r.ok) throw new Error(r.statusText);
                 return r.json();
               })
               .then((fs) => ({
                 label: `${idx + 1}. ${horse.nameOfCompleteHorse}`,
-                data: [fs.analys, fs.fart, fs.klass, fs.styrka], //Changed!
+                data: [fs.analys, fs.fart, fs.klass, fs.styrka],
                 backgroundColor: horseColors[idx % horseColors.length],
-                borderColor: horseColors[idx % horseColors.length].replace("0.5", "1"),
+                borderColor: horseColors[idx % horseColors.length].replace(
+                  "0.5",
+                  "1"
+                ),
                 borderWidth: 2,
                 pointRadius: 2,
-                hidden: selectedHorse !== null && idx !== selectedHorse, //Changed!
+                hidden: selectedHorse !== null && idx !== selectedHorse,
               }))
           )
         )
@@ -159,7 +176,7 @@ const SpiderChart = ({
         setError(err.message);
         setLoading(false);
       });
-  }, [selectedLap, selectedHorse]); //Changed!
+  }, [selectedLap, selectedHorse]);
 
   /* ---- show spinner only after 3 s ---- */
   useEffect(() => {
@@ -185,9 +202,13 @@ const SpiderChart = ({
         const visible = chart.isDatasetVisible(idx);
         li.style.opacity = visible ? 1 : 0.35;
 
+        //Fadar barsen
         li.onclick = () => {
-          chart.setDatasetVisibility(idx, !chart.isDatasetVisible(idx));
-          chart.update();
+          if (chart.isDatasetVisible(idx)) {
+            chart.hide(idx); 
+          } else {
+            chart.show(idx); 
+          }
         };
 
         const box = document.createElement("span");
@@ -209,7 +230,10 @@ const SpiderChart = ({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { display: !isSmallScreen, position: isSmallScreen ? "top" : legendPosition },
+      legend: {
+        display: !isSmallScreen,
+        position: isSmallScreen ? "top" : legendPosition,
+      },
     },
     scales: {
       r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100 },
@@ -221,10 +245,14 @@ const SpiderChart = ({
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
   const yesterdayStr = new Date(today - 864e5).toISOString().split("T")[0];
-  const tomorrowStr   = new Date(+today + 864e5).toISOString().split("T")[0];
+  const tomorrowStr = new Date(+today + 864e5).toISOString().split("T")[0];
 
   const fmt = (d) =>
-    new Date(d).toLocaleDateString("sv-SE", { weekday: "long", day: "numeric", month: "long" });
+    new Date(d).toLocaleDateString("sv-SE", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    });
 
   const selectedDateLabel =
     selectedDate === todayStr
@@ -238,14 +266,16 @@ const SpiderChart = ({
   const selectedTrackLabel =
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad";
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "v75";
-  const selectedLapLabel = laps.find((l) => l.id === +selectedLap)?.nameOfLap ?? "Lopp 1";
+    competitions.find((c) => c.id === +selectedCompetition)
+      ?.nameOfCompetition ?? "v75";
+  const selectedLapLabel =
+    laps.find((l) => l.id === +selectedLap)?.nameOfLap ?? "Lopp 1";
 
   /* ---------- handlers ---------- */
   const handleDate = (e) => setSelectedDate(e.target.value);
   const handleTrack = (e) => setSelectedTrack(e.target.value);
-  const handleComp  = (e) => setSelectedCompetition(e.target.value);
-  const handleLap   = (e) => setSelectedLap(e.target.value);
+  const handleComp = (e) => setSelectedCompetition(e.target.value);
+  const handleLap = (e) => setSelectedLap(e.target.value);
 
   /* ---------- JSX ---------- */
   return (
@@ -258,7 +288,9 @@ const SpiderChart = ({
       <ul
         ref={legendRef}
         className={
-          isSmallScreen ? "relative z-10 grid grid-cols-3 gap-2 text-xs" : "hidden"
+          isSmallScreen
+            ? "relative z-10 grid grid-cols-3 gap-2 text-xs"
+            : "hidden"
         }
       />
 
@@ -269,7 +301,9 @@ const SpiderChart = ({
         )}
 
         {!loading && data.datasets.length === 0 && (
-          <div className="text-sm text-slate-500">No data found for this lap.</div>
+          <div className="text-sm text-slate-500">
+            No data found for this lap.
+          </div>
         )}
 
         {showSpinner && loading && (
@@ -282,31 +316,63 @@ const SpiderChart = ({
 
       {/* dropdowns */}
       <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md mt-4 sm:mt-8">
-        <select value={selectedDate} onChange={handleDate} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
-          <option value="" disabled>Välj datum</option>
+        <select
+          value={selectedDate}
+          onChange={handleDate}
+          className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50"
+        >
+          <option value="" disabled>
+            Välj datum
+          </option>
           {dates.map((d) => (
-            <option key={d.id} value={d.date}>{d.date}</option>
+            <option key={d.id} value={d.date}>
+              {d.date}
+            </option>
           ))}
         </select>
 
-        <select value={selectedTrack} onChange={handleTrack} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
-          <option value="" disabled>Välj bana</option>
+        <select
+          value={selectedTrack}
+          onChange={handleTrack}
+          className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50"
+        >
+          <option value="" disabled>
+            Välj bana
+          </option>
           {tracks.map((t) => (
-            <option key={t.id} value={t.id}>{t.nameOfTrack}</option>
+            <option key={t.id} value={t.id}>
+              {t.nameOfTrack}
+            </option>
           ))}
         </select>
 
-        <select value={selectedCompetition} onChange={handleComp} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
-          <option value="" disabled>Välj spelform</option>
+        <select
+          value={selectedCompetition}
+          onChange={handleComp}
+          className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50"
+        >
+          <option value="" disabled>
+            Välj spelform
+          </option>
           {competitions.map((c) => (
-            <option key={c.id} value={c.id}>{c.nameOfCompetition}</option>
+            <option key={c.id} value={c.id}>
+              {c.nameOfCompetition}
+            </option>
           ))}
         </select>
 
-        <select value={selectedLap} onChange={handleLap} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
-          <option value="" disabled>Välj lopp</option>
+        <select
+          value={selectedLap}
+          onChange={handleLap}
+          className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50"
+        >
+          <option value="" disabled>
+            Välj lopp
+          </option>
           {laps.map((l) => (
-            <option key={l.id} value={l.id}>{l.nameOfLap}</option>
+            <option key={l.id} value={l.id}>
+              {l.nameOfLap}
+            </option>
           ))}
         </select>
       </div>

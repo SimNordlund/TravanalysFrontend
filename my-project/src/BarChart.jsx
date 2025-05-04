@@ -2,51 +2,65 @@
 // (copy-paste the whole file)
 
 import React, { useEffect, useState, useRef } from "react";
-import { Bar, getElementAtEvent } from "react-chartjs-2";          //Changed!
+import { Bar, getElementAtEvent } from "react-chartjs-2";
 import pappaCrazy from "./Bilder/PappaCrazy.png";
 import Chart from "chart.js/auto";
 
 const BarChartComponent = ({
   /* navigation props from ToggleComponent */
-  selectedDate, setSelectedDate,
-  selectedTrack, setSelectedTrack,
-  selectedCompetition, setSelectedCompetition,
-  selectedLap, setSelectedLap,
+  selectedDate,
+  setSelectedDate,
+  selectedTrack,
+  setSelectedTrack,
+  selectedCompetition,
+  setSelectedCompetition,
+  selectedLap,
+  setSelectedLap,
   /* cross-link props */
-  setSelectedView,                                         //Changed!
-  setSelectedHorse,                                        //Changed!
+  setSelectedView,
+  setSelectedHorse,
 }) => {
   /* ---------- refs ---------- */
   const legendRef = useRef(null);
-  const chartRef  = useRef(null);                           //Changed!
+  const chartRef = useRef(null);
 
   /* ---------- state ---------- */
-  const [data, setData]               = useState({ labels: [], datasets: [] });
-  const [loading, setLoading]         = useState(true);
+  const [data, setData] = useState({ labels: [], datasets: [] });
+  const [loading, setLoading] = useState(true);
   const [showSpinner, setShowSpinner] = useState(false);
-  const [error, setError]             = useState(null);
+  const [error, setError] = useState(null);
 
-  const [dates, setDates]         = useState([]);
-  const [tracks, setTracks]       = useState([]);
+  const [dates, setDates] = useState([]);
+  const [tracks, setTracks] = useState([]);
   const [competitions, setCompetitions] = useState([]);
-  const [laps, setLaps]           = useState([]);
+  const [laps, setLaps] = useState([]);
 
   /* ---------- colour palette ---------- */
   const horseColors = [
-    "rgba(0, 0, 255, 0.5)","rgba(255, 165, 0, 0.5)","rgba(255, 0, 0, 0.5)",
-    "rgba(0, 100, 0, 0.5)","rgba(211, 211, 211, 0.5)","rgba(0, 0, 0, 0.5)",
-    "rgba(255, 255, 0, 0.5)","rgba(173, 216, 230, 0.5)","rgba(165, 42, 42, 0.5)",
-    "rgba(0, 0, 139, 0.5)","rgba(204, 204, 0, 0.5)","rgba(105, 105, 105, 0.5)",
-    "rgba(255, 192, 203, 0.5)","rgba(255, 140, 0, 0.5)","rgba(128, 0, 128, 0.5)",
+    "rgba(0, 0, 255, 0.5)",
+    "rgba(255, 165, 0, 0.5)",
+    "rgba(255, 0, 0, 0.5)",
+    "rgba(0, 100, 0, 0.5)",
+    "rgba(211, 211, 211, 0.5)",
+    "rgba(0, 0, 0, 0.5)",
+    "rgba(255, 255, 0, 0.5)",
+    "rgba(173, 216, 230, 0.5)",
+    "rgba(165, 42, 42, 0.5)",
+    "rgba(0, 0, 139, 0.5)",
+    "rgba(204, 204, 0, 0.5)",
+    "rgba(105, 105, 105, 0.5)",
+    "rgba(255, 192, 203, 0.5)",
+    "rgba(255, 140, 0, 0.5)",
+    "rgba(128, 0, 128, 0.5)",
   ];
 
   /* ---------- responsive legend toggle ---------- */
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640); //Changed!
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640);
   useEffect(() => {
-    const onResize = () => setIsSmallScreen(window.innerWidth < 640);          //Changed!
-    window.addEventListener("resize", onResize);                               //Changed!
-    return () => window.removeEventListener("resize", onResize);               //Changed!
-  }, []);                                                                      //Changed!
+    const onResize = () => setIsSmallScreen(window.innerWidth < 640);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   /* ---------- API base ---------- */
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -94,7 +108,9 @@ const BarChartComponent = ({
   /* ───────── 4. Laps ───────── */
   useEffect(() => {
     if (!selectedCompetition) return;
-    fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`)
+    fetch(
+      `${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`
+    )
       .then((r) => r.json())
       .then((d) => {
         setLaps(d);
@@ -121,7 +137,9 @@ const BarChartComponent = ({
         const labels = completeHorses.map((_, i) => `${i + 1}.`);
         return Promise.all(
           completeHorses.map((horse, idx) =>
-            fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`)
+            fetch(
+              `${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`
+            )
               .then((r) => {
                 if (!r.ok) throw new Error(r.statusText);
                 return r.json();
@@ -159,13 +177,13 @@ const BarChartComponent = ({
   }, [loading]);
 
   /* ---------- click-to-Spider handler ---------- */
-  const handleBarClick = (evt) => {                                    //Changed!
-    const els = getElementAtEvent(chartRef.current, evt);              //Changed!
-    if (!els.length) return;                                           //Changed!
-    const { datasetIndex } = els[0];                                   //Changed!
-    setSelectedHorse(datasetIndex);                                    //Changed!
-    setSelectedView("spider");                                         //Changed!
-  };                                                                   //Changed!
+  const handleBarClick = (evt) => {
+    const els = getElementAtEvent(chartRef.current, evt);
+    if (!els.length) return;
+    const { datasetIndex } = els[0];
+    setSelectedHorse(datasetIndex);
+    setSelectedView("spider");
+  };
 
   /* ---------- html legend (same logic as your version) ---------- */
   const htmlLegendPlugin = {
@@ -178,14 +196,23 @@ const BarChartComponent = ({
       chart.legend.legendItems.forEach((item) => {
         const li = document.createElement("li");
         li.className = "flex items-center cursor-pointer";
-        li.style.opacity = item.hidden ? 0.5 : 1;
+        const visible = chart.isDatasetVisible(item.datasetIndex);
+        li.style.opacity = visible ? 1 : 0.35;
+
+        //Fadar barsen
         li.onclick = () => {
-          chart.toggleDataVisibility(item.datasetIndex);
-          chart.update();
+          if (chart.isDatasetVisible(item.datasetIndex)) {
+            chart.hide(item.datasetIndex); 
+          } else {
+            chart.show(item.datasetIndex); 
+          }
+          // no need to call chart.update(), hide/show do it under ytan jao
         };
+
         const box = document.createElement("span");
         box.className = "inline-block w-7 h-3 mr-2 rounded";
         box.style.background = item.fillStyle;
+
         const text = document.createElement("span");
         text.textContent = item.text;
         li.appendChild(box);
@@ -220,9 +247,13 @@ const BarChartComponent = ({
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
   const yesterdayStr = new Date(today - 864e5).toISOString().split("T")[0];
-  const tomorrowStr  = new Date(+today + 864e5).toISOString().split("T")[0];
+  const tomorrowStr = new Date(+today + 864e5).toISOString().split("T")[0];
   const fmt = (d) =>
-    new Date(d).toLocaleDateString("sv-SE", { weekday: "long", day: "numeric", month: "long" });
+    new Date(d).toLocaleDateString("sv-SE", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    });
 
   const selectedDateLabel =
     selectedDate === todayStr
@@ -236,13 +267,14 @@ const BarChartComponent = ({
   const selectedTrackLabel =
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad";
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "v75";
+    competitions.find((c) => c.id === +selectedCompetition)
+      ?.nameOfCompetition ?? "v75";
 
   /* ---------- dropdown handlers ---------- */
-  const onDate  = (e) => setSelectedDate(e.target.value);
+  const onDate = (e) => setSelectedDate(e.target.value);
   const onTrack = (e) => setSelectedTrack(e.target.value);
-  const onComp  = (e) => setSelectedCompetition(e.target.value);
-  const onLap   = (e) => setSelectedLap(e.target.value);
+  const onComp = (e) => setSelectedCompetition(e.target.value);
+  const onLap = (e) => setSelectedLap(e.target.value);
 
   /* ---------- early error ---------- */
   if (error) return <div className="text-red-600">Error: {error}</div>;
@@ -274,25 +306,33 @@ const BarChartComponent = ({
         ) : (
           <div className="flex gap-2">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-gray-300 rounded w-16 h-6 sm:w-20 sm:h-8 animate-pulse" />
+              <div
+                key={i}
+                className="bg-gray-300 rounded w-16 h-6 sm:w-20 sm:h-8 animate-pulse"
+              />
             ))}
           </div>
         )}
       </div>
 
       {/* custom legend (<640 px) */}
-      <ul ref={legendRef} className={isSmallScreen ? "grid grid-cols-3 gap-2 mb-2 text-xs" : "hidden"} />
+      <ul
+        ref={legendRef}
+        className={
+          isSmallScreen ? "grid grid-cols-3 gap-2 mb-2 text-xs" : "hidden"
+        }
+      />
 
       {/* bar chart / placeholders */}
       <div className="w-full flex justify-center">
         <div className="sm:w-[90vh] w-full sm:h-[45vh] h-[30vh] relative flex items-center justify-center">
           {data.datasets.length > 0 && !loading && (
             <Bar
-              ref={chartRef}                  /* Changed! */
+              ref={chartRef} /* Changed! */
               data={data}
               options={options}
               plugins={isSmallScreen ? [htmlLegendPlugin] : []}
-              onClick={handleBarClick}        /* Changed! */
+              onClick={handleBarClick} /* Changed! */
             />
           )}
 
@@ -302,7 +342,11 @@ const BarChartComponent = ({
 
           {showSpinner && loading && (
             <div className="flex flex-col items-center">
-              <img src={pappaCrazy} alt="Loading…" className="h-24 w-24 animate-spin" />
+              <img
+                src={pappaCrazy}
+                alt="Loading…"
+                className="h-24 w-24 animate-spin"
+              />
               <span className="mt-2 text-sm text-slate-500">Grubblar…</span>
             </div>
           )}
@@ -312,24 +356,64 @@ const BarChartComponent = ({
       {/* dropdowns */}
       <div className="w-full flex justify-center">
         <div className="flex flex-col justify-center items-center w-full sm:w-[65%] space-y-4 mt-8 sm:mt-4 sm:flex-row sm:space-y-0 sm:space-x-2 bg-slate-50 sm:p-4 rounded-xl border shadow-md">
-          <select value={selectedDate} onChange={onDate}  className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
-            <option value="" disabled>Välj datum</option>
-            {dates.map((d) => <option key={d.id} value={d.date}>{d.date}</option>)}
+          <select
+            value={selectedDate}
+            onChange={onDate}
+            className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50"
+          >
+            <option value="" disabled>
+              Välj datum
+            </option>
+            {dates.map((d) => (
+              <option key={d.id} value={d.date}>
+                {d.date}
+              </option>
+            ))}
           </select>
 
-          <select value={selectedTrack} onChange={onTrack} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
-            <option value="" disabled>Välj bana</option>
-            {tracks.map((t) => <option key={t.id} value={t.id}>{t.nameOfTrack}</option>)}
+          <select
+            value={selectedTrack}
+            onChange={onTrack}
+            className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50"
+          >
+            <option value="" disabled>
+              Välj bana
+            </option>
+            {tracks.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.nameOfTrack}
+              </option>
+            ))}
           </select>
 
-          <select value={selectedCompetition} onChange={onComp} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
-            <option value="" disabled>Välj spelform</option>
-            {competitions.map((c) => <option key={c.id} value={c.id}>{c.nameOfCompetition}</option>)}
+          <select
+            value={selectedCompetition}
+            onChange={onComp}
+            className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50"
+          >
+            <option value="" disabled>
+              Välj spelform
+            </option>
+            {competitions.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.nameOfCompetition}
+              </option>
+            ))}
           </select>
 
-          <select value={selectedLap} onChange={onLap} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
-            <option value="" disabled>Välj lopp</option>
-            {laps.map((l) => <option key={l.id} value={l.id}>{l.nameOfLap}</option>)}
+          <select
+            value={selectedLap}
+            onChange={onLap}
+            className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50"
+          >
+            <option value="" disabled>
+              Välj lopp
+            </option>
+            {laps.map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.nameOfLap}
+              </option>
+            ))}
           </select>
         </div>
       </div>
