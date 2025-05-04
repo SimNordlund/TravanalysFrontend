@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SpiderChart from "./SpiderChart";
 import BarChart from "../BarChart";
-import PaginatedLapTable from "./PaginatedLapTable"; // adjust path if needed
+import PaginatedLapTable from "./PaginatedLapTable"; 
 import Skrallar from "./Skrallar";
 
 const ToggleComponent = () => {
@@ -10,15 +10,15 @@ const ToggleComponent = () => {
   const [selectedCompetition, setSelectedCompetition] = useState("");
   const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState("bar");
-  const [selectedHorse, setSelectedHorse] = useState(null); //Changed!
+  const [selectedHorse, setSelectedHorse] = useState(null); 
 
   /* ↓ if the user taps the “Diagram / Tabell / Analys” button              */
   /*   we reset the one-horse filter so Spider shows everything again.       */
   const switchView = (view) => {
-    //Changed!
-    setSelectedView(view); //Changed!
-    if (view !== "spider") setSelectedHorse(null); //Changed!
-  }; //Changed!
+    
+    setSelectedView(view); 
+    if (view !== "spider") setSelectedHorse(null); 
+  }; 
 
   const callouts = [
     {
@@ -56,7 +56,7 @@ const ToggleComponent = () => {
           <div
             key={c.id}
             className="group relative cursor-pointer"
-            onClick={() => switchView(c.view)} /* Changed! */
+            onClick={() => switchView(c.view)} 
           >
             <div
               className={`
@@ -92,8 +92,8 @@ const ToggleComponent = () => {
             setSelectedCompetition={setSelectedCompetition}
             selectedLap={selectedLap}
             setSelectedLap={setSelectedLap}
-            /* new → */ setSelectedView={setSelectedView} //Changed!
-            setSelectedHorse={setSelectedHorse} //Changed!
+            /* new → */ setSelectedView={setSelectedView} 
+            setSelectedHorse={setSelectedHorse} 
           />
         )}
 
@@ -108,7 +108,7 @@ const ToggleComponent = () => {
             setSelectedCompetition={setSelectedCompetition}
             selectedLap={selectedLap}
             setSelectedLap={setSelectedLap}
-            /* new → */ selectedHorse={selectedHorse} 
+            /* new → */ selectedHorse={selectedHorse}
           />
         )}
 
@@ -125,12 +125,12 @@ const ToggleComponent = () => {
           />
         )}
 
-        {selectedView === "skrallar" && (
-          <Skrallar
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-          /> // Corrected!
-        )}
+        <Skrallar
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          setSelectedView={setSelectedView}
+          setSelectedHorse={setSelectedHorse}
+        />
       </div>
     </div>
   );

@@ -75,12 +75,12 @@ export default function Example() {
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                     <div>
-                    <a href="/" className="mt-0 font-semibold text-sm sm:text-xl text-white">Travanalys </a>
+                    <a href="/" className="mt-0 font-semibold text-lg sm:text-xl text-white">Travanalys </a>
                     </div>
 
                 {/* dropdown */}
                 <Menu as="div" className="relative ml-3">
-                  <div>
+                {/*<div>
                     <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
@@ -90,7 +90,7 @@ export default function Example() {
                         alt=""
                       />
                     </Menu.Button>
-                  </div>
+                  </div> */}
                   <Transition
                     as={Fragment}
                     enter="transition ease-out duration-100"

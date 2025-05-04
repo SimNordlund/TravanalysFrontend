@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-const Skrallar = ({ selectedDate, setSelectedDate }) => {
+const Skrallar = ({
+  selectedDate,
+  setSelectedDate,
+  setSelectedView,           //Changed!
+  setSelectedHorse           //Changed!
+}) => {
   const [dates, setDates] = useState([]);
   const [horses, setHorses] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -165,9 +170,13 @@ const Skrallar = ({ selectedDate, setSelectedDate }) => {
             {sortedHorses.map((row) => (
               <tr
                 key={row.horseId}
-                className="border-b last:border-b-0 border-gray-200 hover:bg-gray-50"
+                className="border-b last:border-b-0 border-gray-200 hover:bg-gray-50 cursor-pointer"  //Changed!
+                onClick={() => {                           //Changed!
+                  setSelectedHorse(row.position - 1);
+                  setSelectedView("spider");
+                }}                                        //Changed!
               >
-                <td className="py-2 px-2">{row.position}</td>    {/*Changed!*/}
+                <td className="py-2 px-2">{row.position}</td>
                 <td className="py-2 px-2">{row.nameOfHorse}</td>
                 <td className="py-2 px-2">{row.analys}</td>
                 <td className="py-2 px-2">{row.fart}</td>
