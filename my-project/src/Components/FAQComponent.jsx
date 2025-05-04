@@ -70,26 +70,30 @@ const Faqs = () => {
   const faqsList = [
     {
       q: "Vad är Travanalys för någonting?",
-      a: "Vägen till framgång",
+      a: "Blablabla",
     },
     {
       q: "Hur använder jag Travanalys?",
-      a: "Jag är Niclas Nordlund, the skräll-whisperer",
+      a: "Blablabla",
+    },
+    {
+      q: "Hur fungerar Travanalys?",
+      a: "Blablabla",
     },
     {
       q: "Hur kontaktar jag er?",
-      a: "Du ser informationen längst ner på hemsidan.",
+      a: "Kontaktformulär finns längst ner på hemsidan.",
     },
     {
-      q: "Arboga eller Åbro?",
-      a: "Gärna en Åbro till Arbogan",
-    }
+      q: "Vilka ligger bakom Travanalys?",
+      a: "B1 & B2",
+    },
   ];
 
   return (
     <section className="leading-relaxed max-w-screen-xl mt-12 mx-auto px-4 md:px-8">
       <div className="space-y-3 text-center">
-        <h1 className="text-3xl text-gray-800 font-semibold">Vanliga frågor</h1>
+        <h1 className="text-3xl text-gray-800 font-semibold">Vad är Travanalys?</h1>
         <p className="text-gray-600 max-w-lg mx-auto text-lg">
           Hittar du inte ditt svar? Kontakta oss så hjälper vi dig.
         </p>
