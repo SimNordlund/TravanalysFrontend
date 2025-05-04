@@ -124,13 +124,14 @@ const ToggleComponent = () => {
             setSelectedLap={setSelectedLap}
           />
         )}
-
+         {selectedView === "skrallar" && (
         <Skrallar
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           setSelectedView={setSelectedView}
           setSelectedHorse={setSelectedHorse}
         />
+      )}
       </div>
     </div>
   );

@@ -299,7 +299,7 @@ const PaginatedLapTable = ({
                 className="py-2 px-2 font-semibold cursor-pointer"
                 onClick={() => requestSort("analys")}
               >
-                {competitionName || "Procent"}%
+                {competitionName || "Odds"}%
               </th>{" "}
               {/* Changed! */}
               <th

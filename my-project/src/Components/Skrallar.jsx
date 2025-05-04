@@ -143,7 +143,7 @@ const Skrallar = ({
                 className="py-2 px-2 font-semibold cursor-pointer"
                 onClick={() => requestSort("analys")}
               >
-                Procent%
+                Skräll%
               </th>
               <th
                 className="py-2 px-2 font-semibold cursor-pointer"
