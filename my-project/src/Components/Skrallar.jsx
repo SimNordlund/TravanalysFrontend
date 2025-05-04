@@ -18,7 +18,9 @@ const Skrallar = ({ selectedDate, setSelectedDate }) => {
         if (!selectedDate) {
           const todayStr = new Date().toISOString().split("T")[0];
           const todayObj = all.find((d) => d.date === todayStr);
-          setSelectedDate(todayObj ? todayObj.date : all[all.length - 1].date);
+          setSelectedDate(
+            todayObj ? todayObj.date : all[all.length - 1].date
+          );
         }
       })
       .catch(() => setError("Kunde inte hämta datum."));
@@ -31,9 +33,15 @@ const Skrallar = ({ selectedDate, setSelectedDate }) => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_BASE_URL}/completeHorse/getSkrallar?date=${selectedDate}`);
+        const res = await fetch(
+          `${API_BASE_URL}/completeHorse/getSkrallar?date=${selectedDate}`
+        );
         const data = await res.json();
-        setHorses(data);
+        const withPos = data.map((h, idx) => ({
+          ...h,
+          position: idx + 1,       //Changed!
+        }));
+        setHorses(withPos);
       } catch {
         setError("Kunde inte hämta skrällar.");
         setHorses([]);
@@ -67,7 +75,8 @@ const Skrallar = ({ selectedDate, setSelectedDate }) => {
 
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
-  const goNext = () => idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
+  const goNext = () =>
+    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
   const niceDate = new Date(selectedDate).toLocaleDateString("sv-SE", {
     weekday: "long",
@@ -77,16 +86,28 @@ const Skrallar = ({ selectedDate, setSelectedDate }) => {
 
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
-              <h1 className="text-center text-2xl sm:text-4xl font-semibold bg-slate-50 sm:p-4 rounded-xl border">Topp 5 Skrällar</h1>
+      <h1 className="text-center text-2xl sm:text-4xl font-semibold bg-slate-50 sm:p-4 rounded-xl border">
+        Topp 5 Skrällar
+      </h1>
+
       <div className="flex items-center justify-between mb-3">
-        
-        <button onClick={goPrev} disabled={idx <= 0 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
+        <button
+          onClick={goPrev}
+          disabled={idx <= 0 || loading}
+          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
+        >
           &#8592;
         </button>
 
-        <h2 className="text-center text-lg sm:text-2xl font-semibold">{niceDate}</h2>
+        <h2 className="text-center text-lg sm:text-2xl font-semibold">
+          {niceDate}
+        </h2>
 
-        <button onClick={goNext} disabled={idx >= dates.length - 1 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
+        <button
+          onClick={goNext}
+          disabled={idx >= dates.length - 1 || loading}
+          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
+        >
           &#8594;
         </button>
       </div>
@@ -101,19 +122,52 @@ const Skrallar = ({ selectedDate, setSelectedDate }) => {
         <table className="w-full min-w-max border-collapse text-sm">
           <thead className="bg-gray-100 border-b border-gray-200">
             <tr>
-              <th className="py-2 px-2 font-semibold">#</th>
-              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("nameOfHorse")}>Häst</th>
-              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("analys")}>Procent%</th>
-              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("fart")}>Tid</th>
-              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("styrka")}>Prestation</th>
-              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("klass")}>Motstånd</th>
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("position")}  //Changed!
+              >
+                #
+              </th>
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("nameOfHorse")}
+              >
+                Häst
+              </th>
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("analys")}
+              >
+                Procent%
+              </th>
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("fart")}
+              >
+                Tid
+              </th>
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("styrka")}
+              >
+                Prestation
+              </th>
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("klass")}
+              >
+                Motstånd
+              </th>
               <th className="py-2 px-2 font-semibold">Lopp</th>
             </tr>
           </thead>
           <tbody>
-            {sortedHorses.map((row, i) => (
-              <tr key={row.horseId} className="border-b last:border-b-0 border-gray-200 hover:bg-gray-50">
-                <td className="py-2 px-2">{i + 1}</td>
+            {sortedHorses.map((row) => (
+              <tr
+                key={row.horseId}
+                className="border-b last:border-b-0 border-gray-200 hover:bg-gray-50"
+              >
+                <td className="py-2 px-2">{row.position}</td>    {/*Changed!*/}
                 <td className="py-2 px-2">{row.nameOfHorse}</td>
                 <td className="py-2 px-2">{row.analys}</td>
                 <td className="py-2 px-2">{row.fart}</td>

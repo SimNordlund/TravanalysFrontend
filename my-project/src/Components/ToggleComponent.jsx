@@ -29,15 +29,15 @@ const ToggleComponent = () => {
     },
     {
       id: 2,
-      name: "Tabell",
-      bgColor: "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600",
-      view: "table",
-    },
-    {
-      id: 3,
       name: "Analys",
       bgColor: "bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600",
       view: "spider",
+    },
+    {
+      id: 3,
+      name: "Tabell",
+      bgColor: "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600",
+      view: "table",
     },
     {
       id: 4,

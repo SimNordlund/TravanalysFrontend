@@ -125,12 +125,16 @@ const PaginatedLapTable = ({
         const horses = await res.json();
 
         const rows = await Promise.all(
-          horses.map(async (h) => {
+          horses.map(async (h, idx) => {
             const fsRes = await fetch(
               `${API_BASE_URL}/fourStarts/findData?completeHorseId=${h.id}` //Changed!
             );
             const fs = await fsRes.json();
-            return { ...h, ...fs };
+            return {
+              ...h,
+              ...fs,
+              position: idx + 1, 
+            };
           })
         );
         setLapData(rows);
@@ -145,7 +149,8 @@ const PaginatedLapTable = ({
     fetchData();
   }, [selectedLap]);
 
-  const requestSort = (key) => { //Changed!
+  const requestSort = (key) => {
+    //Changed!
     let direction = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
       direction = "desc";
@@ -153,7 +158,8 @@ const PaginatedLapTable = ({
     setSortConfig({ key, direction });
   };
 
-  const sortedLapData = [...lapData].sort((a, b) => { //Changed!
+  const sortedLapData = [...lapData].sort((a, b) => {
+    //Changed!
     if (!sortConfig.key) return 0;
     const aVal = a[sortConfig.key];
     const bVal = b[sortConfig.key];
@@ -276,12 +282,47 @@ const PaginatedLapTable = ({
         <table className="w-full min-w-max border-collapse text-sm">
           <thead className="bg-gray-100 border-b border-gray-200">
             <tr>
-              <th className="py-2 px-2 font-semibold">#</th>
-              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("nameOfCompleteHorse")}>Häst</th> {/* Changed! */}
-              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("analys")}>{competitionName || "Procent"}%</th> {/* Changed! */}
-              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("fart")}>Tid</th> {/* Changed! */}
-              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("styrka")}>Prestation</th> {/* Changed! */}
-              <th className="py-2 px-2 font-semibold cursor-pointer" onClick={() => requestSort("klass")}>Motstånd</th> {/* Changed! */}
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("position")}
+              >
+                #
+              </th>
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("nameOfCompleteHorse")}
+              >
+                Häst
+              </th>{" "}
+              {/* Changed! */}
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("analys")}
+              >
+                {competitionName || "Procent"}%
+              </th>{" "}
+              {/* Changed! */}
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("fart")}
+              >
+                Tid
+              </th>{" "}
+              {/* Changed! */}
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("styrka")}
+              >
+                Prestation
+              </th>{" "}
+              {/* Changed! */}
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("klass")}
+              >
+                Motstånd
+              </th>{" "}
+              {/* Changed! */}
             </tr>
           </thead>
           <tbody>
@@ -290,7 +331,7 @@ const PaginatedLapTable = ({
                 key={row.id}
                 className="border-b last:border-b-0 border-gray-200 hover:bg-gray-50"
               >
-                <td className="py-2 px-2">{i + 1}</td>
+                <td className="py-2 px-2">{row.position}</td>
                 <td className="py-2 px-2">{row.nameOfCompleteHorse}</td>
                 <td className="py-2 px-2">{row.analys}</td>
                 <td className="py-2 px-2">{row.fart}</td>
