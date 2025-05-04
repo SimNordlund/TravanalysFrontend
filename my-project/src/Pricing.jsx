@@ -3,11 +3,9 @@ import Swish from './Components/Swish';
 import { CheckIcon } from '@heroicons/react/20/solid';
 
 const includedFeatures = [
-  'Goa Ipas',
-  'Tip-Top statistik',
+  'Unik statistik',
   'Skräll-detektor',
-  'Ölstuga',
-  'Obräckbart underlag',
+  'Analyser och beslutsunderlag',
   'Tillgång till medlemsforum',
 ];
 
@@ -24,13 +22,13 @@ export default function Pricing() {
     <div className="bg-white py-6 sm:py-0 sm:mt-2 sm:mb-20 mb-8 mt-2 sm:pt-8">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 mt">
         <div className="mx-auto max-w-2xl sm:text-center text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Viill du stötta med en ipa?</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Vill du stötta oss?</h2>
         </div>
         <div className="mx-auto mt-10 max-w-2xl rounded-3xl ring-1 ring-gray-200 sm:mt-8 sm:mb-6 lg:mx-0 lg:flex lg:max-w-none shadow-md">
           <div className="p-8 sm:p-10 lg:flex-auto">
             <h3 className="text-2xl font-bold tracking-tight text-gray-900">Bli en i gänget idag:</h3>
             <div className="mt-10 flex items-center gap-x-4">
-              <h4 className="flex-none text-sm font-semibold leading-6 text-indigo-600">Men vad ingår då?</h4>
+              <h4 className="flex-none text-sm font-semibold leading-6 text-indigo-600">Vad ingår?</h4>
               <div className="h-px flex-auto bg-gray-100"></div>
             </div>
             <ul
@@ -61,7 +59,7 @@ export default function Pricing() {
                   {copyStatus}
                 </a>
                 <p className="mt-6 text-xs leading-5 text-gray-600 ">
-                  Stötta oss på Travanalys via Swish med en 10:a eller valfri slant.
+                  Stötta Travanalys med valfri slant via Swish.
                 </p>
               </div>
             </div>
