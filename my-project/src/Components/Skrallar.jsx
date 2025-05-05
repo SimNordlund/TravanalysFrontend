@@ -83,11 +83,13 @@ const Skrallar = ({
   const goNext = () =>
     idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
-  const niceDate = new Date(selectedDate).toLocaleDateString("sv-SE", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
+  const niceDate = (() => {
+    const date = new Date(selectedDate);
+    const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
+    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1); // Changed!
+    const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" }); // Changed!
+    return `${capitalizedWeekday}, ${rest}`; // Changed!
+  })();
 
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">

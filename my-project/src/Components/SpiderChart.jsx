@@ -217,7 +217,13 @@ const SpiderChart = ({
   const todayStr = today.toISOString().split("T")[0];
   const yesterdayStr = new Date(today - 864e5).toISOString().split("T")[0];
   const tomorrowStr = new Date(+today + 864e5).toISOString().split("T")[0];
-  const fmt = d => new Date(d).toLocaleDateString("sv-SE", { weekday: "long", day: "numeric", month: "long" });
+  const fmt = (d) => {
+    const date = new Date(d);
+    const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
+    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1); // Changed!
+    const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" }); // Changed!
+    return `${capitalizedWeekday}, ${rest}`; // Changed!
+  };
 
   const selectedDateLabel =
     selectedDate === todayStr ? `Idag, ${fmt(selectedDate)}` :

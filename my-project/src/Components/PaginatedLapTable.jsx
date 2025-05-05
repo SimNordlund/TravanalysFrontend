@@ -179,12 +179,13 @@ const PaginatedLapTable = ({
   const today = new Date().toISOString().split("T")[0];
   const yesterday = new Date(Date.now() - 864e5).toISOString().split("T")[0];
   const tomorrow = new Date(Date.now() + 864e5).toISOString().split("T")[0];
-  const sv = (d) =>
-    new Date(d).toLocaleDateString("sv-SE", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-    });
+  const sv = (d) => {
+    const date = new Date(d);
+    const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
+    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1); // Changed!
+    const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" }); // Changed!
+    return `${capitalizedWeekday}, ${rest}`; // Changed!
+  };
   const niceDate =
     selectedDate === today
       ? `Idag, ${sv(selectedDate)}`
