@@ -134,7 +134,10 @@ const BarChartComponent = ({
         return r.json();
       })
       .then((completeHorses) => {
-        const labels = completeHorses.map((_, i) => `${i + 1}.`);
+                const labels = completeHorses.map((horse) => {
+                    // Take first two characters of the full name, then trim spaces //Changed!
+                    return horse.nameOfCompleteHorse.substring(0, 2).trim();
+                 }); //Changed!
         return Promise.all(
           completeHorses.map((horse, idx) =>
             fetch(
@@ -147,7 +150,7 @@ const BarChartComponent = ({
               .then((fs) => {
                 const col = horseColors[idx % horseColors.length];
                 return {
-                  label: `${idx + 1}. ${horse.nameOfCompleteHorse}`,
+                  label: ` ${horse.nameOfCompleteHorse}`,
                   data: labels.map((_, i) => (i === idx ? fs.analys : null)),
                   backgroundColor: col,
                   borderColor: "rgba(0,0,0,1)",
@@ -305,7 +308,7 @@ const BarChartComponent = ({
                   : "bg-gray-200 text-gray-700 hover:bg-blue-200"
               } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              {lap.nameOfLap}
+              {"Lopp " + lap.nameOfLap}
             </button>
           ))
         ) : (

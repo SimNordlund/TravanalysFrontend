@@ -134,7 +134,7 @@ const SpiderChart = ({
       .then((arr) => {
         // build raw datasets
         const rawDatasets = arr.map(({ idx, horse, fs }) => ({
-          label: `${idx+1}. ${horse.nameOfCompleteHorse}`,
+          label: `${horse.nameOfCompleteHorse}`,
           data: [fs.analys, fs.fart, fs.klass, fs.styrka],
           backgroundColor: horseColors[idx % horseColors.length],
           borderColor: horseColors[idx % horseColors.length].replace("0.5","1"),
@@ -215,6 +215,8 @@ const SpiderChart = ({
   /* ---------- nice Swedish labels ---------- */
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
+
+  
   const yesterdayStr = new Date(today - 864e5).toISOString().split("T")[0];
   const tomorrowStr = new Date(+today + 864e5).toISOString().split("T")[0];
   const fmt = (d) => {
