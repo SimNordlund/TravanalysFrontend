@@ -136,7 +136,7 @@ const BarChartComponent = ({
       .then((completeHorses) => {
                 const labels = completeHorses.map((horse) => {
                     // Take first two characters of the full name, then trim spaces //Changed!
-                    return horse.nameOfCompleteHorse.substring(0, 2).trim();
+                    return horse.numberOfCompleteHorse + "."
                  }); //Changed!
         return Promise.all(
           completeHorses.map((horse, idx) =>
@@ -150,7 +150,7 @@ const BarChartComponent = ({
               .then((fs) => {
                 const col = horseColors[idx % horseColors.length];
                 return {
-                  label: ` ${horse.nameOfCompleteHorse}`,
+                  label: `${horse.numberOfCompleteHorse}. ${horse.nameOfCompleteHorse}`,
                   data: labels.map((_, i) => (i === idx ? fs.analys : null)),
                   backgroundColor: col,
                   borderColor: "rgba(0,0,0,1)",

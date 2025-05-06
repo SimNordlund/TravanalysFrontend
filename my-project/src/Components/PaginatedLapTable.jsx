@@ -289,7 +289,7 @@ const PaginatedLapTable = ({
             <tr>
               <th
                 className="py-2 px-2 font-semibold cursor-pointer"
-                onClick={() => requestSort("position")}
+                onClick={() => requestSort("numberOfCompleteHorse")} //Changed!
               >
                 #
               </th>
@@ -328,6 +328,13 @@ const PaginatedLapTable = ({
                 Motstånd
               </th>{" "}
               {/* Changed! */}
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("prispengar")}
+              >
+                Prispengar
+              </th>{" "}
+              {/* Changed! */}
             </tr>
           </thead>
           <tbody>
@@ -336,7 +343,7 @@ const PaginatedLapTable = ({
                 key={row.id}
                 className="border-b last:border-b-0 border-gray-200 hover:bg-gray-50"
               >
-                <td className="py-2 px-2">{row.position}</td>
+                <td className="py-2 px-2">{row.numberOfCompleteHorse}</td>
                 <td className="py-2 text-left align-middle">
                   {row.nameOfCompleteHorse}
                 </td>
@@ -344,6 +351,7 @@ const PaginatedLapTable = ({
                 <td className="py-2 px-2">{row.fart}</td>
                 <td className="py-2 px-2">{row.styrka}</td>
                 <td className="py-2 px-2">{row.klass}</td>
+                <td className="py-2 px-2">{row.prispengar}</td>
               </tr>
             ))}
           </tbody>

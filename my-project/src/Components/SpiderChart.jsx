@@ -134,7 +134,7 @@ const SpiderChart = ({
       .then((arr) => {
         // build raw datasets
         const rawDatasets = arr.map(({ idx, horse, fs }) => ({
-          label: `${horse.nameOfCompleteHorse}`,
+          label: `${horse.numberOfCompleteHorse}. ${horse.nameOfCompleteHorse}`,
           data: [fs.analys, fs.fart, fs.klass, fs.styrka],
           backgroundColor: horseColors[idx % horseColors.length],
           borderColor: horseColors[idx % horseColors.length].replace("0.5","1"),
