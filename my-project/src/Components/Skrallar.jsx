@@ -85,12 +85,12 @@ const Skrallar = ({
     const date = new Date(selectedDate);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
     const capitalizedWeekday =
-      weekday.charAt(0).toUpperCase() + weekday.slice(1); // Changed!
+      weekday.charAt(0).toUpperCase() + weekday.slice(1); 
     const rest = date.toLocaleDateString("sv-SE", {
       day: "numeric",
       month: "long",
     }); // Changed!
-    return `${capitalizedWeekday}, ${rest}`; // Changed!
+    return `${capitalizedWeekday}, ${rest}`;
   })();
 
   return (
