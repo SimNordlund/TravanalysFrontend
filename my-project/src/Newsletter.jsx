@@ -187,7 +187,7 @@ export default function Newsletter() {
               {" "}
               {/* Changed! */}
               <a
-                href="https://www.instagram.com/travanalys" // Replace with your actual Instagram URL //Changed!
+                href="https://www.instagram.com/nrdlund/" // Replace with your actual Instagram URL //Changed!
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10" //Changed!
