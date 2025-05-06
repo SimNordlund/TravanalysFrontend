@@ -269,7 +269,7 @@ const SpiderChart = ({
       </p>
 
       {/* custom legend on small screens */}
-      <ul ref={legendRef} className={isSmallScreen ? "relative z-10 grid grid-cols-3 gap-2 text-xs" : "hidden"} />
+      <ul ref={legendRef} className={isSmallScreen ? "relative z-10 grid grid-cols-2 gap-2 text-xs" : "hidden"} />
 
       {/* radar / placeholders */}
       <div className="sm:w-[75vh] w-full sm:h-[50vh] h-[40vh] relative flex items-center justify-center">

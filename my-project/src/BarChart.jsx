@@ -327,7 +327,7 @@ const BarChartComponent = ({
       <ul
         ref={legendRef}
         className={
-          isSmallScreen ? "grid grid-cols-3 gap-2 mb-2 text-xs" : "hidden"
+          isSmallScreen ? "grid grid-cols-2 gap-2 mb-2 text-xs" : "hidden"
         }
       />
 
