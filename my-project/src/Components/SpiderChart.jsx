@@ -257,7 +257,7 @@ const SpiderChart = ({
       <ul ref={legendRef} className={isSmallScreen ? "relative z-10 grid grid-cols-3 gap-2 text-xs" : "hidden"} />
 
       {/* radar / placeholders */}
-      <div className="relative w-full sm:w-[300px] md:w-[500px] h-[40vh] sm:h-[40vh] md:h-[50vh] flex items-center justify-center">
+      <div className="sm:w-[75vh] w-full sm:h-[50vh] h-[40vh] relative flex items-center justify-center">
         {data.datasets.length > 0 && !loading && (
           <Radar data={data} options={options} plugins={[htmlLegendPlugin]} />
         )}
@@ -275,7 +275,7 @@ const SpiderChart = ({
       </div>
 
       {/* dropdowns */}
-      <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md mt-4 sm:mt-8">
+      <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md mt-0 sm:mt-8">
         <select value={selectedDate} onChange={handleDate} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
           <option value="" disabled>Välj datum</option>
           {dates.map(d => <option key={d.id} value={d.date}>{d.date}</option>)}
