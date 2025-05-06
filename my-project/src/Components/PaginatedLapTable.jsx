@@ -133,7 +133,7 @@ const PaginatedLapTable = ({
             return {
               ...h,
               ...fs,
-              position: idx + 1, 
+              position: idx + 1,
             };
           })
         );
@@ -182,8 +182,12 @@ const PaginatedLapTable = ({
   const sv = (d) => {
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1); // Changed!
-    const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" }); // Changed!
+    const capitalizedWeekday =
+      weekday.charAt(0).toUpperCase() + weekday.slice(1); // Changed!
+    const rest = date.toLocaleDateString("sv-SE", {
+      day: "numeric",
+      month: "long",
+    }); // Changed!
     return `${capitalizedWeekday}, ${rest}`; // Changed!
   };
   const niceDate =
@@ -290,11 +294,11 @@ const PaginatedLapTable = ({
                 #
               </th>
               <th
-                className="py-2 px-2 font-semibold cursor-pointer"
+                className="py-2 font-semibold cursor-pointer text-left align-middle"
                 onClick={() => requestSort("nameOfCompleteHorse")}
               >
                 Häst
-              </th>{" "}
+              </th>
               {/* Changed! */}
               <th
                 className="py-2 px-2 font-semibold cursor-pointer"
@@ -333,7 +337,9 @@ const PaginatedLapTable = ({
                 className="border-b last:border-b-0 border-gray-200 hover:bg-gray-50"
               >
                 <td className="py-2 px-2">{row.position}</td>
-                <td className="py-2 px-2">{row.nameOfCompleteHorse}</td>
+                <td className="py-2 text-left align-middle">
+                  {row.nameOfCompleteHorse}
+                </td>
                 <td className="py-2 px-2">{row.analys}</td>
                 <td className="py-2 px-2">{row.fart}</td>
                 <td className="py-2 px-2">{row.styrka}</td>

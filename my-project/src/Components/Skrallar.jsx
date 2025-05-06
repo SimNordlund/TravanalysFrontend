@@ -136,7 +136,7 @@ const Skrallar = ({
                 #
               </th>
               <th
-                className="py-2 px-2 font-semibold cursor-pointer"
+                className="py-2 px-2 font-semibold cursor-pointer text-left align-middle"
                 onClick={() => requestSort("nameOfHorse")}
               >
                 Häst
@@ -179,7 +179,7 @@ const Skrallar = ({
                 }}                                        //Changed!
               >
                 <td className="py-2 px-2">{row.position}</td>
-                <td className="py-2 px-2">{row.nameOfHorse}</td>
+                <td className="py-2 text-left align-middle">{row.nameOfHorse}</td>
                 <td className="py-2 px-2">{row.analys}</td>
                 <td className="py-2 px-2">{row.fart}</td>
                 <td className="py-2 px-2">{row.styrka}</td>

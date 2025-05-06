@@ -5,17 +5,17 @@ const features = [
   {
     name: 'Överlägset beslutsunderlag. ',
     description:
-      'Nyttja vår kraftfulla algoritm via statistik och reducerade system. Utforska underlaget i den form som passar dig.',
+      'Använd vårt kraftfulla verktyg och vår intelligenta reducerade systemlösningar. Utforska beslutsunderlaget i den form som passar dig.',
     icon: CloudArrowUpIcon,
   },
   {
-    name: 'Spelare, Ägare, Kuskar, Tränare. ',
-    description: 'Går att användas av alla travtokar! Spelare som kusk. Scrolla ner och prova.',
+    name: 'Spelare, Kusk, Tränare, Ägare. ',
+    description: 'Tjänster värdefulla för alla olika roller. Utvärdera och ge feedback i din roll. ',
     icon: LockClosedIcon,
   },
   {
     name: 'Kostnadsfritt. ',
-    description: 'Kostnadsfritt i under utvecklingsfasen. Använd hur mycket du vill, passa på att vässa din kunskap inför kommande lopp.',
+    description: 'Vi utvecklar dessa folkliga tjänster tillsammans. Ditt bidrag är din feedback.',
     icon: ServerIcon,
   },
 ]
@@ -27,12 +27,12 @@ export default function IntroComponent() {
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
           <div className="lg:pt-4 lg:pr-8">
             <div className="lg:max-w-lg">
-              <h2 className="text-base/7 font-semibold text-indigo-600">Överlägsen statistik</h2>
+              <h2 className="text-base/7 font-semibold text-indigo-600">Överlägsen analys</h2>
               <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
-              Skrällarsytt underlag
+              Skrällarsytt beslutsunderlag
               </p>
               <p className="mt-6 text-lg/8 text-gray-600">
-                Utnyttja verktyget för att hitta skrällarna. Nedan kan du utforska vår Skräll-detector. Välj mellan tabell, diagram eller fördjupad analys.
+                Utnyttja verktyget för att hitta vinnarna. Utforska vår Skräll-detector. Konsumera via diagram, tabell eller fördjupad analys.
               </p>
               <dl className="mt-10 max-w-xl space-y-8 text-base/7 text-gray-600 lg:max-w-none">
                 {features.map((feature) => (
