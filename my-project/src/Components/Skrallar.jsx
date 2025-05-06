@@ -198,7 +198,7 @@ const Skrallar = ({
                 className="border-b last:border-b-0 border-gray-200 hover:bg-gray-50 cursor-pointer"
               >
                 <td className="py-1 px-2 border-r border-gray-200 align-middle">
-                    <span className="inline-block border border-indigo-700 px-2 py-0.5 rounded-md text-sm font-medium bg-indigo-100 shadow-sm">
+                    <span className="inline-block border border-orange-700 px-2 py-0.5 rounded-md text-sm font-medium bg-orange-100 shadow-sm">
                       {row.numberOfHorse}
                     </span>
                 </td>
