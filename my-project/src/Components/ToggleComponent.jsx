@@ -41,7 +41,7 @@ const ToggleComponent = () => {
     },
     {
       id: 4,
-      name: "Skrällar",
+      name: "Speltips",
       bgColor: "bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600",
       view: "skrallar",
     },
