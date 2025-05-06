@@ -94,7 +94,7 @@ const Skrallar = ({
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
       <h1 className="text-center text-2xl sm:text-4xl font-semibold bg-slate-50 sm:p-4 rounded-xl border">
-        Topp 5 Skrällar
+        Topp 10 tipsen
       </h1>
 
       <div className="flex items-center justify-between mb-3">
