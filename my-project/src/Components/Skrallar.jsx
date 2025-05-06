@@ -171,7 +171,18 @@ const Skrallar = ({
               >
                 Prispengar
               </th>
-              <th className="py-2 px-2 font-semibold">Lopp</th>
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("lap")}
+              >
+                Lopp
+              </th>
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("nameOfTrack")}
+              >
+                Bana
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -184,7 +195,7 @@ const Skrallar = ({
                   setSelectedView("spider");
                 }}                                        //Changed!
               >
-                <td className="py-2 px-2">{row.position}</td>
+                <td className="py-2 px-2">{row.numberOfHorse}</td>
                 <td className="py-2 text-left align-middle">{row.nameOfHorse}</td>
                 <td className="py-2 px-2">{row.analys}</td>
                 <td className="py-2 px-2">{row.fart}</td>
@@ -192,6 +203,7 @@ const Skrallar = ({
                 <td className="py-2 px-2">{row.klass}</td>
                 <td className="py-2 px-2">{row.prispengar}</td>
                 <td className="py-2 px-2">{row.lap}</td>
+                <td className="py-2 px-2">{row.nameOfTrack}</td>
               </tr>
             ))}
           </tbody>
