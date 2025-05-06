@@ -337,7 +337,7 @@ const PaginatedLapTable = ({
                 key={row.id}
                 className="border-b last:border-b-0 border-gray-200 hover:bg-gray-50"
               >
-                <td className="border-r border-blue-200">
+                <td className="border-r border-blue-200 px-1">
                     <span className="inline-block border border-indigo-700 px-2 py-0.5 rounded-md text-sm font-medium bg-indigo-100 shadow-sm">
                       {row.numberOfCompleteHorse}
                     </span>
