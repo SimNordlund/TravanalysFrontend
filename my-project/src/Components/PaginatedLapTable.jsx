@@ -272,7 +272,7 @@ const PaginatedLapTable = ({
                 : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
           >
-            {lap.nameOfLap}
+            Lopp {lap.nameOfLap}
           </button>
         ))}
       </div>
