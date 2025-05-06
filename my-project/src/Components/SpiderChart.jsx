@@ -207,7 +207,22 @@ const SpiderChart = ({
       legend: { display: !isSmallScreen, position: isSmallScreen ? "top" : legendPosition },
     },
     scales: {
-      r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100 },
+      r: {
+        angleLines: { display: false },
+        suggestedMin: 0,
+        suggestedMax: 100,
+        pointLabels: {
+          padding: 5 //Changed!
+        }, // ← MISSING COMMA HERE – this is required
+        ticks: {
+          color: "#000", //Changed!
+          font: {
+            size: 12, //Changed!
+            weight: "bold" //Changed!
+          },
+          z: 1 //Changed!
+        }
+      }
     },
     elements: { line: { borderWidth: 2 } },
   };
