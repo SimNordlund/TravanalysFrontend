@@ -165,6 +165,12 @@ const Skrallar = ({
               >
                 Motstånd
               </th>
+              <th
+                className="py-2 px-2 font-semibold cursor-pointer"
+                onClick={() => requestSort("prispengar")}
+              >
+                Prispengar
+              </th>
               <th className="py-2 px-2 font-semibold">Lopp</th>
             </tr>
           </thead>
@@ -184,6 +190,7 @@ const Skrallar = ({
                 <td className="py-2 px-2">{row.fart}</td>
                 <td className="py-2 px-2">{row.styrka}</td>
                 <td className="py-2 px-2">{row.klass}</td>
+                <td className="py-2 px-2">{row.prispengar}</td>
                 <td className="py-2 px-2">{row.lap}</td>
               </tr>
             ))}
