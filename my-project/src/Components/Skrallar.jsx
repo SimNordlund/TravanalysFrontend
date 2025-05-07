@@ -150,28 +150,28 @@ const Skrallar = ({
                 Analys
               </th>
               <th
-                onClick={() => requestSort("fart")}
+                onClick={() => requestSort("roiTotalt")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
-                Tid
+                ROI Totalt
               </th>
               <th
-                onClick={() => requestSort("styrka")}
+                onClick={() => requestSort("roiVinnare")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
-                Prestation
+                ROI Vinnare
               </th>
               <th
-                onClick={() => requestSort("klass")}
+                onClick={() => requestSort("roiPlats")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
-                Motstånd
+                ROI Plats
               </th>
               <th
-                onClick={() => requestSort("prispengar")}
+                onClick={() => requestSort("roiTrio")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
-                Prispengar
+                ROI Trio
               </th>
               <th
                 onClick={() => requestSort("lap")}
@@ -209,16 +209,16 @@ const Skrallar = ({
                   {row.analys}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
-                  {row.fart}
+                  {row.roiTotalt}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
-                  {row.styrka}
+                  {row.roiVinnare}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
-                  {row.klass}
+                  {row.roiPlats}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
-                  {row.prispengar}
+                  {row.roiTrio}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
                   {row.lap}
