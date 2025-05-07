@@ -23,16 +23,23 @@ const PaginatedLapTable = ({
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+  // Fetch and dedupe dates
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
       .then((r) => r.json())
       .then((all) => {
         if (!all.length) return;
-        setDates(all);
+        // Changed! Remove duplicates and sort
+        const uniqueDates = Array.from(new Set(all.map((d) => d.date)))
+          .sort()
+          .map((date) => ({ date }));
+        setDates(uniqueDates);
         if (!selectedDate) {
           const todayStr = new Date().toISOString().split("T")[0];
-          const todayObj = all.find((d) => d.date === todayStr);
-          setSelectedDate(todayObj ? todayObj.date : all[all.length - 1].date); //Changed!
+          const todayObj = uniqueDates.find((d) => d.date === todayStr);
+          setSelectedDate(
+            todayObj ? todayObj.date : uniqueDates[uniqueDates.length - 1].date
+          ); //Changed!
         }
       })
       .catch(() => setError("Kunde inte hämta datum."));
@@ -47,11 +54,10 @@ const PaginatedLapTable = ({
           `${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`
         );
         const t = await res.json();
-        setTracks(t);
 
-        const exists = t.find((track) => track.id === +selectedTrack);
-        if (!selectedTrack || !exists) {
-          if (t.length) setSelectedTrack(t[0].id); //Changed!
+        setTracks(t);
+        if (t.length) {
+          setSelectedTrack(t[0].id); //Changed!
         }
       } catch {
         setError("Fel vid hämtning av bana.");
@@ -59,6 +65,7 @@ const PaginatedLapTable = ({
         setLoading(false);
       }
     };
+
     fetchTracks();
   }, [selectedDate]);
 
@@ -86,6 +93,7 @@ const PaginatedLapTable = ({
         setLoading(false);
       }
     };
+
     fetchComps();
   }, [selectedTrack]);
 
@@ -110,24 +118,24 @@ const PaginatedLapTable = ({
         setLoading(false);
       }
     };
+
     fetchLaps();
   }, [selectedCompetition]);
 
   useEffect(() => {
     if (!selectedLap) return;
-
     const fetchData = async () => {
       setLoading(true);
       try {
         const res = await fetch(
           `${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`
-        ); 
+        );
         const horses = await res.json();
 
         const rows = await Promise.all(
           horses.map(async (h, idx) => {
             const fsRes = await fetch(
-              `${API_BASE_URL}/fourStarts/findData?completeHorseId=${h.id}` 
+              `${API_BASE_URL}/fourStarts/findData?completeHorseId=${h.id}`
             );
             const fs = await fsRes.json();
             return {
@@ -175,11 +183,15 @@ const PaginatedLapTable = ({
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
   const goNext = () =>
-    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
+    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date); //Changed!
 
   const today = new Date().toISOString().split("T")[0];
-  const yesterday = new Date(Date.now() - 864e5).toISOString().split("T")[0];
-  const tomorrow = new Date(Date.now() + 864e5).toISOString().split("T")[0];
+  const yesterday = new Date(Date.now() - 864e5)
+    .toISOString()
+    .split("T")[0];
+  const tomorrow = new Date(Date.now() + 864e5)
+    .toISOString()
+    .split("T")[0];
   const sv = (d) => {
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
@@ -339,9 +351,9 @@ const PaginatedLapTable = ({
                 className="border-b last:border-b-0 border-gray-200 hover:bg-gray-50"
               >
                 <td className="border-r border-blue-200 px-1">
-                    <span className="inline-block border border-indigo-700 px-2 py-0.5 rounded-md text-sm font-medium bg-indigo-100 shadow-sm">
-                      {row.numberOfCompleteHorse}
-                    </span>
+                  <span className="inline-block border border-indigo-700 px-2 py-0.5 rounded-md text-sm font-medium bg-indigo-100 shadow-sm">
+                    {row.numberOfCompleteHorse}
+                  </span>
                 </td>
 
                 <td className="py-2 px-2 text-left border-r border-gray-200">
