@@ -118,7 +118,7 @@ export default function Newsletter() {
               </button>
             </form>
           </div>
-          <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 sm:mt-20">
+          <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:gap-y-2 sm:grid-cols-2 sm:mt-6">
             {/* Phone Icon */}
             <div className="flex flex-col items-center">
               <a
@@ -171,9 +171,6 @@ export default function Newsletter() {
               >
                 <FaFacebook className="h-8 w-8 text-white" aria-hidden="true" />{" "}
               </a>
-              <dt className="mt-4 font-semibold text-white">
-                Följ oss på Facebook
-              </dt>{" "}
               <dd className="mt-2 leading-7 text-gray-300">
                 <a
                   href="https://www.facebook.com/profile.php?id=61555396035366"
@@ -197,9 +194,6 @@ export default function Newsletter() {
                   aria-hidden="true"
                 />{" "}
               </a>
-              <dt className="mt-4 font-semibold text-white">
-                Följ oss på Instagram
-              </dt>{" "}
               <dd className="mt-2 leading-7 text-gray-300">
                 <a
                   href="https://www.instagram.com/nrdlund/" // Replace if needed //Changed!
