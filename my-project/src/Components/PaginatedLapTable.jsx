@@ -121,13 +121,13 @@ const PaginatedLapTable = ({
       try {
         const res = await fetch(
           `${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`
-        ); //Changed!
+        ); 
         const horses = await res.json();
 
         const rows = await Promise.all(
           horses.map(async (h, idx) => {
             const fsRes = await fetch(
-              `${API_BASE_URL}/fourStarts/findData?completeHorseId=${h.id}` //Changed!
+              `${API_BASE_URL}/fourStarts/findData?completeHorseId=${h.id}` 
             );
             const fs = await fsRes.json();
             return {
@@ -138,6 +138,7 @@ const PaginatedLapTable = ({
           })
         );
         setLapData(rows);
+        setSortConfig({ key: "numberOfCompleteHorse", direction: "asc" });
       } catch {
         setError("Failed to fetch lap data.");
         setLapData([]);
