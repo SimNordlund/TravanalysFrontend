@@ -212,7 +212,7 @@ const Skrallar = ({
                   {row.analys}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
-                  {row.roiTotalt}
+                  {row.roiTrio}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
                   {row.roiVinnare}
