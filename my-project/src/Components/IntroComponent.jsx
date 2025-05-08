@@ -1,4 +1,4 @@
-import { CloudArrowUpIcon, LockClosedIcon, ServerIcon, RobotIcon } from '@heroicons/react/20/solid'
+import { CloudArrowUpIcon, LockClosedIcon, ServerIcon} from '@heroicons/react/20/solid'
 import vinst1 from '../Bilder/Vinst1.jpg';
 
 const features = [
@@ -15,11 +15,11 @@ const features = [
   },
   {
     name: 'Ta hjälp av Trav-olta',
-    description: 'Vår finuerliga AI-kompis hjälper till med analysen',
-    icon: RobotIcon,
+    description: 'Vår finurliga AI-kompis hjälper till med analysen',
+    icon: CloudArrowUpIcon,
   },
   {
-    name: 'Kostnadsfritt. ',
+    name: 'Kostnadsfritt.',
     description: 'Vi utvecklar dessa folkliga tjänster tillsammans. Ditt bidrag är din feedback.',
     icon: ServerIcon,
   },
