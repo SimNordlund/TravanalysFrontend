@@ -8,11 +8,11 @@ import picke1 from './Bilder/picke1.png';
 
 const navigation = [
   { name: 'Startsida', href: '/', current: false },
-  { name: 'Reducerat System', href: '/Components/ReducedButtons', current: false },
+ // { name: 'Reducerat System', href: '/Components/ReducedButtons', current: false },
  // { name: 'Diagram', href: '/ChartPage', current: false }, 
  // { name: 'Tabell', href: '/Tables', current: false }, 
-  { name: 'Om oss', href: '/Components/SkrytComponent', current: false },
-  { name: 'Logga in', href: '/SignIn', current: false },
+  { name: 'Vad är Travanalys?', href: '/Components/SkrytComponent', current: false },
+ // { name: 'Logga in', href: '/SignIn', current: false },
 ]
 
 function classNames(...classes) {
