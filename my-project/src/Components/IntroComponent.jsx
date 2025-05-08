@@ -5,7 +5,7 @@ const features = [
   {
     name: 'Överlägset beslutsunderlag. ',
     description:
-      'Använd vårt kraftfulla verktyg och vår intelligenta reducerade systemlösningar. Utforska beslutsunderlaget i den form som passar dig.',
+      'Utnyttja vårt kraftfulla analysverktyg. Utforska beslutsunderlaget i den form som passar dig.',
     icon: CloudArrowUpIcon,
   },
   {
