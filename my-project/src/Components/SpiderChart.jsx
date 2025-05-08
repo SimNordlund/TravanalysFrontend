@@ -284,7 +284,6 @@ const SpiderChart = ({
         {showSpinner && loading && (
           <div className="flex flex-col items-center">
             <div className="animate-spin h-10 w-10 border-4 border-indigo-400 border-t-transparent rounded-full" />
-            <span className="mt-2 text-sm text-slate-500">Grubblar…</span>
           </div>
         )}
       </div>
