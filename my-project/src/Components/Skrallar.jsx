@@ -150,6 +150,12 @@ const Skrallar = ({
                 Analys
               </th>
               <th
+                onClick={() => requestSort("analys")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                Resultat
+              </th>
+              <th
                 onClick={() => requestSort("roiTotalt")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
@@ -166,12 +172,6 @@ const Skrallar = ({
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
                 ROI Plats
-              </th>
-              <th
-                onClick={() => requestSort("roiTrio")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                ROI Trio
               </th>
               <th
                 onClick={() => requestSort("lap")}
@@ -209,6 +209,9 @@ const Skrallar = ({
                   {row.analys}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
+                  {row.analys}
+                </td>
+                <td className="py-2 px-2 border-r border-gray-200">
                   {row.roiTotalt}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
@@ -216,9 +219,6 @@ const Skrallar = ({
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
                   {row.roiPlats}
-                </td>
-                <td className="py-2 px-2 border-r border-gray-200">
-                  {row.roiTrio}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
                   {row.lap}
