@@ -70,23 +70,19 @@ const Faqs = () => {
   const faqsList = [
     {
       q: "Vad är Travanalys för någonting?",
-      a: "Blablabla",
+      a: "Skrällarsytt besluntsunderlag. Vi analyserar hästar och ger dig en djupare insikt i deras prestationer. Vi är i en utvecklingsfas och kommer att lansera fler funktioner och vyer inom kort.",
     },
     {
       q: "Hur använder jag Travanalys?",
-      a: "Blablabla",
-    },
-    {
-      q: "Hur fungerar Travanalys?",
-      a: "Blablabla",
+      a: "Du väljer mellan olika vyer för att se hästar och deras analyser. Konsumera via diagram, tabell eller fördjupad analys",
     },
     {
       q: "Hur kontaktar jag er?",
-      a: "Kontaktformulär finns längst ner på hemsidan.",
+      a: "Kontaktuppgifter finns längst ner på hemsidan.",
     },
     {
       q: "Vilka ligger bakom Travanalys?",
-      a: "B1 & B2",
+      a: "Niclas Nordlund med kompanjoner. Vi är ett gäng travnördar som vill göra det enklare för dig att hitta vinnarna.",
     },
   ];
 
