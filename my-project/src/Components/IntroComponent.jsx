@@ -1,4 +1,4 @@
-import { CloudArrowUpIcon, LockClosedIcon, ServerIcon } from '@heroicons/react/20/solid'
+import { CloudArrowUpIcon, LockClosedIcon, ServerIcon, RobotIcon } from '@heroicons/react/20/solid'
 import vinst1 from '../Bilder/Vinst1.jpg';
 
 const features = [
@@ -9,9 +9,14 @@ const features = [
     icon: CloudArrowUpIcon,
   },
   {
-    name: 'Spelare, Kusk, Tränare, Ägare. ',
+    name: 'För spelare, kusk, tränare och ägare.',
     description: 'Tjänster värdefulla för alla olika roller. Utvärdera och ge feedback i din roll. ',
     icon: LockClosedIcon,
+  },
+  {
+    name: 'Ta hjälp av Trav-olta',
+    description: 'Vår finuerliga AI-kompis hjälper till med analysen',
+    icon: RobotIcon,
   },
   {
     name: 'Kostnadsfritt. ',
