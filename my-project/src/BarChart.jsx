@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { Bar, getElementAtEvent } from "react-chartjs-2";
-import pappaCrazy from "./Bilder/PappaCrazy.png";
+import travhorsi from './Bilder/travhorsi2.png';
 import Chart from "chart.js/auto";
 
 const BarChartComponent = ({
@@ -351,11 +351,10 @@ const BarChartComponent = ({
           {showSpinner && loading && (
             <div className="flex flex-col items-center">
               <img
-                src={pappaCrazy}
+                src={travhorsi}
                 alt="Loading…"
                 className="h-24 w-24 animate-spin"
               />
-              <span className="mt-2 text-sm text-slate-500">Grubblar…</span>
             </div>
           )}
         </div>
