@@ -1,4 +1,4 @@
-import { CloudArrowUpIcon, LockClosedIcon, ServerIcon} from '@heroicons/react/20/solid'
+import { CloudArrowUpIcon, UserGroupIcon , HeartIcon , ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/20/solid'
 import vinst1 from '../Bilder/Vinst1.jpg';
 
 const features = [
@@ -11,17 +11,17 @@ const features = [
   {
     name: 'För spelare, kusk, tränare och ägare.',
     description: 'Tjänster värdefulla för alla olika roller. Utvärdera och ge feedback i din roll. ',
-    icon: LockClosedIcon,
+    icon: UserGroupIcon ,
   },
   {
     name: 'Ta hjälp av Trav-olta',
     description: 'Vår finurliga AI-kompis hjälper till med analysen',
-    icon: CloudArrowUpIcon,
+    icon: ChatBubbleOvalLeftEllipsisIcon,
   },
   {
     name: 'Kostnadsfritt.',
     description: 'Vi utvecklar dessa folkliga tjänster tillsammans. Ditt bidrag är din feedback.',
-    icon: ServerIcon,
+    icon: HeartIcon ,
   },
 ]
 
