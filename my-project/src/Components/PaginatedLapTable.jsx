@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react"; //Changed!
 
 const PaginatedLapTable = ({
   selectedDate,
@@ -22,6 +22,13 @@ const PaginatedLapTable = ({
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" }); //Changed!
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  /* ------------ NEW: highest analys value -------------------- */
+  const maxAnalysValue = useMemo(                                       //Changed!
+    () => Math.max(...lapData.map((r) => Number(r.analys) || -Infinity)), //Changed!
+    [lapData]                                                            //Changed!
+  );                                                                     //Changed!
+  /* ----------------------------------------------------------- */
 
   // Fetch and dedupe dates
   useEffect(() => {
@@ -214,6 +221,7 @@ const PaginatedLapTable = ({
 
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
+      {/* ---------- Top navigation (arrows, date) ---------- */}
       <div className="flex items-center justify-between mb-3">
         <button
           onClick={goPrev}
@@ -236,6 +244,7 @@ const PaginatedLapTable = ({
         </button>
       </div>
 
+      {/* ---------- Track buttons ---------- */}
       <div className="flex flex-wrap gap-1 mb-2">
         {tracks.map((t) => (
           <button
@@ -253,6 +262,7 @@ const PaginatedLapTable = ({
         ))}
       </div>
 
+      {/* ---------- Competition buttons ---------- */}
       <div className="flex flex-wrap gap-1 mb-2">
         {competitions.map((c) => (
           <button
@@ -273,6 +283,7 @@ const PaginatedLapTable = ({
         ))}
       </div>
 
+      {/* ---------- Lap buttons ---------- */}
       <div className="flex flex-wrap gap-1 mb-3">
         {laps.map((lap) => (
           <button
@@ -290,6 +301,7 @@ const PaginatedLapTable = ({
         ))}
       </div>
 
+      {/* ---------- Data table ---------- */}
       <div className="overflow-x-auto border border-gray-200 rounded relative">
         {loading && (
           <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-75">
@@ -314,7 +326,7 @@ const PaginatedLapTable = ({
               </th>
               <th
                 onClick={() => requestSort("analys")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100 "
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100"
               >
                 {competitionName || "Analys"}
               </th>
@@ -344,36 +356,49 @@ const PaginatedLapTable = ({
               </th>
             </tr>
           </thead>
-          <tbody>
-            {sortedLapData.map((row) => (
-              <tr
-                key={row.id}
-                className="border-b last:border-b-0 border-gray-200 hover:bg-gray-50"
-              >
-                <td className="border-r border-blue-200 px-1">
-                  <span className="inline-block border border-indigo-700 px-2 py-0.5 rounded-md text-sm font-medium bg-indigo-100 shadow-sm">
-                    {row.numberOfCompleteHorse}
-                  </span>
-                </td>
 
-                <td className="py-2 px-2 text-left border-r border-gray-200">
-                  {row.nameOfCompleteHorse}
-                </td>
-                <td className="py-2 px-2 border-r border-gray-200 bg-orange-50 ">
-                  {row.analys}
-                </td>
-                <td className="py-2 px-2 border-r border-gray-200">
-                  {row.fart}
-                </td>
-                <td className="py-2 px-2 border-r border-gray-200">
-                  {row.styrka}
-                </td>
-                <td className="py-2 px-2 border-r border-gray-200">
-                  {row.klass}
-                </td>
-                <td className="py-2 px-2">{row.prispengar}</td>
-              </tr>
-            ))}
+          <tbody>
+            {sortedLapData.map((row) => {
+              const isMax = Number(row.analys) === maxAnalysValue; //Changed!
+              return (
+                <tr
+                  key={row.id}
+                  className="border-b last:border-b-0 border-gray-200 hover:bg-gray-50"
+                >
+                  <td className="border-r border-blue-200 px-1">
+                    <span className="inline-block border border-indigo-700 px-2 py-0.5 rounded-md text-sm font-medium bg-indigo-100 shadow-sm">
+                      {row.numberOfCompleteHorse}
+                    </span>
+                  </td>
+
+                  <td className="py-2 px-2 text-left border-r border-gray-200">
+                    {row.nameOfCompleteHorse}
+                  </td>
+
+                  {/* highlight highest analys */}
+                  <td
+                    className={`py-2 px-2 border-r border-gray-200 ${
+                      isMax
+                        ? "bg-orange-300 font-bold underline" //Changed!
+                        : "bg-orange-50"                     //Changed!
+                    }`}
+                  >
+                    {row.analys}
+                  </td>
+
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.fart}
+                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.styrka}
+                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.klass}
+                  </td>
+                  <td className="py-2 px-2">{row.prispengar}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
