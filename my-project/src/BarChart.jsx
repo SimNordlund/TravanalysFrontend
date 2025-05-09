@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { Bar, getElementAtEvent } from "react-chartjs-2";
-import travhorsi from './Bilder/travhorsi2.png';
+import travhorsi from "./Bilder/travhorsi2.png";
 import Chart from "chart.js/auto";
 
 const BarChartComponent = ({
@@ -134,10 +134,10 @@ const BarChartComponent = ({
         return r.json();
       })
       .then((completeHorses) => {
-                const labels = completeHorses.map((horse) => {
-                    // Take first two characters of the full name, then trim spaces //Changed!
-                    return horse.numberOfCompleteHorse + "."
-                 }); //Changed!
+        const labels = completeHorses.map((horse) => {
+          // Take first two characters of the full name, then trim spaces //Changed!
+          return horse.numberOfCompleteHorse + ".";
+        }); //Changed!
         return Promise.all(
           completeHorses.map((horse, idx) =>
             fetch(
@@ -205,9 +205,9 @@ const BarChartComponent = ({
         //Fadar barsen
         li.onclick = () => {
           if (chart.isDatasetVisible(item.datasetIndex)) {
-            chart.hide(item.datasetIndex); 
+            chart.hide(item.datasetIndex);
           } else {
-            chart.show(item.datasetIndex); 
+            chart.show(item.datasetIndex);
           }
           // no need to call chart.update(), hide/show do it under ytan jao
         };
@@ -227,24 +227,35 @@ const BarChartComponent = ({
 
   /* ---------- chart options ---------- */
   const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: { beginAtZero: true, minBarLength: 10 },
-      x: {
-        stacked: true,
-        ticks: { autoSkip: false, maxRotation: 0, padding: 2 },
-      },
+  responsive: true,
+  maintainAspectRatio: false,
+  scales: {
+    y: { beginAtZero: true, minBarLength: 10 },
+    x: {
+      stacked: true,
+      ticks: { autoSkip: false, maxRotation: 0, padding: 2 },
     },
-    plugins: {
-      legend: {
-        display: !isSmallScreen,
-        position: isSmallScreen ? "top" : "right",
-        align: "start",
-        labels: { boxWidth: 42 },
-      },
+  },
+  plugins: {
+    legend: {
+      display: !isSmallScreen,
+      position: isSmallScreen ? "top" : "right",
+      align: "start",
+      labels: { boxWidth: 42 },
     },
-  };
+    //Changed! — move tooltip here, not inside legend
+    tooltip: {
+      enabled: true,          // ensure it's on
+      // drop the default title
+      title: () => null,      //Changed!
+      callbacks: {
+        // hard-code the header
+        title: () => "Analys", //Changed!
+        // show value and horse label on one line
+      }
+    }
+  }
+};
 
   /* ---------- Swedish date helpers ---------- */
   const today = new Date();
@@ -255,7 +266,8 @@ const BarChartComponent = ({
   const fmt = (d) => {
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1); // Changed!
+    const capitalizedWeekday =
+      weekday.charAt(0).toUpperCase() + weekday.slice(1); // Changed!
     const rest = date.toLocaleDateString("sv-SE", {
       day: "numeric",
       month: "long",
@@ -295,7 +307,9 @@ const BarChartComponent = ({
       </p>
 
       {/* Lap buttons (unchanged) */}
-      <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4">  {/* Denna ändrar knapp position */}
+      <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4">
+        {" "}
+        {/* Denna ändrar knapp position */}
         {laps.length > 0 ? (
           laps.map((lap) => (
             <button
