@@ -17,7 +17,7 @@ const SpiderChart = ({
   selectedLap,
   setSelectedLap,
   /* one-horse filter coming from BarChart or Skrallar */
-  selectedHorse, //Changed!
+  selectedHorse, 
 }) => {
   /* ---------- colour palette ---------- */
   const horseColors = [
@@ -161,7 +161,7 @@ const SpiderChart = ({
         setLoading(false);
       })
       .catch((err) => { console.error("data:", err); setError(err.message); setLoading(false); });
-  }, [selectedLap, selectedHorse]); //Changed!
+  }, [selectedLap, selectedHorse]); 
 
   // spinner
   useEffect(() => {
@@ -212,15 +212,23 @@ const SpiderChart = ({
         suggestedMin: 0,
         suggestedMax: 100,
         pointLabels: {
-          padding: 5 //Changed!
-        }, // ← MISSING COMMA HERE – this is required
+          padding: 5 
+        },
+         pointLabels: {
+        padding: 5,            
+        font: {
+          size: 12,           
+          weight: 'bold'       
+        },
+        color: '#000'          
+      },
         ticks: {
-          color: "#000", //Changed!
+          color: "#000", 
           font: {
-            size: 12, //Changed!
-            weight: "bold" //Changed!
+            size: 12, 
+            weight: "bold" 
           },
-          z: 1 //Changed!
+          z: 1 
         }
       }
     },
@@ -272,7 +280,7 @@ const SpiderChart = ({
       <ul ref={legendRef} className={isSmallScreen ? "relative z-10 grid grid-cols-2 gap-2 text-xs" : "hidden"} />
 
       {/* radar / placeholders */}
-      <div className="sm:w-[75vh] w-full sm:h-[50vh] h-[40vh] relative flex items-center justify-center">
+      <div className="sm:w-[80vh] w-full sm:h-[50vh] h-[40vh] relative flex items-center justify-center">
         {data.datasets.length > 0 && !loading && (
           <Radar data={data} options={options} plugins={[htmlLegendPlugin]} />
         )}
