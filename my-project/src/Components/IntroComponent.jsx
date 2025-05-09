@@ -15,7 +15,7 @@ const features = [
   },
   {
     name: 'Ta hjälp av Trav-olta',
-    description: 'Vår finurliga AI-kompis hjälper till med analysen',
+    description: 'Vår finurliga AI-kompis hjälper till med analysen.',
     icon: ChatBubbleOvalLeftEllipsisIcon,
   },
   {

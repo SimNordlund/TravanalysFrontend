@@ -314,7 +314,7 @@ const PaginatedLapTable = ({
               </th>
               <th
                 onClick={() => requestSort("analys")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100 "
               >
                 {competitionName || "Analys"}
               </th>
@@ -359,7 +359,7 @@ const PaginatedLapTable = ({
                 <td className="py-2 px-2 text-left border-r border-gray-200">
                   {row.nameOfCompleteHorse}
                 </td>
-                <td className="py-2 px-2 border-r border-gray-200">
+                <td className="py-2 px-2 border-r border-gray-200 bg-orange-50 ">
                   {row.analys}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
