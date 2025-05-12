@@ -153,10 +153,10 @@ const Skrallar = ({
                 Analys
               </th>
               <th
-                onClick={() => requestSort("analys")}
+                onClick={() => requestSort("resultat")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
-                Resultat
+                Placering
               </th>
               <th
                 onClick={() => requestSort("roiTotalt")}
@@ -212,7 +212,7 @@ const Skrallar = ({
                   {row.analys}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
-                  {row.analys}
+                  {row.resultat}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
                   {row.roiTrio}

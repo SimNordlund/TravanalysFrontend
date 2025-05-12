@@ -9,17 +9,17 @@ const features = [
     icon: CloudArrowUpIcon,
   },
   {
-    name: 'För spelare, kusk, tränare och ägare.',
+    name: 'För spelare, kusk, tränare och ägare. ',
     description: 'Tjänster värdefulla för alla olika roller. Utvärdera och ge feedback i din roll. ',
     icon: UserGroupIcon ,
   },
   {
-    name: 'Ta hjälp av Trav-olta',
+    name: 'Ta hjälp av Trav-olta. ',
     description: 'Vår finurliga AI-kompis hjälper till med analysen.',
     icon: ChatBubbleOvalLeftEllipsisIcon,
   },
   {
-    name: 'Kostnadsfritt.',
+    name: 'Kostnadsfritt. ',
     description: 'Vi utvecklar dessa folkliga tjänster tillsammans. Ditt bidrag är din feedback.',
     icon: HeartIcon ,
   },
