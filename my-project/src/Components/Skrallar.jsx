@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 const Skrallar = ({
   selectedDate,
   setSelectedDate,
-  setSelectedView, //Changed!
-  setSelectedHorse, //Changed!
+  setSelectedView, 
+  setSelectedHorse, 
 }) => {
   const [dates, setDates] = useState([]);
   const [horses, setHorses] = useState([]);
@@ -19,7 +19,10 @@ const Skrallar = ({
       .then((r) => r.json())
       .then((all) => {
         if (!all.length) return;
-        setDates(all);
+        const unique = Array.from(
+          new Map(all.map((d) => [d.date, d])).values()
+        );
+        setDates(unique); 
         if (!selectedDate) {
           const todayStr = new Date().toISOString().split("T")[0];
           const todayObj = all.find((d) => d.date === todayStr);
@@ -42,7 +45,7 @@ const Skrallar = ({
         const data = await res.json();
         const withPos = data.map((h, idx) => ({
           ...h,
-          position: idx + 1, //Changed!
+          position: idx + 1, 
         }));
         setHorses(withPos);
       } catch {
@@ -85,7 +88,7 @@ const Skrallar = ({
     const date = new Date(selectedDate);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
     const capitalizedWeekday =
-      weekday.charAt(0).toUpperCase() + weekday.slice(1); 
+      weekday.charAt(0).toUpperCase() + weekday.slice(1);
     const rest = date.toLocaleDateString("sv-SE", {
       day: "numeric",
       month: "long",
@@ -198,9 +201,9 @@ const Skrallar = ({
                 className="border-b last:border-b-0 border-gray-200 hover:bg-gray-50 cursor-pointer"
               >
                 <td className="py-1 px-2 border-r border-gray-200 align-middle">
-                    <span className="inline-block border border-orange-700 px-2 py-0.5 rounded-md text-sm font-medium bg-orange-100 shadow-sm">
-                      {row.numberOfHorse}
-                    </span>
+                  <span className="inline-block border border-orange-700 px-2 py-0.5 rounded-md text-sm font-medium bg-orange-100 shadow-sm">
+                    {row.numberOfHorse}
+                  </span>
                 </td>
                 <td className="py-2 px-2 text-left border-r border-gray-200">
                   {row.nameOfHorse}
