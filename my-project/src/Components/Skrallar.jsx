@@ -84,35 +84,35 @@ const Skrallar = ({
   const goNext = () =>
     idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
-  const today = new Date().toISOString().split("T")[0];           //Changed!
-const yesterday = new Date(Date.now() - 864e5)                  //Changed!
-  .toISOString()                                                //Changed!
-  .split("T")[0];                                               //Changed!
-const tomorrow = new Date(Date.now() + 864e5)                   //Changed!
-  .toISOString()                                                //Changed!
-  .split("T")[0];                                               //Changed!
+  const today = new Date().toISOString().split("T")[0];           
+const yesterday = new Date(Date.now() - 864e5)                  
+  .toISOString()                                                
+  .split("T")[0];                                               
+const tomorrow = new Date(Date.now() + 864e5)                   
+  .toISOString()                                                
+  .split("T")[0];                                               
 
-const sv = (d) => {                                             //Changed!
-  const date = new Date(d);                                     //Changed!
-  const weekday = date.toLocaleDateString("sv-SE", {            //Changed!
-    weekday: "long",                                            //Changed!
-  });                                                           //Changed!
-  const capitalizedWeekday =                                    //Changed!
-    weekday.charAt(0).toUpperCase() + weekday.slice(1);         //Changed!
-  const rest = date.toLocaleDateString("sv-SE", {               //Changed!
-    day: "numeric",                                             //Changed!
-    month: "long",                                              //Changed!
-  });                                                           //Changed!
-  return `${capitalizedWeekday}, ${rest}`;                      //Changed!
-};                                                              //Changed!
+const sv = (d) => {                                             
+  const date = new Date(d);                                     
+  const weekday = date.toLocaleDateString("sv-SE", {            
+    weekday: "long",                                            
+  });                                                           
+  const capitalizedWeekday =                                    
+    weekday.charAt(0).toUpperCase() + weekday.slice(1);         
+  const rest = date.toLocaleDateString("sv-SE", {               
+    day: "numeric",                                             
+    month: "long",                                              
+  });                                                           
+  return `${capitalizedWeekday}, ${rest}`;                      
+};                                                              
 
-const niceDate =                                                //Changed!
-  selectedDate === today                                        //Changed!
-    ? `Idag, ${sv(selectedDate)}`                               //Changed!
-    : selectedDate === yesterday                                //Changed!
-    ? `Igår, ${sv(selectedDate)}`                               //Changed!
-    : selectedDate === tomorrow                                 //Changed!
-    ? `Imorgon, ${sv(selectedDate)}`                            //Changed!
+const niceDate =                                                
+  selectedDate === today                                        
+    ? `Idag, ${sv(selectedDate)}`                               
+    : selectedDate === yesterday                                
+    ? `Igår, ${sv(selectedDate)}`                               
+    : selectedDate === tomorrow                                 
+    ? `Imorgon, ${sv(selectedDate)}`                            
     : sv(selectedDate);         
 
   return (

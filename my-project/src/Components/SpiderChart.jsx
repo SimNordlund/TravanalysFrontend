@@ -64,19 +64,27 @@ const SpiderChart = ({
 
   /* ───────── 1. Dates ───────── */
   useEffect(() => {
-    fetch(`${API_BASE_URL}/track/dates`)
-      .then((res) => res.json())
-      .then((d) => {
-        setDates(d);
-        if (!selectedDate) {
-          const todayStr = new Date().toISOString().split("T")[0];
-          const today = d.find((x) => x.date === todayStr);
-          if (today) setSelectedDate(today.date);
-          else if (d.length) setSelectedDate(d[0].date);
-        }
-      })
-      .catch((err) => console.error("dates:", err));
-  }, []);
+  fetch(`${API_BASE_URL}/track/dates`)
+    .then((res) => res.json())
+    .then((all) => {
+      if (!all.length) return;                                         
+
+      const unique = Array.from(                                       
+        new Map(all.map((d) => [d.date, d])).values()                  
+      ).sort((a, b) => a.date.localeCompare(b.date));                  
+
+      setDates(unique);                                                
+
+      if (!selectedDate) {                                             
+        const todayStr = new Date().toISOString().split("T")[0];       
+        const todayObj = unique.find((d) => d.date === todayStr);      
+        setSelectedDate(                                               
+          todayObj ? todayObj.date : unique[0].date                    
+        );                                                             
+      }                                                                
+    })
+    .catch((err) => console.error("dates:", err));
+}, []);
 
   /* ───────── 2. Tracks ───────── */
   useEffect(() => {
@@ -245,9 +253,9 @@ const SpiderChart = ({
   const fmt = (d) => {
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1); // Changed!
-    const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" }); // Changed!
-    return `${capitalizedWeekday}, ${rest}`; // Changed!
+    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1); 
+    const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" }); 
+    return `${capitalizedWeekday}, ${rest}`; 
   };
 
   const selectedDateLabel =
@@ -300,7 +308,7 @@ const SpiderChart = ({
       <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md mt-0 sm:mt-8">
         <select value={selectedDate} onChange={handleDate} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
           <option value="" disabled>Välj datum</option>
-          {dates.map(d => <option key={d.id} value={d.date}>{d.date}</option>)}
+          {dates.map(d => <option key={d.date} value={d.date}>{d.date}</option>)}
         </select>
 
         <select value={selectedTrack} onChange={handleTrack} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">

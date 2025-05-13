@@ -69,14 +69,23 @@ const BarChartComponent = ({
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
       .then((res) => res.json())
-      .then((d) => {
-        setDates(d);
+      .then((all) => {
+        if (!all.length) return; //Changed!
+
+        // keep one entry per calendar day
+        const unique = Array.from(
+          //Changed!
+          new Map(all.map((d) => [d.date, d])).values() //Changed!
+        ).sort((a, b) => a.date.localeCompare(b.date)); //Changed!
+
+        setDates(unique); //Changed!
+
         if (!selectedDate) {
-          const todayStr = new Date().toISOString().split("T")[0];
-          const today = d.find((x) => x.date === todayStr);
-          if (today) setSelectedDate(today.date);
-          else if (d.length) setSelectedDate(d[0].date);
-        }
+          //Changed!
+          const todayStr = new Date().toISOString().split("T")[0]; //Changed!
+          const today = unique.find((x) => x.date === todayStr); //Changed!
+          setSelectedDate(today ? today.date : unique[0].date); //Changed!
+        } //Changed!
       })
       .catch((err) => console.error("dates:", err));
   }, []);
@@ -227,35 +236,35 @@ const BarChartComponent = ({
 
   /* ---------- chart options ---------- */
   const options = {
-  responsive: true,
-  maintainAspectRatio: false,
-  scales: {
-    y: { beginAtZero: true, minBarLength: 10 },
-    x: {
-      stacked: true,
-      ticks: { autoSkip: false, maxRotation: 0, padding: 2 },
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: { beginAtZero: true, minBarLength: 10 },
+      x: {
+        stacked: true,
+        ticks: { autoSkip: false, maxRotation: 0, padding: 2 },
+      },
     },
-  },
-  plugins: {
-    legend: {
-      display: !isSmallScreen,
-      position: isSmallScreen ? "top" : "right",
-      align: "start",
-      labels: { boxWidth: 42 },
+    plugins: {
+      legend: {
+        display: !isSmallScreen,
+        position: isSmallScreen ? "top" : "right",
+        align: "start",
+        labels: { boxWidth: 42 },
+      },
+      //Changed! — move tooltip here, not inside legend
+      tooltip: {
+        enabled: true, // ensure it's on
+        // drop the default title
+        title: () => null, //Changed!
+        callbacks: {
+          // hard-code the header
+          title: () => "Analys", //Changed!
+          // show value and horse label on one line
+        },
+      },
     },
-    //Changed! — move tooltip here, not inside legend
-    tooltip: {
-      enabled: true,          // ensure it's on
-      // drop the default title
-      title: () => null,      //Changed!
-      callbacks: {
-        // hard-code the header
-        title: () => "Analys", //Changed!
-        // show value and horse label on one line
-      }
-    }
-  }
-};
+  };
 
   /* ---------- Swedish date helpers ---------- */
   const today = new Date();
@@ -386,8 +395,8 @@ const BarChartComponent = ({
               Välj datum
             </option>
             {dates.map((d) => (
-              <option key={d.id} value={d.date}>
-                {d.date}
+              <option key={d.date} value={d.date}>
+                {d.date} 
               </option>
             ))}
           </select>
