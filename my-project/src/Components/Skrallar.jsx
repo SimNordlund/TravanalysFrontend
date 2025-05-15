@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
-import { CalendarDaysIcon } from "@heroicons/react/20/solid";
+import React, { useEffect, useState, useRef } from "react"; // Changed!
+
 
 const Skrallar = ({
   selectedDate,
@@ -15,7 +15,7 @@ const Skrallar = ({
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const dateInputRef = useRef(null);
+  const dateInputRef = useRef(null); // Changed!
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
@@ -49,7 +49,7 @@ const Skrallar = ({
         const filtered = data.filter(
           (h) => !Number.isNaN(Number(h.tips)) && Number(h.tips) >= 1
         );
-        setHorses(filtered.map((h, idx) => ({ ...h, position: idx + 1 }))); 
+        setHorses(filtered.map((h, idx) => ({ ...h, position: idx + 1 }))); // Changed! (use filtered list)
       } catch {
         setError("Kunde inte hämta skrällar.");
         setHorses([]);
@@ -123,29 +123,19 @@ const Skrallar = ({
           &#8592;
         </button>
 
-        <div className="relative inline-block">
-          <input
-            ref={dateInputRef}
-            type="date"
-            className="
-     border rounded px-3 py-1 pr-10 text-base font-semibold bg-slate-100
-     cursor-pointer appearance-none peer
-          [&::-webkit-calendar-picker-indicator]:hidden          
-          [&::-webkit-inner-spin-button]:hidden                  
-          [&::-webkit-clear-button]:hidden                       
-          [&::-moz-calendar-picker-indicator]:hidden"
-            value={selectedDate}
-            min={dates[0]?.date}
-            max={dates[dates.length - 1]?.date}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            onFocus={() => dateInputRef.current?.showPicker?.()}
-            onClick={() => dateInputRef.current?.showPicker?.()}
-          />
-          <CalendarDaysIcon
-            className="absolute right-5 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-600 pointer-events-none peer-hover:text-gray-800"
-            aria-hidden="true"
-          />
-        </div>
+        {/* Date picker (clickable everywhere) */}
+        <input
+          ref={dateInputRef} // Changed!
+          type="date"
+          className="border rounded px-3 py-1 text-base font-semibold bg-slate-100 cursor-pointer" // Changed!
+          value={selectedDate}
+          min={dates[0]?.date}
+          max={dates[dates.length - 1]?.date}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          onFocus={() => dateInputRef.current?.showPicker?.()} // Changed!
+          onClick={() => dateInputRef.current?.showPicker?.()} // Changed!
+          title={niceDate} // Changed! (shows full Swedish date on hover)
+        />
 
         <button
           onClick={goNext}
