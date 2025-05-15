@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 const Skrallar = ({
   selectedDate,
   setSelectedDate,
-  setSelectedView, 
-  setSelectedHorse, 
+  setSelectedView,
+  setSelectedHorse,
 }) => {
   const [dates, setDates] = useState([]);
   const [horses, setHorses] = useState([]);
@@ -22,7 +22,7 @@ const Skrallar = ({
         const unique = Array.from(
           new Map(all.map((d) => [d.date, d])).values()
         );
-        setDates(unique); 
+        setDates(unique);
         if (!selectedDate) {
           const todayStr = new Date().toISOString().split("T")[0];
           const todayObj = all.find((d) => d.date === todayStr);
@@ -43,11 +43,11 @@ const Skrallar = ({
           `${API_BASE_URL}/completeHorse/getSkrallar?date=${selectedDate}`
         );
         const data = await res.json();
-        const withPos = data.map((h, idx) => ({
-          ...h,
-          position: idx + 1, 
-        }));
-        setHorses(withPos);
+        console.table(data.slice(0, 5));
+        const filtered = data.filter(
+          (h) => !Number.isNaN(Number(h.tips)) && Number(h.tips) >= 1
+        );
+        setHorses(data.map((h, idx) => ({ ...h, position: idx + 1 })));
       } catch {
         setError("Kunde inte hämta skrällar.");
         setHorses([]);
@@ -84,41 +84,37 @@ const Skrallar = ({
   const goNext = () =>
     idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
-  const today = new Date().toISOString().split("T")[0];           
-const yesterday = new Date(Date.now() - 864e5)                  
-  .toISOString()                                                
-  .split("T")[0];                                               
-const tomorrow = new Date(Date.now() + 864e5)                   
-  .toISOString()                                                
-  .split("T")[0];                                               
+  const today = new Date().toISOString().split("T")[0];
+  const yesterday = new Date(Date.now() - 864e5).toISOString().split("T")[0];
+  const tomorrow = new Date(Date.now() + 864e5).toISOString().split("T")[0];
 
-const sv = (d) => {                                             
-  const date = new Date(d);                                     
-  const weekday = date.toLocaleDateString("sv-SE", {            
-    weekday: "long",                                            
-  });                                                           
-  const capitalizedWeekday =                                    
-    weekday.charAt(0).toUpperCase() + weekday.slice(1);         
-  const rest = date.toLocaleDateString("sv-SE", {               
-    day: "numeric",                                             
-    month: "long",                                              
-  });                                                           
-  return `${capitalizedWeekday}, ${rest}`;                      
-};                                                              
+  const sv = (d) => {
+    const date = new Date(d);
+    const weekday = date.toLocaleDateString("sv-SE", {
+      weekday: "long",
+    });
+    const capitalizedWeekday =
+      weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    const rest = date.toLocaleDateString("sv-SE", {
+      day: "numeric",
+      month: "long",
+    });
+    return `${capitalizedWeekday}, ${rest}`;
+  };
 
-const niceDate =                                                
-  selectedDate === today                                        
-    ? `Idag, ${sv(selectedDate)}`                               
-    : selectedDate === yesterday                                
-    ? `Igår, ${sv(selectedDate)}`                               
-    : selectedDate === tomorrow                                 
-    ? `Imorgon, ${sv(selectedDate)}`                            
-    : sv(selectedDate);         
+  const niceDate =
+    selectedDate === today
+      ? `Idag, ${sv(selectedDate)}`
+      : selectedDate === yesterday
+      ? `Igår, ${sv(selectedDate)}`
+      : selectedDate === tomorrow
+      ? `Imorgon, ${sv(selectedDate)}`
+      : sv(selectedDate);
 
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
       <h1 className="text-center text-2xl sm:text-4xl font-semibold bg-slate-50 sm:p-4 rounded-xl border">
-        Topp 10 tipsen
+        Dagens tips under radarn
       </h1>
 
       <div className="flex items-center justify-between mb-3">
