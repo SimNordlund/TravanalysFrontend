@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useMemo, useRef } from "react"; // Changed!
+import React, { useEffect, useState, useMemo, useRef } from "react"; 
+import { CalendarDaysIcon } from '@heroicons/react/20/solid';         
 
 const PaginatedLapTable = ({
   selectedDate,
@@ -31,7 +32,7 @@ const PaginatedLapTable = ({
   /* ----------------------------------------------------------- */
 
   // ---------- Ref for the date input ----------
-  const dateInputRef = useRef(null); // Changed!
+  const dateInputRef = useRef(null); 
 
   // Fetch and dedupe dates
   useEffect(() => {
@@ -39,7 +40,7 @@ const PaginatedLapTable = ({
       .then((r) => r.json())
       .then((all) => {
         if (!all.length) return;
-        // Changed! Remove duplicates and sort
+       
         const uniqueDates = Array.from(new Set(all.map((d) => d.date)))
           .sort()
           .map((date) => ({ date }));
@@ -200,12 +201,12 @@ const PaginatedLapTable = ({
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
     const capitalizedWeekday =
-      weekday.charAt(0).toUpperCase() + weekday.slice(1); // Changed!
+      weekday.charAt(0).toUpperCase() + weekday.slice(1); 
     const rest = date.toLocaleDateString("sv-SE", {
       day: "numeric",
       month: "long",
-    }); // Changed!
-    return `${capitalizedWeekday}, ${rest}`; // Changed!
+    }); 
+    return `${capitalizedWeekday}, ${rest}`; 
   };
   const niceDate =
     selectedDate === today
@@ -228,17 +229,31 @@ const PaginatedLapTable = ({
           &#8592;
         </button>
 
-        <input
-          ref={dateInputRef} // Changed!
-          type="date"
-          className="border rounded px-3 py-1 text-base font-medium bg-slate-100 cursor-pointer" // Changed!
-          value={selectedDate}
-          min={dates[0]?.date}
-          max={dates[dates.length - 1]?.date}
-          onChange={(e) => setSelectedDate(e.target.value)}
-          onFocus={() => dateInputRef.current?.showPicker?.()} // Changed!
-          onClick={() => dateInputRef.current?.showPicker?.()} // Changed!
-        />
+        <div className="relative inline-block"> 
+          <input
+            ref={dateInputRef}                                                                               
+            type="date"
+            className="
+              border rounded px-3 py-1 pr-10 text-base font-medium bg-slate-100
+              cursor-pointer appearance-none peer
+              [&::-webkit-calendar-picker-indicator]:hidden                 /* Changed! */
+              [&::-webkit-inner-spin-button]:hidden                         /* Changed! */
+              [&::-webkit-clear-button]:hidden                              /* Changed! */
+              [&::-moz-calendar-picker-indicator]:hidden                    /* Changed! */
+            "                                                                                                
+            value={selectedDate}
+            min={dates[0]?.date}
+            max={dates[dates.length - 1]?.date}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            onFocus={() => dateInputRef.current?.showPicker?.()}                                                
+            onClick={() => dateInputRef.current?.showPicker?.()}                                                 
+          />
+
+          <CalendarDaysIcon
+            className="absolute right-5 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-600 pointer-events-none peer-hover:text-gray-800" 
+            aria-hidden="true"
+          />
+        </div>
 
         <button
           onClick={goNext}
