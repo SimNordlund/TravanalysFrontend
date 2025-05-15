@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react"; //Changed!
+import React, { useEffect, useState, useMemo, useRef } from "react"; // Changed!
 
 const PaginatedLapTable = ({
   selectedDate,
@@ -19,16 +19,19 @@ const PaginatedLapTable = ({
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" }); //Changed!
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   /* ------------ NEW: highest analys value -------------------- */
-  const maxAnalysValue = useMemo(                                       //Changed!
-    () => Math.max(...lapData.map((r) => Number(r.analys) || -Infinity)), //Changed!
-    [lapData]                                                            //Changed!
-  );                                                                     //Changed!
+  const maxAnalysValue = useMemo(
+    () => Math.max(...lapData.map((r) => Number(r.analys) || -Infinity)),
+    [lapData]
+  );
   /* ----------------------------------------------------------- */
+
+  // ---------- Ref for the date input ----------
+  const dateInputRef = useRef(null); // Changed!
 
   // Fetch and dedupe dates
   useEffect(() => {
@@ -46,7 +49,7 @@ const PaginatedLapTable = ({
           const todayObj = uniqueDates.find((d) => d.date === todayStr);
           setSelectedDate(
             todayObj ? todayObj.date : uniqueDates[uniqueDates.length - 1].date
-          ); //Changed!
+          );
         }
       })
       .catch(() => setError("Kunde inte hämta datum."));
@@ -64,7 +67,7 @@ const PaginatedLapTable = ({
 
         setTracks(t);
         if (t.length) {
-          setSelectedTrack(t[0].id); //Changed!
+          setSelectedTrack(t[0].id);
         }
       } catch {
         setError("Fel vid hämtning av bana.");
@@ -90,7 +93,7 @@ const PaginatedLapTable = ({
         const exists = comps.find((c) => c.id === +selectedCompetition);
         if (!selectedCompetition || !exists) {
           if (comps.length) {
-            setSelectedCompetition(comps[0].id); //Changed!
+            setSelectedCompetition(comps[0].id);
             setCompetitionName(comps[0].nameOfCompetition);
           }
         }
@@ -117,7 +120,7 @@ const PaginatedLapTable = ({
 
         const exists = lapsJSON.find((l) => l.id === +selectedLap);
         if (!selectedLap || !exists) {
-          if (lapsJSON.length) setSelectedLap(lapsJSON[0].id); //Changed!
+          if (lapsJSON.length) setSelectedLap(lapsJSON[0].id);
         }
       } catch {
         setError("Fel vid hämtning av lopp.");
@@ -166,7 +169,6 @@ const PaginatedLapTable = ({
   }, [selectedLap]);
 
   const requestSort = (key) => {
-    //Changed!
     let direction = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
       direction = "desc";
@@ -175,7 +177,6 @@ const PaginatedLapTable = ({
   };
 
   const sortedLapData = [...lapData].sort((a, b) => {
-    //Changed!
     if (!sortConfig.key) return 0;
     const aVal = a[sortConfig.key];
     const bVal = b[sortConfig.key];
@@ -190,15 +191,11 @@ const PaginatedLapTable = ({
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
   const goNext = () =>
-    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date); //Changed!
+    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
   const today = new Date().toISOString().split("T")[0];
-  const yesterday = new Date(Date.now() - 864e5)
-    .toISOString()
-    .split("T")[0];
-  const tomorrow = new Date(Date.now() + 864e5)
-    .toISOString()
-    .split("T")[0];
+  const yesterday = new Date(Date.now() - 864e5).toISOString().split("T")[0];
+  const tomorrow = new Date(Date.now() + 864e5).toISOString().split("T")[0];
   const sv = (d) => {
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
@@ -231,9 +228,17 @@ const PaginatedLapTable = ({
           &#8592;
         </button>
 
-        <h2 className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 px-4 py-2 flex flex-col justify-center items-center bg-slate-100 rounded-xl border">
-          {niceDate}
-        </h2>
+        <input
+          ref={dateInputRef} // Changed!
+          type="date"
+          className="border rounded px-3 py-1 text-base font-medium bg-slate-100 cursor-pointer" // Changed!
+          value={selectedDate}
+          min={dates[0]?.date}
+          max={dates[dates.length - 1]?.date}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          onFocus={() => dateInputRef.current?.showPicker?.()} // Changed!
+          onClick={() => dateInputRef.current?.showPicker?.()} // Changed!
+        />
 
         <button
           onClick={goNext}
@@ -359,7 +364,7 @@ const PaginatedLapTable = ({
 
           <tbody>
             {sortedLapData.map((row) => {
-              const isMax = Number(row.analys) === maxAnalysValue; //Changed!
+              const isMax = Number(row.analys) === maxAnalysValue;
               return (
                 <tr
                   key={row.id}
@@ -379,8 +384,8 @@ const PaginatedLapTable = ({
                   <td
                     className={`py-2 px-2 border-r border-gray-200 ${
                       isMax
-                        ? "bg-orange-300 font-bold underline" //Changed!
-                        : "bg-orange-50"                     //Changed!
+                        ? "bg-orange-300 font-bold underline"
+                        : "bg-orange-50"
                     }`}
                   >
                     {row.analys}

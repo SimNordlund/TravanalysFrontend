@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react"; // Changed!
 
 const Skrallar = ({
   selectedDate,
@@ -13,6 +13,8 @@ const Skrallar = ({
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  const dateInputRef = useRef(null); // Changed!
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
@@ -43,11 +45,10 @@ const Skrallar = ({
           `${API_BASE_URL}/completeHorse/getSkrallar?date=${selectedDate}`
         );
         const data = await res.json();
-        console.table(data.slice(0, 5));
         const filtered = data.filter(
           (h) => !Number.isNaN(Number(h.tips)) && Number(h.tips) >= 1
         );
-        setHorses(data.map((h, idx) => ({ ...h, position: idx + 1 })));
+        setHorses(filtered.map((h, idx) => ({ ...h, position: idx + 1 }))); // Changed! (use filtered list)
       } catch {
         setError("Kunde inte hämta skrällar.");
         setHorses([]);
@@ -90,9 +91,7 @@ const Skrallar = ({
 
   const sv = (d) => {
     const date = new Date(d);
-    const weekday = date.toLocaleDateString("sv-SE", {
-      weekday: "long",
-    });
+    const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
     const capitalizedWeekday =
       weekday.charAt(0).toUpperCase() + weekday.slice(1);
     const rest = date.toLocaleDateString("sv-SE", {
@@ -113,10 +112,7 @@ const Skrallar = ({
 
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
-      <h1 className="text-center text-2xl sm:text-4xl font-semibold bg-slate-50 sm:p-4 rounded-xl border">
-        Dagens tips under radarn
-      </h1>
-
+      {/* --------- Navigation with clickable date input --------- */}
       <div className="flex items-center justify-between mb-3">
         <button
           onClick={goPrev}
@@ -126,9 +122,19 @@ const Skrallar = ({
           &#8592;
         </button>
 
-        <h2 className="text-center text-lg sm:text-2xl font-semibold">
-          {niceDate}
-        </h2>
+        {/* Date picker (clickable everywhere) */}
+        <input
+          ref={dateInputRef} // Changed!
+          type="date"
+          className="border rounded px-3 py-1 text-base font-semibold bg-slate-100 cursor-pointer" // Changed!
+          value={selectedDate}
+          min={dates[0]?.date}
+          max={dates[dates.length - 1]?.date}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          onFocus={() => dateInputRef.current?.showPicker?.()} // Changed!
+          onClick={() => dateInputRef.current?.showPicker?.()} // Changed!
+          title={niceDate} // Changed! (shows full Swedish date on hover)
+        />
 
         <button
           onClick={goNext}
@@ -223,14 +229,14 @@ const Skrallar = ({
                 <td className="py-2 px-2 text-left border-r border-gray-200">
                   {row.nameOfHorse}
                 </td>
-                <td className="py-2 px-2 border-r border-gray-200  bg-orange-50">
+                <td className="py-2 px-2 border-r border-gray-200 bg-orange-50">
                   {row.analys}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
                   {row.resultat}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
-                  {row.roiTrio}
+                  {row.roiTotalt}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
                   {row.roiVinnare}
