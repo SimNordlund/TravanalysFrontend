@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from "react"; // Changed!
-
+import React, { useEffect, useState } from "react"; // Changed!
+import DatePicker from "./DatePicker";
 
 const Skrallar = ({
   selectedDate,
@@ -14,8 +14,6 @@ const Skrallar = ({
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-  const dateInputRef = useRef(null); // Changed!
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
@@ -123,18 +121,11 @@ const Skrallar = ({
           &#8592;
         </button>
 
-        {/* Date picker (clickable everywhere) */}
-        <input
-          ref={dateInputRef} // Changed!
-          type="date"
-          className="border rounded px-3 py-1 text-base font-semibold bg-slate-100 cursor-pointer" // Changed!
+        <DatePicker
           value={selectedDate}
+          onChange={setSelectedDate}
           min={dates[0]?.date}
           max={dates[dates.length - 1]?.date}
-          onChange={(e) => setSelectedDate(e.target.value)}
-          onFocus={() => dateInputRef.current?.showPicker?.()} // Changed!
-          onClick={() => dateInputRef.current?.showPicker?.()} // Changed!
-          title={niceDate} // Changed! (shows full Swedish date on hover)
         />
 
         <button

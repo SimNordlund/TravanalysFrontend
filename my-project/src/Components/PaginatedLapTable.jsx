@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useMemo, useRef } from "react"; // Changed!
+import React, { useEffect, useState, useMemo } from "react"; // Changed!
+import DatePicker from "./DatePicker";
 
 const PaginatedLapTable = ({
   selectedDate,
@@ -29,9 +30,6 @@ const PaginatedLapTable = ({
     [lapData]
   );
   /* ----------------------------------------------------------- */
-
-  // ---------- Ref for the date input ----------
-  const dateInputRef = useRef(null); // Changed!
 
   // Fetch and dedupe dates
   useEffect(() => {
@@ -228,16 +226,11 @@ const PaginatedLapTable = ({
           &#8592;
         </button>
 
-        <input
-          ref={dateInputRef} // Changed!
-          type="date"
-          className="border rounded px-3 py-1 text-base font-medium bg-slate-100 cursor-pointer" // Changed!
+        <DatePicker
           value={selectedDate}
+          onChange={setSelectedDate}
           min={dates[0]?.date}
           max={dates[dates.length - 1]?.date}
-          onChange={(e) => setSelectedDate(e.target.value)}
-          onFocus={() => dateInputRef.current?.showPicker?.()} // Changed!
-          onClick={() => dateInputRef.current?.showPicker?.()} // Changed!
         />
 
         <button
