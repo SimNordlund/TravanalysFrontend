@@ -26,11 +26,16 @@ export default function DatePicker({
       </button>
       {/* ---------- Calendar pop-over ---------- */}
       {open && (
-        <div className="absolute z-50 mt-2 bg-white p-2 rounded-lg shadow">
+        <div
+          className="absolute z-50 mt-2 bg-white p-3 rounded-lg shadow
+                     left-1/2 -translate-x-1/2                     
+                     md:left-auto md:right-0 md:translate-x-0         
+                     w-[90vw] max-w-sm"
+        >
           <DayPicker
             mode="single"
-            locale={sv} // Changed! 
-            weekStartsOn={1} // Changed! 
+            locale={sv} // Changed!
+            weekStartsOn={1} // Changed!
             selected={value ? parseISO(value) : undefined} // Changed!
             onSelect={(d) => {
               if (d) onChange(format(d, "yyyy-MM-dd")); // Changed!
