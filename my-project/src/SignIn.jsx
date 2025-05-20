@@ -1,53 +1,82 @@
-import { useNavigate } from "react-router-dom"; //Changed!
+import { useNavigate } from "react-router-dom";
+
 import React, { useState } from 'react';
-import GitHubLoginButton from "./Components/GitHubLoginButton"; //Changed!
-import travhorsi from './Bilder/travhorsi2.png'; //Changed!
-import GoogleLoginButton from "./Components/GoogleLoginButton"; //Changed!
-import gratisHast from './Bilder/gratisHäst.jpg'; //Changed!
+import GitHubLoginButton from "./Components/GitHubLoginButton";
+
+import travhorsi from './Bilder/travhorsi2.png';
+
+import GoogleLoginButton from "./Components/GoogleLoginButton";
+
+import gratisHast from './Bilder/gratisHäst.jpg';
+
 
 export default function SignIn() {
-  const navigateSignIn = useNavigate(); //Changed!
+  const navigateSignIn = useNavigate();
 
-  const [userEmail, setUserEmail] = useState(''); //Changed!
-  const [userPassword, setUserPassword] = useState(''); //Changed!
-  const [showError, setShowError] = useState(false); //Changed!
 
-  const handleSignIn = async (event) => { //Changed!
-    event.preventDefault(); //Changed!
+  const [userEmail, setUserEmail] = useState('');
 
-    const credentials = { //Changed!
-      username: userEmail, //Changed!
-      password: userPassword //Changed!
-    }; //Changed!
+  const [userPassword, setUserPassword] = useState('');
+
+  const [showError, setShowError] = useState(false);
+
+
+  const handleSignIn = async (event) => {
+
+    event.preventDefault();
+
+
+    const credentials = {
+
+      username: userEmail,
+
+      password: userPassword
+
+    };
+
 
     try {
-      const response = await fetch('http://localhost:8080/user/authenticate', { //Changed!
-        method: 'POST', //Changed!
+      const response = await fetch('http://localhost:8080/user/authenticate', {
+
+        method: 'POST',
+
         headers: {
-          'Content-Type': 'application/json' //Changed!
+          'Content-Type': 'application/json'
+
         },
-        body: JSON.stringify(credentials) //Changed!
-      }); //Changed!
+        body: JSON.stringify(credentials)
+
+      });
+
 
       if (response.ok) {
-        const user = await response.json(); //Changed!
-        localStorage.setItem('isLoggedIn', 'true'); //Changed!
-        localStorage.setItem('username', user.username); //Changed!
-        navigateSignIn('/'); //Changed!
+        const user = await response.json();
+
+        localStorage.setItem('isLoggedIn', 'true');
+
+        localStorage.setItem('username', user.username);
+
+        navigateSignIn('/');
+
       } else {
-        throw new Error('Authentication failed!'); //Changed!
+        throw new Error('Authentication failed!');
+
       }
     } catch (error) {
-      console.error('Authentication error:', error); //Changed!
-      setShowError(true); //Changed!
-      setTimeout(() => setShowError(false), 15000); //Changed!
+      console.error('Authentication error:', error);
+
+      setShowError(true);
+
+      setTimeout(() => setShowError(false), 15000);
+
     }
-  }; //Changed!
+  };
+
 
   return (
-    <div className="flex min-h-full flex-1 flex-col lg:flex-row justify-center px-6 py-12 lg:px-8"> {/* Changed! */}
-      {/* Left — Sign‑in content */} {/* Changed! */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center"> {/* Changed! */}
+    <div className="flex min-h-full flex-1 flex-col lg:flex-row justify-center px-6 py-12 lg:px-8"> 
+
+      <div className="w-full lg:w-1/2 flex flex-col justify-center"> 
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h1 className="mt-10 text-center text-3xl font-bold mb-4 leading-9 tracking-tight text-gray-900">
             Logga in på Travanalys och få tillgång till ännu mer data och underlag.
@@ -63,15 +92,15 @@ export default function SignIn() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          {/* Third‑party login buttons */}
           <p className="text-center text-sm text-gray-500 sm:mb-10">
             <GitHubLoginButton />
             <GoogleLoginButton />
           </p>
 
-          {/* Outcommented email/password form restored */} 
-          {/* //Changed!
-          <form className="space-y-6" onSubmit={handleSignIn}> //Changed!
+          {/*
+
+          <form className="space-y-6" onSubmit={handleSignIn}>
+
             {showError && (
               <div id="wrongPW" className="block font-medium leading-6 text-red-600 text-lg text-center border-red-400 border-4 py-2 rounded-lg">
                 Användarnamnet eller lösenordet är felaktigt alternativt finns inte.
@@ -131,14 +160,13 @@ export default function SignIn() {
         </div>
       </div>
 
-      {/* Right — Image section */}
-      <div className="hidden lg:flex lg:w-1/2 items-center justify-center"> {/* Changed! */}
+      <div className="hidden lg:flex lg:w-1/2 items-center justify-center"> 
         <img
           src={gratisHast}
           alt="Gratis häst"
           className="hidden sm:block w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-24 lg:-ml-24"
         />
-      </div> {/* Changed! */}
+      </div> 
     </div>
   );
 } 

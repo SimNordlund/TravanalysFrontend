@@ -21,8 +21,8 @@ const callouts = [
 
 export default function Preview({ onCompetitionSelect }) {
   const handleButtonClick = (id, name) => {
-    onCompetitionSelect(id, name); // Select the competition
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to the top of the page
+    onCompetitionSelect(id, name); 
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
   };
 
   return (

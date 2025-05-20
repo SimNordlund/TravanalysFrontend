@@ -1,9 +1,8 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirecting to different routes
+import { useNavigate } from 'react-router-dom'; 
 import travhorsi from './Bilder/travhorsi2.png';
-import picke1 from './Bilder/picke1.png';
 
 
 const navigation = [
@@ -21,12 +20,12 @@ function classNames(...classes) {
 
 export default function Example() {
 
-  const navigateNavBar = useNavigate(); // Create an instance of useNavigate
+  const navigateNavBar = useNavigate(); 
 
   const handleLogout = () => {
-    localStorage.clear(); // This clears the entire localStorage
-    // localStorage.removeItem('isLoggedIn'); // Use this if you want to remove specific items
-    navigateNavBar('/signin'); // Redirect user to signin page after logout
+    localStorage.clear(); 
+    // localStorage.removeItem('isLoggedIn'); 
+    navigateNavBar('/signin');
   };
 
   return (
@@ -36,7 +35,7 @@ export default function Example() {
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-1">
             <div className="relative flex h-16 items-center justify-between">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                {/* Mobil meny*/}
+                {/* Mobil*/}
                 <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="absolute -inset-0.5" />
                   <span className="sr-only">Open main menu</span>
@@ -78,7 +77,6 @@ export default function Example() {
                     <a href="/" className="mt-0 font-semibold text-lg sm:text-xl text-white">Travanalys </a>
                     </div>
 
-                {/* dropdown */}
                 <Menu as="div" className="relative ml-3">
                 {/*<div>
                     <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">

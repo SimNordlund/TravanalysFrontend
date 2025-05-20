@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; //För att byta sida efter registrering 
+import { useNavigate } from 'react-router-dom'; 
 
 export default function SignUp() {
   const [firstName, setFirstName] = useState('');
@@ -17,7 +17,7 @@ export default function SignUp() {
   setIsPasswordVisible(!isPasswordVisible);
 };
 
-  const navigate = useNavigate(); //För att byta sida efter registrering 
+  const navigate = useNavigate(); 
   const handleSubmit = async (event) => {
     event.preventDefault();
 

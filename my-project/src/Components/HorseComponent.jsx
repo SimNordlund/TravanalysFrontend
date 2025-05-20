@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 
 function HorseComponent() {
-    const [horses, setHorses] = useState([]);  // Change to array for multiple horses
-    const [loading, setLoading] = useState(true);  // Tracks loading state
-    const [error, setError] = useState(null);  // Tracks error state
+    const [horses, setHorses] = useState([]); 
+    const [loading, setLoading] = useState(true);  
+    const [error, setError] = useState(null); 
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         fetch(`${API_BASE_URL}/api/horses`)
             .then(response => {
-                if (!response.ok) {  // Check if response is successful
+                if (!response.ok) {  
                     throw new Error('Network response was not ok: ' + response.statusText);
                 }
                 return response.json();
             })
             .then(data => {
-                setHorses(data);  // Store the horses array
+                setHorses(data);  
                 setLoading(false);
             })
             .catch(error => {
@@ -27,7 +27,7 @@ function HorseComponent() {
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
-    if (horses.length === 0) return <div>No horse data available.</div>;  // Handle empty array case
+    if (horses.length === 0) return <div>No horse data available.</div>;  
 
     return (
         <div>

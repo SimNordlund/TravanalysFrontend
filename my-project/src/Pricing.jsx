@@ -15,7 +15,7 @@ export default function Pricing() {
   const handleCopyClick = () => {
     navigator.clipboard.writeText('070-6493763');
     setCopyStatus('Nummer kopierat!');
-    setTimeout(() => setCopyStatus('Klicka för att kopiera 070-6493763'), 5000); // Reset after 2 seconds
+    setTimeout(() => setCopyStatus('Klicka för att kopiera 070-6493763'), 5000); 
   };
 
   return (

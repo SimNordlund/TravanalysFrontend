@@ -3,7 +3,7 @@ const callouts = [
     id: 1,
     name: 'Reducerat System',
     bgColor: 'bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600',
-    href: '/Components/ReducedButtons', // Fixed typo from hfref to href
+    href: '/Components/ReducedButtons', 
   },
   {
     id: 2,
@@ -29,7 +29,7 @@ export default function CalloutButtons() {
               <div
                 key={callout.id}
                 className="group relative cursor-pointer"
-                onClick={() => window.location.href = callout.href} // Navigate to href on click
+                onClick={() => window.location.href = callout.href} 
               >
                 <div
                   className={`${callout.bgColor} relative h-24 w-24 sm:w-72 sm:h-28 overflow-hidden rounded-lg lg:aspect-h-1 lg:aspect-w-1 flex items-center justify-center group-hover:opacity-65 transition-opacity duration-300 shadow-xl`}
