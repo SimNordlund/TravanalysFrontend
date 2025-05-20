@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react"; // Changed!
+import React, { useEffect, useState, useMemo } from "react"; 
 import DatePicker from "./DatePicker";
 
 const PaginatedLapTable = ({
@@ -24,20 +24,20 @@ const PaginatedLapTable = ({
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  /* ------------ NEW: highest analys value -------------------- */
+
   const maxAnalysValue = useMemo(
     () => Math.max(...lapData.map((r) => Number(r.analys) || -Infinity)),
     [lapData]
   );
-  /* ----------------------------------------------------------- */
 
-  // Fetch and dedupe dates
+
+ 
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
       .then((r) => r.json())
       .then((all) => {
         if (!all.length) return;
-        // Changed! Remove duplicates and sort
+  
         const uniqueDates = Array.from(new Set(all.map((d) => d.date)))
           .sort()
           .map((date) => ({ date }));
@@ -198,12 +198,12 @@ const PaginatedLapTable = ({
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
     const capitalizedWeekday =
-      weekday.charAt(0).toUpperCase() + weekday.slice(1); // Changed!
+      weekday.charAt(0).toUpperCase() + weekday.slice(1);
     const rest = date.toLocaleDateString("sv-SE", {
       day: "numeric",
       month: "long",
-    }); // Changed!
-    return `${capitalizedWeekday}, ${rest}`; // Changed!
+    });
+    return `${capitalizedWeekday}, ${rest}`; 
   };
   const niceDate =
     selectedDate === today
@@ -216,7 +216,6 @@ const PaginatedLapTable = ({
 
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
-      {/* ---------- Top navigation (arrows, date) ---------- */}
       <div className="flex items-center justify-between mb-3">
         <button
           onClick={goPrev}
@@ -242,7 +241,6 @@ const PaginatedLapTable = ({
         </button>
       </div>
 
-      {/* ---------- Track buttons ---------- */}
       <div className="flex flex-wrap gap-1 mb-2">
         {tracks.map((t) => (
           <button
@@ -260,7 +258,7 @@ const PaginatedLapTable = ({
         ))}
       </div>
 
-      {/* ---------- Competition buttons ---------- */}
+
       <div className="flex flex-wrap gap-1 mb-2">
         {competitions.map((c) => (
           <button
@@ -281,7 +279,6 @@ const PaginatedLapTable = ({
         ))}
       </div>
 
-      {/* ---------- Lap buttons ---------- */}
       <div className="flex flex-wrap gap-1 mb-3">
         {laps.map((lap) => (
           <button
@@ -299,7 +296,6 @@ const PaginatedLapTable = ({
         ))}
       </div>
 
-      {/* ---------- Data table ---------- */}
       <div className="overflow-x-auto border border-gray-200 rounded relative">
         {loading && (
           <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-75">
@@ -373,7 +369,6 @@ const PaginatedLapTable = ({
                     {row.nameOfCompleteHorse}
                   </td>
 
-                  {/* highlight highest analys */}
                   <td
                     className={`py-2 px-2 border-r border-gray-200 ${
                       isMax

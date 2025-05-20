@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SpiderChart from "./SpiderChart";
 import BarChart from "../BarChart";
-import PaginatedLapTable from "./PaginatedLapTable"; 
+import PaginatedLapTable from "./PaginatedLapTable";
 import Skrallar from "./Skrallar";
 
 const ToggleComponent = () => {
@@ -10,15 +10,12 @@ const ToggleComponent = () => {
   const [selectedCompetition, setSelectedCompetition] = useState("");
   const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState("bar");
-  const [selectedHorse, setSelectedHorse] = useState(null); 
+  const [selectedHorse, setSelectedHorse] = useState(null);
 
-  /* ↓ if the user taps the “Diagram / Tabell / Analys” button              */
-  /*   we reset the one-horse filter so Spider shows everything again.       */
   const switchView = (view) => {
-    
-    setSelectedView(view); 
-    if (view !== "spider") setSelectedHorse(null); 
-  }; 
+    setSelectedView(view);
+    if (view !== "spider") setSelectedHorse(null);
+  };
 
   const callouts = [
     {
@@ -49,14 +46,12 @@ const ToggleComponent = () => {
 
   return (
     <div className="text-center pt-12 pb-12 sm:pt-16 sm:pb-14">
-      {/* Buttons */}
-
       <div className="flex justify-center gap-x-3.5 sm:gap-x-10 flex-nowrap overflow-auto mb-4 sm:mb-8 pt-3 pb-3">
         {callouts.map((c) => (
           <div
             key={c.id}
             className="group relative cursor-pointer"
-            onClick={() => switchView(c.view)} 
+            onClick={() => switchView(c.view)}
           >
             <div
               className={`
@@ -79,11 +74,9 @@ const ToggleComponent = () => {
         ))}
       </div>
 
-      {/* Chart/Table toggle */}
       <div className="sm:max-w-4xl sm:mx-auto bg-white ml-4 mr-4 sm:pl-8 sm:pr-8 sm:pb-2 rounded-xl shadow-lg">
         {selectedView === "bar" && (
           <BarChart
-            /* existing props … */
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
             selectedTrack={selectedTrack}
@@ -92,14 +85,13 @@ const ToggleComponent = () => {
             setSelectedCompetition={setSelectedCompetition}
             selectedLap={selectedLap}
             setSelectedLap={setSelectedLap}
-            /* new → */ setSelectedView={setSelectedView} 
-            setSelectedHorse={setSelectedHorse} 
+            setSelectedView={setSelectedView}
+            setSelectedHorse={setSelectedHorse}
           />
         )}
 
         {selectedView === "spider" && (
           <SpiderChart
-            /* existing props … */
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
             selectedTrack={selectedTrack}
@@ -108,7 +100,7 @@ const ToggleComponent = () => {
             setSelectedCompetition={setSelectedCompetition}
             selectedLap={selectedLap}
             setSelectedLap={setSelectedLap}
-            /* new → */ selectedHorse={selectedHorse}
+            selectedHorse={selectedHorse}
           />
         )}
 
@@ -124,14 +116,14 @@ const ToggleComponent = () => {
             setSelectedLap={setSelectedLap}
           />
         )}
-         {selectedView === "skrallar" && (
-        <Skrallar
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          setSelectedView={setSelectedView}
-          setSelectedHorse={setSelectedHorse}
-        />
-      )}
+        {selectedView === "skrallar" && (
+          <Skrallar
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            setSelectedView={setSelectedView}
+            setSelectedHorse={setSelectedHorse}
+          />
+        )}
       </div>
     </div>
   );

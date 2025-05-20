@@ -1,13 +1,10 @@
-// BarChartComponent.jsx
-// (copy-paste the whole file)
-
 import React, { useEffect, useState, useRef } from "react";
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 import travhorsi from "./Bilder/travhorsi2.png";
 import Chart from "chart.js/auto";
 
 const BarChartComponent = ({
-  /* navigation props from ToggleComponent */
+
   selectedDate,
   setSelectedDate,
   selectedTrack,
@@ -16,15 +13,15 @@ const BarChartComponent = ({
   setSelectedCompetition,
   selectedLap,
   setSelectedLap,
-  /* cross-link props */
+
   setSelectedView,
   setSelectedHorse,
 }) => {
-  /* ---------- refs ---------- */
+
   const legendRef = useRef(null);
   const chartRef = useRef(null);
 
-  /* ---------- state ---------- */
+
   const [data, setData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(true);
   const [showSpinner, setShowSpinner] = useState(false);
@@ -35,7 +32,7 @@ const BarChartComponent = ({
   const [competitions, setCompetitions] = useState([]);
   const [laps, setLaps] = useState([]);
 
-  /* ---------- colour palette ---------- */
+
   const horseColors = [
     "rgba(0, 0, 255, 0.5)",
     "rgba(255, 165, 0, 0.5)",
@@ -54,7 +51,7 @@ const BarChartComponent = ({
     "rgba(128, 0, 128, 0.5)",
   ];
 
-  /* ---------- responsive legend toggle ---------- */
+
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640);
   useEffect(() => {
     const onResize = () => setIsSmallScreen(window.innerWidth < 640);
@@ -62,35 +59,33 @@ const BarChartComponent = ({
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  /* ---------- API base ---------- */
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  /* ───────── 1. Dates ───────── */
+
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
       .then((res) => res.json())
       .then((all) => {
-        if (!all.length) return; //Changed!
+        if (!all.length) return; 
 
-        // keep one entry per calendar day
         const unique = Array.from(
-          //Changed!
-          new Map(all.map((d) => [d.date, d])).values() //Changed!
-        ).sort((a, b) => a.date.localeCompare(b.date)); //Changed!
+          
+          new Map(all.map((d) => [d.date, d])).values() 
+        ).sort((a, b) => a.date.localeCompare(b.date)); 
 
-        setDates(unique); //Changed!
+        setDates(unique); 
 
         if (!selectedDate) {
-          //Changed!
-          const todayStr = new Date().toISOString().split("T")[0]; //Changed!
-          const today = unique.find((x) => x.date === todayStr); //Changed!
-          setSelectedDate(today ? today.date : unique[0].date); //Changed!
-        } //Changed!
+          
+          const todayStr = new Date().toISOString().split("T")[0]; 
+          const today = unique.find((x) => x.date === todayStr); 
+          setSelectedDate(today ? today.date : unique[0].date); 
+        } 
       })
       .catch((err) => console.error("dates:", err));
   }, []);
 
-  /* ───────── 2. Tracks ───────── */
+
   useEffect(() => {
     if (!selectedDate) return;
     fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`)
@@ -102,7 +97,7 @@ const BarChartComponent = ({
       .catch((err) => console.error("tracks:", err));
   }, [selectedDate]);
 
-  /* ───────── 3. Competitions ───────── */
+
   useEffect(() => {
     if (!selectedTrack) return;
     fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`)
@@ -114,7 +109,6 @@ const BarChartComponent = ({
       .catch((err) => console.error("competitions:", err));
   }, [selectedTrack]);
 
-  /* ───────── 4. Laps ───────── */
   useEffect(() => {
     if (!selectedCompetition) return;
     fetch(
@@ -132,7 +126,6 @@ const BarChartComponent = ({
       });
   }, [selectedCompetition]);
 
-  /* ───────── 5. Horses + four-starts (bar data) ───────── */
   useEffect(() => {
     if (!selectedLap) return;
     setLoading(true);
@@ -144,9 +137,8 @@ const BarChartComponent = ({
       })
       .then((completeHorses) => {
         const labels = completeHorses.map((horse) => {
-          // Take first two characters of the full name, then trim spaces //Changed!
           return horse.numberOfCompleteHorse + ".";
-        }); //Changed!
+        }); 
         return Promise.all(
           completeHorses.map((horse, idx) =>
             fetch(
@@ -180,7 +172,6 @@ const BarChartComponent = ({
       });
   }, [selectedLap]);
 
-  /* ---- show spinner only after 3 s ---- */
   useEffect(() => {
     let t;
     if (loading) t = setTimeout(() => setShowSpinner(true), 3000);
@@ -188,7 +179,6 @@ const BarChartComponent = ({
     return () => clearTimeout(t);
   }, [loading]);
 
-  /* ---------- click-to-Spider handler ---------- */
   const handleBarClick = (evt) => {
     const els = getElementAtEvent(chartRef.current, evt);
     if (!els.length) return;
@@ -197,7 +187,6 @@ const BarChartComponent = ({
     setSelectedView("spider");
   };
 
-  /* ---------- html legend (same logic as your version) ---------- */
   const htmlLegendPlugin = {
     id: "htmlLegend",
     afterUpdate(chart) {
@@ -211,14 +200,12 @@ const BarChartComponent = ({
         const visible = chart.isDatasetVisible(item.datasetIndex);
         li.style.opacity = visible ? 1 : 0.35;
 
-        //Fadar barsen
         li.onclick = () => {
           if (chart.isDatasetVisible(item.datasetIndex)) {
             chart.hide(item.datasetIndex);
           } else {
             chart.show(item.datasetIndex);
           }
-          // no need to call chart.update(), hide/show do it under ytan jao
         };
 
         const box = document.createElement("span");
@@ -234,7 +221,6 @@ const BarChartComponent = ({
     },
   };
 
-  /* ---------- chart options ---------- */
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -252,21 +238,20 @@ const BarChartComponent = ({
         align: "start",
         labels: { boxWidth: 42 },
       },
-      //Changed! — move tooltip here, not inside legend
+      
       tooltip: {
-        enabled: true, // ensure it's on
-        // drop the default title
-        title: () => null, //Changed!
+        enabled: true,
+       
+        title: () => null, 
         callbacks: {
-          // hard-code the header
-          title: () => "Analys", //Changed!
-          // show value and horse label on one line
+          
+          title: () => "Analys", 
+        
         },
       },
     },
   };
 
-  /* ---------- Swedish date helpers ---------- */
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
   const yesterdayStr = new Date(today - 864e5).toISOString().split("T")[0];
@@ -276,12 +261,12 @@ const BarChartComponent = ({
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
     const capitalizedWeekday =
-      weekday.charAt(0).toUpperCase() + weekday.slice(1); // Changed!
+      weekday.charAt(0).toUpperCase() + weekday.slice(1);
     const rest = date.toLocaleDateString("sv-SE", {
       day: "numeric",
       month: "long",
     });
-    return `${capitalizedWeekday}, ${rest}`; // Changed!
+    return `${capitalizedWeekday}, ${rest}`;
   };
 
   const selectedDateLabel =
@@ -299,26 +284,21 @@ const BarChartComponent = ({
     competitions.find((c) => c.id === +selectedCompetition)
       ?.nameOfCompetition ?? "v75";
 
-  /* ---------- dropdown handlers ---------- */
   const onDate = (e) => setSelectedDate(e.target.value);
   const onTrack = (e) => setSelectedTrack(e.target.value);
   const onComp = (e) => setSelectedCompetition(e.target.value);
   const onLap = (e) => setSelectedLap(e.target.value);
 
-  /* ---------- early error ---------- */
   if (error) return <div className="text-red-600">Error: {error}</div>;
 
-  /* ---------- JSX ---------- */
   return (
     <div className="flex flex-col mt-1 px-2 pb-10 justify-start items-center">
       <p className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-7 px-4 py-2 flex flex-col justify-center items-center bg-slate-100 rounded-xl border">
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
       </p>
 
-      {/* Lap buttons (unchanged) */}
       <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4">
         {" "}
-        {/* Denna ändrar knapp position */}
         {laps.length > 0 ? (
           laps.map((lap) => (
             <button
@@ -346,7 +326,6 @@ const BarChartComponent = ({
         )}
       </div>
 
-      {/* custom legend (<640 px) */}
       <ul
         ref={legendRef}
         className={
@@ -354,16 +333,15 @@ const BarChartComponent = ({
         }
       />
 
-      {/* bar chart / placeholders */}
       <div className="w-full flex justify-center">
         <div className="sm:w-[90vh] w-full sm:h-[45vh] h-[30vh] relative flex items-center justify-center">
           {data.datasets.length > 0 && !loading && (
             <Bar
-              ref={chartRef} /* Changed! */
+              ref={chartRef} 
               data={data}
               options={options}
               plugins={isSmallScreen ? [htmlLegendPlugin] : []}
-              onClick={handleBarClick} /* Changed! */
+              onClick={handleBarClick} 
             />
           )}
 
@@ -383,7 +361,6 @@ const BarChartComponent = ({
         </div>
       </div>
 
-      {/* dropdowns */}
       <div className="w-full flex justify-center">
         <div className="flex flex-col justify-center items-center w-full sm:w-[65%] space-y-4 mt-8 sm:mt-4 sm:flex-row sm:space-y-0 sm:space-x-2 bg-slate-50 sm:p-4 rounded-xl border shadow-md">
           <select

@@ -10,19 +10,19 @@ export default function ProfessionalButton() {
 
       const xmlContent = await response.text();
 
-      // Create a blob with the XML content and a download link
+  
       const blob = new Blob([xmlContent], { type: "text/xml" });
       const url = window.URL.createObjectURL(blob);
 
-      // Create a temporary link to download the file
+
       const a = document.createElement("a");
       a.href = url;
-      a.download = "reducerat-system.xml"; // Name of the file to be downloaded
-      document.body.appendChild(a); // Append the link to the document
-      a.click(); // Programmatically click the link to trigger the download
-      document.body.removeChild(a); // Remove the link after downloading
+      a.download = "reducerat-system.xml"; 
+      document.body.appendChild(a); 
+      a.click(); 
+      document.body.removeChild(a); 
 
-      // Clean up the URL object
+
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error fetching or downloading the file:", error);
@@ -31,7 +31,7 @@ export default function ProfessionalButton() {
   };
 
   const handleCopyUrl = async () => {
-    const url = "https://travanalyserver-latest.onrender.com/s1?id=1"; // The URL to copy
+    const url = "https://travanalyserver-latest.onrender.com/s1?id=1"; 
     try {
       await navigator.clipboard.writeText(url);
       alert("URL kopierad!");

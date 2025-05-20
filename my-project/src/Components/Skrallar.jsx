@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"; // Changed!
+import React, { useEffect, useState } from "react"; 
 import DatePicker from "./DatePicker";
 
 const Skrallar = ({
@@ -47,7 +47,7 @@ const Skrallar = ({
         const filtered = data.filter(
           (h) => !Number.isNaN(Number(h.tips)) && Number(h.tips) >= 1
         );
-        setHorses(filtered.map((h, idx) => ({ ...h, position: idx + 1 }))); // Changed! (use filtered list)
+        setHorses(filtered.map((h, idx) => ({ ...h, position: idx + 1 }))); 
       } catch {
         setError("Kunde inte hämta skrällar.");
         setHorses([]);
@@ -111,7 +111,7 @@ const Skrallar = ({
 
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
-      {/* --------- Navigation with clickable date input --------- */}
+
       <div className="flex items-center justify-between mb-3">
         <button
           onClick={goPrev}
