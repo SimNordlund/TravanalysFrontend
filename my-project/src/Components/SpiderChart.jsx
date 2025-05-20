@@ -2,12 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { Radar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
 
-// ▶ SpiderChart – auto-selects first date → track → competition → lap
-//   and (if selectedHorse !== null) hides all horses except that one,
-//   otherwise shows only the top 5 by analys on initial load.
 
 const SpiderChart = ({
-  /* navigation props from ToggleComponent */
   selectedDate,
   setSelectedDate,
   selectedTrack,
@@ -16,10 +12,8 @@ const SpiderChart = ({
   setSelectedCompetition,
   selectedLap,
   setSelectedLap,
-  /* one-horse filter coming from BarChart or Skrallar */
   selectedHorse, 
 }) => {
-  /* ---------- colour palette ---------- */
   const horseColors = [
     "rgba(0, 0, 255, 0.5)",  "rgba(255, 165, 0, 0.5)", "rgba(255, 0, 0, 0.5)",
     "rgba(0, 100, 0, 0.5)",  "rgba(211, 211, 211, 0.5)", "rgba(0, 0, 0, 0.5)",
@@ -28,7 +22,6 @@ const SpiderChart = ({
     "rgba(255, 192, 203, 0.5)","rgba(255, 140, 0, 0.5)","rgba(128, 0, 128, 0.5)",
   ];
 
-  /* ---------- state ---------- */
   const [data, setData] = useState({
     labels: ["Analys", "Tid", "Prestation", "Motstånd", "Prispengar"],
     datasets: [],
@@ -42,7 +35,6 @@ const SpiderChart = ({
   const [competitions, setCompetitions] = useState([]);
   const [laps, setLaps]               = useState([]);
 
-  /* ---------- responsive legend ---------- */
   const legendRef = useRef(null);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640);
   useEffect(() => {
@@ -59,10 +51,8 @@ const SpiderChart = ({
     return () => window.removeEventListener("resize", r);
   }, []);
 
-  /* ---------- API base ---------- */
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  /* ───────── 1. Dates ───────── */
   useEffect(() => {
   fetch(`${API_BASE_URL}/track/dates`)
     .then((res) => res.json())
@@ -86,7 +76,6 @@ const SpiderChart = ({
     .catch((err) => console.error("dates:", err));
 }, []);
 
-  /* ───────── 2. Tracks ───────── */
   useEffect(() => {
     if (!selectedDate) return;
     fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`)
@@ -98,7 +87,6 @@ const SpiderChart = ({
       .catch((err) => console.error("tracks:", err));
   }, [selectedDate]);
 
-  /* ───────── 3. Competitions ───────── */
   useEffect(() => {
     if (!selectedTrack) return;
     fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`)
@@ -110,7 +98,6 @@ const SpiderChart = ({
       .catch((err) => console.error("competitions:", err));
   }, [selectedTrack]);
 
-  /* ───────── 4. Laps ───────── */
   useEffect(() => {
     if (!selectedCompetition) return;
     fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`)
@@ -123,7 +110,6 @@ const SpiderChart = ({
       .catch((err) => { console.error("laps:", err); setLaps([]); });
   }, [selectedCompetition]);
 
-  /* ───────── 5. Horses + four-starts with top5 and filter ───────── */
   useEffect(() => {
     if (!selectedLap) return;
     setLoading(true);
@@ -140,7 +126,6 @@ const SpiderChart = ({
         )
       )
       .then((arr) => {
-        // build raw datasets
         const rawDatasets = arr.map(({ idx, horse, fs }) => ({
           label: `${horse.numberOfCompleteHorse}. ${horse.nameOfCompleteHorse}`,
           data: [fs.analys, fs.fart, fs.styrka, fs.klass, fs.prispengar],
@@ -150,14 +135,12 @@ const SpiderChart = ({
           pointRadius: 2,
         }));
 
-        // top 5 by analys
         const top5Idx = rawDatasets
           .map((ds,i) => ({ i, val: ds.data[0] }))
           .sort((a,b) => b.val - a.val)
           .slice(0,5)
           .map(x => x.i);
 
-        // apply hidden: if selectedHorse, show only that; else show only top5
         const datasets = rawDatasets.map((ds,i) => ({
           ...ds,
           hidden: selectedHorse!==null
@@ -171,7 +154,6 @@ const SpiderChart = ({
       .catch((err) => { console.error("data:", err); setError(err.message); setLoading(false); });
   }, [selectedLap, selectedHorse]); 
 
-  // spinner
   useEffect(() => {
     let t;
     if (loading) t = setTimeout(() => setShowSpinner(true), 3000);
@@ -179,7 +161,6 @@ const SpiderChart = ({
     return () => clearTimeout(t);
   }, [loading]);
 
-  /* ---------- custom HTML legend ---------- */
   const htmlLegendPlugin = {
     id: "htmlLegend",
     afterUpdate(chart) {
@@ -207,7 +188,6 @@ const SpiderChart = ({
     },
   };
 
-  /* ---------- chart options ---------- */
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -219,9 +199,6 @@ const SpiderChart = ({
         angleLines: { display: false },
         suggestedMin: 0,
         suggestedMax: 100,
-        pointLabels: {
-          padding: 5 
-        },
          pointLabels: {
         padding: 5,            
         font: {
@@ -243,11 +220,9 @@ const SpiderChart = ({
     elements: { line: { borderWidth: 2 } },
   };
 
-  /* ---------- nice Swedish labels ---------- */
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
 
-  
   const yesterdayStr = new Date(today - 864e5).toISOString().split("T")[0];
   const tomorrowStr = new Date(+today + 864e5).toISOString().split("T")[0];
   const fmt = (d) => {
@@ -271,23 +246,19 @@ const SpiderChart = ({
   const selectedLapLabel =
     laps.find(l=>l.id===+selectedLap)?.nameOfLap || "Lopp 1";
 
-  /* ---------- handlers ---------- */
   const handleDate = e => setSelectedDate(e.target.value);
   const handleTrack = e => setSelectedTrack(e.target.value);
   const handleComp = e => setSelectedCompetition(e.target.value);
   const handleLap = e => setSelectedLap(e.target.value);
 
-  /* ---------- JSX ---------- */
   return (
     <div className="flex flex-col justify-center items-center mt-1 px-2 pb-10">
       <p className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 px-4 py-2 flex flex-col justify-center items-center bg-slate-100 rounded-xl border">
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
       </p>
 
-      {/* custom legend on small screens */}
       <ul ref={legendRef} className={isSmallScreen ? "relative z-10 grid grid-cols-2 gap-2 text-xs" : "hidden"} />
 
-      {/* radar / placeholders */}
       <div className="sm:w-[80vh] w-full sm:h-[50vh] h-[40vh] relative flex items-center justify-center">
         {data.datasets.length > 0 && !loading && (
           <Radar data={data} options={options} plugins={[htmlLegendPlugin]} />
@@ -304,7 +275,6 @@ const SpiderChart = ({
         )}
       </div>
 
-      {/* dropdowns */}
       <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md mt-0 sm:mt-8">
         <select value={selectedDate} onChange={handleDate} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
           <option value="" disabled>Välj datum</option>
