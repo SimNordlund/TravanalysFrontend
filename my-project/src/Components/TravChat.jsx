@@ -22,18 +22,18 @@ export default function TravChat() {
   ]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
-  const [isOpen, setIsOpen] = useState(false); //Changed!
+  const [isOpen, setIsOpen] = useState(false); 
   const [isMaximized, setIsMaximized] = useState(false); 
   const tailRef = useRef(null);
 
-    // scroll to bottom whenever messages change
+
   useEffect(() => {
     tailRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const CHATBOT_URL = import.meta.env.VITE_API_CHATBOT_URL;
 
-  /* Send user message and stream assistant reply */
+
   const sendMessage = async () => {
     if (!input.trim()) return;
 
@@ -77,8 +77,7 @@ export default function TravChat() {
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {" "}
-      {/* Changed! fixed position */}
-      {!isOpen ? ( // Minimized view
+      {!isOpen ? ( 
         <button
           onClick={() => setIsOpen(true)}
           className="bg-blue-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center"
@@ -95,7 +94,6 @@ export default function TravChat() {
                    : "w-[90vw] max-w-[400px] h-[80vh] max-h-[600px]"
                }`}
         >
-          {/* Header */}
           <div className="flex items-center justify-between bg-blue-600 text-white p-3">
             <span>TravChat 💬</span>
             <div className="flex items-center gap-2">
@@ -108,7 +106,6 @@ export default function TravChat() {
             </div>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto space-y-4 p-4 pr-2">
             {messages.map((m, i) => (
               <div
@@ -125,7 +122,6 @@ export default function TravChat() {
             <div ref={tailRef} />
           </div>
 
-          {/* Input */}
           <div className="p-4 flex gap-2 border-t dark:border-gray-700">
             <textarea
               className="flex-1 resize-none rounded-xl border p-3 focus:outline-none focus:ring

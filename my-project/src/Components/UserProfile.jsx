@@ -6,9 +6,8 @@ const UserProfile = () => {
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
-        // Fetch the logged-in user's email
         fetch(`${API_BASE_URL}/g-login/email`, {
-            credentials: 'include', // Include cookies for session authentication
+            credentials: 'include', 
         })
             .then((response) => {
                 if (!response.ok) {
