@@ -180,7 +180,7 @@ export default function Newsletter() {
               {" "}
 
               <a
-                href="https://www.instagram.com/nrdlund/"
+                href="https://www.facebook.com/profile.php?id=61555396035366"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10" 
@@ -192,7 +192,7 @@ export default function Newsletter() {
               </a>
               <dd className="mt-2 leading-7 text-gray-300">
                 <a
-                  href="https://www.instagram.com/nrdlund/" 
+                  href="https://www.facebook.com/profile.php?id=61555396035366" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-300 hover:text-white"
