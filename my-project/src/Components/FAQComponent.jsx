@@ -82,7 +82,7 @@ const Faqs = () => {
     },
     {
       q: "Vilka ligger bakom Travanalys?",
-      a: "Niclas Nordlund med kompanjoner. Vi är ett gäng travnördar som vill göra det enklare för dig att hitta vinnarna.",
+      a: "Vi är ett gäng travnördar som vill göra det enklare för dig att hitta vinnarna.",
     },
   ];
 
