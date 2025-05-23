@@ -81,6 +81,10 @@ const Faqs = () => {
       a: "Kontaktuppgifter finns längst ner på hemsidan.",
     },
     {
+      q: "Kostar det något?",
+      a: "Nej, Travanalys är helt gratis att använda. Vi kommer att lansera en premiumversion inom kort.",
+    },
+    {
       q: "Vilka ligger bakom Travanalys?",
       a: "Vi är ett gäng travnördar som vill göra det enklare för dig att hitta vinnarna.",
     },
