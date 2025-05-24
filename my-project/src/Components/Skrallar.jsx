@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"; 
+import React, { useEffect, useState } from "react";
 import DatePicker from "./DatePicker";
 
 const Skrallar = ({
@@ -20,9 +20,7 @@ const Skrallar = ({
       .then((r) => r.json())
       .then((all) => {
         if (!all.length) return;
-        const unique = Array.from(
-          new Map(all.map((d) => [d.date, d])).values()
-        );
+        const unique = Array.from(new Map(all.map((d) => [d.date, d])).values());
         setDates(unique);
         if (!selectedDate) {
           const todayStr = new Date().toISOString().split("T")[0];
@@ -47,7 +45,7 @@ const Skrallar = ({
         const filtered = data.filter(
           (h) => !Number.isNaN(Number(h.tips)) && Number(h.tips) >= 1
         );
-        setHorses(filtered.map((h, idx) => ({ ...h, position: idx + 1 }))); 
+        setHorses(filtered.map((h, idx) => ({ ...h, position: idx + 1 })));
       } catch {
         setError("Kunde inte hämta skrällar.");
         setHorses([]);
@@ -79,39 +77,18 @@ const Skrallar = ({
     return 0;
   });
 
+  const totalRoiTotalt = sortedHorses.reduce(
+    (sum, row) => sum + (Number(row.roiTotalt) || 0),
+    0
+  );
+
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
   const goNext = () =>
     idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
-  const today = new Date().toISOString().split("T")[0];
-  const yesterday = new Date(Date.now() - 864e5).toISOString().split("T")[0];
-  const tomorrow = new Date(Date.now() + 864e5).toISOString().split("T")[0];
-
-  const sv = (d) => {
-    const date = new Date(d);
-    const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday =
-      weekday.charAt(0).toUpperCase() + weekday.slice(1);
-    const rest = date.toLocaleDateString("sv-SE", {
-      day: "numeric",
-      month: "long",
-    });
-    return `${capitalizedWeekday}, ${rest}`;
-  };
-
-  const niceDate =
-    selectedDate === today
-      ? `Idag, ${sv(selectedDate)}`
-      : selectedDate === yesterday
-      ? `Igår, ${sv(selectedDate)}`
-      : selectedDate === tomorrow
-      ? `Imorgon, ${sv(selectedDate)}`
-      : sv(selectedDate);
-
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
-
       <div className="flex items-center justify-between mb-3">
         <button
           onClick={goPrev}
@@ -242,6 +219,21 @@ const Skrallar = ({
                 <td className="py-2 px-2">{row.nameOfTrack}</td>
               </tr>
             ))}
+            <tr className="font-semibold bg-gray-50">
+              <td
+                colSpan={4}
+                className="py-2 px-2 text-right border-r border-gray-200"
+              >
+                Summa:
+              </td>
+              <td className="py-2 px-2 border-r border-gray-200">
+                {totalRoiTotalt}
+              </td>
+              <td className="py-2 px-2 border-r border-gray-200"></td>
+              <td className="py-2 px-2 border-r border-gray-200"></td>
+              <td className="py-2 px-2 border-r border-gray-200"></td>
+              <td className="py-2 px-2"></td>
+            </tr>
           </tbody>
         </table>
       </div>
