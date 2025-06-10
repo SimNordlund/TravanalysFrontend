@@ -46,7 +46,7 @@ const ToggleComponent = () => {
 
   return (
     <div className="text-center pt-12 pb-12 sm:pt-16 sm:pb-14">
-      <div className="flex justify-center gap-x-3.5 sm:gap-x-10 flex-nowrap overflow-auto mb-4 sm:mb-8 pt-3 pb-3">
+      <div className="flex justify-center gap-x-4 sm:gap-x-10 flex-nowrap overflow-auto mb-4 sm:mb-8 pt-2 pb-3">
         {callouts.map((c) => (
           <div
             key={c.id}
@@ -56,12 +56,12 @@ const ToggleComponent = () => {
             <div
               className={`
                 ${c.bgColor}
-                relative h-14 w-20 sm:w-72 sm:h-18 mb-1 sm:mb-0 
+                relative h-14 w-24 sm:w-72 sm:h-18 mb-1 sm:mb-0 
                 overflow-hidden rounded-md flex items-center justify-center
                 transition-all duration-300 shadow-xl
                 ${
                   selectedView === c.view
-                    ? "ring-2 ring-slate-400 scale-110 opacity-100 cursor-default"
+                    ? "ring-2 ring-slate-600 scale-110 opacity-100 cursor-default"
                     : "hover:opacity-80"
                 }
               `}
