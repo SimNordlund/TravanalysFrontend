@@ -18,12 +18,12 @@ const ToggleComponent = () => {
   };
 
   const callouts = [
-    {
-      id: 1,
-      name: "Diagram",
-      bgColor: "bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600",
-      view: "bar",
-    },
+  //  {
+   //   id: 1,
+   //   name: "Diagram",
+   //   bgColor: "bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600",
+   //   view: "bar",
+   // },
     {
       id: 2,
       name: "Analys",
@@ -75,33 +75,33 @@ const ToggleComponent = () => {
       </div>
 
       <div className="sm:max-w-4xl sm:mx-auto bg-white ml-4 mr-4 sm:pl-8 sm:pr-8 sm:pb-2 rounded-xl shadow-lg">
-        {selectedView === "bar" && (
-          <BarChart
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-            selectedTrack={selectedTrack}
-            setSelectedTrack={setSelectedTrack}
-            selectedCompetition={selectedCompetition}
-            setSelectedCompetition={setSelectedCompetition}
-            selectedLap={selectedLap}
-            setSelectedLap={setSelectedLap}
-            setSelectedView={setSelectedView}
-            setSelectedHorse={setSelectedHorse}
-          />
-        )}
-
-        {selectedView === "spider" && (
-          <SpiderChart
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-            selectedTrack={selectedTrack}
-            setSelectedTrack={setSelectedTrack}
-            selectedCompetition={selectedCompetition}
-            setSelectedCompetition={setSelectedCompetition}
-            selectedLap={selectedLap}
-            setSelectedLap={setSelectedLap}
-            selectedHorse={selectedHorse}
-          />
+         {/* Changed! Combine BarChart and SpiderChart display */}
+        {(selectedView === "bar" || selectedView === "spider") && ( 
+          <div className="grid grid-cols-1 gap-4">
+            <BarChart 
+              selectedDate={selectedDate} 
+              setSelectedDate={setSelectedDate} 
+              selectedTrack={selectedTrack} 
+              setSelectedTrack={setSelectedTrack} 
+              selectedCompetition={selectedCompetition} 
+              setSelectedCompetition={setSelectedCompetition} 
+              selectedLap={selectedLap} 
+              setSelectedLap={setSelectedLap} 
+              setSelectedView={setSelectedView} 
+              setSelectedHorse={setSelectedHorse} 
+            /> 
+            <SpiderChart 
+              selectedDate={selectedDate} 
+              setSelectedDate={setSelectedDate} 
+              selectedTrack={selectedTrack} 
+              setSelectedTrack={setSelectedTrack} 
+              selectedCompetition={selectedCompetition} 
+              setSelectedCompetition={setSelectedCompetition} 
+              selectedLap={selectedLap} 
+              setSelectedLap={setSelectedLap} 
+              selectedHorse={selectedHorse} 
+            /> 
+          </div>
         )}
 
         {selectedView === "table" && (
