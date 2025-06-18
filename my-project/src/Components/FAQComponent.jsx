@@ -66,6 +66,7 @@ const FaqsCard = ({ faqsList, idx }) => {
   );
 };
 
+
 const Faqs = () => {
   const faqsList = [
     {
