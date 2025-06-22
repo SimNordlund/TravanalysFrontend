@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 import travhorsi from "./Bilder/travhorsi2.png";
+import DatePicker from "./Components/DatePicker";
 import Chart from "chart.js/auto";
 
 const BarChartComponent = ({
-
   selectedDate,
   setSelectedDate,
   selectedTrack,
@@ -17,10 +17,8 @@ const BarChartComponent = ({
   setSelectedView,
   setSelectedHorse,
 }) => {
-
   const legendRef = useRef(null);
   const chartRef = useRef(null);
-
 
   const [data, setData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(true);
@@ -32,6 +30,10 @@ const BarChartComponent = ({
   const [competitions, setCompetitions] = useState([]);
   const [laps, setLaps] = useState([]);
 
+  const idx = dates.findIndex((d) => d.date === selectedDate); 
+  const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date); 
+  const goNext = () =>
+    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date); 
 
   const horseColors = [
     "rgba(0, 0, 255, 0.5)",
@@ -51,7 +53,6 @@ const BarChartComponent = ({
     "rgba(128, 0, 128, 0.5)",
   ];
 
-
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640);
   useEffect(() => {
     const onResize = () => setIsSmallScreen(window.innerWidth < 640);
@@ -61,30 +62,26 @@ const BarChartComponent = ({
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
       .then((res) => res.json())
       .then((all) => {
-        if (!all.length) return; 
+        if (!all.length) return;
 
         const unique = Array.from(
-          
-          new Map(all.map((d) => [d.date, d])).values() 
-        ).sort((a, b) => a.date.localeCompare(b.date)); 
+          new Map(all.map((d) => [d.date, d])).values()
+        ).sort((a, b) => a.date.localeCompare(b.date));
 
-        setDates(unique); 
+        setDates(unique);
 
         if (!selectedDate) {
-          
-          const todayStr = new Date().toISOString().split("T")[0]; 
-          const today = unique.find((x) => x.date === todayStr); 
-          setSelectedDate(today ? today.date : unique[0].date); 
-        } 
+          const todayStr = new Date().toISOString().split("T")[0];
+          const today = unique.find((x) => x.date === todayStr);
+          setSelectedDate(today ? today.date : unique[0].date);
+        }
       })
       .catch((err) => console.error("dates:", err));
   }, []);
-
 
   useEffect(() => {
     if (!selectedDate) return;
@@ -96,7 +93,6 @@ const BarChartComponent = ({
       })
       .catch((err) => console.error("tracks:", err));
   }, [selectedDate]);
-
 
   useEffect(() => {
     if (!selectedTrack) return;
@@ -138,7 +134,7 @@ const BarChartComponent = ({
       .then((completeHorses) => {
         const labels = completeHorses.map((horse) => {
           return horse.numberOfCompleteHorse + ".";
-        }); 
+        });
         return Promise.all(
           completeHorses.map((horse, idx) =>
             fetch(
@@ -238,15 +234,13 @@ const BarChartComponent = ({
         align: "start",
         labels: { boxWidth: 42 },
       },
-      
+
       tooltip: {
         enabled: true,
-       
-        title: () => null, 
+
+        title: () => null,
         callbacks: {
-          
-          title: () => "Analys", 
-        
+          title: () => "Analys",
         },
       },
     },
@@ -297,8 +291,64 @@ const BarChartComponent = ({
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
       </p>
 
+       <div className="flex items-center justify-between mb-3 w-full max-w-screen-sm"> 
+      <button
+        onClick={goPrev}
+        disabled={idx <= 0 || loading}
+        className="p-1 text-4xl disabled:opacity-40"
+      >
+        &#8592;
+      </button>
+
+      <DatePicker
+        value={selectedDate}
+        onChange={setSelectedDate}
+        min={dates[0]?.date}
+        max={dates[dates.length - 1]?.date}
+      />
+
+      <button
+        onClick={goNext}
+        disabled={idx >= dates.length - 1 || loading}
+        className="p-1 text-4xl disabled:opacity-40"
+      >
+        &#8594;
+      </button>
+    </div>
+      <div className="self-start flex flex-wrap gap-1 mb-2">       
+      {tracks.map((t) => (                                       
+        <button                                                 
+          key={t.id}
+          onClick={() => setSelectedTrack(t.id)}
+          disabled={loading}
+          className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+            t.id === selectedTrack
+              ? "bg-emerald-500 text-white font-semibold shadow"
+              : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+          }`}
+        >
+          {t.nameOfTrack}
+        </button>
+      ))}
+    </div>
+
+    <div className="self-start flex flex-wrap gap-1 mb-2">        
+      {competitions.map((c) => (                                 
+        <button
+          key={c.id}
+          onClick={() => setSelectedCompetition(c.id)}
+          disabled={loading}
+          className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+            c.id === selectedCompetition
+              ? "bg-teal-600 text-white font-semibold shadow"
+              : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+          }`}
+        >
+          {c.nameOfCompetition}
+        </button>
+      ))}
+    </div>
       <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4">
-        {" "}
         {laps.length > 0 ? (
           laps.map((lap) => (
             <button
@@ -337,11 +387,11 @@ const BarChartComponent = ({
         <div className="sm:w-[90vh] w-full sm:h-[45vh] h-[30vh] relative flex items-center justify-center">
           {data.datasets.length > 0 && !loading && (
             <Bar
-              ref={chartRef} 
+              ref={chartRef}
               data={data}
               options={options}
               plugins={isSmallScreen ? [htmlLegendPlugin] : []}
-              onClick={handleBarClick} 
+              onClick={handleBarClick}
             />
           )}
 
@@ -361,6 +411,7 @@ const BarChartComponent = ({
         </div>
       </div>
 
+      {/*
       <div className="w-full flex justify-center">
         <div className="flex flex-col justify-center items-center w-full sm:w-[65%] space-y-4 mt-8 sm:mt-4 sm:flex-row sm:space-y-0 sm:space-x-2 bg-slate-50 sm:p-4 rounded-xl border shadow-md">
           <select
@@ -373,7 +424,7 @@ const BarChartComponent = ({
             </option>
             {dates.map((d) => (
               <option key={d.date} value={d.date}>
-                {d.date} 
+                {d.date}
               </option>
             ))}
           </select>
@@ -423,7 +474,7 @@ const BarChartComponent = ({
             ))}
           </select>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
