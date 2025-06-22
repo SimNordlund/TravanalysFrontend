@@ -259,7 +259,7 @@ const SpiderChart = ({
 
       <ul ref={legendRef} className={isSmallScreen ? "relative z-10 grid grid-cols-2 gap-2 text-xs" : "hidden"} />
 
-      <div className="sm:w-[80vh] w-full sm:h-[50vh] h-[40vh] relative flex items-center justify-center">
+      <div className="sm:w-[80vh] w-full sm:h-[50vh] h-[30vh] relative flex items-center justify-center">
         {data.datasets.length > 0 && !loading && (
           <Radar data={data} options={options} plugins={[htmlLegendPlugin]} />
         )}
