@@ -177,7 +177,7 @@ const SpiderChart = ({
           chart.update();
         };
         const box = document.createElement("span");
-        box.className = "inline-block w-7 h-3 mr-2 rounded";
+        box.className = "inline-block w-20 h-3 mr-2 rounded";
         box.style.background = ds.backgroundColor;
         const text = document.createElement("span");
         text.textContent = ds.label;
@@ -272,8 +272,8 @@ const SpiderChart = ({
           </div>
         )}
       </div>
-        <div className="mt-5">
-      <ul ref={legendRef} className={isSmallScreen ? "relative z-10 grid grid-cols-2 gap-2 text-xs" : "hidden"} />
+        <div className="mt-5 self-start flex flex-wrap">
+      <ul ref={legendRef} className={isSmallScreen ? "relative z-10 grid grid-cols-1 gap-2 text-xs" : "hidden"} />
         </div>
     {/*  <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md mt-0 sm:mt-8">
         <select value={selectedDate} onChange={handleDate} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">

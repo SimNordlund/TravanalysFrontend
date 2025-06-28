@@ -205,7 +205,7 @@ const BarChartComponent = ({
         };
 
         const box = document.createElement("span");
-        box.className = "inline-block w-7 h-3 mr-2 rounded";
+        box.className = "inline-block w-20 h-3 mr-2 rounded";
         box.style.background = item.fillStyle;
 
         const text = document.createElement("span");
@@ -375,13 +375,14 @@ const BarChartComponent = ({
           </div>
         )}
       </div>
-
+        <div className="self-start flex flex-wrap">
       <ul
         ref={legendRef}
         className={
-          isSmallScreen ? "grid grid-cols-2 gap-2 mb-2 text-xs" : "hidden"
+          isSmallScreen ? "grid grid-cols-1 gap-2 mb-2 text-xs" : "hidden"
         }
       />
+      </div>
 
       <div className="w-full flex justify-center">
         <div className="sm:w-[90vh] w-full sm:h-[45vh] h-[30vh] relative flex items-center justify-center">
