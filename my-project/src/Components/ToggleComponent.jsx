@@ -74,7 +74,7 @@ const ToggleComponent = () => {
         ))}
       </div>
 
-      <div className="sm:max-w-4xl sm:mx-auto bg-white ml-4 mr-4 sm:pl-8 sm:pr-8 sm:pb-2 rounded-xl shadow-lg">
+      <div className="sm:max-w-5xl sm:mx-auto bg-white ml-4 mr-4 sm:pl-8 sm:pr-8 sm:pb-2 rounded-xl shadow-lg">
          {/* Changed! Combine BarChart and SpiderChart display */}
         {(selectedView === "bar" || selectedView === "spider") && ( 
           <div className="grid grid-cols-1 gap-4">
