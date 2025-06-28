@@ -30,10 +30,10 @@ const BarChartComponent = ({
   const [competitions, setCompetitions] = useState([]);
   const [laps, setLaps] = useState([]);
 
-  const idx = dates.findIndex((d) => d.date === selectedDate);
-  const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
+  const idx = dates.findIndex((d) => d.date === selectedDate); 
+  const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date); 
   const goNext = () =>
-    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
+    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date); 
 
   const horseColors = [
     "rgba(0, 0, 255, 0.5)",
@@ -286,68 +286,68 @@ const BarChartComponent = ({
   if (error) return <div className="text-red-600">Error: {error}</div>;
 
   return (
-    <div className="flex flex-col mt-1 px-2 pb-10 justify-start items-center">
+    <div className="flex flex-col mt-1 px-2 pb-0 justify-start items-center">
       <p className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-7 px-4 py-2 flex flex-col justify-center items-center bg-slate-100 rounded-xl border">
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
       </p>
 
-      <div className="flex items-center justify-between mb-3 w-full max-w-screen-sm">
-        <button
-          onClick={goPrev}
-          disabled={idx <= 0 || loading}
-          className="p-1 text-4xl disabled:opacity-40"
+       <div className="flex items-center justify-between mb-3 w-full max-w-screen-sm"> 
+      <button
+        onClick={goPrev}
+        disabled={idx <= 0 || loading}
+        className="p-1 text-4xl disabled:opacity-40"
+      >
+        &#8592;
+      </button>
+
+      <DatePicker
+        value={selectedDate}
+        onChange={setSelectedDate}
+        min={dates[0]?.date}
+        max={dates[dates.length - 1]?.date}
+      />
+
+      <button
+        onClick={goNext}
+        disabled={idx >= dates.length - 1 || loading}
+        className="p-1 text-4xl disabled:opacity-40"
+      >
+        &#8594;
+      </button>
+    </div>
+      <div className="self-start flex flex-wrap gap-1 mb-2">       
+      {tracks.map((t) => (                                       
+        <button                                                 
+          key={t.id}
+          onClick={() => setSelectedTrack(t.id)}
+          disabled={loading}
+          className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+            t.id === selectedTrack
+              ? "bg-emerald-500 text-white font-semibold shadow"
+              : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+          }`}
         >
-          &#8592;
+          {t.nameOfTrack}
         </button>
+      ))}
+    </div>
 
-        <DatePicker
-          value={selectedDate}
-          onChange={setSelectedDate}
-          min={dates[0]?.date}
-          max={dates[dates.length - 1]?.date}
-        />
-
+    <div className="self-start flex flex-wrap gap-1 mb-2">        
+      {competitions.map((c) => (                                 
         <button
-          onClick={goNext}
-          disabled={idx >= dates.length - 1 || loading}
-          className="p-1 text-4xl disabled:opacity-40"
+          key={c.id}
+          onClick={() => setSelectedCompetition(c.id)}
+          disabled={loading}
+          className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+            c.id === selectedCompetition
+              ? "bg-teal-600 text-white font-semibold shadow"
+              : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+          }`}
         >
-          &#8594;
+          {c.nameOfCompetition}
         </button>
-      </div>
-      <div className="self-start flex flex-wrap gap-1 mb-2">
-        {tracks.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setSelectedTrack(t.id)}
-            disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              t.id === selectedTrack
-                ? "bg-emerald-500 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-            }`}
-          >
-            {t.nameOfTrack}
-          </button>
-        ))}
-      </div>
-
-      <div className="self-start flex flex-wrap gap-1 mb-2">
-        {competitions.map((c) => (
-          <button
-            key={c.id}
-            onClick={() => setSelectedCompetition(c.id)}
-            disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              c.id === selectedCompetition
-                ? "bg-teal-600 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-            }`}
-          >
-            {c.nameOfCompetition}
-          </button>
-        ))}
-      </div>
+      ))}
+    </div>
       <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4">
         {laps.length > 0 ? (
           laps.map((lap) => (
@@ -376,6 +376,13 @@ const BarChartComponent = ({
         )}
       </div>
 
+      <ul
+        ref={legendRef}
+        className={
+          isSmallScreen ? "grid grid-cols-2 gap-2 mb-2 text-xs" : "hidden"
+        }
+      />
+
       <div className="w-full flex justify-center">
         <div className="sm:w-[90vh] w-full sm:h-[45vh] h-[30vh] relative flex items-center justify-center">
           {data.datasets.length > 0 && !loading && (
@@ -402,14 +409,6 @@ const BarChartComponent = ({
             </div>
           )}
         </div>
-      </div>
-      <div className="mt-5">
-        <ul
-          ref={legendRef}
-          className={
-            isSmallScreen ? "grid grid-cols-2 gap-2 mb-2 text-xs" : "hidden"
-          }
-        />
       </div>
 
       {/*
