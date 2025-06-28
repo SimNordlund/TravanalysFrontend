@@ -257,8 +257,6 @@ const SpiderChart = ({
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
       </p> */}
 
-      <ul ref={legendRef} className={isSmallScreen ? "relative z-10 grid grid-cols-2 gap-2 text-xs" : "hidden"} />
-
       <div className="sm:w-[80vh] w-full sm:h-[50vh] h-[30vh] relative flex items-center justify-center">
         {data.datasets.length > 0 && !loading && (
           <Radar data={data} options={options} plugins={[htmlLegendPlugin]} />
@@ -274,7 +272,9 @@ const SpiderChart = ({
           </div>
         )}
       </div>
-
+        <div className="mt-5">
+      <ul ref={legendRef} className={isSmallScreen ? "relative z-10 grid grid-cols-2 gap-2 text-xs" : "hidden"} />
+        </div>
     {/*  <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md mt-0 sm:mt-8">
         <select value={selectedDate} onChange={handleDate} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
           <option value="" disabled>Välj datum</option>
