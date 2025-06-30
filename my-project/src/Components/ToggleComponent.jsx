@@ -9,7 +9,7 @@ const ToggleComponent = () => {
   const [selectedTrack, setSelectedTrack] = useState("");
   const [selectedCompetition, setSelectedCompetition] = useState("");
   const [selectedLap, setSelectedLap] = useState("");
-  const [selectedView, setSelectedView] = useState("bar");
+  const [selectedView, setSelectedView] = useState("spider");
   const [selectedHorse, setSelectedHorse] = useState(null);
 
   const switchView = (view) => {
