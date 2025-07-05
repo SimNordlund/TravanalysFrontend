@@ -23,7 +23,7 @@ export default function Newsletter() {
     }
 
     try {
-      //Changed!
+      
       const payload = {};
       if (email) payload.email = email;
       if (phone) payload.phone = phone;
@@ -34,21 +34,21 @@ export default function Newsletter() {
         body: JSON.stringify(payload),
       });
 
-      const text = await response.text(); //Changed!
+      const text = await response.text(); 
 
       if (response.ok) {
-        //Changed!
-        setMessage("Tack! Du får nu uppdateringar när något spännande sker."); //Changed!
-        setEmail(""); //Changed!
-        setPhone(""); //Changed!
-        setConsent(false); //Changed!
+        
+        setMessage("Tack! Du får nu uppdateringar när något spännande sker."); 
+        setEmail(""); 
+        setPhone(""); 
+        setConsent(false); 
       } else {
-        //Changed!
-        setMessage(text || "Misslyckades att spara uppgifter"); //Changed!
+        
+        setMessage(text || "Misslyckades att spara uppgifter"); 
       }
     } catch (err) {
       console.error(err);
-      setMessage("Något gick fel, försök igen senare."); //Changed!
+      setMessage("Något gick fel, försök igen senare."); 
     }
   };
 
@@ -117,14 +117,14 @@ export default function Newsletter() {
                 Prenumerera
               </button>
             </form>
-            {message && ( //Changed!
+            {message && ( 
               <div className="rounded-md bg-green-600/20 p-3">
                 {" "}
-                //Changed!
-                <p className="text-sm text-green-300">{message}</p> //Changed!
-              </div> //Changed!
+                
+                <p className="text-sm text-green-300">{message}</p> 
+              </div> 
             )}{" "}
-            //Changed!
+            
           </div>
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:gap-y-2 sm:grid-cols-2 sm:mt-6">
             <div className="flex flex-col items-center">
