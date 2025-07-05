@@ -1,13 +1,21 @@
-import { useState } from "react";
 import { PhoneIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import { FaFacebook } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
+import { useState, useEffect, useRef } from "react";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [consent, setConsent] = useState(false);
   const [message, setMessage] = useState("");
+  const hideTimer = useRef();
+
+    useEffect(() => {                                           //Changed!
+    if (!message) return;                                     //Changed!
+    clearTimeout(hideTimer.current);                          //Changed!
+    hideTimer.current = setTimeout(() => setMessage(""), 15000); //Changed!
+    return () => clearTimeout(hideTimer.current);             //Changed!
+  }, [message]);                                              //Changed!
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
