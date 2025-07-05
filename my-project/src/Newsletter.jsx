@@ -1,53 +1,44 @@
-import { useState } from "react"; 
+import { useState } from "react";
 import { PhoneIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import { FaFacebook } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 
 export default function Newsletter() {
-  const [email, setEmail] = useState(""); 
-  const [phone, setPhone] = useState(""); 
-  const [consent, setConsent] = useState(false); 
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [consent, setConsent] = useState(false);
 
   const handleSubmit = async (e) => {
-    
-    e.preventDefault(); 
+    e.preventDefault();
     if (!consent) {
-      
-      alert("Du måste godkänna lagring av uppgifter."); 
-      return; 
-    } 
+      alert("Du måste godkänna lagring av uppgifter.");
+      return;
+    }
     if (!email && !phone) {
-      
-      alert("Fyll i mejl, telefonnummer eller båda."); 
-      return; 
-    } 
+      alert("Fyll i mejl, telefonnummer eller båda.");
+      return;
+    }
     try {
-      const payload = {}; 
-      if (email) payload.email = email; 
-      if (phone) payload.phone = phone; 
-      const response = await fetch(
-        "http://localhost:8080/travanalys/storePhonenumber",
-        {
-          
-          method: "POST", 
-          headers: {
-            "Content-Type": "application/json", 
-          },
-          body: JSON.stringify(payload), 
-        }
-      ); 
+      const payload = {};
+      if (email) payload.email = email;
+      if (phone) payload.phone = phone;
+      const response = await fetch("http://localhost:8080/contact/storeInfo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
       if (response.ok) {
-        console.log("Det gick yo!"); 
-        setEmail(""); 
-        setPhone(""); 
-        setConsent(false); 
+        console.log("Det gick yo!");
+        setEmail("");
+        setPhone("");
+        setConsent(false);
       } else {
-        console.error("Misslyckades att spara uppgifter"); 
+        console.error("Misslyckades att spara uppgifter");
       }
     } catch (error) {
-      console.error("Error:", error); 
+      console.error("Error:", error);
     }
-  }; 
+  };
 
   return (
     <div className="relative isolate overflow-hidden bg-gray-900 py-14 sm:py-16">
@@ -69,12 +60,12 @@ export default function Newsletter() {
                 name="email"
                 type="email"
                 autoComplete="email"
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 placeholder="Skriv in din mejl"
               />
-         
+
               <label htmlFor="phone-number" className="sr-only">
                 Phone number
               </label>
@@ -83,21 +74,21 @@ export default function Newsletter() {
                 name="phone"
                 type="tel"
                 autoComplete="tel"
-                value={phone} 
-                onChange={(e) => setPhone(e.target.value)} 
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 placeholder="Skriv in ditt telefonnummer"
               />
-      
+
               <div className="flex items-center">
                 <input
                   id="consent"
                   name="consent"
                   type="checkbox"
-                  checked={consent} 
-                  onChange={(e) => setConsent(e.target.checked)} 
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                  required 
+                  required
                 />
                 <label
                   htmlFor="consent"
@@ -116,11 +107,10 @@ export default function Newsletter() {
             </form>
           </div>
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:gap-y-2 sm:grid-cols-2 sm:mt-6">
- 
             <div className="flex flex-col items-center">
               <a
                 href="tel:0706493763"
-                className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10" 
+                className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
               >
                 <PhoneIcon className="h-8 w-8 text-white" aria-hidden="true" />{" "}
               </a>
@@ -138,7 +128,7 @@ export default function Newsletter() {
             <div className="flex flex-col items-center">
               <a
                 href="mailto:travanalys@gmail.com"
-                className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10" 
+                className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
               >
                 <EnvelopeIcon
                   className="h-8 w-8 text-white"
@@ -156,14 +146,13 @@ export default function Newsletter() {
               </dd>
             </div>
 
-  
             <div className="flex flex-col items-center">
               {" "}
               <a
                 href="https://www.facebook.com/profile.php?id=61555396035366"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10" 
+                className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
               >
                 <FaFacebook className="h-8 w-8 text-white" aria-hidden="true" />{" "}
               </a>
@@ -178,12 +167,11 @@ export default function Newsletter() {
             </div>
             <div className="flex flex-col items-center">
               {" "}
-
               <a
                 href="https://www.facebook.com/profile.php?id=61555396035366"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10" 
+                className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
               >
                 <FaInstagram
                   className="h-8 w-8 text-white"
@@ -192,12 +180,11 @@ export default function Newsletter() {
               </a>
               <dd className="mt-2 leading-7 text-gray-300">
                 <a
-                  href="https://www.facebook.com/profile.php?id=61555396035366" 
+                  href="https://www.facebook.com/profile.php?id=61555396035366"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-300 hover:text-white"
-                >
-                </a>
+                ></a>
               </dd>
             </div>
           </dl>
