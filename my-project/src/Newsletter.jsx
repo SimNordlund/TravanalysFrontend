@@ -7,6 +7,7 @@ export default function Newsletter() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [consent, setConsent] = useState(false);
+  const [message, setMessage] = useState("");
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -20,25 +21,34 @@ export default function Newsletter() {
       alert("Fyll i mejl, telefonnummer eller båda.");
       return;
     }
+
     try {
+      //Changed!
       const payload = {};
       if (email) payload.email = email;
       if (phone) payload.phone = phone;
+
       const response = await fetch(`${API_BASE_URL}/contact/storeInfo`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+
+      const text = await response.text(); //Changed!
+
       if (response.ok) {
-        console.log("Det gick yo!");
-        setEmail("");
-        setPhone("");
-        setConsent(false);
+        //Changed!
+        setMessage("Tack! Du får nu uppdateringar när något spännande sker."); //Changed!
+        setEmail(""); //Changed!
+        setPhone(""); //Changed!
+        setConsent(false); //Changed!
       } else {
-        console.error("Misslyckades att spara uppgifter");
+        //Changed!
+        setMessage(text || "Misslyckades att spara uppgifter"); //Changed!
       }
-    } catch (error) {
-      console.error("Error:", error);
+    } catch (err) {
+      console.error(err);
+      setMessage("Något gick fel, försök igen senare."); //Changed!
     }
   };
 
@@ -107,6 +117,14 @@ export default function Newsletter() {
                 Prenumerera
               </button>
             </form>
+            {message && ( //Changed!
+              <div className="rounded-md bg-green-600/20 p-3">
+                {" "}
+                //Changed!
+                <p className="text-sm text-green-300">{message}</p> //Changed!
+              </div> //Changed!
+            )}{" "}
+            //Changed!
           </div>
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:gap-y-2 sm:grid-cols-2 sm:mt-6">
             <div className="flex flex-col items-center">
