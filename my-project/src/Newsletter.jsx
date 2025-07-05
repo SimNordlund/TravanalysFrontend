@@ -8,6 +8,8 @@ export default function Newsletter() {
   const [phone, setPhone] = useState("");
   const [consent, setConsent] = useState(false);
 
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!consent) {
@@ -22,7 +24,7 @@ export default function Newsletter() {
       const payload = {};
       if (email) payload.email = email;
       if (phone) payload.phone = phone;
-      const response = await fetch("http://localhost:8080/contact/storeInfo", {
+      const response = await fetch(`${API_BASE_URL}/contact/storeInfo`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
