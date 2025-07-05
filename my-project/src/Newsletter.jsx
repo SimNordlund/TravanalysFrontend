@@ -10,12 +10,12 @@ export default function Newsletter() {
   const [message, setMessage] = useState("");
   const hideTimer = useRef();
 
-    useEffect(() => {                                           //Changed!
-    if (!message) return;                                     //Changed!
-    clearTimeout(hideTimer.current);                          //Changed!
-    hideTimer.current = setTimeout(() => setMessage(""), 15000); //Changed!
-    return () => clearTimeout(hideTimer.current);             //Changed!
-  }, [message]);                                              //Changed!
+    useEffect(() => {                                        
+    if (!message) return;                                   
+    clearTimeout(hideTimer.current);                          
+    hideTimer.current = setTimeout(() => setMessage(""), 15000); 
+    return () => clearTimeout(hideTimer.current);            
+  }, [message]);                                              
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
