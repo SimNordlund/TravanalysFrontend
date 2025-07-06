@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Swish from "./Components/Swish";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import LikeButton from "./Components/LikeButton";
+import FacebookLike from "./Components/FacebookLike";
 
 const includedFeatures = [
   "Unik statistik",
@@ -29,6 +30,7 @@ export default function Pricing() {
             Gilla Travanalys
           </h2>
           <LikeButton/>
+           <FacebookLike/>
         </div>
         <div className="mx-auto mt-10 max-w-2xl rounded-3xl ring-1 ring-gray-200 sm:mt-8 sm:mb-6 lg:mx-0 lg:flex lg:max-w-none shadow-md">
           <div className="p-8 sm:p-10 lg:flex-auto">
