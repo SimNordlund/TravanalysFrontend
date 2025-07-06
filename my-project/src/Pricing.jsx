@@ -33,8 +33,8 @@ export default function Pricing() {
             <LikeButton />
           </div>
           <div className="ml-5 sm:ml-0">
-           <FacebookLike />
-           </div>
+            <FacebookLike />
+          </div>
         </div>
         <div className="mx-auto mt-10 max-w-2xl rounded-3xl ring-1 ring-gray-200 sm:mt-8 sm:mb-6 lg:mx-0 lg:flex lg:max-w-none shadow-md">
           <div className="p-8 sm:p-10 lg:flex-auto">
