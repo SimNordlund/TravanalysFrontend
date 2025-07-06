@@ -25,12 +25,14 @@ export default function Pricing() {
   return (
     <div className="bg-white py-6 sm:py-0 sm:mt-2 sm:mb-20 mb-8 mt-2 sm:pt-8">
       <div className="mx-auto max-w-7xl px-6 lg:px-8 mt">
-        <div className="flex items-center justify-center gap-3 sm:gap-4">
+        <div className="flex flex-col items-center justify-center gap-y-2 sm:flex-row sm:gap-x-4">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             Gilla Travanalys
           </h2>
-          <LikeButton/>
-           <FacebookLike/>
+          <div className="flex gap-x-2">
+            <LikeButton />
+          </div>
+           <FacebookLike />
         </div>
         <div className="mx-auto mt-10 max-w-2xl rounded-3xl ring-1 ring-gray-200 sm:mt-8 sm:mb-6 lg:mx-0 lg:flex lg:max-w-none shadow-md">
           <div className="p-8 sm:p-10 lg:flex-auto">
