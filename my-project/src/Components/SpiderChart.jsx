@@ -300,7 +300,7 @@ const SpiderChart = ({
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
       </p> */}
 
-      <div className="sm:w-[80vh] w-full sm:h-[50vh] h-[30vh] relative flex items-center justify-center">
+      <div className="sm:w-[80vh] w-full sm:h-[50vh] h-[35vh] relative flex items-center justify-center">
         {data.datasets.length > 0 && !loading && (
           <Radar data={data} options={options} plugins={[htmlLegendPlugin]} />
         )}
