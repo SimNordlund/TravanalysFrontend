@@ -32,7 +32,7 @@ export default function Pricing() {
           <div className="flex gap-x-2">
             <LikeButton />
           </div>
-          <div className="ml-3">
+          <div className="ml-5 sm:ml-0">
            <FacebookLike />
            </div>
         </div>
