@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { Radar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
 
-
 const SpiderChart = ({
   selectedDate,
   setSelectedDate,
@@ -12,28 +11,38 @@ const SpiderChart = ({
   setSelectedCompetition,
   selectedLap,
   setSelectedLap,
-  selectedHorse, 
+  selectedHorse,
 }) => {
   const horseColors = [
-    "rgba(0, 0, 255, 0.5)",  "rgba(255, 165, 0, 0.5)", "rgba(255, 0, 0, 0.5)",
-    "rgba(0, 100, 0, 0.5)",  "rgba(211, 211, 211, 0.5)", "rgba(0, 0, 0, 0.5)",
-    "rgba(255, 255, 0, 0.5)","rgba(173, 216, 230, 0.5)", "rgba(165, 42, 42, 0.5)",
-    "rgba(0, 0, 139, 0.5)",  "rgba(204, 204, 0, 0.5)",  "rgba(105, 105, 105, 0.5)",
-    "rgba(255, 192, 203, 0.5)","rgba(255, 140, 0, 0.5)","rgba(128, 0, 128, 0.5)",
+    "rgba(0, 0, 255, 0.5)",
+    "rgba(255, 165, 0, 0.5)",
+    "rgba(255, 0, 0, 0.5)",
+    "rgba(0, 100, 0, 0.5)",
+    "rgba(211, 211, 211, 0.5)",
+    "rgba(0, 0, 0, 0.5)",
+    "rgba(255, 255, 0, 0.5)",
+    "rgba(173, 216, 230, 0.5)",
+    "rgba(165, 42, 42, 0.5)",
+    "rgba(0, 0, 139, 0.5)",
+    "rgba(204, 204, 0, 0.5)",
+    "rgba(105, 105, 105, 0.5)",
+    "rgba(255, 192, 203, 0.5)",
+    "rgba(255, 140, 0, 0.5)",
+    "rgba(128, 0, 128, 0.5)",
   ];
 
   const [data, setData] = useState({
     labels: ["Tid", "Prestation", "Motstånd"],
     datasets: [],
   });
-  const [loading, setLoading]         = useState(true);
+  const [loading, setLoading] = useState(true);
   const [showSpinner, setShowSpinner] = useState(false);
-  const [error, setError]             = useState(null);
+  const [error, setError] = useState(null);
 
-  const [dates, setDates]             = useState([]);
-  const [tracks, setTracks]           = useState([]);
+  const [dates, setDates] = useState([]);
+  const [tracks, setTracks] = useState([]);
   const [competitions, setCompetitions] = useState([]);
-  const [laps, setLaps]               = useState([]);
+  const [laps, setLaps] = useState([]);
 
   const legendRef = useRef(null);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640);
@@ -54,27 +63,25 @@ const SpiderChart = ({
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-  fetch(`${API_BASE_URL}/track/dates`)
-    .then((res) => res.json())
-    .then((all) => {
-      if (!all.length) return;                                         
+    fetch(`${API_BASE_URL}/track/dates`)
+      .then((res) => res.json())
+      .then((all) => {
+        if (!all.length) return;
 
-      const unique = Array.from(                                       
-        new Map(all.map((d) => [d.date, d])).values()                  
-      ).sort((a, b) => a.date.localeCompare(b.date));                  
+        const unique = Array.from(
+          new Map(all.map((d) => [d.date, d])).values()
+        ).sort((a, b) => a.date.localeCompare(b.date));
 
-      setDates(unique);                                                
+        setDates(unique);
 
-      if (!selectedDate) {                                             
-        const todayStr = new Date().toISOString().split("T")[0];       
-        const todayObj = unique.find((d) => d.date === todayStr);      
-        setSelectedDate(                                               
-          todayObj ? todayObj.date : unique[0].date                    
-        );                                                             
-      }                                                                
-    })
-    .catch((err) => console.error("dates:", err));
-}, []);
+        if (!selectedDate) {
+          const todayStr = new Date().toISOString().split("T")[0];
+          const todayObj = unique.find((d) => d.date === todayStr);
+          setSelectedDate(todayObj ? todayObj.date : unique[0].date);
+        }
+      })
+      .catch((err) => console.error("dates:", err));
+  }, []);
 
   useEffect(() => {
     if (!selectedDate) return;
@@ -100,14 +107,19 @@ const SpiderChart = ({
 
   useEffect(() => {
     if (!selectedCompetition) return;
-    fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`)
+    fetch(
+      `${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`
+    )
       .then((r) => r.json())
       .then((d) => {
         setLaps(d);
         const ok = d.some((l) => l.id === +selectedLap);
         if (!selectedLap || !ok) if (d.length) setSelectedLap(d[0].id);
       })
-      .catch((err) => { console.error("laps:", err); setLaps([]); });
+      .catch((err) => {
+        console.error("laps:", err);
+        setLaps([]);
+      });
   }, [selectedCompetition]);
 
   useEffect(() => {
@@ -115,12 +127,20 @@ const SpiderChart = ({
     setLoading(true);
 
     fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`)
-      .then((r) => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
+      .then((r) => {
+        if (!r.ok) throw new Error(r.statusText);
+        return r.json();
+      })
       .then((completeHorses) =>
         Promise.all(
           completeHorses.map((horse, idx) =>
-            fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`)
-              .then((r) => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
+            fetch(
+              `${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`
+            )
+              .then((r) => {
+                if (!r.ok) throw new Error(r.statusText);
+                return r.json();
+              })
               .then((fs) => ({ idx, horse, fs }))
           )
         )
@@ -128,31 +148,41 @@ const SpiderChart = ({
       .then((arr) => {
         const rawDatasets = arr.map(({ idx, horse, fs }) => ({
           label: `${horse.numberOfCompleteHorse}. ${horse.nameOfCompleteHorse}`,
-          data: [fs.fart, fs.styrka, fs.klass], /* MÅSTE UPPDATERA HÄR SEN DÅ FÖR ATT TA BORT DATA*/
+          data: [
+            fs.fart,
+            fs.styrka,
+            fs.klass,
+          ] /* MÅSTE UPPDATERA HÄR SEN DÅ FÖR ATT TA BORT DATA*/,
           backgroundColor: horseColors[idx % horseColors.length],
-          borderColor: horseColors[idx % horseColors.length].replace("0.5","1"),
+          borderColor: horseColors[idx % horseColors.length].replace(
+            "0.5",
+            "1"
+          ),
           borderWidth: 2,
           pointRadius: 2,
         }));
 
         const top5Idx = rawDatasets
-          .map((ds,i) => ({ i, val: ds.data[0] }))
-          .sort((a,b) => b.val - a.val)
-          .slice(0,5)
-          .map(x => x.i);
+          .map((ds, i) => ({ i, val: ds.data[0] }))
+          .sort((a, b) => b.val - a.val)
+          .slice(0, 5)
+          .map((x) => x.i);
 
-        const datasets = rawDatasets.map((ds,i) => ({
+        const datasets = rawDatasets.map((ds, i) => ({
           ...ds,
-          hidden: selectedHorse!==null
-            ? i!==selectedHorse
-            : !top5Idx.includes(i),
+          hidden:
+            selectedHorse !== null ? i !== selectedHorse : !top5Idx.includes(i),
         }));
 
-        setData(p => ({ ...p, datasets }));
+        setData((p) => ({ ...p, datasets }));
         setLoading(false);
       })
-      .catch((err) => { console.error("data:", err); setError(err.message); setLoading(false); });
-  }, [selectedLap, selectedHorse]); 
+      .catch((err) => {
+        console.error("data:", err);
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [selectedLap, selectedHorse]);
 
   useEffect(() => {
     let t;
@@ -169,7 +199,8 @@ const SpiderChart = ({
       while (ul.firstChild) ul.firstChild.remove();
       chart.data.datasets.forEach((ds, idx) => {
         const li = document.createElement("li");
-        li.className = "flex items-center cursor-pointer select-none whitespace-nowrap";
+        li.className =
+          "flex items-center cursor-pointer select-none whitespace-nowrap";
         const visible = chart.isDatasetVisible(idx);
         li.style.opacity = visible ? 1 : 0.35;
         li.onclick = () => {
@@ -192,30 +223,34 @@ const SpiderChart = ({
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { display: !isSmallScreen, position: isSmallScreen ? "top" : legendPosition },
+      legend: {
+        display: !isSmallScreen,
+        position: isSmallScreen ? "top" : legendPosition,
+      },
     },
     scales: {
       r: {
         angleLines: { display: false },
         suggestedMin: 0,
         suggestedMax: 100,
-         pointLabels: {
-        padding: 5,            
-        font: {
-          size: 12,           
-          weight: 'bold'       
-        },
-        color: '#000'          
-      },
-        ticks: {
-          color: "#000", 
+        pointLabels: {
+          padding: 5,
           font: {
-            size: 12, 
-            weight: "bold" 
+            size: 12,
+            weight: "bold",
           },
-          z: 1 
-        }
-      }
+          color: "#000",
+        },
+        ticks: {
+          display: false, //temp gömmer 10, 20, 30 40, etc. 
+          // color: "#000",
+          // font: {
+          //   size: 12,
+          //   weight: "bold"
+          // },
+          // z: 1
+        },
+      },
     },
     elements: { line: { borderWidth: 2 } },
   };
@@ -228,32 +263,40 @@ const SpiderChart = ({
   const fmt = (d) => {
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1); 
-    const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" }); 
-    return `${capitalizedWeekday}, ${rest}`; 
+    const capitalizedWeekday =
+      weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    const rest = date.toLocaleDateString("sv-SE", {
+      day: "numeric",
+      month: "long",
+    });
+    return `${capitalizedWeekday}, ${rest}`;
   };
 
   const selectedDateLabel =
-    selectedDate === todayStr ? `Idag, ${fmt(selectedDate)}` :
-    selectedDate === yesterdayStr ? `Igår, ${fmt(selectedDate)}` :
-    selectedDate === tomorrowStr  ? `Imorgon, ${fmt(selectedDate)}` :
-    fmt(selectedDate);
+    selectedDate === todayStr
+      ? `Idag, ${fmt(selectedDate)}`
+      : selectedDate === yesterdayStr
+      ? `Igår, ${fmt(selectedDate)}`
+      : selectedDate === tomorrowStr
+      ? `Imorgon, ${fmt(selectedDate)}`
+      : fmt(selectedDate);
 
   const selectedTrackLabel =
-    tracks.find(t=>t.id===+selectedTrack)?.nameOfTrack || "Färjestad";
+    tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack || "Färjestad";
   const selectedCompetitionLabel =
-    competitions.find(c=>c.id===+selectedCompetition)?.nameOfCompetition || "v75";
+    competitions.find((c) => c.id === +selectedCompetition)
+      ?.nameOfCompetition || "v75";
   const selectedLapLabel =
-    laps.find(l=>l.id===+selectedLap)?.nameOfLap || "Lopp 1";
+    laps.find((l) => l.id === +selectedLap)?.nameOfLap || "Lopp 1";
 
-  const handleDate = e => setSelectedDate(e.target.value);
-  const handleTrack = e => setSelectedTrack(e.target.value);
-  const handleComp = e => setSelectedCompetition(e.target.value);
-  const handleLap = e => setSelectedLap(e.target.value);
+  const handleDate = (e) => setSelectedDate(e.target.value);
+  const handleTrack = (e) => setSelectedTrack(e.target.value);
+  const handleComp = (e) => setSelectedCompetition(e.target.value);
+  const handleLap = (e) => setSelectedLap(e.target.value);
 
   return (
     <div className="flex flex-col justify-center items-center mt-1 px-2 pb-10">
-    {/*  <p className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 px-4 py-2 flex flex-col justify-center items-center bg-slate-100 rounded-xl border">
+      {/*  <p className="sm:text-xl text-lg font-semibold text-slate-700 mt-4 mb-4 sm:mt-2 sm:mb-2 px-4 py-2 flex flex-col justify-center items-center bg-slate-100 rounded-xl border">
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
       </p> */}
 
@@ -263,7 +306,9 @@ const SpiderChart = ({
         )}
 
         {!loading && data.datasets.length === 0 && (
-          <div className="text-sm text-slate-500">No data found for this lap.</div>
+          <div className="text-sm text-slate-500">
+            No data found for this lap.
+          </div>
         )}
 
         {showSpinner && loading && (
@@ -272,10 +317,17 @@ const SpiderChart = ({
           </div>
         )}
       </div>
-        <div className="mt-5 self-start flex flex-wrap">
-      <ul ref={legendRef} className={isSmallScreen ? "relative z-10 grid grid-cols-1 gap-2 text-xs" : "hidden"} />
-        </div>
-    {/*  <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md mt-0 sm:mt-8">
+      <div className="mt-5 self-start flex flex-wrap">
+        <ul
+          ref={legendRef}
+          className={
+            isSmallScreen
+              ? "relative z-10 grid grid-cols-1 gap-2 text-xs"
+              : "hidden"
+          }
+        />
+      </div>
+      {/*  <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md mt-0 sm:mt-8">
         <select value={selectedDate} onChange={handleDate} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
           <option value="" disabled>Välj datum</option>
           {dates.map(d => <option key={d.date} value={d.date}>{d.date}</option>)}

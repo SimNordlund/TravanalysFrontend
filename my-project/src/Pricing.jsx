@@ -26,7 +26,7 @@ export default function Pricing() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8 mt">
         <div className="flex items-center justify-center gap-3 sm:gap-4">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Vill du stötta oss?
+            Gilla Travanalys
           </h2>
           <LikeButton/>
         </div>
