@@ -23,16 +23,14 @@ export default function TravChat() {
   const tailRef = useRef(null);
 
   const CHATBOT_URL = import.meta.env.VITE_API_CHATBOT_URL;
-
-  // Visa badge första gången (per session)                                  // Changed!
-  const [hasUnread, setHasUnread] = useState(() => {                         // Changed!
-    const opened = sessionStorage.getItem("travchat-opened");                // Changed!
-    return !opened; // true = visa badge                                     // Changed!
-  });                                                                        // Changed!
-
-  // Håll koll på om chatten är öppen (även inuti async kod)                 // Changed!
-  const isOpenRef = useRef(isOpen);                                          // Changed!
-  useEffect(() => { isOpenRef.current = isOpen; }, [isOpen]);                // Changed!
+                               
+  const [hasUnread, setHasUnread] = useState(() => {                         
+    const opened = sessionStorage.getItem("travchat-opened");                
+    return !opened;                                    
+  });                                                                        
+               
+  const isOpenRef = useRef(isOpen);                                          
+  useEffect(() => { isOpenRef.current = isOpen; }, [isOpen]);                
 
   useEffect(() => {
     tailRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -68,15 +66,14 @@ export default function TravChat() {
           return copy;
         });
       }
-
-      // Om svaret kom medan chatten är stängd → visa badge                   // Changed!
-      if (!isOpenRef.current) setHasUnread(true);                             // Changed!
+                 
+      if (!isOpenRef.current) setHasUnread(true);                             
     } catch (err) {
       setMessages((m) => [
         ...m,
         { role: "assistant", content: "❌ " + err.message },
       ]);
-      if (!isOpenRef.current) setHasUnread(true);                             // Changed!
+      if (!isOpenRef.current) setHasUnread(true);                             
     } finally {
       setStreaming(false);
     }
@@ -88,26 +85,24 @@ export default function TravChat() {
         <button
           onClick={() => {
             setIsOpen(true);
-            setHasUnread(false); // användaren öppnade chatten                // Changed!
-            sessionStorage.setItem("travchat-opened", "1");                   // Changed!
+            setHasUnread(false);             
+            sessionStorage.setItem("travchat-opened", "1");                   
           }}
-          className="relative bg-blue-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center" // Changed!
+          className="relative bg-blue-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center" 
           aria-label="Öppna chatt"
         >
           <MessageCircle size={28} />
-          {hasUnread && (                                                     // Changed!
-            <>
-              {/* ping-ring för lite uppmärksamhet */}                        {/* Changed! */}
+          {hasUnread && (                                                   
+            <>                      
               <span
                 className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75 animate-ping"
                 aria-hidden="true"
-              />
-              {/* röd badge-prick */}                                          {/* Changed! */}
+              />                                  
               <span
                 className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-red-600 ring-2 ring-white"
                 aria-hidden="true"
               />
-              <span className="sr-only">Oläst meddelande</span>               {/* Changed! */}
+              <span className="sr-only">Oläst meddelande</span>               
             </>
           )}
         </button>
@@ -130,7 +125,6 @@ export default function TravChat() {
               <button
                 onClick={() => {
                   setIsOpen(false);
-                  // Stäng → lämna badge som den är (sätts igen på nya svar)   // Changed!
                 }}
               >
                 <X />
