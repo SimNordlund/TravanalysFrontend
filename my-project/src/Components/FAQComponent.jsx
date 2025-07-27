@@ -89,6 +89,14 @@ const Faqs = () => {
       q: "Vilka ligger bakom Travanalys?",
       a: "Vi är ett gäng travnördar som vill göra det enklare för dig att hitta vinnarna.",
     },
+       {
+      q: "Vem är Trav-olta?",
+      a: "Det är vår AI-baserade travbot. Klicka på chatboxen längst ner i högra hörnet för att testa honom! Han har koll på startlistor, odds och roi m.m.",
+    },
+       {
+      q: "När lanserar ni?",
+      a: "Vi är i en beta-fas och lanserar kontinuerligt nya funktioner. Följ oss på sociala medier för senaste nytt.",
+    },
   ];
 
   return (

@@ -7,6 +7,7 @@ import SignIn from './SignIn';
 import ReducedButtons from './Components/ReducedButtons';
 import FAQComponent from './Components/FAQComponent';
 import Newsletter from './Newsletter';
+import ChatBox from './Components/TravChat';
 import ToggleComponent from './Components/ToggleComponent';
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/ChartPage/:view" element={<ToggleComponent syncWithRoute={true} />} /> 
         <Route path="/ChartPage" element={<Navigate to="/ChartPage/analys" replace />} />
       </Routes>
+      <ChatBox />
       <Newsletter />
     </>
   );

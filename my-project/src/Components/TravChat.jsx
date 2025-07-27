@@ -8,10 +8,6 @@ import {
   MessageCircle,
 } from "lucide-react";
 
-/**
- * TravChat – React component that chats with your Spring-Boot back-end.
- * Streams tokens with fetch + ReadableStream (no EventSource, no spacing hacks).
- */
 export default function TravChat() {
   const [messages, setMessages] = useState([
     {
@@ -22,17 +18,25 @@ export default function TravChat() {
   ]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
-  const [isOpen, setIsOpen] = useState(false); 
-  const [isMaximized, setIsMaximized] = useState(false); 
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
   const tailRef = useRef(null);
 
+  const CHATBOT_URL = import.meta.env.VITE_API_CHATBOT_URL;
+
+  // Visa badge första gången (per session)                                  // Changed!
+  const [hasUnread, setHasUnread] = useState(() => {                         // Changed!
+    const opened = sessionStorage.getItem("travchat-opened");                // Changed!
+    return !opened; // true = visa badge                                     // Changed!
+  });                                                                        // Changed!
+
+  // Håll koll på om chatten är öppen (även inuti async kod)                 // Changed!
+  const isOpenRef = useRef(isOpen);                                          // Changed!
+  useEffect(() => { isOpenRef.current = isOpen; }, [isOpen]);                // Changed!
 
   useEffect(() => {
     tailRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
-  const CHATBOT_URL = import.meta.env.VITE_API_CHATBOT_URL;
-
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -64,11 +68,15 @@ export default function TravChat() {
           return copy;
         });
       }
+
+      // Om svaret kom medan chatten är stängd → visa badge                   // Changed!
+      if (!isOpenRef.current) setHasUnread(true);                             // Changed!
     } catch (err) {
       setMessages((m) => [
         ...m,
         { role: "assistant", content: "❌ " + err.message },
       ]);
+      if (!isOpenRef.current) setHasUnread(true);                             // Changed!
     } finally {
       setStreaming(false);
     }
@@ -76,13 +84,32 @@ export default function TravChat() {
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      {" "}
-      {!isOpen ? ( 
+      {!isOpen ? (
         <button
-          onClick={() => setIsOpen(true)}
-          className="bg-blue-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center"
+          onClick={() => {
+            setIsOpen(true);
+            setHasUnread(false); // användaren öppnade chatten                // Changed!
+            sessionStorage.setItem("travchat-opened", "1");                   // Changed!
+          }}
+          className="relative bg-blue-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center" // Changed!
+          aria-label="Öppna chatt"
         >
           <MessageCircle size={28} />
+          {hasUnread && (                                                     // Changed!
+            <>
+              {/* ping-ring för lite uppmärksamhet */}                        {/* Changed! */}
+              <span
+                className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75 animate-ping"
+                aria-hidden="true"
+              />
+              {/* röd badge-prick */}                                          {/* Changed! */}
+              <span
+                className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-red-600 ring-2 ring-white"
+                aria-hidden="true"
+              />
+              <span className="sr-only">Oläst meddelande</span>               {/* Changed! */}
+            </>
+          )}
         </button>
       ) : (
         <div
@@ -100,7 +127,12 @@ export default function TravChat() {
               <button onClick={() => setIsMaximized((m) => !m)}>
                 {isMaximized ? <Minimize2 /> : <Maximize2 />}
               </button>
-              <button onClick={() => setIsOpen(false)}>
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  // Stäng → lämna badge som den är (sätts igen på nya svar)   // Changed!
+                }}
+              >
                 <X />
               </button>
             </div>
@@ -143,11 +175,7 @@ export default function TravChat() {
               className="h-12 w-12 shrink-0 rounded-xl bg-blue-600 text-white flex items-center justify-center
                          disabled:opacity-50"
             >
-              {streaming ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                <PaperPlaneIcon />
-              )}
+              {streaming ? <Loader2 className="animate-spin" /> : <PaperPlaneIcon />}
             </button>
           </div>
         </div>
