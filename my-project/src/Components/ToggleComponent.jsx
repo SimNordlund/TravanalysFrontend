@@ -1,45 +1,46 @@
-// Components/ToggleComponent.jsx
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom"; 
+import { useParams, useNavigate, useLocation } from "react-router-dom"; 
 import SpiderChart from "./SpiderChart";
 import BarChart from "../BarChart";
 import PaginatedLapTable from "./PaginatedLapTable";
 import Skrallar from "./Skrallar";
 
 const ToggleComponent = ({ syncWithRoute = false }) => { 
+  const { view: viewParam } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation(); 
+
+  const routeToView = { analys: "spider", tabell: "table", speltips: "skrallar" }; 
+  const viewToRoute = { spider: "analys", table: "tabell", skrallar: "speltips", bar: "analys" }; 
+
+  const initialSelectedView = syncWithRoute ? (routeToView[viewParam] || "spider") : "spider"; 
+
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTrack, setSelectedTrack] = useState("");
   const [selectedCompetition, setSelectedCompetition] = useState("");
   const [selectedLap, setSelectedLap] = useState("");
-  const [selectedView, setSelectedView] = useState("spider");
+  const [selectedView, setSelectedView] = useState(initialSelectedView);
   const [selectedHorse, setSelectedHorse] = useState(null);
 
-  const { view: viewParam } = useParams(); 
-  const navigate = useNavigate(); 
-
-  // Mappning mellan URL-del och intern vy-nyckel
-  const routeToView = { analys: "spider", tabell: "table", speltips: "skrallar" }; 
-  const viewToRoute = { spider: "analys", table: "tabell", skrallar: "speltips", bar: "analys" }; 
-
-  // Om vi kör i "route-läge": håll local state i synk med URL
+ 
   useEffect(() => { 
-    if (!syncWithRoute) return; 
+    if (!syncWithRoute) return;
     const nextView = routeToView[viewParam] || "spider";
     setSelectedView(nextView);
     if (nextView !== "spider") setSelectedHorse(null);
   }, [syncWithRoute, viewParam]); 
 
-  // Gemensam setter som även kan uppdatera URL i route-läge
   const setViewAndMaybeNavigate = (viewKey) => { 
     setSelectedView(viewKey);
     if (viewKey !== "spider") setSelectedHorse(null);
     if (syncWithRoute) {
-      navigate(`/ChartPage/${viewToRoute[viewKey]}`);
+      const target = `/ChartPage/${viewToRoute[viewKey]}`;
+      if (location.pathname !== target) navigate(target);
     }
   };
 
-  const switchView = (viewKey) => { 
-    setViewAndMaybeNavigate(viewKey); 
+  const switchView = (viewKey) => {
+    setViewAndMaybeNavigate(viewKey);
   };
 
   const callouts = [
@@ -50,7 +51,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
   return (
     <div className="text-center pt-12 pb-12 sm:pt-16 sm:pb-14">
-      <div className="flex justify-center gap-x-4 sm:gap-x-10 flex-nowrap overflow-auto mb-4 sm:mb-8 pt-2 pb-3">
+      <div className="flex justify-center gap-x-4 sm:gap-x-10 flex-nowrap overflow-auto mb-4 sm:mb-8 pt-2 pb-3"> 
         {callouts.map((c) => (
           <div
             key={c.id}
@@ -72,37 +73,40 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         ))}
       </div>
 
-      <div className="sm:max-w-5xl sm:mx-auto bg-white ml-4 mr-4 sm:pl-8 sm:pr-8 sm:pb-2 rounded-xl shadow-lg">
-        {/* Kombinerad BarChart + SpiderChart */}
+      <div className="sm:max-w-5xl sm:mx-auto bg-white ml-4 mr-4 sm:pl-8 sm:pr-8 sm:pb-2 rounded-xl shadow-lg min-h-[70vh]"> 
         {(selectedView === "bar" || selectedView === "spider") && (
           <div className="grid grid-cols-1 gap-4">
-            <BarChart 
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-              selectedTrack={selectedTrack}
-              setSelectedTrack={setSelectedTrack}
-              selectedCompetition={selectedCompetition}
-              setSelectedCompetition={setSelectedCompetition}
-              selectedLap={selectedLap}
-              setSelectedLap={setSelectedLap}
-              setSelectedView={setViewAndMaybeNavigate}  
-              setSelectedHorse={setSelectedHorse}
-            />
-            <SpiderChart
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-              selectedTrack={selectedTrack}
-              setSelectedTrack={setSelectedTrack}
-              selectedCompetition={selectedCompetition}
-              setSelectedCompetition={setSelectedCompetition}
-              selectedLap={selectedLap}
-              setSelectedLap={setSelectedLap}
-              selectedHorse={selectedHorse}
-            />
+            <div className="min-h-[400px]">
+              <BarChart 
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                selectedTrack={selectedTrack}
+                setSelectedTrack={setSelectedTrack}
+                selectedCompetition={selectedCompetition}
+                setSelectedCompetition={setSelectedCompetition}
+                selectedLap={selectedLap}
+                setSelectedLap={setSelectedLap}
+                setSelectedView={setViewAndMaybeNavigate} 
+                setSelectedHorse={setSelectedHorse}
+              />
+            </div>
+            <div className="min-h-[400px]"> 
+              <SpiderChart
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+                selectedTrack={selectedTrack}
+                setSelectedTrack={setSelectedTrack}
+                selectedCompetition={selectedCompetition}
+                setSelectedCompetition={setSelectedCompetition}
+                selectedLap={selectedLap}
+                setSelectedLap={setSelectedLap}
+                selectedHorse={selectedHorse}
+              />
+            </div>
           </div>
         )}
 
-        {selectedView === "table" && (
+        <div className={`${selectedView === "table" ? "" : "hidden"} min-h-[600px]`}> 
           <PaginatedLapTable
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
@@ -113,16 +117,17 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             selectedLap={selectedLap}
             setSelectedLap={setSelectedLap}
           />
-        )}
+        </div>
 
-        {selectedView === "skrallar" && (
+  
+        <div className={`${selectedView === "skrallar" ? "" : "hidden"} min-h-[600px]`}> 
           <Skrallar
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
             setSelectedView={setViewAndMaybeNavigate}  
             setSelectedHorse={setSelectedHorse}
           />
-        )}
+        </div>
       </div>
     </div>
   );
