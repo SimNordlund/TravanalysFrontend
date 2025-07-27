@@ -2,15 +2,15 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { useNavigate, NavLink } from 'react-router-dom'; // Changed!
+import { useNavigate, NavLink } from 'react-router-dom'; 
 import travhorsi from './Bilder/travhorsi2.png';
 
 const navigation = [
-  { name: 'Startsida', to: '/' }, // Changed!
-  { name: 'Analys', to: '/ChartPage/analys' }, // Changed!
-  { name: 'Tabell', to: '/ChartPage/tabell' }, // Changed!
-  { name: 'Speltips', to: '/ChartPage/speltips' }, // Changed!
-  { name: 'Vad är Travanalys?', to: '/Components/SkrytComponent' }, // Changed!
+  { name: 'Startsida', to: '/' }, 
+  { name: 'Analys', to: '/ChartPage/analys' }, 
+  { name: 'Tabell', to: '/ChartPage/tabell' }, 
+  { name: 'Speltips', to: '/ChartPage/speltips' }, 
+  { name: 'Vad är Travanalys?', to: '/Components/SkrytComponent' }, 
 ];
 
 function classNames(...classes) {
@@ -50,17 +50,17 @@ export default function Example() {
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-1">
                     {navigation.map((item) => (
-                      <NavLink // Changed!
+                      <NavLink 
                         key={item.name}
-                        to={item.to} // Changed!
+                        to={item.to} 
                         className={({ isActive }) =>
                           classNames(
-                            isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', // Changed!
+                            isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 
                             'rounded-md px-3 py-2 text-sm font-medium'
                           )
                         }
-                        end={item.to === '/'} // Changed! exakt match på startsidan
-                        aria-current={({ isActive }) => (isActive ? 'page' : undefined)} // Changed!
+                        end={item.to === '/'}  exakt match på startsidan
+                        aria-current={({ isActive }) => (isActive ? 'page' : undefined)} 
                       >
                         {item.name}
                       </NavLink>
@@ -71,7 +71,7 @@ export default function Example() {
 
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <div>
-                  <NavLink to="/" className="mt-0 font-semibold text-lg sm:text-xl text-white"> {/* Changed! */}
+                  <NavLink to="/" className="mt-0 font-semibold text-lg sm:text-xl text-white"> 
                     Travanalys
                   </NavLink>
                 </div>
@@ -130,15 +130,15 @@ export default function Example() {
               {navigation.map((item) => (
                 <Disclosure.Button
                   key={item.name}
-                  as={NavLink} // Changed!
-                  to={item.to} // Changed!
+                  as={NavLink} 
+                  to={item.to} 
                   className={({ isActive }) =>
                     classNames(
-                      isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', // Changed!
+                      isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 
                       'block rounded-md px-3 py-2 text-base font-medium'
                     )
                   }
-                  end={item.to === '/'} // Changed!
+                  end={item.to === '/'} 
                 >
                   {item.name}
                 </Disclosure.Button>

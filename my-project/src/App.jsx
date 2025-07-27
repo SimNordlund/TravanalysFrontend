@@ -21,9 +21,7 @@ export default function App() {
         <Route path="/Components/SkrytComponent" element={<FAQComponent/>} />
         <Route path="/Components/ReducedButtons" element={<ReducedButtons/>} />
         <Route path="/Components/GitHubLoginButton" element={<Home/>} />
-        {/* /ChartPage/:view synkar Toggle med URL */} 
-        <Route path="/ChartPage/:view" element={<ToggleComponent syncWithRoute={true} />} /> {/* Changed! */}
-        {/* /ChartPage utan vy redirectas till analys */}
+        <Route path="/ChartPage/:view" element={<ToggleComponent syncWithRoute={true} />} /> 
         <Route path="/ChartPage" element={<Navigate to="/ChartPage/analys" replace />} />
       </Routes>
       <Newsletter />

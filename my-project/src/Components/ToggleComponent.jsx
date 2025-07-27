@@ -1,12 +1,12 @@
 // Components/ToggleComponent.jsx
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Changed!
+import { useParams, useNavigate } from "react-router-dom"; 
 import SpiderChart from "./SpiderChart";
 import BarChart from "../BarChart";
 import PaginatedLapTable from "./PaginatedLapTable";
 import Skrallar from "./Skrallar";
 
-const ToggleComponent = ({ syncWithRoute = false }) => { // Changed!
+const ToggleComponent = ({ syncWithRoute = false }) => { 
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTrack, setSelectedTrack] = useState("");
   const [selectedCompetition, setSelectedCompetition] = useState("");
@@ -14,23 +14,23 @@ const ToggleComponent = ({ syncWithRoute = false }) => { // Changed!
   const [selectedView, setSelectedView] = useState("spider");
   const [selectedHorse, setSelectedHorse] = useState(null);
 
-  const { view: viewParam } = useParams(); // Changed!
-  const navigate = useNavigate(); // Changed!
+  const { view: viewParam } = useParams(); 
+  const navigate = useNavigate(); 
 
   // Mappning mellan URL-del och intern vy-nyckel
-  const routeToView = { analys: "spider", tabell: "table", speltips: "skrallar" }; // Changed!
-  const viewToRoute = { spider: "analys", table: "tabell", skrallar: "speltips", bar: "analys" }; // Changed!
+  const routeToView = { analys: "spider", tabell: "table", speltips: "skrallar" }; 
+  const viewToRoute = { spider: "analys", table: "tabell", skrallar: "speltips", bar: "analys" }; 
 
   // Om vi kör i "route-läge": håll local state i synk med URL
-  useEffect(() => { // Changed!
-    if (!syncWithRoute) return; // Changed!
+  useEffect(() => { 
+    if (!syncWithRoute) return; 
     const nextView = routeToView[viewParam] || "spider";
     setSelectedView(nextView);
     if (nextView !== "spider") setSelectedHorse(null);
-  }, [syncWithRoute, viewParam]); // Changed!
+  }, [syncWithRoute, viewParam]); 
 
   // Gemensam setter som även kan uppdatera URL i route-läge
-  const setViewAndMaybeNavigate = (viewKey) => { // Changed!
+  const setViewAndMaybeNavigate = (viewKey) => { 
     setSelectedView(viewKey);
     if (viewKey !== "spider") setSelectedHorse(null);
     if (syncWithRoute) {
@@ -38,8 +38,8 @@ const ToggleComponent = ({ syncWithRoute = false }) => { // Changed!
     }
   };
 
-  const switchView = (viewKey) => { // Changed!
-    setViewAndMaybeNavigate(viewKey); // Changed!
+  const switchView = (viewKey) => { 
+    setViewAndMaybeNavigate(viewKey); 
   };
 
   const callouts = [
@@ -55,7 +55,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => { // Changed!
           <div
             key={c.id}
             className="group relative cursor-pointer"
-            onClick={() => switchView(c.view)} // Changed!
+            onClick={() => switchView(c.view)} 
           >
             <div
               className={`
@@ -85,7 +85,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => { // Changed!
               setSelectedCompetition={setSelectedCompetition}
               selectedLap={selectedLap}
               setSelectedLap={setSelectedLap}
-              setSelectedView={setViewAndMaybeNavigate}  // Changed!
+              setSelectedView={setViewAndMaybeNavigate}  
               setSelectedHorse={setSelectedHorse}
             />
             <SpiderChart
@@ -119,7 +119,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => { // Changed!
           <Skrallar
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
-            setSelectedView={setViewAndMaybeNavigate}  // Changed!
+            setSelectedView={setViewAndMaybeNavigate}  
             setSelectedHorse={setSelectedHorse}
           />
         )}
