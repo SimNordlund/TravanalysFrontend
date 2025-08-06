@@ -95,11 +95,11 @@ export default function TravChat() {
           {hasUnread && (                                                   
             <>                      
               <span
-                className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75 animate-ping"
+                className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-blue-700 opacity-85 animate-ping"
                 aria-hidden="true"
               />                                  
               <span
-                className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-red-600 ring-2 ring-white"
+                className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-red-600 ring-1 ring-white"
                 aria-hidden="true"
               />
               <span className="sr-only">Oläst meddelande</span>               
