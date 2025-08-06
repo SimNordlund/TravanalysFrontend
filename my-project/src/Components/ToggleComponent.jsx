@@ -50,7 +50,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   ];
 
   return (
-    <div className="text-center pt-12 pb-12 sm:pt-16 sm:pb-14">
+    <div className="text-center pt-12 pb-12 sm:pt-16 sm:pb-14 bg-slate-100">
       <div className="flex justify-center gap-x-4 sm:gap-x-10 flex-nowrap overflow-auto mb-4 sm:mb-8 pt-2 pb-3"> 
         {callouts.map((c) => (
           <div

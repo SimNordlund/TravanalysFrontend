@@ -8,7 +8,7 @@ import ChatBox from './Components/TravChat';
 export default function Home() {
 
   return (
-    <div className="bg-slate-100">
+    <div>
       {/*<Present />*/}
       {/*<PreviewFrontPage/>*/}
       <IntroComponent></IntroComponent>
