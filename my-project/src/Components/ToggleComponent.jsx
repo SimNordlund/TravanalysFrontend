@@ -63,7 +63,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 ${c.bgColor}
                 relative h-14 w-24 sm:w-72 sm:h-18 mb-1 sm:mb-0 
                 overflow-hidden rounded-md flex items-center justify-center
-                transition-all duration-300 shadow-xl
+                transition-all duration-300
                 ${selectedView === c.view ? "ring-2 ring-slate-600 scale-110 opacity-100 cursor-default" : "hover:opacity-80"}
               `}
             >
