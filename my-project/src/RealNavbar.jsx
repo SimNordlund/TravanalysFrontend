@@ -9,7 +9,7 @@ const navigation = [
   { name: 'Analys', to: '/ChartPage/analys' }, 
   { name: 'Tabell', to: '/ChartPage/tabell' }, 
   { name: 'Speltips', to: '/ChartPage/speltips' }, 
-  { name: 'Vad är Travanalys?', to: '/Components/SkrytComponent' }, 
+  { name: 'Om Travanalys', to: '/Components/SkrytComponent' }, 
 ];
 
 function classNames(...classes) {
