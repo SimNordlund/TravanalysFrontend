@@ -1,5 +1,4 @@
 import Pricing from './Pricing';
-import Present from './Present';
 import PreviewFrontPage from './PreviewHomePage';
 import ToggleComponent from './Components/ToggleComponent'
 import IntroComponent from './Components/IntroComponent';
