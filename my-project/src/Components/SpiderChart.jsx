@@ -156,7 +156,7 @@ const SpiderChart = ({
             fs.prispengar,
             fs.placering,
             fs.form
-          ] /* MÅSTE UPPDATERA HÄR SEN DÅ FÖR ATT TA BORT DATA*/,
+          ] /*mn kuk är bejs send hekp xd */,
           backgroundColor: horseColors[idx % horseColors.length],
           borderColor: horseColors[idx % horseColors.length].replace(
             "0.5",
