@@ -246,13 +246,7 @@ const SpiderChart = ({
           color: "#000",
         },
         ticks: {
-          display: false, //temp gömmer 10, 20, 30 40, etc. 
-          // color: "#000",
-          // font: {
-          //   size: 12,
-          //   weight: "bold"
-          // },
-          // z: 1337
+          display: false,
         },
       },
     },
