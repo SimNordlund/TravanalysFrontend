@@ -153,7 +153,9 @@ const SpiderChart = ({
             fs.styrka,
             fs.klass,
             fs.kusk,
-            fs.prispengar 
+            fs.prispengar,
+            fs.placering,
+            fs.form
           ] /* MÅSTE UPPDATERA HÄR SEN DÅ FÖR ATT TA BORT DATA*/,
           backgroundColor: horseColors[idx % horseColors.length],
           borderColor: horseColors[idx % horseColors.length].replace(
