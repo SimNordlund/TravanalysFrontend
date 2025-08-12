@@ -356,5 +356,4 @@ const SpiderChart = ({
     </div>
   );
 };
-
 export default SpiderChart;
