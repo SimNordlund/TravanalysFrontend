@@ -346,13 +346,13 @@ const PaginatedLapTable = ({
                 onClick={() => requestSort("prispengar")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
-                Prispengar
+                Klass
               </th>
               <th
                 onClick={() => requestSort("kusk")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
-                Stallskrik
+                Skrik
               </th>
 
             </tr>
