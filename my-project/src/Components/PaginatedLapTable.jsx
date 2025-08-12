@@ -342,7 +342,6 @@ const PaginatedLapTable = ({
               >
                 Motstånd
               </th>
-               {/* 
               <th
                 onClick={() => requestSort("prispengar")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
@@ -355,7 +354,6 @@ const PaginatedLapTable = ({
               >
                 Stallskrik
               </th>
-             */}
             </tr>
           </thead>
 
