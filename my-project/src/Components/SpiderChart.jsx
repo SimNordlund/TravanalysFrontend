@@ -32,7 +32,7 @@ const SpiderChart = ({
   ];
 
   const [data, setData] = useState({
-    labels: ["Tid", "Prestation", "Motstånd", "Skrik", "Prispengar", "Placering", "Form"],
+    labels: ["Prestation", "Placering", "Skrik", "Motstånd", "Prispengar", "Tid", "Form"],
     datasets: [],
   });
   const [loading, setLoading] = useState(true);
@@ -149,12 +149,12 @@ const SpiderChart = ({
         const rawDatasets = arr.map(({ idx, horse, fs }) => ({
           label: `${horse.numberOfCompleteHorse}. ${horse.nameOfCompleteHorse}`,
           data: [
-            fs.fart,
             fs.styrka,
-            fs.klass,
-            fs.kusk,
-            fs.prispengar,
             fs.placering,
+            fs.kusk,
+            fs.klass,
+            fs.prispengar,
+            fs.fart,
             fs.form
           ],
           backgroundColor: horseColors[idx % horseColors.length],
