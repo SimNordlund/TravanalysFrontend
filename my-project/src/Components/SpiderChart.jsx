@@ -316,7 +316,7 @@ const SpiderChart = ({
         )}
       </div>
 
-      <div className="mt-0 self-start flex flex-wrap">
+      <div className="mt-5 self-start flex flex-wrap">
         <ul
           ref={legendRef}
           className={
