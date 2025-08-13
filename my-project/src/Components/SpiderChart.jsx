@@ -315,6 +315,7 @@ const SpiderChart = ({
           </div>
         )}
       </div>
+
       <div className="mt-0 self-start flex flex-wrap">
         <ul
           ref={legendRef}
@@ -324,8 +325,12 @@ const SpiderChart = ({
               : "hidden"
           }
         />
+
+
       </div>
-        <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md mt-0 sm:mt-8">
+
+      {/* }    
+      <div className="flex flex-col w-full sm:w-auto space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 bg-slate-50 sm:p-4 rounded-xl border shadow-md mt-0 sm:mt-8">
         <select value={selectedDate} onChange={handleDate} className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50">
           <option value="" disabled>Välj datum</option>
           {dates.map(d => <option key={d.date} value={d.date}>{d.date}</option>)}
@@ -346,6 +351,7 @@ const SpiderChart = ({
           {laps.map(l => <option key={l.id} value={l.id}>{l.nameOfLap}</option>)}
         </select>
       </div> 
+      */}
       {error && <div className="text-red-600 mt-4">Error: {error}</div>}
     </div>
   );

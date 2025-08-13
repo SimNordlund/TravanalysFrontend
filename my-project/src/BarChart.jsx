@@ -62,6 +62,12 @@ const BarChartComponent = ({
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+  useEffect(() => { //Changed!
+    if (!API_BASE_URL) { //Changed!
+      setError("VITE_API_BASE_URL saknas. Lägg till den i .env och starta om."); //Changed!
+    } //Changed!
+  }, []); //Changed!
+
   useEffect(() => {
     fetch(`${API_BASE_URL}/track/dates`)
       .then((res) => res.json())
@@ -176,6 +182,7 @@ const BarChartComponent = ({
   }, [loading]);
 
   const handleBarClick = (evt) => {
+    if (!chartRef.current) return; //Changed!
     const els = getElementAtEvent(chartRef.current, evt);
     if (!els.length) return;
     const { datasetIndex } = els[0];
@@ -237,8 +244,7 @@ const BarChartComponent = ({
 
       tooltip: {
         enabled: true,
-
-        title: () => null,
+        // title: () => null, //Changed! (ta bort – använd callbacks nedan)
         callbacks: {
           title: () => "Analys",
         },
@@ -251,8 +257,10 @@ const BarChartComponent = ({
   const yesterdayStr = new Date(today - 864e5).toISOString().split("T")[0];
   const tomorrowStr = new Date(+today + 864e5).toISOString().split("T")[0];
 
-  const fmt = (d) => {
-    const date = new Date(d);
+  const fmt = (d) => { //Changed!
+    if (!d) return ""; //Changed!
+    const date = new Date(d); //Changed!
+    if (Number.isNaN(date.getTime())) return ""; //Changed!
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
     const capitalizedWeekday =
       weekday.charAt(0).toUpperCase() + weekday.slice(1);
@@ -264,19 +272,21 @@ const BarChartComponent = ({
   };
 
   const selectedDateLabel =
-    selectedDate === todayStr
+    !selectedDate //Changed!
+      ? "Laddar datum…" //Changed!
+      : selectedDate === todayStr
       ? `Idag, ${fmt(selectedDate)}`
       : selectedDate === yesterdayStr
       ? `Igår, ${fmt(selectedDate)}`
       : selectedDate === tomorrowStr
       ? `Imorgon, ${fmt(selectedDate)}`
-      : fmt(selectedDate);
+      : fmt(selectedDate); //Changed!
 
   const selectedTrackLabel =
-    tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad";
+    tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad"; //Changed!
   const selectedCompetitionLabel =
     competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "v75";
+      ?.nameOfCompetition ?? "v75"; //Changed!
 
   const onDate = (e) => setSelectedDate(e.target.value);
   const onTrack = (e) => setSelectedTrack(e.target.value);
@@ -295,7 +305,7 @@ const BarChartComponent = ({
         <button
           onClick={goPrev}
           disabled={idx <= 0 || loading}
-          className="p-1 text-4xl md:text-5xl disabled:opacity-400"
+          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
         >
           &#8592;
         </button>
@@ -322,7 +332,7 @@ const BarChartComponent = ({
             onClick={() => setSelectedTrack(t.id)}
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              t.id === selectedTrack
+              t.id === +selectedTrack //Changed!
                 ? "bg-emerald-500 text-white font-semibold shadow"
                 : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
@@ -339,7 +349,7 @@ const BarChartComponent = ({
             onClick={() => setSelectedCompetition(c.id)}
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              c.id === selectedCompetition
+              c.id === +selectedCompetition //Changed!
                 ? "bg-teal-600 text-white font-semibold shadow"
                 : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
@@ -412,70 +422,7 @@ const BarChartComponent = ({
         </div>
       </div>
 
-      {/*
-      <div className="w-full flex justify-center">
-        <div className="flex flex-col justify-center items-center w-full sm:w-[65%] space-y-4 mt-8 sm:mt-4 sm:flex-row sm:space-y-0 sm:space-x-2 bg-slate-50 sm:p-4 rounded-xl border shadow-md">
-          <select
-            value={selectedDate}
-            onChange={onDate}
-            className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50"
-          >
-            <option value="" disabled>
-              Välj datum
-            </option>
-            {dates.map((d) => (
-              <option key={d.date} value={d.date}>
-                {d.date}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={selectedTrack}
-            onChange={onTrack}
-            className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50"
-          >
-            <option value="" disabled>
-              Välj bana
-            </option>
-            {tracks.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.nameOfTrack}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={selectedCompetition}
-            onChange={onComp}
-            className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50"
-          >
-            <option value="" disabled>
-              Välj spelform
-            </option>
-            {competitions.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.nameOfCompetition}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={selectedLap}
-            onChange={onLap}
-            className="w-full sm:w-auto p-2 border rounded-lg hover:bg-slate-50"
-          >
-            <option value="" disabled>
-              Välj lopp
-            </option>
-            {laps.map((l) => (
-              <option key={l.id} value={l.id}>
-                {l.nameOfLap}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div> */}
+      {/* ...dina selectar är fortfarande kommenterade... */}
     </div>
   );
 };
