@@ -340,13 +340,13 @@ const PaginatedLapTable = ({
                 onClick={() => requestSort("klass")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
-                </th>
                 Motstånd
+              </th>
               <th
                 onClick={() => requestSort("prispengar")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
-                Klass
+                Prispengar
               </th>
               <th
                 onClick={() => requestSort("kusk")}
@@ -385,7 +385,6 @@ const PaginatedLapTable = ({
                   >
                     {row.analys}
                   </td>
-
                   <td className="py-2 px-2 border-r border-gray-200">
                     {row.fart}
                   </td>
@@ -393,7 +392,13 @@ const PaginatedLapTable = ({
                     {row.styrka}
                   </td>
                   <td className="py-2 px-2 border-r border-gray-200">
-                    {row.klass}
+                    {row.styrka}
+                  </td>
+                   <td className="py-2 px-2 border-r border-gray-200">
+                    {row.styrka}
+                  </td>
+                   <td className="py-2 px-2 border-r border-gray-200">
+                    {row.styrka}
                   </td>
                 </tr>
               );
