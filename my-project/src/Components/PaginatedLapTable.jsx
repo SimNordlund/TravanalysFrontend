@@ -354,6 +354,18 @@ const PaginatedLapTable = ({
               >
                 Skrik
               </th>
+              <th
+                onClick={() => requestSort("kusk")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                Placering
+              </th>
+              <th
+                onClick={() => requestSort("kusk")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                Form
+              </th>
 
             </tr>
           </thead>
@@ -392,13 +404,19 @@ const PaginatedLapTable = ({
                     {row.styrka}
                   </td>
                   <td className="py-2 px-2 border-r border-gray-200">
-                    {row.styrka}
+                    {row.klass}
                   </td>
                    <td className="py-2 px-2 border-r border-gray-200">
-                    {row.styrka}
+                    {row.prispengar}
                   </td>
                    <td className="py-2 px-2 border-r border-gray-200">
-                    {row.styrka}
+                    {row.kusk}
+                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.placering}
+                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.form}
                   </td>
                 </tr>
               );
