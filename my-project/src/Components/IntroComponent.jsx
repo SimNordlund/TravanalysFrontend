@@ -32,7 +32,7 @@ export default function IntroComponent() {
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
           <div className="lg:pt-0 lg:pr-8">
             <div className="lg:max-w-lg">
-              <h3 className="text-base/7 font-bold text-orange-600">BETA-version</h3>
+              <h3 className="text-base/7 font-semibold text-orange-600">BETA-version!</h3>
               <h2 className="text-base/7 font-semibold text-indigo-600">Överlägsen analys</h2>
               <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
               Skrällarsytt beslutsunderlag
