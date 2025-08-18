@@ -22,50 +22,51 @@ const PaginatedLapTable = ({
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const competitionName =                          //Changed!
+  const competitionName =
     competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition
-    ?? "Analys";                                   //Changed!
+    ?? "Analys";
 
   const maxAnalysValue = useMemo(
     () => Math.max(...lapData.map((r) => Number(r.analys) || -Infinity)),
     [lapData]
   );
 
-  // Hämta ENBART tabellrader för valt lopp                         //Changed!
-  useEffect(() => {                                                  //Changed!
-    if (!selectedLap) return;                                        //Changed!
-    const ac = new AbortController();                                //Changed!
-    setLoading(true);                                                //Changed!
-    setError(null);                                                  //Changed!
-    (async () => {                                                   //Changed!
-      try {                                                          //Changed!
-        const res = await fetch(                                     //Changed!
+  // Hämta ENBART tabellrader för valt lopp
+  useEffect(() => {
+    if (!selectedLap) return;
+    const ac = new AbortController();
+    setLoading(true);
+    setError(null);
+    (async () => {
+      try {
+        const res = await fetch(
           `${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`,
-          { signal: ac.signal }                                      //Changed!
+          { signal: ac.signal }
         );
         const horses = await res.json();
         const rows = await Promise.all(
           horses.map(async (h, idx) => {
             const fsRes = await fetch(
               `${API_BASE_URL}/fourStarts/findData?completeHorseId=${h.id}`,
-              { signal: ac.signal }                                  //Changed!
+              { signal: ac.signal }
             );
             const fs = await fsRes.json();
             return { ...h, ...fs, position: idx + 1 };
           })
         );
-        if (!ac.signal.aborted) setLapData(rows);                    //Changed!
-        if (!ac.signal.aborted) setSortConfig({ key: "numberOfCompleteHorse", direction: "asc" });
+        if (!ac.signal.aborted) setLapData(rows);
+        if (!ac.signal.aborted)
+          setSortConfig({ key: "numberOfCompleteHorse", direction: "asc" });
       } catch (e) {
-        if (ac.signal.aborted) return;                               //Changed!
+        if (ac.signal.aborted) return;
         setError("Failed to fetch lap data.");
         setLapData([]);
       } finally {
-        if (!ac.signal.aborted) setLoading(false);                   //Changed!
+        if (!ac.signal.aborted) setLoading(false);
       }
     })();
-    return () => ac.abort();                                         //Changed!
-  }, [selectedLap]);                                                 //Changed!
+    return () => ac.abort();
+  }, [selectedLap]);
 
   const requestSort = (key) => {
     let direction = "asc";
@@ -85,11 +86,12 @@ const PaginatedLapTable = ({
     return 0;
   });
 
-  // Navigering använder dates från props                             //Changed!
-  const idx = dates.findIndex((d) => d.date === selectedDate);       //Changed!
-  const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date); //Changed!
-  const goNext = () => idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date); //Changed!
+  // Navigering använder dates från props
+  const idx = dates.findIndex((d) => d.date === selectedDate);
+  const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
+  const goNext = () => idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
+  // --- Labels för headern ---
   const today = new Date().toISOString().split("T")[0];
   const yesterday = new Date(Date.now() - 864e5).toISOString().split("T")[0];
   const tomorrow = new Date(Date.now() + 864e5).toISOString().split("T")[0];
@@ -100,7 +102,7 @@ const PaginatedLapTable = ({
     const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
     return `${capitalizedWeekday}, ${rest}`;
   };
-  const niceDate =
+  const selectedDateLabel =                    //Changed!
     selectedDate === today
       ? `Idag, ${sv(selectedDate)}`
       : selectedDate === yesterday
@@ -109,8 +111,17 @@ const PaginatedLapTable = ({
       ? `Imorgon, ${sv(selectedDate)}`
       : sv(selectedDate);
 
+  const selectedTrackLabel =                   //Changed!
+    tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "";
+  const selectedCompetitionLabel =             //Changed!
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "";
+
   return (
-    <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
+    <div className="mx-auto max-w-screen-lg px-2 py-6 relative">                                          
+      <p className="sm:text-xl text-lg font-semibold text-slate-800 mt-0 mb-4 sm:mt-0 sm:mb-3 px-4 py-1 flex flex-col justify-center items-center">
+        {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}  
+      </p>                                                                       
+
       <div className="flex items-center justify-between mb-3">
         <button onClick={goPrev} disabled={idx <= 0 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
           &#8592;
@@ -119,8 +130,8 @@ const PaginatedLapTable = ({
         <DatePicker
           value={selectedDate}
           onChange={setSelectedDate}
-          min={dates[0]?.date}                                       //Changed!
-          max={dates[dates.length - 1]?.date}                         //Changed!
+          min={dates[0]?.date}
+          max={dates[dates.length - 1]?.date}
         />
 
         <button onClick={goNext} disabled={idx >= dates.length - 1 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
@@ -136,7 +147,7 @@ const PaginatedLapTable = ({
             onClick={() => setSelectedTrack(t.id)}
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              t.id === +selectedTrack                    //Changed!
+              t.id === +selectedTrack
                 ? "bg-emerald-500 text-white font-semibold shadow"
                 : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
@@ -153,7 +164,7 @@ const PaginatedLapTable = ({
             onClick={() => setSelectedCompetition(c.id)}
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              c.id === +selectedCompetition               //Changed!
+              c.id === +selectedCompetition
                 ? "bg-teal-600 text-white font-semibold shadow"
                 : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
@@ -170,7 +181,7 @@ const PaginatedLapTable = ({
             onClick={() => setSelectedLap(lap.id)}
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              lap.id === +selectedLap                     //Changed!
+              lap.id === +selectedLap
                 ? "bg-indigo-500 text-white font-semibold shadow"
                 : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
@@ -193,15 +204,15 @@ const PaginatedLapTable = ({
               <th onClick={() => requestSort("numberOfCompleteHorse")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">#</th>
               <th onClick={() => requestSort("nameOfCompleteHorse")} className="py-2 px-2 font-semibold cursor-pointer text-left border-r last:border-r-0 border-gray-300">Häst</th>
               <th onClick={() => requestSort("analys")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100">
-                {competitionName}                                     {/* Changed! */}
+                {competitionName}
               </th>
               <th onClick={() => requestSort("fart")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Kapacitet</th>
               <th onClick={() => requestSort("styrka")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Prestation</th>
               <th onClick={() => requestSort("klass")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Motstånd</th>
               <th onClick={() => requestSort("prispengar")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Klass</th>
               <th onClick={() => requestSort("kusk")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Skrik</th>
-              <th onClick={() => requestSort("placering")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Placering</th> {/* Changed! key */}
-              <th onClick={() => requestSort("form")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Form</th> {/* Changed! key */}
+              <th onClick={() => requestSort("placering")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Placering</th>
+              <th onClick={() => requestSort("form")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Form</th>
             </tr>
           </thead>
 
