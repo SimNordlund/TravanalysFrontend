@@ -10,10 +10,10 @@ const PaginatedLapTable = ({
   setSelectedCompetition,
   selectedLap,
   setSelectedLap,
-  dates,                 //Changed!
-  tracks,                //Changed!
-  competitions,          //Changed!
-  laps,                  //Changed!
+  dates,                 
+  tracks,                
+  competitions,          
+  laps,                  
 }) => {
   const [lapData, setLapData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -91,7 +91,6 @@ const PaginatedLapTable = ({
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
   const goNext = () => idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
-  // --- Labels för headern ---
   const today = new Date().toISOString().split("T")[0];
   const yesterday = new Date(Date.now() - 864e5).toISOString().split("T")[0];
   const tomorrow = new Date(Date.now() + 864e5).toISOString().split("T")[0];
@@ -102,7 +101,7 @@ const PaginatedLapTable = ({
     const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
     return `${capitalizedWeekday}, ${rest}`;
   };
-  const selectedDateLabel =                    //Changed!
+  const selectedDateLabel =                    
     selectedDate === today
       ? `Idag, ${sv(selectedDate)}`
       : selectedDate === yesterday
@@ -111,9 +110,9 @@ const PaginatedLapTable = ({
       ? `Imorgon, ${sv(selectedDate)}`
       : sv(selectedDate);
 
-  const selectedTrackLabel =                   //Changed!
+  const selectedTrackLabel =                   
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "";
-  const selectedCompetitionLabel =             //Changed!
+  const selectedCompetitionLabel =             
     competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "";
 
   return (
@@ -139,7 +138,6 @@ const PaginatedLapTable = ({
         </button>
       </div>
 
-      {/* Knapp-rader använder tracks/competitions/laps från props */}
       <div className="flex flex-wrap gap-1 mb-2">
         {tracks.map((t) => (
           <button

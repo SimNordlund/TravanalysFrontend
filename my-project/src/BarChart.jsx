@@ -1,4 +1,3 @@
-// BarChart.jsx (tidigare BarChartComponent)
 import React, { useEffect, useState, useRef } from "react";
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 import travhorsi from "./Bilder/travhorsi2.png";
@@ -14,10 +13,10 @@ const BarChartComponent = ({
   setSelectedCompetition,
   selectedLap,
   setSelectedLap,
-  dates,               //Changed!
-  tracks,              //Changed!
-  competitions,        //Changed!
-  laps,                //Changed!
+  dates,               
+  tracks,              
+  competitions,        
+  laps,                
   setSelectedView,
   setSelectedHorse,
 }) => {
@@ -61,31 +60,31 @@ const BarChartComponent = ({
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  useEffect(() => { //Changed!
-    if (!API_BASE_URL) { //Changed!
-      setError("VITE_API_BASE_URL saknas. Lägg till den i .env och starta om."); //Changed!
-    } //Changed!
-  }, []); //Changed!
+  useEffect(() => { 
+    if (!API_BASE_URL) { 
+      setError("VITE_API_BASE_URL saknas. Lägg till den i .env och starta om."); 
+    } 
+  }, []); 
 
-  // HÄMTA ENDAST BAR-DATA //Changed!
-  useEffect(() => {                          //Changed!
-    if (!selectedLap) return;                //Changed!
-    const ac = new AbortController();        //Changed!
-    setLoading(true);                        //Changed!
+  // HÄMTA ENDAST BAR-DATA 
+  useEffect(() => {                          
+    if (!selectedLap) return;                
+    const ac = new AbortController();        
+    setLoading(true);                        
 
-    (async () => {                           //Changed!
-      try {                                  //Changed!
-        const r = await fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`, { signal: ac.signal }); //Changed!
-        if (!r.ok) throw new Error(r.statusText); //Changed!
-        const completeHorses = await r.json();    //Changed!
-        const labels = completeHorses.map(h => `${h.numberOfCompleteHorse}.`); //Changed!
+    (async () => {                           
+      try {                                  
+        const r = await fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`, { signal: ac.signal }); 
+        if (!r.ok) throw new Error(r.statusText); 
+        const completeHorses = await r.json();    
+        const labels = completeHorses.map(h => `${h.numberOfCompleteHorse}.`); 
 
-        const datasets = await Promise.all(       //Changed!
+        const datasets = await Promise.all(       
           completeHorses.map(async (horse, idx) => {
-            const rs = await fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`, { signal: ac.signal }); //Changed!
-            if (!rs.ok) throw new Error(rs.statusText); //Changed!
-            const fs = await rs.json();           //Changed!
-            const col = horseColors[idx % horseColors.length]; //Changed!
+            const rs = await fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`, { signal: ac.signal }); 
+            if (!rs.ok) throw new Error(rs.statusText); 
+            const fs = await rs.json();           
+            const col = horseColors[idx % horseColors.length]; 
             return {
               label: `${horse.numberOfCompleteHorse}. ${horse.nameOfCompleteHorse}`,
               data: labels.map((_, i) => (i === idx ? fs.analys : null)),
@@ -96,20 +95,20 @@ const BarChartComponent = ({
           })
         );
 
-        if (!ac.signal.aborted) {               //Changed!
-          setData({ labels, datasets });        //Changed!
-          setLoading(false);                    //Changed!
-        }                                       //Changed!
-      } catch (e) {                             //Changed!
-        if (ac.signal.aborted) return;          //Changed!
-        console.error("data:", e);              //Changed!
-        setError(e.message);                    //Changed!
-        setLoading(false);                      //Changed!
-      }                                         //Changed!
-    })();                                       //Changed!
+        if (!ac.signal.aborted) {               
+          setData({ labels, datasets });        
+          setLoading(false);                    
+        }                                       
+      } catch (e) {                             
+        if (ac.signal.aborted) return;          
+        console.error("data:", e);              
+        setError(e.message);                    
+        setLoading(false);                      
+      }                                         
+    })();                                       
 
-    return () => ac.abort();                    //Changed!
-  }, [selectedLap]);                            //Changed!
+    return () => ac.abort();                    
+  }, [selectedLap]);                            
 
   useEffect(() => {
     let t;
@@ -119,7 +118,7 @@ const BarChartComponent = ({
   }, [loading]);
 
   const handleBarClick = (evt) => {
-    if (!chartRef.current) return; //Changed!
+    if (!chartRef.current) return; 
     const els = getElementAtEvent(chartRef.current, evt);
     if (!els.length) return;
     const { datasetIndex } = els[0];
@@ -187,10 +186,10 @@ const BarChartComponent = ({
   const yesterdayStr = new Date(today - 864e5).toISOString().split("T")[0];
   const tomorrowStr = new Date(+today + 864e5).toISOString().split("T")[0];
 
-  const fmt = (d) => { //Changed!
-    if (!d) return ""; //Changed!
-    const date = new Date(d); //Changed!
-    if (Number.isNaN(date.getTime())) return ""; //Changed!
+  const fmt = (d) => { 
+    if (!d) return ""; 
+    const date = new Date(d); 
+    if (Number.isNaN(date.getTime())) return ""; 
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
     const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
     const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
@@ -209,9 +208,9 @@ const BarChartComponent = ({
       : fmt(selectedDate);
 
   const selectedTrackLabel =
-    tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad"; //Changed!
+    tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad"; 
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "v75"; //Changed!
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "v75"; 
 
   const onDate = (e) => setSelectedDate(e.target.value);
   const onTrack = (e) => setSelectedTrack(e.target.value);

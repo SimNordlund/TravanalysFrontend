@@ -7,14 +7,14 @@ const Skrallar = ({
   setSelectedView,
   setSelectedHorse,
   dates,
-  selectedTrack,                 //Changed!
-  setSelectedTrack,              //Changed!
-  selectedCompetition,           //Changed!
-  setSelectedCompetition,        //Changed!
-  selectedLap,                   //Changed!
-  setSelectedLap,                //Changed!
-  tracks,                        //Changed!
-  setPendingLapId,               //Changed!
+  selectedTrack,                 
+  setSelectedTrack,              
+  selectedCompetition,           
+  setSelectedCompetition,        
+  selectedLap,                   
+  setSelectedLap,                
+  tracks,                        
+  setPendingLapId,               
 }) => {
   const [horses, setHorses] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ const Skrallar = ({
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // Hämta endast skrällar för valt datum
+  //Hämta endast skrällar för valt datum
   useEffect(() => {
     if (!selectedDate) return;
     const ac = new AbortController();
@@ -76,13 +76,12 @@ const Skrallar = ({
     0
   );
 
-  // Navigering använder dates från föräldern
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
   const goNext = () => idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
   // Hoppa till rätt bana → spelform → lopp och markera häst
-  const handleRowClick = async (row) => {                               //Changed!
+  const handleRowClick = async (row) => {                               
     try {
       // 1) TRACK
       let trackId =
@@ -123,7 +122,7 @@ const Skrallar = ({
             );
             if (found) {
               competitionId = c.id;
-              row._resolvedLapId = found.id; // cachea lap-id
+              row._resolvedLapId = found.id; // cacheaa lap-id
               break;
             }
           }
@@ -145,8 +144,8 @@ const Skrallar = ({
       }
       if (!lapId) return;
 
-      setPendingLapId(lapId);     // tala om för föräldern vilket lopp vi vill ha //Changed!
-      setSelectedLap(lapId);      // sätt lokalt också                                  //Changed!
+      setPendingLapId(lapId);     
+      setSelectedLap(lapId);                                       
 
       // 4) HÄSTINDEX I JUST DETTA LOPP
       let horseIndex = 0;
@@ -172,7 +171,7 @@ const Skrallar = ({
     } catch (e) {
       console.error("handleRowClick error:", e);
     }
-  };                                                                   //Changed!
+  };                                                                   
 
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
@@ -226,7 +225,7 @@ const Skrallar = ({
             {sortedHorses.map((row) => (
               <tr
                 key={row.horseId ?? row.completeHorseId ?? `${row.nameOfHorse}-${row.lap}-${row.nameOfTrack}`}
-                onClick={() => handleRowClick(row)} //Changed!
+                onClick={() => handleRowClick(row)} 
                 className="border-b last:border-b-0 border-gray-200 hover:bg-blue-50 cursor-pointer even:bg-gray-50"
               >
                 <td className="py-1 px-2 border-r border-gray-200 align-middle">

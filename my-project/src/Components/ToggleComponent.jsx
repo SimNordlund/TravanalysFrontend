@@ -1,5 +1,4 @@
-// ToggleComponent.jsx
-import React, { useState, useEffect, useRef } from "react"; //Changed!
+import React, { useState, useEffect, useRef } from "react"; 
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import SpiderChart from "./SpiderChart";
 import BarChart from "../BarChart";
@@ -40,10 +39,10 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [laps, setLaps] = useState([]);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const pendingLapRef = useRef(null);                 //Changed!
-  const setPendingLapId = (lapId) => {                //Changed!
-    pendingLapRef.current = lapId;                    //Changed!
-  };                                                  //Changed!
+  const pendingLapRef = useRef(null);                 
+  const setPendingLapId = (lapId) => {                
+    pendingLapRef.current = lapId;                    
+  };                                                  
 
   // Sync via URL
   useEffect(() => {
@@ -167,13 +166,13 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         const d = await r.json();
         setLaps(d || []);
 
-        // Respektera önskat lapId om det finns (för att undvika race) //Changed!
-        const desired = pendingLapRef.current;                       //Changed!
-        if (desired && d?.some((l) => l.id === +desired)) {          //Changed!
-          setSelectedLap(desired);                                   //Changed!
-          pendingLapRef.current = null;                              //Changed!
-          return;                                                    //Changed!
-        }                                                            //Changed!
+        // Respektera önskat lapId om det finns (för att undvika race) 
+        const desired = pendingLapRef.current;                       
+        if (desired && d?.some((l) => l.id === +desired)) {          
+          setSelectedLap(desired);                                   
+          pendingLapRef.current = null;                              
+          return;                                                    
+        }                                                            
 
         const ok = d?.some((l) => l.id === +selectedLap);
         if (!ok && d?.length) setSelectedLap(d[0].id);
