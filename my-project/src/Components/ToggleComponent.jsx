@@ -310,6 +310,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             setSelectedDate={setSelectedDate}
             setSelectedView={setViewAndMaybeNavigate}
             setSelectedHorse={setSelectedHorse}
+            dates={dates} 
           />
         </div>
       </div>
