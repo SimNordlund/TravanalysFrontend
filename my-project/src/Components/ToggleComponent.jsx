@@ -1,5 +1,5 @@
 // ToggleComponent.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react"; //Changed!
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import SpiderChart from "./SpiderChart";
 import BarChart from "../BarChart";
@@ -27,18 +27,23 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     ? routeToView[viewParam] || "spider"
     : "spider";
 
-  const [selectedDate, setSelectedDate] = useState(""); // unchanged
-  const [selectedTrack, setSelectedTrack] = useState(""); // unchanged
-  const [selectedCompetition, setSelectedCompetition] = useState(""); // unchanged
-  const [selectedLap, setSelectedLap] = useState(""); // unchanged
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTrack, setSelectedTrack] = useState("");
+  const [selectedCompetition, setSelectedCompetition] = useState("");
+  const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState(initialSelectedView);
   const [selectedHorse, setSelectedHorse] = useState(null);
 
-  const [dates, setDates] = useState([]); //Changed!
-  const [tracks, setTracks] = useState([]); //Changed!
-  const [competitions, setCompetitions] = useState([]); //Changed!
-  const [laps, setLaps] = useState([]); //Changed!
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; //Changed!
+  const [dates, setDates] = useState([]);
+  const [tracks, setTracks] = useState([]);
+  const [competitions, setCompetitions] = useState([]);
+  const [laps, setLaps] = useState([]);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  const pendingLapRef = useRef(null);                 //Changed!
+  const setPendingLapId = (lapId) => {                //Changed!
+    pendingLapRef.current = lapId;                    //Changed!
+  };                                                  //Changed!
 
   // Sync via URL
   useEffect(() => {
@@ -59,159 +64,131 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
   const switchView = (viewKey) => setViewAndMaybeNavigate(viewKey);
 
-  // Helper: närmaste datum till idag //Changed!
+  // Närmaste datum till idag
   const pickClosestDate = (arr) => {
-    //Changed!
-    if (!arr?.length) return ""; //Changed!
-    const today = new Date(); //Changed!
-    let best = arr[0]; //Changed!
-    let bestDiff = Infinity; //Changed!
+    if (!arr?.length) return "";
+    const today = new Date();
+    let best = arr[0];
+    let bestDiff = Infinity;
     for (const d of arr) {
-      //Changed!
-      const diff = Math.abs(new Date(d.date) - today); //Changed!
+      const diff = Math.abs(new Date(d.date) - today);
       if (diff < bestDiff || (diff === bestDiff && new Date(d.date) >= today)) {
-        // prefer framtid vid tie //Changed!
-        best = d; //Changed!
-        bestDiff = diff; //Changed!
-      } //Changed!
-    } //Changed!
-    return best.date; //Changed!
-  }; //Changed!
+        best = d;
+        bestDiff = diff;
+      }
+    }
+    return best.date;
+  };
 
-  // 1) Hämta datum EN gång //Changed!
+  // 1) Hämta datum EN gång
   useEffect(() => {
-    //Changed!
-    const ac = new AbortController(); //Changed!
+    const ac = new AbortController();
     (async () => {
-      //Changed!
       try {
-        //Changed!
         const r = await fetch(`${API_BASE_URL}/track/dates`, {
           signal: ac.signal,
-        }); //Changed!
-        const all = await r.json(); //Changed!
+        });
+        const all = await r.json();
         const uniqueSorted = Array.from(
           new Map(all.map((d) => [d.date, d])).values()
-        ) //Changed!
-          .sort((a, b) => a.date.localeCompare(b.date)); //Changed!
-        setDates(uniqueSorted); //Changed!
+        ).sort((a, b) => a.date.localeCompare(b.date));
+        setDates(uniqueSorted);
 
         if (!selectedDate) {
-          //Changed!
-          const todayStr = new Date().toISOString().split("T")[0]; //Changed!
-          const hasToday = uniqueSorted.find((x) => x.date === todayStr); //Changed!
-          setSelectedDate(hasToday ? todayStr : pickClosestDate(uniqueSorted)); //Changed!
-        } //Changed!
+          const todayStr = new Date().toISOString().split("T")[0];
+          const hasToday = uniqueSorted.find((x) => x.date === todayStr);
+          setSelectedDate(hasToday ? todayStr : pickClosestDate(uniqueSorted));
+        }
       } catch (e) {
-        //Changed!
-        console.error("dates:", e); //Changed!
-      } //Changed!
-    })(); //Changed!
-    return () => ac.abort(); //Changed!
-  }, []); //Changed!
+        console.error("dates:", e);
+      }
+    })();
+    return () => ac.abort();
+  }, []);
 
-  // 2) När datum finns, hämta banor //Changed!
+  // 2) När datum finns, hämta banor
   useEffect(() => {
-    //Changed!
-    if (!selectedDate) return; //Changed!
-    const ac = new AbortController(); //Changed!
+    if (!selectedDate) return;
+    const ac = new AbortController();
     (async () => {
-      //Changed!
       try {
-        //Changed!
         const r = await fetch(
           `${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`,
           { signal: ac.signal }
-        ); //Changed!
-        const d = await r.json(); //Changed!
-        setTracks(d); //Changed!
+        );
+        const d = await r.json();
+        setTracks(d);
         if (!d?.length) {
-          //Changed!
-          setSelectedTrack(""); //Changed!
-          return; //Changed!
-        } //Changed!
-        const ok = d.some((t) => t.id === +selectedTrack); //Changed!
-        if (!ok) setSelectedTrack(d[0].id); //Changed!
+          setSelectedTrack("");
+          return;
+        }
+        const ok = d.some((t) => t.id === +selectedTrack);
+        if (!ok) setSelectedTrack(d[0].id);
       } catch (e) {
-        //Changed!
-        console.error("tracks:", e); //Changed!
-        setTracks([]); //Changed!
-      } //Changed!
-    })(); //Changed!
-    return () => ac.abort(); //Changed!
-  }, [selectedDate]); //Changed!
+        console.error("tracks:", e);
+        setTracks([]);
+      }
+    })();
+    return () => ac.abort();
+  }, [selectedDate]);
 
-  // 3) När bana finns, hämta spelformer //Changed!
+  // 3) När bana finns, hämta spelformer
   useEffect(() => {
-    //Changed!
-    if (!selectedTrack) return; //Changed!
-    const ac = new AbortController(); //Changed!
+    if (!selectedTrack) return;
+    const ac = new AbortController();
     (async () => {
-      //Changed!
       try {
-        //Changed!
         const r = await fetch(
           `${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`,
           { signal: ac.signal }
-        ); //Changed!
-        const d = await r.json(); //Changed!
-        setCompetitions(d); //Changed!
-        const ok = d?.some((c) => c.id === +selectedCompetition); //Changed!
-        if (!ok && d?.length) setSelectedCompetition(d[0].id); //Changed!
+        );
+        const d = await r.json();
+        setCompetitions(d);
+        const ok = d?.some((c) => c.id === +selectedCompetition);
+        if (!ok && d?.length) setSelectedCompetition(d[0].id);
       } catch (e) {
-        //Changed!
-        console.error("competitions:", e); //Changed!
-        setCompetitions([]); //Changed!
-      } //Changed!
-    })(); //Changed!
-    return () => ac.abort(); //Changed!
-  }, [selectedTrack]); //Changed!
+        console.error("competitions:", e);
+        setCompetitions([]);
+      }
+    })();
+    return () => ac.abort();
+  }, [selectedTrack]);
 
-  // 4) När spelform finns, hämta lopp //Changed!
+  // 4) När spelform finns, hämta lopp
   useEffect(() => {
-    //Changed!
-    if (!selectedCompetition) return; //Changed!
-    const ac = new AbortController(); //Changed!
+    if (!selectedCompetition) return;
+    const ac = new AbortController();
     (async () => {
-      //Changed!
       try {
-        //Changed!
         const r = await fetch(
           `${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`,
           { signal: ac.signal }
-        ); //Changed!
-        const d = await r.json(); //Changed!
-        setLaps(d || []); //Changed!
-        const ok = d?.some((l) => l.id === +selectedLap); //Changed!
-        if (!ok && d?.length) setSelectedLap(d[0].id); //Changed!
+        );
+        const d = await r.json();
+        setLaps(d || []);
+
+        // Respektera önskat lapId om det finns (för att undvika race) //Changed!
+        const desired = pendingLapRef.current;                       //Changed!
+        if (desired && d?.some((l) => l.id === +desired)) {          //Changed!
+          setSelectedLap(desired);                                   //Changed!
+          pendingLapRef.current = null;                              //Changed!
+          return;                                                    //Changed!
+        }                                                            //Changed!
+
+        const ok = d?.some((l) => l.id === +selectedLap);
+        if (!ok && d?.length) setSelectedLap(d[0].id);
       } catch (e) {
-        //Changed!
-        console.error("laps:", e); //Changed!
-        setLaps([]); //Changed!
-      } //Changed!
-    })(); //Changed!
-    return () => ac.abort(); //Changed!
-  }, [selectedCompetition]); //Changed!
+        console.error("laps:", e);
+        setLaps([]);
+      }
+    })();
+    return () => ac.abort();
+  }, [selectedCompetition]);
 
   const callouts = [
-    {
-      id: 2,
-      name: "Analys",
-      bgColor: "bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600",
-      view: "spider",
-    },
-    {
-      id: 3,
-      name: "Tabell",
-      bgColor: "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600",
-      view: "table",
-    },
-    {
-      id: 4,
-      name: "Speltips",
-      bgColor: "bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600",
-      view: "skrallar",
-    },
+    { id: 2, name: "Analys",  bgColor: "bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600", view: "spider" },
+    { id: 3, name: "Tabell",  bgColor: "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600", view: "table" },
+    { id: 4, name: "Speltips", bgColor: "bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600", view: "skrallar" },
   ];
 
   return (
@@ -224,17 +201,13 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             onClick={() => switchView(c.view)}
           >
             <div
-              className={`${
-                c.bgColor
-              } relative h-14 w-24 sm:w-72 sm:h-18 mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
+              className={`${c.bgColor} relative h-14 w-24 sm:w-72 sm:h-18 mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
                 selectedView === c.view
-                  ? "ring-2 ring-slate-600 scale-110 opacity-100 cursor-default"
-                  : "hover:opacity-80"
+                  ? "ring-2 ring-slate-800 scale-110 opacity-100 cursor-default"
+                  : "hover:opacity-70"
               }`}
             >
-              <h3 className="sm:text-2xl font-semibold text-white text-center">
-                {c.name}
-              </h3>
+              <h3 className="sm:text-2xl font-semibold text-white text-center">{c.name}</h3>
             </div>
           </div>
         ))}
@@ -253,11 +226,10 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 setSelectedCompetition={setSelectedCompetition}
                 selectedLap={selectedLap}
                 setSelectedLap={setSelectedLap}
-                // nedan är nytt – skickar listor från föräldern //Changed!
-                dates={dates} //Changed!
-                tracks={tracks} //Changed!
-                competitions={competitions} //Changed!
-                laps={laps} //Changed!
+                dates={dates}
+                tracks={tracks}
+                competitions={competitions}
+                laps={laps}
                 setSelectedView={setViewAndMaybeNavigate}
                 setSelectedHorse={setSelectedHorse}
               />
@@ -273,17 +245,12 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 selectedLap={selectedLap}
                 setSelectedLap={setSelectedLap}
                 selectedHorse={selectedHorse}
-                // inget eget hämt av filter i barn, de använder bara props
               />
             </div>
           </div>
         )}
 
-        <div
-          className={`${
-            selectedView === "table" ? "" : "hidden"
-          } min-h-[600px]`}
-        >
+        <div className={`${selectedView === "table" ? "" : "hidden"} min-h-[600px]`}>
           <PaginatedLapTable
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
@@ -293,24 +260,28 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             setSelectedCompetition={setSelectedCompetition}
             selectedLap={selectedLap}
             setSelectedLap={setSelectedLap}
-            dates={dates} 
-            tracks={tracks} 
-            competitions={competitions} 
-            laps={laps} 
+            dates={dates}
+            tracks={tracks}
+            competitions={competitions}
+            laps={laps}
           />
         </div>
 
-        <div
-          className={`${
-            selectedView === "skrallar" ? "" : "hidden"
-          } min-h-[600px]`}
-        >
+        <div className={`${selectedView === "skrallar" ? "" : "hidden"} min-h-[600px]`}>
           <Skrallar
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
+            selectedTrack={selectedTrack}
+            setSelectedTrack={setSelectedTrack}
+            selectedCompetition={selectedCompetition}
+            setSelectedCompetition={setSelectedCompetition}
+            selectedLap={selectedLap}
+            setSelectedLap={setSelectedLap}
             setSelectedView={setViewAndMaybeNavigate}
             setSelectedHorse={setSelectedHorse}
-            dates={dates} 
+            dates={dates}
+            tracks={tracks}
+            setPendingLapId={setPendingLapId}         
           />
         </div>
       </div>
