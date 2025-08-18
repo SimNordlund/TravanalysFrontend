@@ -1,3 +1,4 @@
+// BarChart.jsx (tidigare BarChartComponent)
 import React, { useEffect, useState, useRef } from "react";
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 import travhorsi from "./Bilder/travhorsi2.png";
@@ -13,7 +14,10 @@ const BarChartComponent = ({
   setSelectedCompetition,
   selectedLap,
   setSelectedLap,
-
+  dates,               //Changed!
+  tracks,              //Changed!
+  competitions,        //Changed!
+  laps,                //Changed!
   setSelectedView,
   setSelectedHorse,
 }) => {
@@ -25,15 +29,10 @@ const BarChartComponent = ({
   const [showSpinner, setShowSpinner] = useState(false);
   const [error, setError] = useState(null);
 
-  const [dates, setDates] = useState([]);
-  const [tracks, setTracks] = useState([]);
-  const [competitions, setCompetitions] = useState([]);
-  const [laps, setLaps] = useState([]);
-
   const idx = dates.findIndex((d) => d.date === selectedDate);
+
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
-  const goNext = () =>
-    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
+  const goNext = () => idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
   const horseColors = [
     "rgba(0, 0, 255, 0.5)",
@@ -68,111 +67,49 @@ const BarChartComponent = ({
     } //Changed!
   }, []); //Changed!
 
-  useEffect(() => {
-    fetch(`${API_BASE_URL}/track/dates`)
-      .then((res) => res.json())
-      .then((all) => {
-        if (!all.length) return;
+  // HÄMTA ENDAST BAR-DATA //Changed!
+  useEffect(() => {                          //Changed!
+    if (!selectedLap) return;                //Changed!
+    const ac = new AbortController();        //Changed!
+    setLoading(true);                        //Changed!
 
-        const unique = Array.from(
-          new Map(all.map((d) => [d.date, d])).values()
-        ).sort((a, b) => a.date.localeCompare(b.date));
+    (async () => {                           //Changed!
+      try {                                  //Changed!
+        const r = await fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`, { signal: ac.signal }); //Changed!
+        if (!r.ok) throw new Error(r.statusText); //Changed!
+        const completeHorses = await r.json();    //Changed!
+        const labels = completeHorses.map(h => `${h.numberOfCompleteHorse}.`); //Changed!
 
-        setDates(unique);
+        const datasets = await Promise.all(       //Changed!
+          completeHorses.map(async (horse, idx) => {
+            const rs = await fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`, { signal: ac.signal }); //Changed!
+            if (!rs.ok) throw new Error(rs.statusText); //Changed!
+            const fs = await rs.json();           //Changed!
+            const col = horseColors[idx % horseColors.length]; //Changed!
+            return {
+              label: `${horse.numberOfCompleteHorse}. ${horse.nameOfCompleteHorse}`,
+              data: labels.map((_, i) => (i === idx ? fs.analys : null)),
+              backgroundColor: col,
+              borderColor: "rgba(0,0,0,1)",
+              borderWidth: 0.5,
+            };
+          })
+        );
 
-        if (!selectedDate) {
-          const todayStr = new Date().toISOString().split("T")[0];
-          const today = unique.find((x) => x.date === todayStr);
-          setSelectedDate(today ? today.date : unique[0].date);
-        }
-      })
-      .catch((err) => console.error("dates:", err));
-  }, []);
+        if (!ac.signal.aborted) {               //Changed!
+          setData({ labels, datasets });        //Changed!
+          setLoading(false);                    //Changed!
+        }                                       //Changed!
+      } catch (e) {                             //Changed!
+        if (ac.signal.aborted) return;          //Changed!
+        console.error("data:", e);              //Changed!
+        setError(e.message);                    //Changed!
+        setLoading(false);                      //Changed!
+      }                                         //Changed!
+    })();                                       //Changed!
 
-  useEffect(() => {
-    if (!selectedDate) return;
-    fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`)
-      .then((r) => r.json())
-      .then((d) => {
-        setTracks(d);
-        if (d.length) setSelectedTrack(d[0].id);
-      })
-      .catch((err) => console.error("tracks:", err));
-  }, [selectedDate]);
-
-  useEffect(() => {
-    if (!selectedTrack) return;
-    fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`)
-      .then((r) => r.json())
-      .then((d) => {
-        setCompetitions(d);
-        if (d.length) setSelectedCompetition(d[0].id);
-      })
-      .catch((err) => console.error("competitions:", err));
-  }, [selectedTrack]);
-
-  useEffect(() => {
-    if (!selectedCompetition) return;
-    fetch(
-      `${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`
-    )
-      .then((r) => r.json())
-      .then((d) => {
-        setLaps(d);
-        const ok = d.some((l) => l.id === +selectedLap);
-        if (!selectedLap || !ok) if (d.length) setSelectedLap(d[0].id);
-      })
-      .catch((err) => {
-        console.error("laps:", err);
-        setLaps([]);
-      });
-  }, [selectedCompetition]);
-
-  useEffect(() => {
-    if (!selectedLap) return;
-    setLoading(true);
-
-    fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`)
-      .then((r) => {
-        if (!r.ok) throw new Error(r.statusText);
-        return r.json();
-      })
-      .then((completeHorses) => {
-        const labels = completeHorses.map((horse) => {
-          return horse.numberOfCompleteHorse + ".";
-        });
-        return Promise.all(
-          completeHorses.map((horse, idx) =>
-            fetch(
-              `${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`
-            )
-              .then((r) => {
-                if (!r.ok) throw new Error(r.statusText);
-                return r.json();
-              })
-              .then((fs) => {
-                const col = horseColors[idx % horseColors.length];
-                return {
-                  label: `${horse.numberOfCompleteHorse}. ${horse.nameOfCompleteHorse}`,
-                  data: labels.map((_, i) => (i === idx ? fs.analys : null)),
-                  backgroundColor: col,
-                  borderColor: "rgba(0,0,0,1)",
-                  borderWidth: 0.5,
-                };
-              })
-          )
-        ).then((datasets) => ({ labels, datasets }));
-      })
-      .then((d) => {
-        setData(d);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("data:", err);
-        setError(err.message);
-        setLoading(false);
-      });
-  }, [selectedLap]);
+    return () => ac.abort();                    //Changed!
+  }, [selectedLap]);                            //Changed!
 
   useEffect(() => {
     let t;
@@ -229,10 +166,7 @@ const BarChartComponent = ({
     maintainAspectRatio: false,
     scales: {
       y: { beginAtZero: true, minBarLength: 10 },
-      x: {
-        stacked: true,
-        ticks: { autoSkip: false, maxRotation: 0, padding: 2 },
-      },
+      x: { stacked: true, ticks: { autoSkip: false, maxRotation: 0, padding: 2 } },
     },
     plugins: {
       legend: {
@@ -241,13 +175,9 @@ const BarChartComponent = ({
         align: "start",
         labels: { boxWidth: 42 },
       },
-
       tooltip: {
         enabled: true,
-        // title: () => null, //Changed! (ta bort – använd callbacks nedan)
-        callbacks: {
-          title: () => "Analys",
-        },
+        callbacks: { title: () => "Analys" },
       },
     },
   };
@@ -262,31 +192,26 @@ const BarChartComponent = ({
     const date = new Date(d); //Changed!
     if (Number.isNaN(date.getTime())) return ""; //Changed!
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday =
-      weekday.charAt(0).toUpperCase() + weekday.slice(1);
-    const rest = date.toLocaleDateString("sv-SE", {
-      day: "numeric",
-      month: "long",
-    });
+    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
     return `${capitalizedWeekday}, ${rest}`;
   };
 
   const selectedDateLabel =
-    !selectedDate //Changed!
-      ? "Laddar datum…" //Changed!
+    !selectedDate
+      ? "Laddar datum…"
       : selectedDate === todayStr
       ? `Idag, ${fmt(selectedDate)}`
       : selectedDate === yesterdayStr
       ? `Igår, ${fmt(selectedDate)}`
       : selectedDate === tomorrowStr
       ? `Imorgon, ${fmt(selectedDate)}`
-      : fmt(selectedDate); //Changed!
+      : fmt(selectedDate);
 
   const selectedTrackLabel =
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad"; //Changed!
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "v75"; //Changed!
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "v75"; //Changed!
 
   const onDate = (e) => setSelectedDate(e.target.value);
   const onTrack = (e) => setSelectedTrack(e.target.value);
@@ -302,11 +227,7 @@ const BarChartComponent = ({
       </p>
 
       <div className="flex items-center justify-between mb-3 w-full max-w-screen-sm">
-        <button
-          onClick={goPrev}
-          disabled={idx <= 0 || loading}
-          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
-        >
+        <button onClick={goPrev} disabled={idx <= 0 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
           &#8592;
         </button>
 
@@ -317,14 +238,11 @@ const BarChartComponent = ({
           max={dates[dates.length - 1]?.date}
         />
 
-        <button
-          onClick={goNext}
-          disabled={idx >= dates.length - 1 || loading}
-          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
-        >
+        <button onClick={goNext} disabled={idx >= dates.length - 1 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
           &#8594;
         </button>
       </div>
+
       <div className="self-start flex flex-wrap gap-1 mb-2">
         {tracks.map((t) => (
           <button
@@ -332,9 +250,7 @@ const BarChartComponent = ({
             onClick={() => setSelectedTrack(t.id)}
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              t.id === +selectedTrack //Changed!
-                ? "bg-emerald-500 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              t.id === +selectedTrack ? "bg-emerald-500 text-white font-semibold shadow" : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
           >
             {t.nameOfTrack}
@@ -349,15 +265,14 @@ const BarChartComponent = ({
             onClick={() => setSelectedCompetition(c.id)}
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              c.id === +selectedCompetition //Changed!
-                ? "bg-teal-600 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              c.id === +selectedCompetition ? "bg-teal-600 text-white font-semibold shadow" : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
           >
             {c.nameOfCompetition}
           </button>
         ))}
       </div>
+
       <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4">
         {laps.length > 0 ? (
           laps.map((lap) => (
@@ -377,21 +292,14 @@ const BarChartComponent = ({
         ) : (
           <div className="flex gap-2">
             {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-gray-300 rounded w-16 h-6 sm:w-20 sm:h-8 animate-pulse"
-              />
+              <div key={i} className="bg-gray-300 rounded w-16 h-6 sm:w-20 sm:h-8 animate-pulse" />
             ))}
           </div>
         )}
       </div>
+
       <div className="self-start flex flex-wrap">
-        <ul
-          ref={legendRef}
-          className={
-            isSmallScreen ? "grid grid-cols-1 gap-2 mb-2 text-xs" : "hidden"
-          }
-        />
+        <ul ref={legendRef} className={isSmallScreen ? "grid grid-cols-1 gap-2 mb-2 text-xs" : "hidden"} />
       </div>
 
       <div className="w-full flex justify-center">
@@ -412,17 +320,11 @@ const BarChartComponent = ({
 
           {showSpinner && loading && (
             <div className="flex flex-col items-center">
-              <img
-                src={travhorsi}
-                alt="Loading…"
-                className="h-24 w-24 animate-spin"
-              />
+              <img src={travhorsi} alt="Loading…" className="h-24 w-24 animate-spin" />
             </div>
           )}
         </div>
       </div>
-
-      {/* ...dina selectar är fortfarande kommenterade... */}
     </div>
   );
 };
