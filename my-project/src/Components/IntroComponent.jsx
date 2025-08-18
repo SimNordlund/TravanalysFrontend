@@ -6,8 +6,9 @@ import {
 } from "@heroicons/react/20/solid";
 import vinst1 from "../Bilder/Vinst1.jpg";
 import HeroCarousel from "../Components/HeroCarousel";
-import pappa from "../Bilder/TestSwish.png"; //Changed!
-import simon from "../Bilder/SwishFörLandet.png"; //Changed!
+import skräll1 from "../Bilder/skräll1.png";
+import skräll2 from "../Bilder/skräll2.png";
+import skräll3 from "../Bilder/skräll3.png";
 
 const features = [
   {
@@ -35,11 +36,11 @@ const features = [
   },
 ];
 
-const slides = [pappa, simon];
+const slides = [skräll1, skräll2, skräll3];
 
 export default function IntroComponent() {
   return (
-    <div className="overflow-hidden bg-white pt-6 pb-10 sm:pt-16 sm:pb-20">
+    <div className="overflow-hidden bg-white pt-6 pb-0 sm:pt-16 sm:pb-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
           <div className="lg:pt-0 lg:pr-8">
@@ -88,9 +89,12 @@ export default function IntroComponent() {
           slides={slides}
           auto
           interval={4000}
-          className="mt-10 sm:mt-10 max-w-sm mx-auto" //Changed!  max 24rem bred + centrerad
-          heightClass="h-52 sm:h-52" //Changed!  lägre höjd på mobil/desktop
-          roundedClass="rounded-md" //Changed!  lite mindre rundning
+          className="mt-5 sm:mt-10 mb-10 sm:mb-0 mx-auto w-full max-w-[clamp(18rem,100vw,28rem)] px-4 sm:px-0" //Changed! större bredd
+          heightClass="aspect-[3/4] sm:aspect-[3/4]" //Changed! höjd som passar layouten
+          roundedClass="rounded-xl ring-1 ring-gray-200 shadow-lg" //Changed! rundade hörn
+          fit="contain" //Changed! ingen beskärning
+          imgClassName="px-4 md:px-0 pt-0 md:py-8" //Changed! lite ”luft” runt bilden
+          letterboxBg="bg-slate-100" //Changed! vit bakgrund istället för grå
         />
       </div>
     </div>
