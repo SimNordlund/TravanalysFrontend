@@ -40,7 +40,7 @@ const slides = [skräll1, skräll2, skräll3];
 export default function IntroComponent() {
   return (
     <div className="overflow-hidden bg-white pt-6 pb-0 sm:pt-16 sm:pb-20">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-6 lg:px-0">
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
           <div className="lg:pt-0 lg:pr-8">
             <div className="lg:max-w-lg">
@@ -58,7 +58,7 @@ export default function IntroComponent() {
                 Skräll-detector. Konsumera via diagram, tabell eller fördjupad
                 analys.
               </p>
-              <dl className="mt-6 max-w-xl space-y-8 text-base/7 text-gray-600 lg:max-w-none">
+              <dl className="mt-6 max-w-xl space-y-6 text-base/7 text-gray-600 lg:max-w-none">
                 {features.map((feature) => (
                   <div key={feature.name} className="relative pl-9">
                     <dt className="inline font-semibold text-gray-900">

@@ -61,7 +61,7 @@ const slides = [skräll1, skräll2, skräll3];
 export default function IntroWithCarousel() {
   return (
     <div className="overflow-hidden bg-white pt-4 pb-0 sm:pt-4 sm:pb-20">
-      <div className="mx-auto max-w-7xl px-4 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 lg:px-0">
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-10 lg:mx-0 lg:max-w-none lg:grid-cols-2">
           {/* Karusell-kolumn: vänster på stora skärmar */}
           <div className="order-2 lg:order-1 flex items-center">
@@ -91,7 +91,7 @@ export default function IntroWithCarousel() {
                 Olika analysperspektiv
               </p>
 
-              <dl className="mt-10 max-w-xl space-y-8 text-base/7 text-gray-600 lg:max-w-none">
+              <dl className="mt-10 max-w-xl space-y-6 text-base/7 text-gray-600 lg:max-w-none">
                 {features.map((feature) => (
                   <div key={feature.name} className="relative pl-9">
                     <dt className="inline font-semibold text-gray-900">
