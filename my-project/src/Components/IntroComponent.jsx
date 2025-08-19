@@ -12,7 +12,7 @@ import skräll3 from "../Bilder/skräll3.png";
 
 const features = [
   {
-    name: "Överlägset beslutsunderlag. awdawd",
+    name: "Överlägset beslutsunderlag.",
     description:
       "Utnyttja vårt kraftfulla analysverktyg. Utforska beslutsunderlaget i den form som passar dig.",
     icon: CloudArrowUpIcon,

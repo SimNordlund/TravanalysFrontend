@@ -13,7 +13,7 @@ const stats = [
 
 export default function Marketing() {
   return (
-    <div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32 mt-10">
+    <div className="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32 mt-0">
       <img
         src="/grattisHehe.webp"
         alt=""
@@ -62,7 +62,7 @@ export default function Marketing() {
             {stats.map((stat) => (
               <div key={stat.name} className="flex flex-col-reverse">
                 <dt className="text-base leading-7 text-gray-300">{stat.name}</dt>
-                <dd className="text-2xl font-bold leading-9 tracking-tight text-white">{stat.value}</dd>
+                <dd className="text-2xl font-bold leading-9 tracking-tight text-indigo-300 shadow-lg">{stat.value}</dd>
               </div>
             ))}
           </dl>
