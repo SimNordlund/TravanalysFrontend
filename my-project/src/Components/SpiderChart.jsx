@@ -33,7 +33,7 @@ const SpiderChart = ({
   ];
 
   const [data, setData] = useState({
-    labels: ["Prestation", "Placering", "Skrik", "Motstånd", "Klass", "Form", "Kapacitet"],
+    labels: ["Prestation", "Placering", "Skrik", "Motstånd", "Klass", "Form", "Fart"],
     datasets: [],
   });
   const [loading, setLoading] = useState(true);
