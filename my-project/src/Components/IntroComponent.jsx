@@ -5,7 +5,6 @@ import {
   ChatBubbleOvalLeftEllipsisIcon,
 } from "@heroicons/react/20/solid";
 import vinst1 from "../Bilder/Vinst1.jpg";
-import HeroCarousel from "../Components/HeroCarousel";
 import skräll1 from "../Bilder/skräll1.png";
 import skräll2 from "../Bilder/skräll2.png";
 import skräll3 from "../Bilder/skräll3.png";
@@ -27,12 +26,6 @@ const features = [
     name: "Ta hjälp av Trav-olta. ",
     description: "Vår finurliga AI-kompis hjälper till med analysen.",
     icon: ChatBubbleOvalLeftEllipsisIcon,
-  },
-  {
-    name: "Kostnadsfritt. ",
-    description:
-      "Vi utvecklar dessa folkliga tjänster tillsammans. Ditt bidrag är din feedback.",
-    icon: HeartIcon,
   },
 ];
 
@@ -84,8 +77,9 @@ export default function IntroComponent() {
           />
         </div>
       </div>
+      {/*}
       <div>
-        <HeroCarousel
+      <HeroCarousel
           slides={slides}
           auto
           interval={4000}
@@ -96,7 +90,8 @@ export default function IntroComponent() {
           imgClassName="px-4 md:px-0 pt-0 md:py-8" //Changed! lite ”luft” runt bilden
           letterboxBg="bg-slate-100" //Changed! vit bakgrund istället för grå
         />
-      </div>
+      </div> 
+      */} 
     </div>
   );
 }
