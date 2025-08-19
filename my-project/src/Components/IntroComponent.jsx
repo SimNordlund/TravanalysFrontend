@@ -27,6 +27,12 @@ const features = [
     description: "Vår finurliga AI-kompis hjälper till med analysen.",
     icon: ChatBubbleOvalLeftEllipsisIcon,
   },
+  {
+    name: "Kostnadsfritt.",
+    description:
+      "Vi utvecklar dessa folkliga tjänster tillsammans. Ditt bidrag är din feedback.",
+    icon: HeartIcon,
+  },
 ];
 
 const slides = [skräll1, skräll2, skräll3];
@@ -47,12 +53,12 @@ export default function IntroComponent() {
               <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
                 Skrällarsytt beslutsunderlag
               </p>
-              <p className="mt-6 text-lg/8 text-gray-600">
+              <p className="mt-6 sm:mt-4 text-lg/8 text-gray-600">
                 Utnyttja verktyget för att hitta vinnarna. Utforska vår
                 Skräll-detector. Konsumera via diagram, tabell eller fördjupad
                 analys.
               </p>
-              <dl className="mt-10 max-w-xl space-y-8 text-base/7 text-gray-600 lg:max-w-none">
+              <dl className="mt-6 max-w-xl space-y-8 text-base/7 text-gray-600 lg:max-w-none">
                 {features.map((feature) => (
                   <div key={feature.name} className="relative pl-9">
                     <dt className="inline font-semibold text-gray-900">
@@ -91,7 +97,7 @@ export default function IntroComponent() {
           letterboxBg="bg-slate-100" //Changed! vit bakgrund istället för grå
         />
       </div> 
-      */} 
+      */}
     </div>
   );
 }
