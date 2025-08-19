@@ -15,16 +15,15 @@ const features = [
     name: "Vår analysmodell",
     // Changed!
     description: (
-      <ul className="mt-1 list-disc pl-5 space-y-1">
+      <ul className="mt-1 list-disc pl-3 space-y-0.5">
         {" "}
         <li>
-          Form - hästens prestationer ur olika perspektiv i en närtid.
+          Form - Hästens prestationer ur olika perspektiv i en närtid.
         </li>{" "}
         <li>
-          Fart - hästens tider över olika distanser, spår, kusk, bana och
-          underlag.
+          Fart - Hästens tider över olika distanser, spår, kusk, bana och underlag.
         </li>{" "}
-        <li>Plac - hästens placeringar från det valda analysunderlaget.</li>{" "}
+        <li>Plac - Hästens placeringar från det valda analysunderlaget.</li>{" "}
         <li>
           Prest - Den bedömda prestationen som inte alltid är placeringen.
         </li>{" "}
@@ -47,13 +46,12 @@ const features = [
       "De sju olika analysperspektiven visualiseras i ett spindeldiagram som tillsammans bildar ett totalt analysutfall i ett stapeldiagram. Högst stapel har högst vinstchans. Uppstickare hittas i spindeldiagrammets sju analysperspektiv som tillsammans kanske inte alltid innebär högst total.",
     icon: BeakerIcon,
   },
-  //  {
-  //    name: "Navigering.",
-  //    description:
-  //      "Klicka på en häst i stapeldiagrammet för att utforska de sju olika analysperspektiven. Markera en eller flera hästar inför beslut om att lägga till eller ta bort en häst.",
-  //    icon: GlobeAltIcon,
-  //  },
-  // { name: "Kostnadsfritt.", description: "Vi utvecklar dessa folkliga tjänster tillsammans. Ditt bidrag är din feedback.", icon: HeartIcon },
+    {
+      name: "Navigering.",
+      description:
+        "Klicka på en häst i stapeldiagrammet för att utforska de sju olika analysperspektiven. Markera en eller flera hästar inför beslut om att lägga till eller ta bort en häst.",
+      icon: GlobeAltIcon,
+    },
 ];
 
 const slides = [skräll1, skräll2, skräll3];
@@ -91,7 +89,7 @@ export default function IntroWithCarousel() {
                 Olika analysperspektiv
               </p>
 
-              <dl className="mt-10 max-w-xl space-y-6 text-base/7 text-gray-600 lg:max-w-none">
+              <dl className="mt-5 max-w-xl space-y-6 text-base/7 text-gray-600 lg:max-w-none">
                 {features.map((feature) => (
                   <div key={feature.name} className="relative pl-9">
                     <dt className="inline font-semibold text-gray-900">
