@@ -42,7 +42,7 @@ export default function IntroComponent() {
     <div className="overflow-hidden bg-white pt-6 pb-0 sm:pt-16 sm:pb-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-0">
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
-          <div className="lg:pt-0 lg:pr-8">
+          <div className="lg:mt-6 lg:pr-8">
             <div className="lg:max-w-lg">
               <h3 className="text-base/7 font-semibold text-orange-600">
                 BETA-version!
