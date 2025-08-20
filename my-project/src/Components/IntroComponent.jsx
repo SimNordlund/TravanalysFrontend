@@ -51,7 +51,7 @@ export default function IntroComponent() {
                 Överlägsen analys
               </h2>
               <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
-                Skrällarsytt beslutsunderlag
+                Travsportens beslutsunderlag
               </p>
               <p className="mt-6 sm:mt-4 text-lg/8 text-gray-600">
                 Utnyttja verktyget för att hitta vinnarna. Utforska vår

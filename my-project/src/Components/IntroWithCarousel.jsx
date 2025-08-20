@@ -86,7 +86,7 @@ export default function IntroWithCarousel() {
                 En analys på riktigt
               </h2> */}
               <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
-                Olika analysperspektiv
+                Analysperspektiven
               </p>
 
               <dl className="mt-5 max-w-xl space-y-6 text-base/7 text-gray-600 lg:max-w-none">
