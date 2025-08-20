@@ -51,14 +51,14 @@ export default function IntroWithCarousel() {
   return (
     <div className="overflow-hidden bg-white pt-4 pb-0 sm:pt-4 sm:pb-20">
       <div className="mx-auto max-w-7xl px-4 lg:px-0">
-        <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-11 sm:gap-y-10 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+        <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-10 lg:mx-0 lg:max-w-none lg:grid-cols-2">
          
           <div className="order-1 lg:order-1 flex items-center">
             <HeroCarousel
               slides={slides}
               auto
               interval={4000}
-              className="mt-5 sm:mt-5 mb-0 sm:mb-0 mx-auto w-full max-w-[clamp(18rem,100vw,48rem)] px-0 sm:px-0" 
+              className="mt-10 sm:mt-5 mb-0 sm:mb-0 mx-auto w-full max-w-[clamp(18rem,100vw,48rem)] px-0 sm:px-0" 
               heightClass="aspect-[3/4] sm:aspect-[3/4] lg:h-[620px] lg:aspect-auto" 
               roundedClass="rounded-xl ring-1 ring-gray-200 shadow-lg"
               fit="contain"
@@ -70,7 +70,7 @@ export default function IntroWithCarousel() {
         
           <div className="order-2 lg:order-2 lg:pl-8">
             <div className="lg:max-w-lg relative"> 
-              <p className="mt-0 sm:mt-2 text-4xl mb-2 sm:mb-0 font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
+              <p className="mt-3 sm:mt-2 text-4xl mb-2 sm:mb-0 font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
                 Analysperspektiven
               </p>
 
@@ -105,7 +105,7 @@ export default function IntroWithCarousel() {
               </div>
 
               
-              <div className="md:hidden mt-2 mb-3"> 
+              <div className="md:hidden mt-2 mb-6"> 
                 <button
                   type="button"
                   onClick={() => setIsOpen((v) => !v)} 
