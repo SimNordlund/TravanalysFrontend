@@ -7,9 +7,9 @@ export default function HeroCarousel({
   className = "",
   heightClass = "h-56 md:h-96",
   roundedClass = "rounded-lg",
-  fit = "cover",                 //Changed!
-  imgClassName = "",             //Changed!
-  letterboxBg = "bg-black/5",    //Changed! bakgrund bakom contain-bild
+  fit = "cover",                 
+  imgClassName = "",             
+  letterboxBg = "bg-black/5",    
 }) {
   const [index, setIndex] = useState(0);
   const timerRef = useRef(null);
@@ -26,12 +26,11 @@ export default function HeroCarousel({
 
   if (!slides.length) return null;
 
-  const imgFit = fit === "contain" ? "object-contain" : "object-cover"; //Changed!
+  const imgFit = fit === "contain" ? "object-contain" : "object-cover"; 
 
   return (
     <div className={`relative w-full ${className}`} role="region" aria-roledescription="carousel">
-      {/* Wrapper */}
-      <div className={`relative overflow-hidden ${roundedClass} ${heightClass} ${letterboxBg}`}> {/*Changed!*/}
+      <div className={`relative overflow-hidden ${roundedClass} ${heightClass} ${letterboxBg}`}> 
         {slides.map((src, i) => (
           <div
             key={i}
@@ -44,14 +43,14 @@ export default function HeroCarousel({
             <img
               src={src}
               alt=""
-              loading={i === index ? "eager" : "lazy"}           //Changed!
-              className={`absolute inset-0 w-full h-full ${imgFit} ${imgClassName}`} //Changed!
+              loading={i === index ? "eager" : "lazy"}           
+              className={`absolute inset-0 w-full h-full ${imgFit} ${imgClassName}`} 
             />
           </div>
         ))}
       </div>
 
-      {/* Indicators */}
+
       <div className="absolute z-30 flex -translate-x-1/2 bottom-3 left-1/2 space-x-2">
         {slides.map((_, i) => (
           <button
@@ -65,7 +64,6 @@ export default function HeroCarousel({
         ))}
       </div>
 
-      {/* Controls */}
       <button
         type="button"
         onClick={prev}

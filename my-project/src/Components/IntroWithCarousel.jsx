@@ -1,10 +1,11 @@
-// IntroWithCarousel.jsx
+
 import {
   AcademicCapIcon,
   BeakerIcon,
   HeartIcon,
   GlobeAltIcon,
 } from "@heroicons/react/20/solid";
+import { useState } from "react"; 
 import HeroCarousel from "../Components/HeroCarousel";
 import skräll1 from "../Bilder/skräll1.png";
 import skräll2 from "../Bilder/skräll2.png";
@@ -13,29 +14,16 @@ import skräll3 from "../Bilder/skräll3.png";
 const features = [
   {
     name: "Vår analysmodell",
-    // Changed!
     description: (
       <ul className="mt-1 list-disc pl-3 space-y-0.5">
-        {" "}
-        <li>
-          Form - Hästens prestationer ur olika perspektiv i en närtid.
-        </li>{" "}
-        <li>
-          Fart - Hästens tider över olika distanser, spår, kusk, bana och underlag.
-        </li>{" "}
-        <li>Plac - Hästens placeringar från det valda analysunderlaget.</li>{" "}
-        <li>
-          Prest - Den bedömda prestationen som inte alltid är placeringen.
-        </li>{" "}
-        <li>
-          Motst - Alltid svårare och en merit att tävla mot hårt motstånd.
-        </li>{" "}
-        <li>Klass - Oftast mer utmanande att tävla i höga prisklasser.</li>{" "}
-        <li>Skrik - Trender som skvallrar om kommande bra prestationer.</li>{" "}
-        <li>
-          Analys - Den sammansatta vinstchansen visualiserad i ett
-          stapeldiagram.
-        </li>{" "}
+        <li>Form - Hästens prestationer ur olika perspektiv i en närtid.</li>
+        <li>Fart - Hästens tider över olika distanser, spår, kusk, bana och underlag.</li>
+        <li>Plac - Hästens placeringar från det valda analysunderlaget.</li>
+        <li>Prest - Den bedömda prestationen som inte alltid är placeringen.</li>
+        <li>Motst - Alltid svårare och en merit att tävla mot hårt motstånd.</li>
+        <li>Klass - Oftast mer utmanande att tävla i höga prisklasser.</li>
+        <li>Skrik - Trender som skvallrar om kommande bra prestationer.</li>
+        <li>Analys - Den sammansatta vinstchansen visualiserad i ett stapeldiagram.</li>
       </ul>
     ),
     icon: AcademicCapIcon,
@@ -46,30 +34,32 @@ const features = [
       "De sju olika analysperspektiven visualiseras i ett spindeldiagram som tillsammans bildar ett totalt analysutfall i ett stapeldiagram. Högst stapel har högst vinstchans. Uppstickare hittas i spindeldiagrammets sju analysperspektiv som tillsammans kanske inte alltid innebär högst total.",
     icon: BeakerIcon,
   },
-    {
-      name: "Navigering.",
-      description:
-        "Klicka på en häst i stapeldiagrammet för att utforska de sju olika analysperspektiven. Markera en eller flera hästar inför beslut om att lägga till eller ta bort en häst.",
-      icon: GlobeAltIcon,
-    },
+  {
+    name: "Navigering.",
+    description:
+      "Klicka på en häst i stapeldiagrammet för att utforska de sju olika analysperspektiven. Markera en eller flera hästar inför beslut om att lägga till eller ta bort en häst.",
+    icon: GlobeAltIcon,
+  },
+  // { name: "Kostnadsfritt.", description: "Vi utvecklar dessa folkliga tjänster tillsammans. Ditt bidrag är din feedback.", icon: HeartIcon },
 ];
 
 const slides = [skräll1, skräll2, skräll3];
 
 export default function IntroWithCarousel() {
+  const [isOpen, setIsOpen] = useState(false); 
+
   return (
     <div className="overflow-hidden bg-white pt-4 pb-0 sm:pt-4 sm:pb-20">
       <div className="mx-auto max-w-7xl px-4 lg:px-0">
-        <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-10 lg:mx-0 lg:max-w-none lg:grid-cols-2">
-          {/* Karusell-kolumn: vänster på stora skärmar */}
-          <div className="order-2 lg:order-1 flex items-center">
-            {" "}
+        <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-11 sm:gap-y-10 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+         
+          <div className="order-1 lg:order-1 flex items-center">
             <HeroCarousel
               slides={slides}
               auto
               interval={4000}
-              className="mt-5 sm:mt-5 mb-10 sm:mb-0 mx-auto w-full max-w-[clamp(18rem,100vw,48rem)] px-0 sm:px-0" // Changed!
-              heightClass="aspect-[3/4] sm:aspect-[3/4] lg:h-[620px] lg:aspect-auto" // Changed!
+              className="mt-5 sm:mt-5 mb-0 sm:mb-0 mx-auto w-full max-w-[clamp(18rem,100vw,48rem)] px-0 sm:px-0" 
+              heightClass="aspect-[3/4] sm:aspect-[3/4] lg:h-[620px] lg:aspect-auto" 
               roundedClass="rounded-xl ring-1 ring-gray-200 shadow-lg"
               fit="contain"
               imgClassName="px-3 md:px-0 pt-0 py-1 md:py-7"
@@ -77,32 +67,54 @@ export default function IntroWithCarousel() {
             />
           </div>
 
-          {/* Text-kolumn: höger på stora skärmar */}
-          <div className="order-1 lg:order-2 lg:pl-8 hidden md:block">
-            {" "}
-            {/* //Changed! (göm på mobil, visa från md) */}
-            <div className="lg:max-w-lg">
-              {/*  <h2 className="text-base/7 font-semibold text-indigo-600">
-                En analys på riktigt
-              </h2> */}
-              <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
+        
+          <div className="order-2 lg:order-2 lg:pl-8">
+            <div className="lg:max-w-lg relative"> 
+              <p className="mt-0 sm:mt-2 text-4xl mb-2 sm:mb-0 font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
                 Analysperspektiven
               </p>
 
-              <dl className="mt-5 max-w-xl space-y-6 text-base/7 text-gray-600 lg:max-w-none">
-                {features.map((feature) => (
-                  <div key={feature.name} className="relative pl-9">
-                    <dt className="inline font-semibold text-gray-900">
-                      <feature.icon
-                        aria-hidden="true"
-                        className="absolute top-1 left-1 size-5 text-indigo-600"
-                      />
-                      {feature.name}
-                    </dt>{" "}
-                    <dd className="inline">{feature.description}</dd>
-                  </div>
-                ))}
-              </dl>
+            
+              <div
+                className={
+                  
+                  `relative transition-[max-height] duration-300 ease-in-out
+                  ${isOpen ? "max-h-[9999px]" : "max-h-56 overflow-hidden"}
+                  md:max-h-none md:overflow-visible`
+                }
+              >
+                <dl className="mt-5 mb-6 sm:mb-0 max-w-xl space-y-6 text-base/7 text-gray-600 lg:max-w-none">
+                  {features.map((feature) => (
+                    <div key={feature.name} className="relative pl-9">
+                      <dt className="inline font-semibold text-gray-900">
+                        <feature.icon
+                          aria-hidden="true"
+                          className="absolute top-1 left-1 size-5 text-indigo-600"
+                        />
+                        {feature.name}
+                      </dt>{" "}
+                      <dd className="inline">{feature.description}</dd>
+                    </div>
+                  ))}
+                </dl>
+
+            
+                {!isOpen && (
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-white to-white/0 md:hidden" /> 
+                )}
+              </div>
+
+              
+              <div className="md:hidden mt-2 mb-3"> 
+                <button
+                  type="button"
+                  onClick={() => setIsOpen((v) => !v)} 
+                  className="text-indigo-600 font-semibold hover:underline focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded"
+                >
+                  {isOpen ? "Visa mindre" : "Visa mer"} 
+                </button>
+              </div>
+
             </div>
           </div>
         </div>
