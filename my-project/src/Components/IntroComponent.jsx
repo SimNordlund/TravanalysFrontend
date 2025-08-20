@@ -11,19 +11,19 @@ import skräll3 from "../Bilder/skräll3.png";
 
 const features = [
   {
-    name: "Grafiskt beslutsunderlag.",
+    name: "Grafiskt beslutsunderlag",
     description:
       "Utnyttja vårt kraftfulla analysverktyg. Utforska beslutsunderlaget i den form som passar dig.",
     icon: CloudArrowUpIcon,
   },
   {
-    name: "För spelare, kusk, tränare och ägare. ",
+    name: "För spelare, kusk, tränare och ägare",
     description:
       "Tjänster värdefulla för alla olika roller. Utvärdera och ge feedback i din roll. ",
     icon: UserGroupIcon,
   },
   {
-    name: "Ta hjälp av Trav-olta. ",
+    name: "Ta hjälp av Trav-olta",
     description: "Vår finurliga AI-kompis hjälper till med analysen.",
     icon: ChatBubbleOvalLeftEllipsisIcon,
   },
