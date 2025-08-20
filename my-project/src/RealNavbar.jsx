@@ -83,7 +83,7 @@ export default function Example() {
                   <NavLink to="/" className="mt-0 font-semibold text-lg sm:text-xl text-white">
                     <span className="inline-flex items-baseline">
                       Travanalys
-                      <sup className="ml-1 text-[0.65em] leading-none text-white/80">™</sup> {/* //Changed! */}
+                      <sup className="ml-1 text-[0.85em] leading-none text-white/80">™</sup>
                     </span>
                   </NavLink>
                 </div>
