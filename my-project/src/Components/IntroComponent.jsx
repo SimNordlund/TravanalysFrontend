@@ -61,14 +61,14 @@ export default function IntroComponent() {
               <dl className="mt-6 max-w-xl space-y-6 text-base/7 text-gray-600 lg:max-w-none">
                 {features.map((feature) => (
                   <div key={feature.name} className="relative pl-9">
-                    <dt className="inline font-semibold text-gray-900">
+                    <dt className="block font-semibold text-gray-900">
                       <feature.icon
                         aria-hidden="true"
                         className="absolute top-1 left-1 size-5 text-indigo-600"
                       />
                       {feature.name}
                     </dt>{" "}
-                    <dd className="inline">{feature.description}</dd>
+                    <dd className="block">{feature.description}</dd>
                   </div>
                 ))}
               </dl>
