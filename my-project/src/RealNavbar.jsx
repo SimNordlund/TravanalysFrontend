@@ -34,10 +34,10 @@ export default function Example() {
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                 {/* Mobil */}
                 <Disclosure.Button
-                  aria-label="Meny" 
-                  aria-expanded={open} 
-                  aria-controls="mobile-menu" 
-                  className="relative inline-flex items-center gap-2 rounded-md px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" 
+                  aria-label="Meny"
+                  aria-expanded={open}
+                  aria-controls="mobile-menu"
+                  className="relative inline-flex items-center gap-2 rounded-md px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
                 >
                   <span className="absolute -inset-0.5" />
                   {open ? (
@@ -45,7 +45,7 @@ export default function Example() {
                   ) : (
                     <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
                   )}
-                  <span className="text-base leading-none font-semibold">Meny</span> 
+                  <span className="text-base leading-none font-semibold">Meny</span>
                 </Disclosure.Button>
               </div>
 
@@ -68,9 +68,8 @@ export default function Example() {
                             'rounded-md px-3 py-2 text-sm font-medium'
                           )
                         }
-                        end={item.to === '/'} 
+                        end={item.to === '/'}
                       >
-                      
                         {item.name}
                       </NavLink>
                     ))}
@@ -78,10 +77,14 @@ export default function Example() {
                 </div>
               </div>
 
+              {/* Höger: titel + konto */}
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <div>
                   <NavLink to="/" className="mt-0 font-semibold text-lg sm:text-xl text-white">
-                    Travanalys
+                    <span className="inline-flex items-baseline">
+                      Travanalys
+                      <sup className="ml-1 text-[0.65em] leading-none text-white/80">™</sup> {/* //Changed! */}
+                    </span>
                   </NavLink>
                 </div>
 
@@ -143,7 +146,7 @@ export default function Example() {
           </div>
 
           {/* Mobilmeny */}
-          <Disclosure.Panel id="mobile-menu" className="sm:hidden"> 
+          <Disclosure.Panel id="mobile-menu" className="sm:hidden">
             <div className="space-y-1 px-2 pb-3 pt-2">
               {navigation.map((item) => (
                 <Disclosure.Button
