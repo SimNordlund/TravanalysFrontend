@@ -11,7 +11,7 @@ import skräll3 from "../Bilder/skräll3.png";
 
 const features = [
   {
-    name: "Överlägset beslutsunderlag.",
+    name: "Grafiskt beslutsunderlag.",
     description:
       "Utnyttja vårt kraftfulla analysverktyg. Utforska beslutsunderlaget i den form som passar dig.",
     icon: CloudArrowUpIcon,
@@ -27,12 +27,12 @@ const features = [
     description: "Vår finurliga AI-kompis hjälper till med analysen.",
     icon: ChatBubbleOvalLeftEllipsisIcon,
   },
-  {
-    name: "Kostnadsfritt.",
-    description:
-      "Vi utvecklar dessa folkliga tjänster tillsammans. Ditt bidrag är din feedback.",
-    icon: HeartIcon,
-  },
+ // {
+ //   name: "Kostnadsfritt.",
+ //   description:
+ //     "Vi utvecklar dessa folkliga tjänster tillsammans. Ditt bidrag är din feedback.",
+ //   icon: HeartIcon,
+ // },
 ];
 
 const slides = [skräll1, skräll2, skräll3];
@@ -47,17 +47,17 @@ export default function IntroComponent() {
               <h3 className="text-base/7 font-semibold text-orange-600">
                 BETA-version!
               </h3>
-              <h2 className="text-base/7 font-semibold text-indigo-600">
+            {/*  <h2 className="text-base/7 font-semibold text-indigo-600">
                 Överlägsen analys
-              </h2>
+              </h2>  */}
               <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
                 Travsportens beslutsunderlag
               </p>
-              <p className="mt-6 sm:mt-4 text-lg/8 text-gray-600">
+              {/* <p className="mt-6 sm:mt-4 text-lg/8 text-gray-600">
                 Utnyttja verktyget för att hitta vinnarna. Utforska vår
                 Skräll-detector. Konsumera via diagram, tabell eller fördjupad
                 analys.
-              </p>
+              </p> */}
               <dl className="mt-6 max-w-xl space-y-6 text-base/7 text-gray-600 lg:max-w-none">
                 {features.map((feature) => (
                   <div key={feature.name} className="relative pl-9">
@@ -79,7 +79,7 @@ export default function IntroComponent() {
             src={vinst1}
             width={2432}
             height={1442}
-            className="hidden sm:block w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-24 lg:-ml-24 mt-9"
+            className="hidden sm:block w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-24 lg:-ml-24 mt-0"
           />
         </div>
       </div>
