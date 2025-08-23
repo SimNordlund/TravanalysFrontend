@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useNavigate, NavLink } from 'react-router-dom'
-import travhorsi from './Bilder/travhorsi2.png'
+import travhorsi from './Bilder/barbildpng.png'
 
 const navigation = [
   { name: 'Startsida', to: '/' },
