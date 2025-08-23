@@ -220,12 +220,12 @@ const BarChartComponent = ({
   if (error) return <div className="text-red-600">Error: {error}</div>;
 
   return (
-    <div className="flex flex-col mt-4 px-2 pb-0 justify-start items-center">
+    <div className="mx-auto max-w-screen-lg px-2 py-4 relative">
       <p className="sm:text-xl text-lg font-semibold text-slate-800 mt-1 mb-4 sm:mt-2 sm:mb-2 px-4 py-1 flex flex-col justify-center items-center">
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
       </p>
 
-      <div className="flex items-center justify-between mb-3 w-full max-w-screen-sm">
+      <div className="flex items-center justify-between mb-4">
         <button onClick={goPrev} disabled={idx <= 0 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
           &#8592;
         </button>
