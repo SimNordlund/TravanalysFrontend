@@ -3,6 +3,7 @@ import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import { format, parseISO } from "date-fns";
 import { sv } from "date-fns/locale";
+import calenderImage from "../Bilder/kal1.svg";
 
 export default function DatePicker({
   value, 
@@ -16,10 +17,15 @@ export default function DatePicker({
     <div className="relative inline-block">
 
       <button
-        className="border rounded px-3 py-1 text-base font-medium bg-slate-100 flex items-center gap-2" 
+        className="border rounded px-2 py-0 text-base font-medium bg-slate-100 flex items-center gap-2" 
         onClick={() => setOpen(!open)}
       >
-        📅
+        <img
+          src={calenderImage}        //Changed!
+          alt=""                      //Changed!
+          aria-hidden="true"          //Changed!
+          className="w-9 h-9 shrink-0"//Changed!
+        />
         <span>{value}</span> 
       </button>
 
