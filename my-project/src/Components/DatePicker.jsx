@@ -17,7 +17,7 @@ export default function DatePicker({
     <div className="relative inline-block">
 
       <button
-        className="border rounded px-2 py-0 text-base font-medium bg-slate-100 flex items-center gap-2" 
+        className="border rounded pl-1 pr-2 py-0 text-base font-medium bg-slate-100 flex items-center gap-2" 
         onClick={() => setOpen(!open)}
       >
         <img
