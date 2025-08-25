@@ -10,10 +10,10 @@ const PaginatedLapTable = ({
   setSelectedCompetition,
   selectedLap,
   setSelectedLap,
-  dates,                 
-  tracks,                
-  competitions,          
-  laps,                  
+  dates,
+  tracks,
+  competitions,
+  laps,
 }) => {
   const [lapData, setLapData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -23,8 +23,8 @@ const PaginatedLapTable = ({
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const competitionName =
-    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition
-    ?? "Analys";
+    competitions.find((c) => c.id === +selectedCompetition)
+      ?.nameOfCompetition ?? "Analys";
 
   const maxAnalysValue = useMemo(
     () => Math.max(...lapData.map((r) => Number(r.analys) || -Infinity)),
@@ -70,7 +70,8 @@ const PaginatedLapTable = ({
 
   const requestSort = (key) => {
     let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") direction = "desc";
+    if (sortConfig.key === key && sortConfig.direction === "asc")
+      direction = "desc";
     setSortConfig({ key, direction });
   };
 
@@ -89,7 +90,8 @@ const PaginatedLapTable = ({
   // Navigering använder dates från props
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
-  const goNext = () => idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
+  const goNext = () =>
+    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
   const today = new Date().toISOString().split("T")[0];
   const yesterday = new Date(Date.now() - 864e5).toISOString().split("T")[0];
@@ -97,11 +99,15 @@ const PaginatedLapTable = ({
   const sv = (d) => {
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
-    const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
+    const capitalizedWeekday =
+      weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    const rest = date.toLocaleDateString("sv-SE", {
+      day: "numeric",
+      month: "long",
+    });
     return `${capitalizedWeekday}, ${rest}`;
   };
-  const selectedDateLabel =                    
+  const selectedDateLabel =
     selectedDate === today
       ? `Idag, ${sv(selectedDate)}`
       : selectedDate === yesterday
@@ -110,19 +116,33 @@ const PaginatedLapTable = ({
       ? `Imorgon, ${sv(selectedDate)}`
       : sv(selectedDate);
 
-  const selectedTrackLabel =                   
+  const selectedTrackLabel =
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "";
-  const selectedCompetitionLabel =             
-    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "";
+  const selectedCompetitionLabel =
+    competitions.find((c) => c.id === +selectedCompetition)
+      ?.nameOfCompetition ?? "";
+
+  const compName =
+    competitions.find((c) => c.id === +selectedCompetition)
+      ?.nameOfCompetition ?? ""; 
+  const lapPrefix = !compName 
+    ? "Lopp" 
+    : /^(vinnare|plats)$/i.test(compName.trim()) 
+    ? "Lopp" 
+    : "Avd";
 
   return (
-    <div className="mx-auto max-w-screen-lg px-2 py-6 relative">                                          
+    <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
       <p className="sm:text-xl text-lg font-semibold text-slate-800 mt-0 mb-4 sm:mt-0 sm:mb-2 px-4 py-1 flex flex-col justify-center items-center">
-        {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}  
-      </p>                                                                       
+        {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
+      </p>
 
       <div className="flex items-center justify-between mb-4">
-        <button onClick={goPrev} disabled={idx <= 0 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
+        <button
+          onClick={goPrev}
+          disabled={idx <= 0 || loading}
+          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
+        >
           &#8592;
         </button>
 
@@ -133,7 +153,11 @@ const PaginatedLapTable = ({
           max={dates[dates.length - 1]?.date}
         />
 
-        <button onClick={goNext} disabled={idx >= dates.length - 1 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
+        <button
+          onClick={goNext}
+          disabled={idx >= dates.length - 1 || loading}
+          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
+        >
           &#8594;
         </button>
       </div>
@@ -184,7 +208,7 @@ const PaginatedLapTable = ({
                 : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
           >
-            Lopp {lap.nameOfLap}
+            {`${lapPrefix} ${lap.nameOfLap}`}
           </button>
         ))}
       </div>
@@ -199,18 +223,66 @@ const PaginatedLapTable = ({
         <table className="w-full min-w-max border-collapse text-sm">
           <thead className="bg-gray-100 border-b border-gray-200">
             <tr>
-              <th onClick={() => requestSort("numberOfCompleteHorse")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">#</th>
-              <th onClick={() => requestSort("nameOfCompleteHorse")} className="py-2 px-2 font-semibold cursor-pointer text-left border-r last:border-r-0 border-gray-300">Häst</th>
-              <th onClick={() => requestSort("analys")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100">
+              <th
+                onClick={() => requestSort("numberOfCompleteHorse")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                #
+              </th>
+              <th
+                onClick={() => requestSort("nameOfCompleteHorse")}
+                className="py-2 px-2 font-semibold cursor-pointer text-left border-r last:border-r-0 border-gray-300"
+              >
+                Häst
+              </th>
+              <th
+                onClick={() => requestSort("analys")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100"
+              >
                 {competitionName}
               </th>
-              <th onClick={() => requestSort("fart")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Kapacitet</th>
-              <th onClick={() => requestSort("styrka")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Prestation</th>
-              <th onClick={() => requestSort("klass")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Motstånd</th>
-              <th onClick={() => requestSort("prispengar")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Klass</th>
-              <th onClick={() => requestSort("kusk")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Skrik</th>
-              <th onClick={() => requestSort("placering")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Placering</th>
-              <th onClick={() => requestSort("form")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Form</th>
+              <th
+                onClick={() => requestSort("fart")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                Kapacitet
+              </th>
+              <th
+                onClick={() => requestSort("styrka")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                Prestation
+              </th>
+              <th
+                onClick={() => requestSort("klass")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                Motstånd
+              </th>
+              <th
+                onClick={() => requestSort("prispengar")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                Klass
+              </th>
+              <th
+                onClick={() => requestSort("kusk")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                Skrik
+              </th>
+              <th
+                onClick={() => requestSort("placering")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                Placering
+              </th>
+              <th
+                onClick={() => requestSort("form")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                Form
+              </th>
             </tr>
           </thead>
 
@@ -218,23 +290,48 @@ const PaginatedLapTable = ({
             {sortedLapData.map((row) => {
               const isMax = Number(row.analys) === maxAnalysValue;
               return (
-                <tr key={row.id} className="border-b last:border-b-0 border-gray-200 hover:bg-blue-50 even:bg-gray-50 cursor-pointer">
+                <tr
+                  key={row.id}
+                  className="border-b last:border-b-0 border-gray-200 hover:bg-blue-50 even:bg-gray-50 cursor-pointer"
+                >
                   <td className="border-r border-blue-200 px-1">
                     <span className="inline-block border border-indigo-700 px-2 py-0.5 rounded-md text-sm font-medium bg-indigo-100 shadow-sm">
                       {row.numberOfCompleteHorse}
                     </span>
                   </td>
-                  <td className="py-2 px-2 text-left border-r border-gray-200">{row.nameOfCompleteHorse}</td>
-                  <td className={`py-2 px-2 border-r border-gray-200 ${isMax ? "bg-orange-300 font-bold underline" : "bg-orange-50"}`}>
+                  <td className="py-2 px-2 text-left border-r border-gray-200">
+                    {row.nameOfCompleteHorse}
+                  </td>
+                  <td
+                    className={`py-2 px-2 border-r border-gray-200 ${
+                      isMax
+                        ? "bg-orange-300 font-bold underline"
+                        : "bg-orange-50"
+                    }`}
+                  >
                     {row.analys}
                   </td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.fart}</td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.styrka}</td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.klass}</td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.prispengar}</td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.kusk}</td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.placering}</td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.form}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.fart}
+                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.styrka}
+                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.klass}
+                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.prispengar}
+                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.kusk}
+                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.placering}
+                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.form}
+                  </td>
                 </tr>
               );
             })}
