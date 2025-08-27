@@ -222,6 +222,7 @@ const BarChartComponent = ({
 
   const selectedTrackLabel =
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad";
+
   const selectedCompetitionLabel =
     competitions.find((c) => c.id === +selectedCompetition)
       ?.nameOfCompetition ?? "v75";
@@ -229,7 +230,12 @@ const BarChartComponent = ({
   const compName =
     competitions.find((c) => c.id === +selectedCompetition)
       ?.nameOfCompetition ?? ""; 
-  const lapPrefix = /^(vinnare|plats)$/i.test(compName.trim()) ? "Lopp" : "Avd";
+
+  const lapPrefix = /proposition/i.test(compName)    
+  ? "Prop"                                          
+  : /^(vinnare|plats)$/i.test(compName.trim())      
+  ? "Lopp"                                          
+  : "Avd";                                          
 
   const onDate = (e) => setSelectedDate(e.target.value);
   const onTrack = (e) => setSelectedTrack(e.target.value);

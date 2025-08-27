@@ -124,11 +124,12 @@ const PaginatedLapTable = ({
 
   const compName =
     competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? ""; 
-  const lapPrefix = !compName 
-    ? "Lopp" 
-    : /^(vinnare|plats)$/i.test(compName.trim()) 
-    ? "Lopp" 
+      ?.nameOfCompetition ?? "";
+
+  const lapPrefix = /proposition/i.test(compName)
+    ? "Prop"
+    : /^(vinnare|plats)$/i.test(compName.trim())
+    ? "Lopp"
     : "Avd";
 
   return (
