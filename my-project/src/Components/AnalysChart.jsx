@@ -149,7 +149,7 @@ const AnalysChart = ({
     <div className="flex flex-col justify-center items-center mt-1 px-2 pb-10">
       <div className="w-full text-center mb-2">
         <p className="text-sm sm:text-base text-slate-700 font-semibold">
-          A1–A5 för {title || "vald häst"}
+          Bästa analyserna från alla perspektiv
         </p>
       </div>
 
