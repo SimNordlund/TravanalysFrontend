@@ -14,13 +14,13 @@ const SharedHorseLegend = ({
       <div className="flex gap-2 mb-2">
         <button
           onClick={onShowAll}
-          className="px-3 py-1 text-xs rounded bg-indigo-500 hover:bg-indigo-300 text-1xl font-semibold tracking-tight text-white sm:text-1xl"
+          className="px-3 py-1 text-xs rounded bg-orange-500 hover:bg-orange-800 text-1xl font-semibold tracking-tight text-white sm:text-1xl"
         >
           Visa alla
         </button>
         <button
           onClick={onShowTop5}
-          className="px-2 py-1 text-xs rounded bg-indigo-500 hover:bg-indigo-300 text-1xl font-semibold tracking-tight text-white sm:text-1xl"
+          className="px-2 py-1 text-xs rounded bg-orange-500 hover:bg-orange-800 text-1xl font-semibold tracking-tight text-white sm:text-1xl"
         >
           Visa topp 5
         </button>
