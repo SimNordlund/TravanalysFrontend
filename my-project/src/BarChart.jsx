@@ -221,7 +221,7 @@ const BarChartComponent = ({
   if (error) return <div className="text-red-600">Error: {error}</div>;
 
   return (
-    <div className="mx-auto max-w-screen-lg px-2 py-0 sm:py-4 relative">
+    <div className="mx-auto max-w-screen-lg px-2 pt-5 sm:py-4 relative">
       <p className="sm:text-xl text-lg font-semibold text-slate-800 mt-1 mb-4 sm:mt-2 sm:mb-2 px-4 py-1 flex flex-col justify-center items-center">
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
       </p>
