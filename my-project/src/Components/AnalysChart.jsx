@@ -119,7 +119,7 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes }) => {
         </p>
       </div>
 
-      <div className="w-full max-w-[800px] mx-auto">
+      <div className="w-full max-w-[950px] mx-auto">
         <div className="relative w-full h-[300px] sm:h-[350px]">
           {data?.datasets?.length > 0 && !loading && !error && <Bar data={data} options={options} />}
           {!loading && !error && data?.datasets?.length === 0 && (
