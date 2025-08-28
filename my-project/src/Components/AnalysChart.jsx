@@ -1,31 +1,16 @@
-// AnalysChart.jsx  //Changed!
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
 
 const horseColors = [
-  "rgba(0, 0, 255, 0.5)",
-  "rgba(255, 165, 0, 0.5)",
-  "rgba(255, 0, 0, 0.5)",
-  "rgba(0, 100, 0, 0.5)",
-  "rgba(211, 211, 211, 0.5)",
-  "rgba(0, 0, 0, 0.5)",
-  "rgba(255, 255, 0, 0.5)",
-  "rgba(173, 216, 230, 0.5)",
-  "rgba(165, 42, 42, 0.5)",
-  "rgba(0, 0, 139, 0.5)",
-  "rgba(204, 204, 0, 0.5)",
-  "rgba(105, 105, 105, 0.5)",
-  "rgba(255, 192, 203, 0.5)",
-  "rgba(255, 140, 0, 0.5)",
-  "rgba(128, 0, 128, 0.5)",
+  "rgba(0, 0, 255, 0.5)","rgba(255, 165, 0, 0.5)","rgba(255, 0, 0, 0.5)",
+  "rgba(0, 100, 0, 0.5)","rgba(211, 211, 211, 0.5)","rgba(0, 0, 0, 0.5)",
+  "rgba(255, 255, 0, 0.5)","rgba(173, 216, 230, 0.5)","rgba(165, 42, 42, 0.5)",
+  "rgba(0, 0, 139, 0.5)","rgba(204, 204, 0, 0.5)","rgba(105, 105, 105, 0.5)",
+  "rgba(255, 192, 203, 0.5)","rgba(255, 140, 0, 0.5)","rgba(128, 0, 128, 0.5)",
 ];
 
-const AnalysChart = ({
-  selectedLap,
-  selectedHorse,
-  visibleHorseIdxes, //Changed!
-}) => {
+const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes }) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [loading, setLoading] = useState(true);
@@ -33,10 +18,7 @@ const AnalysChart = ({
   const [error, setError] = useState(null);
 
   const [title, setTitle] = useState("");
-  const [data, setData] = useState({
-    labels: ["A1", "A2", "A3", "A4", "A5"],
-    datasets: [],
-  });
+  const [data, setData] = useState({ labels: ["A1", "A2", "A3", "A4", "A5"], datasets: [] });
 
   useEffect(() => {
     let t;
@@ -53,32 +35,22 @@ const AnalysChart = ({
 
     (async () => {
       try {
-        const r = await fetch(
-          `${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`,
-          { signal: ac.signal }
-        );
+        const r = await fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`, { signal: ac.signal });
         if (!r.ok) throw new Error(r.statusText);
         const horses = await r.json();
 
         const all = await Promise.all(
           horses.map(async (horse, idx) => {
-            const rs = await fetch(
-              `${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`,
-              { signal: ac.signal }
-            );
+            const rs = await fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`, { signal: ac.signal });
             if (!rs.ok) throw new Error(rs.statusText);
             const fs = await rs.json();
             return { idx, horse, fs };
           })
         );
 
-        // Bestäm vilka index som ska visas: följ spindelns synlighetsstatus //Changed!
         let indicesToShow =
-          Array.isArray(visibleHorseIdxes) && visibleHorseIdxes.length
-            ? [...visibleHorseIdxes]
-            : null;
+          Array.isArray(visibleHorseIdxes) && visibleHorseIdxes.length ? [...visibleHorseIdxes] : null;
 
-        // Fallback om spindeln inte hunnit rapportera: vald häst eller topp-5 på styrka //Changed!
         if (!indicesToShow) {
           if (selectedHorse != null) {
             indicesToShow = [selectedHorse];
@@ -91,7 +63,6 @@ const AnalysChart = ({
           }
         }
 
-        // Bygg datasets för varje synlig häst //Changed!
         const datasets = indicesToShow
           .map((i) => all.find((x) => x.idx === i))
           .filter(Boolean)
@@ -107,11 +78,7 @@ const AnalysChart = ({
             };
           });
 
-        setData({
-          labels: ["A1", "A2", "A3", "A4", "A5"],
-          datasets,
-        });
-
+        setData({ labels: ["A1", "A2", "A3", "A4", "A5"], datasets });
         setTitle(datasets.length === 1 ? datasets[0].label : `${datasets.length} hästar`);
         setLoading(false);
       } catch (e) {
@@ -123,24 +90,17 @@ const AnalysChart = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, selectedHorse, visibleHorseIdxes]); //Changed!
+  }, [selectedLap, selectedHorse, visibleHorseIdxes]);
 
   const options = {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
-      y: {
-        beginAtZero: true,
-        suggestedMax: 100,
-        ticks: { stepSize: 20 },
-      },
-      x: {
-        ticks: { padding: 4 },
-        stacked: false, // grupperade staplar per A-kategori //Changed!
-      },
+      y: { beginAtZero: true, suggestedMax: 100, ticks: { stepSize: 20 } },
+      x: { ticks: { padding: 4 }, stacked: false },
     },
     plugins: {
-      legend: { display: true, position: "top" },
+      legend: { display: false }, // shared legend handles this
       tooltip: {
         enabled: true,
         callbacks: {
@@ -155,24 +115,25 @@ const AnalysChart = ({
     <div className="flex flex-col justify-center items-center mt-1 px-2 pb-10">
       <div className="w-full text-center mb-2">
         <p className="text-sm sm:text-base text-slate-700 font-semibold">
-          A1–A5 för {title || "valda hästar"} {/* //Changed! */}
+          Bästa analyserna från alla perspektiv
         </p>
       </div>
 
-      <div className="sm:w-[80vh] w-full sm:h-[40vh] h-[30vh] relative flex items-center justify-center">
-        {data?.datasets?.length > 0 && !loading && !error && <Bar data={data} options={options} />}
-
-        {!loading && !error && data?.datasets?.length === 0 && (
-          <div className="text-sm text-slate-500">Ingen data för A1–A5.</div>
-        )}
-
-        {showSpinner && loading && (
-          <div className="flex flex-col items-center">
-            <div className="animate-spin h-10 w-10 border-4 border-indigo-400 border-t-transparent rounded-full" />
-          </div>
-        )}
-
-        {error && <div className="text-red-600 text-sm">Error: {error}</div>}
+      <div className="w-full max-w-[800px] mx-auto">
+        <div className="relative w-full h-[350px]">
+          {data?.datasets?.length > 0 && !loading && !error && <Bar data={data} options={options} />}
+          {!loading && !error && data?.datasets?.length === 0 && (
+            <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-500">
+              Ingen data.
+            </div>
+          )}
+          {showSpinner && loading && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="animate-spin h-10 w-10 border-4 border-indigo-400 border-t-transparent rounded-full" />
+            </div>
+          )}
+          {error && <div className="absolute inset-0 flex items-center justify-center text-red-600 text-sm">Error: {error}</div>}
+        </div>
       </div>
     </div>
   );

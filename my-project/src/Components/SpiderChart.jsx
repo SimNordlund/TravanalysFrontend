@@ -1,5 +1,4 @@
-// SpiderChart.jsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Radar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
 
@@ -13,25 +12,18 @@ const SpiderChart = ({
   selectedLap,
   setSelectedLap,
   selectedHorse,
+  visibleHorseIdxes,     // from parent
+  onMetaChange,          // report legend items + suggested visible
 }) => {
   const horseColors = [
-    "rgba(0, 0, 255, 0.5)",
-    "rgba(255, 165, 0, 0.5)",
-    "rgba(255, 0, 0, 0.5)",
-    "rgba(0, 100, 0, 0.5)",
-    "rgba(211, 211, 211, 0.5)",
-    "rgba(0, 0, 0, 0.5)",
-    "rgba(255, 255, 0, 0.5)",
-    "rgba(173, 216, 230, 0.5)",
-    "rgba(165, 42, 42, 0.5)",
-    "rgba(0, 0, 139, 0.5)",
-    "rgba(204, 204, 0, 0.5)",
-    "rgba(105, 105, 105, 0.5)",
-    "rgba(255, 192, 203, 0.5)",
-    "rgba(255, 140, 0, 0.5)",
-    "rgba(128, 0, 128, 0.5)",
+    "rgba(0, 0, 255, 0.5)","rgba(255, 165, 0, 0.5)","rgba(255, 0, 0, 0.5)",
+    "rgba(0, 100, 0, 0.5)","rgba(211, 211, 211, 0.5)","rgba(0, 0, 0, 0.5)",
+    "rgba(255, 255, 0, 0.5)","rgba(173, 216, 230, 0.5)","rgba(165, 42, 42, 0.5)",
+    "rgba(0, 0, 139, 0.5)","rgba(204, 204, 0, 0.5)","rgba(105, 105, 105, 0.5)",
+    "rgba(255, 192, 203, 0.5)","rgba(255, 140, 0, 0.5)","rgba(128, 0, 128, 0.5)",
   ];
 
+  const [rawDatasets, setRawDatasets] = useState([]);
   const [data, setData] = useState({
     labels: ["Prestation", "Placering", "Skrik", "Motstånd", "Klass", "Form", "Fart"],
     datasets: [],
@@ -40,48 +32,30 @@ const SpiderChart = ({
   const [showSpinner, setShowSpinner] = useState(false);
   const [error, setError] = useState(null);
 
-  const legendRef = useRef(null);
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640);
-  useEffect(() => {
-    const onResize = () => setIsSmallScreen(window.innerWidth < 640);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  const getLegendPosition = () => (window.innerWidth >= 640 ? "right" : "top");
-  const [legendPosition, setLegendPosition] = useState(getLegendPosition());
-  useEffect(() => {
-    const r = () => setLegendPosition(getLegendPosition());
-    window.addEventListener("resize", r);
-    return () => window.removeEventListener("resize", r);
-  }, []);
-
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // ❌ All hämtning av datum/banor/spelformer/lopp är borttagen här //Changed!
+  // fetch data (no hidden flags here)
+  useEffect(() => {
+    if (!selectedLap) return;
+    const ac = new AbortController();
+    setLoading(true);
 
-  // ✅ Hämta endast radar-datasets //Changed!
-  useEffect(() => {                            //Changed!
-    if (!selectedLap) return;                  //Changed!
-    const ac = new AbortController();          //Changed!
-    setLoading(true);                          //Changed!
+    (async () => {
+      try {
+        const r = await fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`, { signal: ac.signal });
+        if (!r.ok) throw new Error(r.statusText);
+        const horses = await r.json();
 
-    (async () => {                             //Changed!
-      try {                                    //Changed!
-        const r = await fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`, { signal: ac.signal }); //Changed!
-        if (!r.ok) throw new Error(r.statusText); //Changed!
-        const completeHorses = await r.json();  //Changed!
-
-        const arr = await Promise.all(         //Changed!
-          completeHorses.map(async (horse, idx) => {
-            const rs = await fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`, { signal: ac.signal }); //Changed!
-            if (!rs.ok) throw new Error(rs.statusText); //Changed!
-            const fs = await rs.json();        //Changed!
-            return { idx, horse, fs };         //Changed!
+        const arr = await Promise.all(
+          horses.map(async (horse, idx) => {
+            const rs = await fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`, { signal: ac.signal });
+            if (!rs.ok) throw new Error(rs.statusText);
+            const fs = await rs.json();
+            return { idx, horse, fs };
           })
         );
 
-        const rawDatasets = arr.map(({ idx, horse, fs }) => ({
+        const raw = arr.map(({ idx, horse, fs }) => ({
           label: `${horse.numberOfCompleteHorse}. ${horse.nameOfCompleteHorse}`,
           data: [fs.styrka, fs.placering, fs.kusk, fs.klass, fs.prispengar, fs.form, fs.fart],
           backgroundColor: horseColors[idx % horseColors.length],
@@ -90,31 +64,39 @@ const SpiderChart = ({
           pointRadius: 2,
         }));
 
-        const top5Idx = rawDatasets
-          .map((ds, i) => ({ i, val: ds.data[0] }))
+        const top5Idx = arr
+          .map((x) => ({ i: x.idx, val: x.fs.styrka ?? 0 }))
           .sort((a, b) => b.val - a.val)
           .slice(0, 5)
           .map((x) => x.i);
+        const suggestedVisibleIdxes = selectedHorse !== null ? [selectedHorse] : top5Idx;
 
-        const datasets = rawDatasets.map((ds, i) => ({
-          ...ds,
-          hidden: selectedHorse !== null ? i !== selectedHorse : !top5Idx.includes(i),
-        }));
+        if (!ac.signal.aborted) {
+          setRawDatasets(raw);
+          setLoading(false);
+          onMetaChange?.({
+            items: raw.map((ds, i) => ({ idx: i, label: ds.label, color: ds.backgroundColor })),
+            suggestedVisibleIdxes,
+          });
+        }
+      } catch (e) {
+        if (ac.signal.aborted) return;
+        console.error("SpiderChart:", e);
+        setError(e.message);
+        setLoading(false);
+      }
+    })();
 
-        if (!ac.signal.aborted) {              //Changed!
-          setData((p) => ({ ...p, datasets })); //Changed!
-          setLoading(false);                    //Changed!
-        }                                       //Changed!
-      } catch (e) {                             //Changed!
-        if (ac.signal.aborted) return;          //Changed!
-        console.error("data:", e);              //Changed!
-        setError(e.message);                    //Changed!
-        setLoading(false);                      //Changed!
-      }                                         //Changed!
-    })();                                       //Changed!
+    return () => ac.abort();
+  }, [selectedLap, selectedHorse]);
 
-    return () => ac.abort();                    //Changed!
-  }, [selectedLap, selectedHorse]);             //Changed!
+  // apply visibility from parent
+  useEffect(() => {
+    if (!rawDatasets.length) { setData((p) => ({ ...p, datasets: [] })); return; }
+    const vis = new Set(visibleHorseIdxes ?? []);
+    const ds = rawDatasets.map((d, i) => ({ ...d, hidden: !vis.has(i) }));
+    setData((p) => ({ ...p, datasets: ds }));
+  }, [rawDatasets, visibleHorseIdxes]);
 
   useEffect(() => {
     let t;
@@ -123,39 +105,10 @@ const SpiderChart = ({
     return () => clearTimeout(t);
   }, [loading]);
 
-  const htmlLegendPlugin = {
-    id: "htmlLegend",
-    afterUpdate(chart) {
-      const ul = legendRef.current;
-      if (!ul) return;
-      while (ul.firstChild) ul.firstChild.remove();
-      chart.data.datasets.forEach((ds, idx) => {
-        const li = document.createElement("li");
-        li.className = "flex items-center cursor-pointer select-none whitespace-nowrap";
-        const visible = chart.isDatasetVisible(idx);
-        li.style.opacity = visible ? 1 : 0.35;
-        li.onclick = () => {
-          chart.setDatasetVisibility(idx, !chart.isDatasetVisible(idx));
-          chart.update();
-        };
-        const box = document.createElement("span");
-        box.className = "inline-block w-20 h-3 mr-2 rounded";
-        box.style.background = ds.backgroundColor;
-        const text = document.createElement("span");
-        text.textContent = ds.label;
-        li.appendChild(box);
-        li.appendChild(text);
-        ul.appendChild(li);
-      });
-    },
-  };
-
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      legend: { display: !isSmallScreen, position: isSmallScreen ? "top" : legendPosition },
-    },
+    plugins: { legend: { display: false } },
     scales: {
       r: {
         angleLines: { display: false },
@@ -169,28 +122,23 @@ const SpiderChart = ({
   };
 
   return (
-    <div className="flex flex-col justify-center items-center mt-1 px-2 pb-10">
-      <div className="sm:w-[80vh] w-full sm:h-[50vh] h-[35vh] relative flex items-center justify-center">
-        {data.datasets.length > 0 && !loading && (
-          <Radar data={data} options={options} plugins={[htmlLegendPlugin]} />
-        )}
-
-        {!loading && data.datasets.length === 0 && (
-          <div className="text-sm text-slate-500">No data found for this lap.</div>
-        )}
-
-        {showSpinner && loading && (
-          <div className="flex flex-col items-center">
-            <div className="animate-spin h-10 w-10 border-4 border-indigo-400 border-t-transparent rounded-full" />
-          </div>
-        )}
+    <div className="flex flex-col mt-1 px-2 pb-4">
+      <div className="w-full max-w-[490px] mx-auto">
+        <div className="relative w-full aspect-square">
+          {data.datasets.length > 0 && !loading && <Radar data={data} options={options} />}
+          {!loading && data.datasets.length === 0 && (
+            <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-500">
+              No data found for this lap.
+            </div>
+          )}
+          {showSpinner && loading && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="animate-spin h-10 w-10 border-4 border-indigo-400 border-t-transparent rounded-full" />
+            </div>
+          )}
+        </div>
       </div>
-
-      <div className="mt-5 self-start flex flex-wrap">
-        <ul ref={legendRef} className={isSmallScreen ? "relative z-10 grid grid-cols-1 gap-2 text-xs" : "hidden"} />
-      </div>
-
-      {error && <div className="text-red-600 mt-4">Error: {error}</div>}
+      {error && <div className="text-red-600 mt-4 text-center">Error: {error}</div>}
     </div>
   );
 };

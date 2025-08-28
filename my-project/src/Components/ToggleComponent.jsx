@@ -5,23 +5,15 @@ import BarChart from "../BarChart";
 import PaginatedLapTable from "./PaginatedLapTable";
 import Skrallar from "./Skrallar";
 import AnalysChart from "./AnalysChart";
+import SharedHorseLegend from "./SharedHorseLegend";
 
 const ToggleComponent = ({ syncWithRoute = false }) => {
   const { view: viewParam } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const routeToView = {
-    analys: "spider",
-    tabell: "table",
-    speltips: "skrallar",
-  };
-  const viewToRoute = {
-    spider: "analys",
-    table: "tabell",
-    skrallar: "speltips",
-    bar: "analys",
-  };
+  const routeToView = { analys: "spider", tabell: "table", speltips: "skrallar" };
+  const viewToRoute = { spider: "analys", table: "tabell", skrallar: "speltips", bar: "analys" };
 
   const initialSelectedView = syncWithRoute ? routeToView[viewParam] || "spider" : "spider";
 
@@ -31,7 +23,9 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState(initialSelectedView);
   const [selectedHorse, setSelectedHorse] = useState(null);
-  const [visibleHorseIdxes, setVisibleHorseIdxes] = useState([]); //Changed!
+
+  const [visibleHorseIdxes, setVisibleHorseIdxes] = useState([]);
+  const [horseLegendItems, setHorseLegendItems] = useState([]);
 
   const [dates, setDates] = useState([]);
   const [tracks, setTracks] = useState([]);
@@ -40,11 +34,9 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const pendingLapRef = useRef(null);
-  const setPendingLapId = (lapId) => {
-    pendingLapRef.current = lapId;
-  };
+  const setPendingLapId = (lapId) => { pendingLapRef.current = lapId; };
 
-  // Sync via URL
+  // URL sync
   useEffect(() => {
     if (!syncWithRoute) return;
     const nextView = routeToView[viewParam] || "spider";
@@ -63,47 +55,41 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
   const switchView = (viewKey) => setViewAndMaybeNavigate(viewKey);
 
-  // Närmaste datum till idag
+  // helper to pick closest date
   const pickClosestDate = (arr) => {
     if (!arr?.length) return "";
     const today = new Date();
-    let best = arr[0];
-    let bestDiff = Infinity;
+    let best = arr[0], bestDiff = Infinity;
     for (const d of arr) {
       const diff = Math.abs(new Date(d.date) - today);
       if (diff < bestDiff || (diff === bestDiff && new Date(d.date) >= today)) {
-        best = d;
-        bestDiff = diff;
+        best = d; bestDiff = diff;
       }
     }
     return best.date;
   };
 
-  // 1) Hämta datum EN gång
+  // bootstrap dates
   useEffect(() => {
     const ac = new AbortController();
     (async () => {
       try {
         const r = await fetch(`${API_BASE_URL}/track/dates`, { signal: ac.signal });
         const all = await r.json();
-        const uniqueSorted = Array.from(new Map(all.map((d) => [d.date, d])).values()).sort((a, b) =>
-          a.date.localeCompare(b.date)
-        );
+        const uniqueSorted = Array.from(new Map(all.map((d) => [d.date, d])).values())
+          .sort((a, b) => a.date.localeCompare(b.date));
         setDates(uniqueSorted);
-
         if (!selectedDate) {
           const todayStr = new Date().toISOString().split("T")[0];
           const hasToday = uniqueSorted.find((x) => x.date === todayStr);
           setSelectedDate(hasToday ? todayStr : pickClosestDate(uniqueSorted));
         }
-      } catch (e) {
-        console.error("dates:", e);
-      }
+      } catch (e) { console.error("dates:", e); }
     })();
     return () => ac.abort();
   }, []);
 
-  // 2) När datum finns, hämta banor
+  // tracks
   useEffect(() => {
     if (!selectedDate) return;
     const ac = new AbortController();
@@ -112,69 +98,65 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         const r = await fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`, { signal: ac.signal });
         const d = await r.json();
         setTracks(d);
-        if (!d?.length) {
-          setSelectedTrack("");
-          return;
-        }
+        if (!d?.length) { setSelectedTrack(""); return; }
         const ok = d.some((t) => t.id === +selectedTrack);
         if (!ok) setSelectedTrack(d[0].id);
-      } catch (e) {
-        console.error("tracks:", e);
-        setTracks([]);
-      }
+      } catch (e) { console.error("tracks:", e); setTracks([]); }
     })();
     return () => ac.abort();
   }, [selectedDate]);
 
-  // 3) När bana finns, hämta spelformer
+  // competitions
   useEffect(() => {
     if (!selectedTrack) return;
     const ac = new AbortController();
     (async () => {
       try {
-        const r = await fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`, {
-          signal: ac.signal,
-        });
+        const r = await fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`, { signal: ac.signal });
         const d = await r.json();
         setCompetitions(d);
         const ok = d?.some((c) => c.id === +selectedCompetition);
         if (!ok && d?.length) setSelectedCompetition(d[0].id);
-      } catch (e) {
-        console.error("competitions:", e);
-        setCompetitions([]);
-      }
+      } catch (e) { console.error("competitions:", e); setCompetitions([]); }
     })();
     return () => ac.abort();
   }, [selectedTrack]);
 
-  // 4) När spelform finns, hämta lopp
+  // laps
   useEffect(() => {
     if (!selectedCompetition) return;
     const ac = new AbortController();
     (async () => {
       try {
-        const r = await fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`, {
-          signal: ac.signal,
-        });
+        const r = await fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`, { signal: ac.signal });
         const d = await r.json();
         setLaps(d || []);
-
         const desired = pendingLapRef.current;
         if (desired && d?.some((l) => l.id === +desired)) {
-          setSelectedLap(desired);
-          pendingLapRef.current = null;
-          return;
+          setSelectedLap(desired); pendingLapRef.current = null; return;
         }
-
         const ok = d?.some((l) => l.id === +selectedLap);
         if (!ok && d?.length) setSelectedLap(d[0].id);
-      } catch (e) {
-        console.error("laps:", e);
-        setLaps([]);
-      }
+      } catch (e) { console.error("laps:", e); setLaps([]); }
     })();
     return () => ac.abort();
   }, [selectedCompetition]);
+
+  // reset when lap changes
+  useEffect(() => {
+    setSelectedHorse(null);
+    setVisibleHorseIdxes([]);
+  }, [selectedLap]);
+
+  // shared legend callbacks
+  const handleMetaChange = ({ items, suggestedVisibleIdxes }) => {
+    setHorseLegendItems(items || []);
+    setVisibleHorseIdxes((prev) => (prev?.length ? prev : (suggestedVisibleIdxes || [])));
+  };
+  const toggleLegendIdx = (idx) =>
+    setVisibleHorseIdxes((prev) => (prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]));
+  const showAllLegend = () => setVisibleHorseIdxes(horseLegendItems.map((x) => x.idx));
+  const hideAllLegend = () => setVisibleHorseIdxes([]);
 
   const callouts = [
     { id: 2, name: "Analys", bgColor: "bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600", view: "spider" },
@@ -215,29 +197,46 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 tracks={tracks}
                 competitions={competitions}
                 laps={laps}
+                // IMPORTANT: keep BarChart legend + click behavior
                 setSelectedView={setViewAndMaybeNavigate}
                 setSelectedHorse={setSelectedHorse}
+                setVisibleHorseIdxes={setVisibleHorseIdxes}
               />
             </div>
-            <div className="min-h-[400px]">
-              <SpiderChart
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
-                selectedTrack={selectedTrack}
-                setSelectedTrack={setSelectedTrack}
-                selectedCompetition={selectedCompetition}
-                setSelectedCompetition={setSelectedCompetition}
-                selectedLap={selectedLap}
-                setSelectedLap={setSelectedLap}
-                selectedHorse={selectedHorse}
-                onVisibleChange={setVisibleHorseIdxes} //Changed!
-              />
+
+            {/* Spider + shared legend layout */}
+            <div className="min-h-[400px] sm:grid sm:grid-cols-[minmax(0,1fr)_16rem] sm:gap-6">
+              <div className="min-w-0">
+                <SpiderChart
+                  selectedDate={selectedDate}
+                  setSelectedDate={setSelectedDate}
+                  selectedTrack={selectedTrack}
+                  setSelectedTrack={setSelectedTrack}
+                  selectedCompetition={selectedCompetition}
+                  setSelectedCompetition={setSelectedCompetition}
+                  selectedLap={selectedLap}
+                  setSelectedLap={setSelectedLap}
+                  selectedHorse={selectedHorse}
+                  visibleHorseIdxes={visibleHorseIdxes}
+                  onMetaChange={handleMetaChange}
+                />
+              </div>
+              <div className="mt-0 ml-4 sm:mt-28 sm:justify-self-end sm:w-64 shrink-0">
+                <SharedHorseLegend
+                  items={horseLegendItems}
+                  visibleIdxes={visibleHorseIdxes}
+                  onToggle={toggleLegendIdx}
+                  onShowAll={showAllLegend}
+                  onHideAll={hideAllLegend}
+                />
+              </div>
             </div>
+
             <div className="min-h-[400px]">
               <AnalysChart
                 selectedLap={selectedLap}
                 selectedHorse={selectedHorse}
-                visibleHorseIdxes={visibleHorseIdxes} //Changed!
+                visibleHorseIdxes={visibleHorseIdxes}
               />
             </div>
           </div>

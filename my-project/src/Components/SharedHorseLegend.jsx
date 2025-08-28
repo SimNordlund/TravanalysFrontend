@@ -1,0 +1,53 @@
+import React from "react";
+
+const SharedHorseLegend = ({
+  items,            // [{ idx, label, color }]
+  visibleIdxes,     // number[]
+  onToggle,         // (idx) => void
+  onShowAll,        // () => void
+  onHideAll,        // () => void
+}) => {
+  const isVisible = (i) => visibleIdxes?.includes(i);
+
+  return (
+    <div className="w-full">
+      <div className="flex gap-2 mb-2">
+        <button
+          onClick={onShowAll}
+          className="px-2 py-1 text-xs rounded bg-gray-200 hover:bg-gray-300"
+        >
+          Visa alla
+        </button>
+        <button
+          onClick={onHideAll}
+          className="px-2 py-1 text-xs rounded bg-gray-200 hover:bg-gray-300"
+        >
+          Dölj alla
+        </button>
+      </div>
+
+      <ul className="grid grid-cols-1 gap-2 text-xs">
+        {items?.map((it) => (
+          <li
+            key={it.idx}
+            className={`flex items-center cursor-pointer select-none ${
+              isVisible(it.idx) ? "opacity-100" : "opacity-35"
+            }`}
+            onClick={() => onToggle(it.idx)}
+            title={it.label}
+          >
+            <span
+              className="inline-block w-20 h-3 mr-2 rounded"
+              style={{ background: it.color }}
+            />
+            <span className={`${isVisible(it.idx) ? "" : "line-through"}`}>
+              {it.label}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default SharedHorseLegend;
