@@ -27,6 +27,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [visibleHorseIdxes, setVisibleHorseIdxes] = useState([]);
   const [horseLegendItems, setHorseLegendItems] = useState([]);
   const [top5Idxes, setTop5Idxes] = useState([]);
+  const [top3Idxes, setTop3Idxes] = useState([]);
 
   const [dates, setDates] = useState([]);
   const [tracks, setTracks] = useState([]);
@@ -150,15 +151,17 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   }, [selectedLap]);
 
   // shared legend callbacks
-  const handleMetaChange = ({ items, suggestedVisibleIdxes, top5Idx }) => { 
+  const handleMetaChange = ({ items, suggestedVisibleIdxes, top5Idx, top3Idx }) => { 
     setHorseLegendItems(items || []);
     setVisibleHorseIdxes((prev) => (prev?.length ? prev : (suggestedVisibleIdxes || [])));
     if (Array.isArray(top5Idx)) setTop5Idxes(top5Idx);
+    if (Array.isArray(top3Idx)) setTop3Idxes(top3Idx); 
   };
   const toggleLegendIdx = (idx) =>
     setVisibleHorseIdxes((prev) => (prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]));
   const showAllLegend = () => setVisibleHorseIdxes(horseLegendItems.map((x) => x.idx));
   const showTop5Legend = () => setVisibleHorseIdxes(top5Idxes); 
+  const showTop3Legend = () => setVisibleHorseIdxes(top3Idxes);
 
   const callouts = [
     { id: 2, name: "Analys", bgColor: "bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600", view: "spider" },
@@ -230,6 +233,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                   onToggle={toggleLegendIdx}
                   onShowAll={showAllLegend}
                   onShowTop5={showTop5Legend}
+                  onShowTop3={showTop3Legend}
                 />
               </div>
             </div>

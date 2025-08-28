@@ -6,6 +6,7 @@ const SharedHorseLegend = ({
   onToggle,         
   onShowAll,      
   onShowTop5,       
+  onShowTop3,
 }) => {
   const isVisible = (i) => visibleIdxes?.includes(i);
 
@@ -14,15 +15,21 @@ const SharedHorseLegend = ({
       <div className="flex gap-2 mb-2">
         <button
           onClick={onShowAll}
-          className="px-3 py-1 text-xs rounded bg-orange-500 hover:bg-orange-800 text-1xl font-semibold tracking-tight text-white sm:text-1xl"
+          className="px-3 py-1 text-xs rounded bg-orange-500 hover:bg-orange-800 text-1xl font-semibold tracking-tight text-white sm:text-1xl shadow-md"
         >
           Visa alla
         </button>
         <button
           onClick={onShowTop5}
-          className="px-2 py-1 text-xs rounded bg-orange-500 hover:bg-orange-800 text-1xl font-semibold tracking-tight text-white sm:text-1xl"
+          className="px-2 py-1 text-xs rounded bg-orange-500 hover:bg-orange-800 text-1xl font-semibold tracking-tight text-white sm:text-1xl shadow-md"
         >
           Visa topp 5
+        </button>
+        <button
+          onClick={onShowTop3}      
+          className="px-2 py-1 text-xs rounded bg-orange-500 hover:bg-orange-800 text-1xl font-semibold tracking-tight text-white sm:text-1xl shadow-md"
+        >
+          Visa topp 3              
         </button>
       </div>
 
