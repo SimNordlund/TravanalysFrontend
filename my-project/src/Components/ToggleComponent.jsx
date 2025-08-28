@@ -23,9 +23,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     bar: "analys",
   };
 
-  const initialSelectedView = syncWithRoute
-    ? routeToView[viewParam] || "spider"
-    : "spider";
+  const initialSelectedView = syncWithRoute ? routeToView[viewParam] || "spider" : "spider";
 
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTrack, setSelectedTrack] = useState("");
@@ -33,6 +31,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState(initialSelectedView);
   const [selectedHorse, setSelectedHorse] = useState(null);
+  const [visibleHorseIdxes, setVisibleHorseIdxes] = useState([]); //Changed!
 
   const [dates, setDates] = useState([]);
   const [tracks, setTracks] = useState([]);
@@ -85,13 +84,11 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     const ac = new AbortController();
     (async () => {
       try {
-        const r = await fetch(`${API_BASE_URL}/track/dates`, {
-          signal: ac.signal,
-        });
+        const r = await fetch(`${API_BASE_URL}/track/dates`, { signal: ac.signal });
         const all = await r.json();
-        const uniqueSorted = Array.from(
-          new Map(all.map((d) => [d.date, d])).values()
-        ).sort((a, b) => a.date.localeCompare(b.date));
+        const uniqueSorted = Array.from(new Map(all.map((d) => [d.date, d])).values()).sort((a, b) =>
+          a.date.localeCompare(b.date)
+        );
         setDates(uniqueSorted);
 
         if (!selectedDate) {
@@ -112,10 +109,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     const ac = new AbortController();
     (async () => {
       try {
-        const r = await fetch(
-          `${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`,
-          { signal: ac.signal }
-        );
+        const r = await fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`, { signal: ac.signal });
         const d = await r.json();
         setTracks(d);
         if (!d?.length) {
@@ -138,10 +132,9 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     const ac = new AbortController();
     (async () => {
       try {
-        const r = await fetch(
-          `${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`,
-          { signal: ac.signal }
-        );
+        const r = await fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`, {
+          signal: ac.signal,
+        });
         const d = await r.json();
         setCompetitions(d);
         const ok = d?.some((c) => c.id === +selectedCompetition);
@@ -160,14 +153,12 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     const ac = new AbortController();
     (async () => {
       try {
-        const r = await fetch(
-          `${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`,
-          { signal: ac.signal }
-        );
+        const r = await fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`, {
+          signal: ac.signal,
+        });
         const d = await r.json();
         setLaps(d || []);
 
-        // Respektera önskat lapId om det finns (för att undvika race)
         const desired = pendingLapRef.current;
         if (desired && d?.some((l) => l.id === +desired)) {
           setSelectedLap(desired);
@@ -186,47 +177,22 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   }, [selectedCompetition]);
 
   const callouts = [
-    {
-      id: 2,
-      name: "Analys",
-      bgColor: "bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600",
-      view: "spider",
-    },
-    {
-      id: 3,
-      name: "Tabell",
-      bgColor: "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600",
-      view: "table",
-    },
-    {
-      id: 4,
-      name: "Speltips",
-      bgColor: "bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600",
-      view: "skrallar",
-    },
+    { id: 2, name: "Analys", bgColor: "bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600", view: "spider" },
+    { id: 3, name: "Tabell", bgColor: "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600", view: "table" },
+    { id: 4, name: "Speltips", bgColor: "bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600", view: "skrallar" },
   ];
 
   return (
     <div className="text-center pt-12 pb-12 sm:pt-16 sm:pb-14 bg-slate-100">
       <div className="flex justify-center gap-x-4 sm:gap-x-10 flex-nowrap overflow-auto mb-4 sm:mb-8 pt-2 pb-3">
         {callouts.map((c) => (
-          <div
-            key={c.id}
-            className="group relative cursor-pointer"
-            onClick={() => switchView(c.view)}
-          >
+          <div key={c.id} className="group relative cursor-pointer" onClick={() => switchView(c.view)}>
             <div
-              className={`${
-                c.bgColor
-              } relative h-14 w-24 sm:w-72 sm:h-18 mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
-                selectedView === c.view
-                  ? "ring-2 ring-slate-800 scale-110 opacity-100 cursor-default"
-                  : "hover:opacity-70"
+              className={`${c.bgColor} relative h-14 w-24 sm:w-72 sm:h-18 mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
+                selectedView === c.view ? "ring-2 ring-slate-800 scale-110 opacity-100 cursor-default" : "hover:opacity-70"
               }`}
             >
-              <h3 className="sm:text-2xl font-semibold text-white text-center">
-                {c.name}
-              </h3>
+              <h3 className="sm:text-2xl font-semibold text-white text-center">{c.name}</h3>
             </div>
           </div>
         ))}
@@ -264,22 +230,20 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 selectedLap={selectedLap}
                 setSelectedLap={setSelectedLap}
                 selectedHorse={selectedHorse}
+                onVisibleChange={setVisibleHorseIdxes} //Changed!
               />
             </div>
             <div className="min-h-[400px]">
               <AnalysChart
                 selectedLap={selectedLap}
                 selectedHorse={selectedHorse}
+                visibleHorseIdxes={visibleHorseIdxes} //Changed!
               />
             </div>
           </div>
         )}
 
-        <div
-          className={`${
-            selectedView === "table" ? "" : "hidden"
-          } min-h-[600px]`}
-        >
+        <div className={`${selectedView === "table" ? "" : "hidden"} min-h-[600px]`}>
           <PaginatedLapTable
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
@@ -296,11 +260,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           />
         </div>
 
-        <div
-          className={`${
-            selectedView === "skrallar" ? "" : "hidden"
-          } min-h-[600px]`}
-        >
+        <div className={`${selectedView === "skrallar" ? "" : "hidden"} min-h-[600px]`}>
           <Skrallar
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}

@@ -58,26 +58,26 @@ const SpiderChart = ({
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // ❌ All hämtning av datum/banor/spelformer/lopp är borttagen här 
+  // ❌ All hämtning av datum/banor/spelformer/lopp är borttagen här //Changed!
 
-  // ✅ Hämta endast radar-datasets 
-  useEffect(() => {                            
-    if (!selectedLap) return;                  
-    const ac = new AbortController();          
-    setLoading(true);                          
+  // ✅ Hämta endast radar-datasets //Changed!
+  useEffect(() => {                            //Changed!
+    if (!selectedLap) return;                  //Changed!
+    const ac = new AbortController();          //Changed!
+    setLoading(true);                          //Changed!
 
-    (async () => {                             
-      try {                                    
-        const r = await fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`, { signal: ac.signal }); 
-        if (!r.ok) throw new Error(r.statusText); 
-        const completeHorses = await r.json();  
+    (async () => {                             //Changed!
+      try {                                    //Changed!
+        const r = await fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`, { signal: ac.signal }); //Changed!
+        if (!r.ok) throw new Error(r.statusText); //Changed!
+        const completeHorses = await r.json();  //Changed!
 
-        const arr = await Promise.all(         
+        const arr = await Promise.all(         //Changed!
           completeHorses.map(async (horse, idx) => {
-            const rs = await fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`, { signal: ac.signal }); 
-            if (!rs.ok) throw new Error(rs.statusText); 
-            const fs = await rs.json();        
-            return { idx, horse, fs };         
+            const rs = await fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`, { signal: ac.signal }); //Changed!
+            if (!rs.ok) throw new Error(rs.statusText); //Changed!
+            const fs = await rs.json();        //Changed!
+            return { idx, horse, fs };         //Changed!
           })
         );
 
@@ -101,20 +101,20 @@ const SpiderChart = ({
           hidden: selectedHorse !== null ? i !== selectedHorse : !top5Idx.includes(i),
         }));
 
-        if (!ac.signal.aborted) {              
-          setData((p) => ({ ...p, datasets })); 
-          setLoading(false);                    
-        }                                       
-      } catch (e) {                             
-        if (ac.signal.aborted) return;          
-        console.error("data:", e);              
-        setError(e.message);                    
-        setLoading(false);                      
-      }                                         
-    })();                                       
+        if (!ac.signal.aborted) {              //Changed!
+          setData((p) => ({ ...p, datasets })); //Changed!
+          setLoading(false);                    //Changed!
+        }                                       //Changed!
+      } catch (e) {                             //Changed!
+        if (ac.signal.aborted) return;          //Changed!
+        console.error("data:", e);              //Changed!
+        setError(e.message);                    //Changed!
+        setLoading(false);                      //Changed!
+      }                                         //Changed!
+    })();                                       //Changed!
 
-    return () => ac.abort();                    
-  }, [selectedLap, selectedHorse]);             
+    return () => ac.abort();                    //Changed!
+  }, [selectedLap, selectedHorse]);             //Changed!
 
   useEffect(() => {
     let t;
