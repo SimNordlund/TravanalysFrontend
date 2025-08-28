@@ -1,11 +1,11 @@
 import React from "react";
 
 const SharedHorseLegend = ({
-  items,            // [{ idx, label, color }]
-  visibleIdxes,     // number[]
-  onToggle,         // (idx) => void
-  onShowAll,        // () => void
-  onHideAll,        // () => void
+  items,          
+  visibleIdxes,     
+  onToggle,         
+  onShowAll,      
+  onShowTop5,       
 }) => {
   const isVisible = (i) => visibleIdxes?.includes(i);
 
@@ -19,10 +19,10 @@ const SharedHorseLegend = ({
           Visa alla
         </button>
         <button
-          onClick={onHideAll}
+          onClick={onShowTop5}
           className="px-2 py-1 text-xs rounded bg-gray-200 hover:bg-gray-300"
         >
-          Dölj alla
+          Visa topp 5
         </button>
       </div>
 

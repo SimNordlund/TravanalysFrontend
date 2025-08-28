@@ -77,6 +77,7 @@ const SpiderChart = ({
           onMetaChange?.({
             items: raw.map((ds, i) => ({ idx: i, label: ds.label, color: ds.backgroundColor })),
             suggestedVisibleIdxes,
+             top5Idx,
           });
         }
       } catch (e) {
