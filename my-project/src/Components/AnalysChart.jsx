@@ -73,8 +73,8 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes }) => {
               label: `${x.horse.numberOfCompleteHorse}. ${x.horse.nameOfCompleteHorse}`,
               data: [x.fs.a1 ?? 0, x.fs.a2 ?? 0, x.fs.a3 ?? 0, x.fs.a4 ?? 0, x.fs.a5 ?? 0],
               backgroundColor: color,
-              borderColor: stroke,
-              borderWidth: 2,
+              borderColor: "rgba(0,0,0,1)",
+              borderWidth: 0.5,
             };
           });
 
