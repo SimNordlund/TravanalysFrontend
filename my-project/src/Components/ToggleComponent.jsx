@@ -202,7 +202,6 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 tracks={tracks}
                 competitions={competitions}
                 laps={laps}
-                // IMPORTANT: keep BarChart legend + click behavior
                 setSelectedView={setViewAndMaybeNavigate}
                 setSelectedHorse={setSelectedHorse}
                 setVisibleHorseIdxes={setVisibleHorseIdxes}

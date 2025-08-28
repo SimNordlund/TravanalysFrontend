@@ -12,12 +12,12 @@ const SharedHorseLegend = ({
 
   return (
     <div className="w-full">
-      <div className="flex gap-2 mb-4">
-        <button
-          onClick={onShowAll}
-          className="px-3 py-1 text-xs rounded bg-orange-500 hover:bg-orange-800 text-1xl font-semibold tracking-tight text-white sm:text-1xl shadow-md"
+      <div className="flex gap-2 mb:gap-3 mb-4">
+                <button
+          onClick={onShowTop3}      
+          className="px-2 py-1 text-xs rounded bg-orange-500 hover:bg-orange-800 text-1xl font-semibold tracking-tight text-white sm:text-1xl shadow-md"
         >
-          Visa alla
+          Visa topp 3              
         </button>
         <button
           onClick={onShowTop5}
@@ -26,10 +26,10 @@ const SharedHorseLegend = ({
           Visa topp 5
         </button>
         <button
-          onClick={onShowTop3}      
-          className="px-2 py-1 text-xs rounded bg-orange-500 hover:bg-orange-800 text-1xl font-semibold tracking-tight text-white sm:text-1xl shadow-md"
+          onClick={onShowAll}
+          className="px-3 py-1 text-xs rounded bg-orange-500 hover:bg-orange-800 text-1xl font-semibold tracking-tight text-white sm:text-1xl shadow-md"
         >
-          Visa topp 3              
+          Visa alla
         </button>
       </div>
 
