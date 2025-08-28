@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react"; 
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import SpiderChart from "./SpiderChart";
 import BarChart from "../BarChart";
 import PaginatedLapTable from "./PaginatedLapTable";
 import Skrallar from "./Skrallar";
+import AnalysChart from "./AnalysChart";
 
 const ToggleComponent = ({ syncWithRoute = false }) => {
   const { view: viewParam } = useParams();
@@ -39,10 +40,10 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [laps, setLaps] = useState([]);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const pendingLapRef = useRef(null);                 
-  const setPendingLapId = (lapId) => {                
-    pendingLapRef.current = lapId;                    
-  };                                                  
+  const pendingLapRef = useRef(null);
+  const setPendingLapId = (lapId) => {
+    pendingLapRef.current = lapId;
+  };
 
   // Sync via URL
   useEffect(() => {
@@ -166,13 +167,13 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         const d = await r.json();
         setLaps(d || []);
 
-        // Respektera önskat lapId om det finns (för att undvika race) 
-        const desired = pendingLapRef.current;                       
-        if (desired && d?.some((l) => l.id === +desired)) {          
-          setSelectedLap(desired);                                   
-          pendingLapRef.current = null;                              
-          return;                                                    
-        }                                                            
+        // Respektera önskat lapId om det finns (för att undvika race)
+        const desired = pendingLapRef.current;
+        if (desired && d?.some((l) => l.id === +desired)) {
+          setSelectedLap(desired);
+          pendingLapRef.current = null;
+          return;
+        }
 
         const ok = d?.some((l) => l.id === +selectedLap);
         if (!ok && d?.length) setSelectedLap(d[0].id);
@@ -185,9 +186,24 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   }, [selectedCompetition]);
 
   const callouts = [
-    { id: 2, name: "Analys",  bgColor: "bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600", view: "spider" },
-    { id: 3, name: "Tabell",  bgColor: "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600", view: "table" },
-    { id: 4, name: "Speltips", bgColor: "bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600", view: "skrallar" },
+    {
+      id: 2,
+      name: "Analys",
+      bgColor: "bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600",
+      view: "spider",
+    },
+    {
+      id: 3,
+      name: "Tabell",
+      bgColor: "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600",
+      view: "table",
+    },
+    {
+      id: 4,
+      name: "Speltips",
+      bgColor: "bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600",
+      view: "skrallar",
+    },
   ];
 
   return (
@@ -200,13 +216,17 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             onClick={() => switchView(c.view)}
           >
             <div
-              className={`${c.bgColor} relative h-14 w-24 sm:w-72 sm:h-18 mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
+              className={`${
+                c.bgColor
+              } relative h-14 w-24 sm:w-72 sm:h-18 mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
                 selectedView === c.view
                   ? "ring-2 ring-slate-800 scale-110 opacity-100 cursor-default"
                   : "hover:opacity-70"
               }`}
             >
-              <h3 className="sm:text-2xl font-semibold text-white text-center">{c.name}</h3>
+              <h3 className="sm:text-2xl font-semibold text-white text-center">
+                {c.name}
+              </h3>
             </div>
           </div>
         ))}
@@ -246,10 +266,20 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 selectedHorse={selectedHorse}
               />
             </div>
+            <div className="min-h-[400px]">
+              <AnalysChart
+                selectedLap={selectedLap}
+                selectedHorse={selectedHorse}
+              />
+            </div>
           </div>
         )}
 
-        <div className={`${selectedView === "table" ? "" : "hidden"} min-h-[600px]`}>
+        <div
+          className={`${
+            selectedView === "table" ? "" : "hidden"
+          } min-h-[600px]`}
+        >
           <PaginatedLapTable
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
@@ -266,7 +296,11 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           />
         </div>
 
-        <div className={`${selectedView === "skrallar" ? "" : "hidden"} min-h-[600px]`}>
+        <div
+          className={`${
+            selectedView === "skrallar" ? "" : "hidden"
+          } min-h-[600px]`}
+        >
           <Skrallar
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
@@ -280,7 +314,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             setSelectedHorse={setSelectedHorse}
             dates={dates}
             tracks={tracks}
-            setPendingLapId={setPendingLapId}         
+            setPendingLapId={setPendingLapId}
           />
         </div>
       </div>
