@@ -12,7 +12,7 @@ const SharedHorseLegend = ({
 
   return (
     <div className="w-full">
-      <div className="flex gap-2 mb-2">
+      <div className="flex gap-2 mb-4">
         <button
           onClick={onShowAll}
           className="px-3 py-1 text-xs rounded bg-orange-500 hover:bg-orange-800 text-1xl font-semibold tracking-tight text-white sm:text-1xl shadow-md"
