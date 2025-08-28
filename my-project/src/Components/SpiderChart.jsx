@@ -122,7 +122,7 @@ const SpiderChart = ({
   };
 
   return (
-    <div className="flex flex-col mt-1 px-2 pb-4">
+    <div className="flex flex-col mt-0 px-2 pb-4">
       <div className="w-full max-w-[490px] mx-auto">
         <div className="relative w-full aspect-square">
           {data.datasets.length > 0 && !loading && <Radar data={data} options={options} />}
