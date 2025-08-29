@@ -78,7 +78,7 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes }) => {
             };
           });
 
-        setData({ labels: ["A1", "A2", "A3", "A4", "A5", "A6"], datasets });
+        setData({ labels: ["Delanalys 1", "Delanalys 2", "Delanalys 3", "Delanalys 4", "Delanalys 5", "Delanalys 6"], datasets });
         setTitle(datasets.length === 1 ? datasets[0].label : `${datasets.length} hästar`);
         setLoading(false);
       } catch (e) {
