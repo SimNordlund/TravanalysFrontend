@@ -177,7 +177,7 @@ const SpiderChart = ({
   };
 
   return (
-    <div className="flex flex-col mt-0 px-2 pb-4 mb-2 sm:mb-0">
+    <div className="flex flex-col mt-0 px-2 pb-2 mb-2 sm:mb-0">
       <div className="w-full max-w-[490px] mx-auto">
         <div className="relative w-full aspect-square">
           {data.datasets.length > 0 && !loading && (
