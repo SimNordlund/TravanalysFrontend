@@ -35,11 +35,21 @@ const BarChartComponent = ({
     idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
   const horseColors = [
-    "rgba(0, 0, 255, 0.5)","rgba(255, 165, 0, 0.5)","rgba(255, 0, 0, 0.5)",
-    "rgba(0, 100, 0, 0.5)","rgba(211, 211, 211, 0.5)","rgba(0, 0, 0, 0.5)",
-    "rgba(255, 255, 0, 0.5)","rgba(173, 216, 230, 0.5)","rgba(165, 42, 42, 0.5)",
-    "rgba(0, 0, 139, 0.5)","rgba(204, 204, 0, 0.5)","rgba(105, 105, 105, 0.5)",
-    "rgba(255, 192, 203, 0.5)","rgba(255, 140, 0, 0.5)","rgba(128, 0, 128, 0.5)",
+    "rgba(0, 0, 255, 0.5)",
+    "rgba(255, 165, 0, 0.5)",
+    "rgba(255, 0, 0, 0.5)",
+    "rgba(0, 100, 0, 0.5)",
+    "rgba(211, 211, 211, 0.5)",
+    "rgba(0, 0, 0, 0.5)",
+    "rgba(255, 255, 0, 0.5)",
+    "rgba(173, 216, 230, 0.5)",
+    "rgba(165, 42, 42, 0.5)",
+    "rgba(0, 0, 139, 0.5)",
+    "rgba(204, 204, 0, 0.5)",
+    "rgba(105, 105, 105, 0.5)",
+    "rgba(255, 192, 203, 0.5)",
+    "rgba(255, 140, 0, 0.5)",
+    "rgba(128, 0, 128, 0.5)",
   ];
 
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640);
@@ -165,7 +175,10 @@ const BarChartComponent = ({
     maintainAspectRatio: false,
     scales: {
       y: { beginAtZero: true, minBarLength: 10 },
-      x: { stacked: true, ticks: { autoSkip: false, maxRotation: 0, padding: 2 } },
+      x: {
+        stacked: true,
+        ticks: { autoSkip: false, maxRotation: 0, padding: 2 },
+      },
     },
     plugins: {
       legend: {
@@ -188,8 +201,12 @@ const BarChartComponent = ({
     const date = new Date(d);
     if (Number.isNaN(date.getTime())) return "";
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
-    const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
+    const capitalizedWeekday =
+      weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    const rest = date.toLocaleDateString("sv-SE", {
+      day: "numeric",
+      month: "long",
+    });
     return `${capitalizedWeekday}, ${rest}`;
   };
 
@@ -207,10 +224,12 @@ const BarChartComponent = ({
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad";
 
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "v75";
+    competitions.find((c) => c.id === +selectedCompetition)
+      ?.nameOfCompetition ?? "v75";
 
   const compName =
-    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "";
+    competitions.find((c) => c.id === +selectedCompetition)
+      ?.nameOfCompetition ?? "";
 
   const lapPrefix = /proposition/i.test(compName)
     ? "Prop"
@@ -227,7 +246,11 @@ const BarChartComponent = ({
       </p>
 
       <div className="flex items-center justify-between mb-4">
-        <button onClick={goPrev} disabled={idx <= 0 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
+        <button
+          onClick={goPrev}
+          disabled={idx <= 0 || loading}
+          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
+        >
           &#8592;
         </button>
 
@@ -238,7 +261,11 @@ const BarChartComponent = ({
           max={dates[dates.length - 1]?.date}
         />
 
-        <button onClick={goNext} disabled={idx >= dates.length - 1 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
+        <button
+          onClick={goNext}
+          disabled={idx >= dates.length - 1 || loading}
+          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
+        >
           &#8594;
         </button>
       </div>
@@ -250,7 +277,9 @@ const BarChartComponent = ({
             onClick={() => setSelectedTrack(t.id)}
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              t.id === +selectedTrack ? "bg-emerald-500 text-white font-semibold shadow" : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              t.id === +selectedTrack
+                ? "bg-emerald-500 text-white font-semibold shadow"
+                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
           >
             {t.nameOfTrack}
@@ -265,7 +294,9 @@ const BarChartComponent = ({
             onClick={() => setSelectedCompetition(c.id)}
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              c.id === +selectedCompetition ? "bg-teal-600 text-white font-semibold shadow" : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              c.id === +selectedCompetition
+                ? "bg-teal-600 text-white font-semibold shadow"
+                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
           >
             {c.nameOfCompetition}
@@ -292,15 +323,29 @@ const BarChartComponent = ({
         ) : (
           <div className="flex gap-2">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-gray-300 rounded w-16 h-6 sm:w-20 sm:h-8 animate-pulse" />
+              <div
+                key={i}
+                className="bg-gray-300 rounded w-16 h-6 sm:w-20 sm:h-8 animate-pulse"
+              />
             ))}
           </div>
         )}
       </div>
 
+      <div className="w-full text-center mb-1">
+        <p className="text-sm sm:text-base text-slate-700 font-semibold">
+          Analys
+        </p>
+      </div>
+
       {/* BarChart-specific legend for phones only (unchanged) */}
       <div className="self-start flex flex-wrap">
-        <ul ref={legendRef} className={isSmallScreen ? "grid grid-cols-1 gap-2 mb-2 text-xs" : "hidden"} />
+        <ul
+          ref={legendRef}
+          className={
+            isSmallScreen ? "grid grid-cols-1 gap-2 mb-2 text-xs" : "hidden"
+          }
+        />
       </div>
 
       <div className="w-full flex justify-center">
@@ -321,7 +366,11 @@ const BarChartComponent = ({
 
           {showSpinner && loading && (
             <div className="flex flex-col items-center">
-              <img src={travhorsi} alt="Loading…" className="h-24 w-24 animate-spin" />
+              <img
+                src={travhorsi}
+                alt="Loading…"
+                className="h-24 w-24 animate-spin"
+              />
             </div>
           )}
         </div>
