@@ -71,14 +71,14 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes }) => {
             const stroke = color.replace("0.5", "1");
             return {
               label: `${x.horse.numberOfCompleteHorse}. ${x.horse.nameOfCompleteHorse}`,
-              data: [x.fs.a1 ?? 0, x.fs.a2 ?? 0, x.fs.a3 ?? 0, x.fs.a4 ?? 0, x.fs.a5 ?? 0],
+              data: [x.fs.a1 ?? 0, x.fs.a2 ?? 0, x.fs.a3 ?? 0, x.fs.a4 ?? 0, x.fs.a5 ?? 0, x.fs.a6 ?? 0],
               backgroundColor: color,
               borderColor: "rgba(0,0,0,1)",
               borderWidth: 0.5,
             };
           });
 
-        setData({ labels: ["A1", "A2", "A3", "A4", "A5"], datasets });
+        setData({ labels: ["A1", "A2", "A3", "A4", "A5", "A6"], datasets });
         setTitle(datasets.length === 1 ? datasets[0].label : `${datasets.length} hästar`);
         setLoading(false);
       } catch (e) {
