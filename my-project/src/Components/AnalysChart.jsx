@@ -18,7 +18,7 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes }) => {
   const [error, setError] = useState(null);
 
   const [title, setTitle] = useState("");
-  const [data, setData] = useState({ labels: ["Delanalys 1", "Delanalys 2", "Delanalys 3", "Delanalys 4", "Delanalys 5"], datasets: [] });
+  const [data, setData] = useState({ labels: ["Delanalys 1", "Delanalys 2", "Delanalys 3", "Delanalys 4", "Delanalys 5", "Analys"], datasets: [] });
 
   useEffect(() => {
     let t;
@@ -78,7 +78,7 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes }) => {
             };
           });
 
-        setData({ labels: ["Delanalys 1", "Delanalys 2", "Delanalys 3", "Delanalys 4", "Delanalys 5", "Delanalys 6"], datasets });
+        setData({ labels: ["Delanalys 1", "Delanalys 2", "Delanalys 3", "Delanalys 4", "Delanalys 5", "Analys"], datasets });
         setTitle(datasets.length === 1 ? datasets[0].label : `${datasets.length} hästar`);
         setLoading(false);
       } catch (e) {
