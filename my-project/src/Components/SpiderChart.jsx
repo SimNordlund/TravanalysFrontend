@@ -100,13 +100,13 @@ const SpiderChart = ({
         }));
 
         const top3Idx = arr
-          .map((x) => ({ i: x.idx, val: x.fs.styrka ?? 0 }))
+          .map((x) => ({ i: x.idx, val: x.fs.analys ?? 0 }))
           .sort((a, b) => b.val - a.val)
           .slice(0, 3)
           .map((x) => x.i);
 
         const top5Idx = arr
-          .map((x) => ({ i: x.idx, val: x.fs.styrka ?? 0 }))
+          .map((x) => ({ i: x.idx, val: x.fs.analys ?? 0 }))
           .sort((a, b) => b.val - a.val)
           .slice(0, 5)
           .map((x) => x.i);

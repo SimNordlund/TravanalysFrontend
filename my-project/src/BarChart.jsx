@@ -124,7 +124,7 @@ const BarChartComponent = ({
     return () => clearTimeout(t);
   }, [loading]);
 
-  // ✅ Restore: click a bar → show only that horse in Spider + Analys
+  // Restore: click a bar → show only that horse in Spider + Analys
   const handleBarClick = (evt) => {
     if (!chartRef.current) return;
     const els = getElementAtEvent(chartRef.current, evt);

@@ -56,7 +56,7 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes }) => {
             indicesToShow = [selectedHorse];
           } else {
             indicesToShow = all
-              .map((x) => ({ i: x.idx, val: x.fs.styrka ?? 0 }))
+              .map((x) => ({ i: x.idx, val: x.fs.analys ?? 0 }))
               .sort((a, b) => b.val - a.val)
               .slice(0, 5)
               .map((x) => x.i);
