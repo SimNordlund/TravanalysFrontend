@@ -18,7 +18,7 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes }) => {
   const [error, setError] = useState(null);
 
   const [title, setTitle] = useState("");
-  const [data, setData] = useState({ labels: ["A1", "A2", "A3", "A4", "A5"], datasets: [] });
+  const [data, setData] = useState({ labels: ["Delanalys 1", "Delanalys 2", "Delanalys 3", "Delanalys 4", "Delanalys 5"], datasets: [] });
 
   useEffect(() => {
     let t;
