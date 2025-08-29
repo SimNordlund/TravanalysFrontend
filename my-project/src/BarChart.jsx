@@ -332,7 +332,7 @@ const BarChartComponent = ({
         )}
       </div>
 
-      <div className="w-full text-center mb-1">
+      <div className="w-full text-center mb-1 hidden sm:block">
         <p className="text-sm sm:text-base text-slate-700 font-semibold">
           Analys
         </p>
@@ -346,6 +346,12 @@ const BarChartComponent = ({
             isSmallScreen ? "grid grid-cols-1 gap-2 mb-2 text-xs" : "hidden"
           }
         />
+      </div>
+
+      <div className="w-full text-center mb-1 sm:hidden">
+        <p className="text-sm sm:text-base text-slate-700 font-semibold">
+          Analys
+        </p>
       </div>
 
       <div className="w-full flex justify-center">
