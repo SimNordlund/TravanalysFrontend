@@ -167,8 +167,15 @@ const SpiderChart = ({
         suggestedMax: 100,
         pointLabels: {
           padding: 5,
-          font: { size: 12, weight: "bold" },
-          color: "#000",
+          // text-sm (14px) på små skärmar, sm:text-base (16px) på större   //Changed!
+          font: (ctx) => ({
+            //Changed!
+            size: ctx.chart.width < 640 ? 14 : 16, //Changed!
+            weight: 500, // ≈ font-semibold                     //Changed!
+            family:
+              "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto", //Changed!
+          }),
+          color: "#334155", 
         },
         ticks: { display: false },
       },
