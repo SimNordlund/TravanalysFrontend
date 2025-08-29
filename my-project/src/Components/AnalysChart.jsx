@@ -115,7 +115,7 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes }) => {
     <div className="flex flex-col justify-center items-center mt-1 sm:mt-0 px-2 pb-10">
       <div className="w-full text-center mb-1">
         <p className="text-sm sm:text-base text-slate-700 font-semibold">
-          Från detalj till total analys
+          Från Delanalyser till Analys
         </p>
       </div>
 
