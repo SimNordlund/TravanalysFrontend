@@ -169,12 +169,12 @@ const SpiderChart = ({
           padding: 5,
           font: (ctx) => ({
             //Changed!
-            size: ctx.chart.width < 640 ? 13 : 15, 
-            weight: 500, // font-semibold                     
+            size: ctx.chart.width < 640 ? 13 : 15,
+            weight: 500, // font-semibold
             family:
-              "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto", 
+              "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto",
           }),
-          color: "#334155", 
+          color: "#334155",
         },
         ticks: { display: false },
       },
@@ -184,6 +184,11 @@ const SpiderChart = ({
 
   return (
     <div className="flex flex-col mt-0 px-2 pb-2 mb-2 sm:mb-0">
+      <div className="w-full text-center mb-0">
+        <p className="text-sm sm:text-base text-slate-700 font-semibold">
+          Analysperspektiven
+        </p>
+      </div>
       <div className="w-full max-w-[490px] mx-auto">
         <div className="relative w-full aspect-square">
           {data.datasets.length > 0 && !loading && (
