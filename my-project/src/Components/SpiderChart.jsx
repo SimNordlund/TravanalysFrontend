@@ -14,7 +14,7 @@ const SpiderChart = ({
   selectedHorse,
   visibleHorseIdxes, // from parent
   onMetaChange, // report legend items + suggested visible
-  startsType,   //Changed!
+  startsType,
 }) => {
   const horseColors = [
     "rgba(0, 0, 255, 0.5)",
@@ -70,9 +70,14 @@ const SpiderChart = ({
 
         const arr = await Promise.all(
           horses.map(async (horse, idx) => {
-            const endpoint = startsType === "eight" ? "eightStarts" : "fourStarts"; //Changed!
+            const endpoint =
+              startsType === "eight"
+                ? "eightStarts"
+                : startsType === "twelve"
+                ? "twelveStarts"
+                : "fourStarts";
             const rs = await fetch(
-              `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${horse.id}`,   //Changed!
+              `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${horse.id}`,
               { signal: ac.signal }
             );
             if (!rs.ok) throw new Error(rs.statusText);
@@ -138,7 +143,7 @@ const SpiderChart = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, selectedHorse, startsType]); //Changed!
+  }, [selectedLap, selectedHorse, startsType]);
 
   // apply visibility from parent
   useEffect(() => {
@@ -170,7 +175,6 @@ const SpiderChart = ({
         pointLabels: {
           padding: 5,
           font: (ctx) => ({
-            //Changed!
             size: ctx.chart.width < 640 ? 13 : 15,
             weight: 500, // font-semibold
             family:

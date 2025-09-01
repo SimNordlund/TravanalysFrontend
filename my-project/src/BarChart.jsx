@@ -20,8 +20,8 @@ const BarChartComponent = ({
   setSelectedView,
   setSelectedHorse,
   setVisibleHorseIdxes, //  to sync shared legend
-  startsType, //Changed!
-  setStartsType, //Changed!
+  startsType, 
+  setStartsType, 
 }) => {
   const legendRef = useRef(null);
   const chartRef = useRef(null);
@@ -88,9 +88,13 @@ const BarChartComponent = ({
         const datasets = await Promise.all(
           completeHorses.map(async (horse, idx) => {
             const endpoint =
-              startsType === "eight" ? "eightStarts" : "fourStarts"; //Changed!
+              startsType === "eight"
+                ? "eightStarts"
+                : startsType === "twelve"
+                ? "twelveStarts"
+                : "fourStarts";
             const rs = await fetch(
-              `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${horse.id}`, //Changed!
+              `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${horse.id}`,
               { signal: ac.signal }
             );
             if (!rs.ok) throw new Error(rs.statusText);
@@ -119,7 +123,7 @@ const BarChartComponent = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, startsType]); //Changed!
+  }, [selectedLap, startsType]); 
 
   useEffect(() => {
     let t;
@@ -358,6 +362,17 @@ const BarChartComponent = ({
           } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
         >
           Underlag Y
+        </button>
+        <button
+          onClick={() => setStartsType("twelve")}
+          disabled={loading}
+          className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+            startsType === "twelve"
+              ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+              : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+          } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+        >
+          Underlag Z
         </button>
       </div>
 

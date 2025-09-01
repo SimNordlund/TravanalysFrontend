@@ -3,14 +3,29 @@ import { Bar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
 
 const horseColors = [
-  "rgba(0, 0, 255, 0.5)","rgba(255, 165, 0, 0.5)","rgba(255, 0, 0, 0.5)",
-  "rgba(0, 100, 0, 0.5)","rgba(211, 211, 211, 0.5)","rgba(0, 0, 0, 0.5)",
-  "rgba(255, 255, 0, 0.5)","rgba(173, 216, 230, 0.5)","rgba(165, 42, 42, 0.5)",
-  "rgba(0, 0, 139, 0.5)","rgba(204, 204, 0, 0.5)","rgba(105, 105, 105, 0.5)",
-  "rgba(255, 192, 203, 0.5)","rgba(255, 140, 0, 0.5)","rgba(128, 0, 128, 0.5)",
+  "rgba(0, 0, 255, 0.5)",
+  "rgba(255, 165, 0, 0.5)",
+  "rgba(255, 0, 0, 0.5)",
+  "rgba(0, 100, 0, 0.5)",
+  "rgba(211, 211, 211, 0.5)",
+  "rgba(0, 0, 0, 0.5)",
+  "rgba(255, 255, 0, 0.5)",
+  "rgba(173, 216, 230, 0.5)",
+  "rgba(165, 42, 42, 0.5)",
+  "rgba(0, 0, 139, 0.5)",
+  "rgba(204, 204, 0, 0.5)",
+  "rgba(105, 105, 105, 0.5)",
+  "rgba(255, 192, 203, 0.5)",
+  "rgba(255, 140, 0, 0.5)",
+  "rgba(128, 0, 128, 0.5)",
 ];
 
-const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes, startsType }) => { //Changed!
+const AnalysChart = ({
+  selectedLap,
+  selectedHorse,
+  visibleHorseIdxes,
+  startsType,
+}) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [loading, setLoading] = useState(true);
@@ -18,7 +33,17 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes, startsType
   const [error, setError] = useState(null);
 
   const [title, setTitle] = useState("");
-  const [data, setData] = useState({ labels: ["Delanalys 1", "Delanalys 2", "Delanalys 3", "Delanalys 4", "Delanalys 5", "Analys"], datasets: [] });
+  const [data, setData] = useState({
+    labels: [
+      "Delanalys 1",
+      "Delanalys 2",
+      "Delanalys 3",
+      "Delanalys 4",
+      "Delanalys 5",
+      "Analys",
+    ],
+    datasets: [],
+  });
 
   useEffect(() => {
     let t;
@@ -35,14 +60,25 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes, startsType
 
     (async () => {
       try {
-        const r = await fetch(`${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`, { signal: ac.signal });
+        const r = await fetch(
+          `${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`,
+          { signal: ac.signal }
+        );
         if (!r.ok) throw new Error(r.statusText);
         const horses = await r.json();
 
         const all = await Promise.all(
           horses.map(async (horse, idx) => {
-            const endpoint = startsType === "eight" ? "eightStarts" : "fourStarts"; //Changed!
-            const rs = await fetch(`${API_BASE_URL}/${endpoint}/findData?completeHorseId=${horse.id}`, { signal: ac.signal }); //Changed!
+            const endpoint =
+              startsType === "eight"
+                ? "eightStarts"
+                : startsType === "twelve"
+                ? "twelveStarts"
+                : "fourStarts";
+            const rs = await fetch(
+              `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${horse.id}`,
+              { signal: ac.signal }
+            );
             if (!rs.ok) throw new Error(rs.statusText);
             const fs = await rs.json();
             return { idx, horse, fs };
@@ -50,7 +86,9 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes, startsType
         );
 
         let indicesToShow =
-          Array.isArray(visibleHorseIdxes) && visibleHorseIdxes.length ? [...visibleHorseIdxes] : null;
+          Array.isArray(visibleHorseIdxes) && visibleHorseIdxes.length
+            ? [...visibleHorseIdxes]
+            : null;
 
         if (!indicesToShow) {
           if (selectedHorse != null) {
@@ -72,15 +110,36 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes, startsType
             const stroke = color.replace("0.5", "1");
             return {
               label: `${x.horse.numberOfCompleteHorse}. ${x.horse.nameOfCompleteHorse}`,
-              data: [x.fs.a1 ?? 0, x.fs.a2 ?? 0, x.fs.a3 ?? 0, x.fs.a4 ?? 0, x.fs.a5 ?? 0, x.fs.a6 ?? 0],
+              data: [
+                x.fs.a1 ?? 0,
+                x.fs.a2 ?? 0,
+                x.fs.a3 ?? 0,
+                x.fs.a4 ?? 0,
+                x.fs.a5 ?? 0,
+                x.fs.a6 ?? 0,
+              ],
               backgroundColor: color,
               borderColor: "rgba(0,0,0,1)",
               borderWidth: 0.5,
             };
           });
 
-        setData({ labels: ["Delanalys 1", "Delanalys 2", "Delanalys 3", "Delanalys 4", "Delanalys 5", "Analys"], datasets });
-        setTitle(datasets.length === 1 ? datasets[0].label : `${datasets.length} hästar`);
+        setData({
+          labels: [
+            "Delanalys 1",
+            "Delanalys 2",
+            "Delanalys 3",
+            "Delanalys 4",
+            "Delanalys 5",
+            "Analys",
+          ],
+          datasets,
+        });
+        setTitle(
+          datasets.length === 1
+            ? datasets[0].label
+            : `${datasets.length} hästar`
+        );
         setLoading(false);
       } catch (e) {
         if (ac.signal.aborted) return;
@@ -91,7 +150,7 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes, startsType
     })();
 
     return () => ac.abort();
-  }, [selectedLap, selectedHorse, visibleHorseIdxes, startsType]); //Changed!
+  }, [selectedLap, selectedHorse, visibleHorseIdxes, startsType]);
 
   const options = {
     responsive: true,
@@ -122,7 +181,9 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes, startsType
 
       <div className="w-full max-w-[950px] mx-auto">
         <div className="relative w-full h-[300px] sm:h-[300px]">
-          {data?.datasets?.length > 0 && !loading && !error && <Bar data={data} options={options} />}
+          {data?.datasets?.length > 0 && !loading && !error && (
+            <Bar data={data} options={options} />
+          )}
           {!loading && !error && data?.datasets?.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-500">
               Ingen data.
@@ -133,7 +194,11 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes, startsType
               <div className="animate-spin h-10 w-10 border-4 border-indigo-400 border-t-transparent rounded-full" />
             </div>
           )}
-          {error && <div className="absolute inset-0 flex items-center justify-center text-red-600 text-sm">Error: {error}</div>}
+          {error && (
+            <div className="absolute inset-0 flex items-center justify-center text-red-600 text-sm">
+              Error: {error}
+            </div>
+          )}
         </div>
       </div>
     </div>
