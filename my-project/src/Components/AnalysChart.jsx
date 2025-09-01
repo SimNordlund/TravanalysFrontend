@@ -10,7 +10,7 @@ const horseColors = [
   "rgba(255, 192, 203, 0.5)","rgba(255, 140, 0, 0.5)","rgba(128, 0, 128, 0.5)",
 ];
 
-const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes }) => {
+const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes, startsType }) => { //Changed!
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,8 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes }) => {
 
         const all = await Promise.all(
           horses.map(async (horse, idx) => {
-            const rs = await fetch(`${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`, { signal: ac.signal });
+            const endpoint = startsType === "eight" ? "eightStarts" : "fourStarts"; //Changed!
+            const rs = await fetch(`${API_BASE_URL}/${endpoint}/findData?completeHorseId=${horse.id}`, { signal: ac.signal }); //Changed!
             if (!rs.ok) throw new Error(rs.statusText);
             const fs = await rs.json();
             return { idx, horse, fs };
@@ -90,7 +91,7 @@ const AnalysChart = ({ selectedLap, selectedHorse, visibleHorseIdxes }) => {
     })();
 
     return () => ac.abort();
-  }, [selectedLap, selectedHorse, visibleHorseIdxes]);
+  }, [selectedLap, selectedHorse, visibleHorseIdxes, startsType]); //Changed!
 
   const options = {
     responsive: true,

@@ -23,6 +23,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState(initialSelectedView);
   const [selectedHorse, setSelectedHorse] = useState(null);
+  const [startsType, setStartsType] = useState("four"); //Changed!
 
   const [visibleHorseIdxes, setVisibleHorseIdxes] = useState([]);
   const [horseLegendItems, setHorseLegendItems] = useState([]);
@@ -205,6 +206,8 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 setSelectedView={setViewAndMaybeNavigate}
                 setSelectedHorse={setSelectedHorse}
                 setVisibleHorseIdxes={setVisibleHorseIdxes}
+                startsType={startsType}                 //Changed!
+                setStartsType={setStartsType}           //Changed!
               />
             </div>
 
@@ -223,6 +226,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                   selectedHorse={selectedHorse}
                   visibleHorseIdxes={visibleHorseIdxes}
                   onMetaChange={handleMetaChange}
+                  startsType={startsType}               //Changed!
                 />
               </div>
               <div className="mt-0 ml-4 sm:mt-32 sm:justify-self-end sm:w-64 shrink-0">
@@ -242,6 +246,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 selectedLap={selectedLap}
                 selectedHorse={selectedHorse}
                 visibleHorseIdxes={visibleHorseIdxes}
+                startsType={startsType}                 //Changed!
               />
             </div>
           </div>

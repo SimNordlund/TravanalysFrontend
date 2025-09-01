@@ -19,7 +19,9 @@ const BarChartComponent = ({
   laps,
   setSelectedView,
   setSelectedHorse,
-  setVisibleHorseIdxes, // <-- NEW: to sync shared legend
+  setVisibleHorseIdxes, //  to sync shared legend
+  startsType, //Changed!
+  setStartsType, //Changed!
 }) => {
   const legendRef = useRef(null);
   const chartRef = useRef(null);
@@ -85,8 +87,10 @@ const BarChartComponent = ({
 
         const datasets = await Promise.all(
           completeHorses.map(async (horse, idx) => {
+            const endpoint =
+              startsType === "eight" ? "eightStarts" : "fourStarts"; //Changed!
             const rs = await fetch(
-              `${API_BASE_URL}/fourStarts/findData?completeHorseId=${horse.id}`,
+              `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${horse.id}`, //Changed!
               { signal: ac.signal }
             );
             if (!rs.ok) throw new Error(rs.statusText);
@@ -115,7 +119,7 @@ const BarChartComponent = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap]);
+  }, [selectedLap, startsType]); //Changed!
 
   useEffect(() => {
     let t;
@@ -135,7 +139,7 @@ const BarChartComponent = ({
     setSelectedView("spider");
   };
 
-  // Mobile legend (only for BarChart itself)
+  // Mobile legend
   const htmlLegendPlugin = {
     id: "htmlLegend",
     afterUpdate(chart) {
@@ -304,7 +308,7 @@ const BarChartComponent = ({
         ))}
       </div>
 
-      <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4">
+      <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-2">
         {laps.length > 0 ? (
           laps.map((lap) => (
             <button
@@ -313,7 +317,7 @@ const BarChartComponent = ({
               disabled={loading}
               className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
                 lap.id === +selectedLap
-                  ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                  ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
                   : "bg-gray-200 text-gray-700 hover:bg-blue-200"
               } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
@@ -332,13 +336,38 @@ const BarChartComponent = ({
         )}
       </div>
 
+      <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4">
+        <button
+          onClick={() => setStartsType("four")}
+          disabled={loading}
+          className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+            startsType === "four"
+              ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+              : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+          } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+        >
+          Underlag X
+        </button>
+        <button
+          onClick={() => setStartsType("eight")}
+          disabled={loading}
+          className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+            startsType === "eight"
+              ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+              : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+          } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+        >
+          Underlag Y
+        </button>
+      </div>
+
       <div className="w-full text-center mb-1 hidden sm:block">
         <p className="text-sm sm:text-base text-slate-700 font-semibold">
           Analys
         </p>
       </div>
 
-      {/* BarChart-specific legend for phones only (unchanged) */}
+      {/* BarChart-specific legend for phones only */}
       <div className="self-start flex flex-wrap">
         <ul
           ref={legendRef}
