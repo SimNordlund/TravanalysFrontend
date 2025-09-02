@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import DatePicker from "./DatePicker";
 
 const PaginatedLapTable = ({
@@ -14,13 +14,33 @@ const PaginatedLapTable = ({
   tracks,
   competitions,
   laps,
+
+  // OPTIONAL: if parent wants to sync underlag across views
+  startsType,          // "four" | "eight" | "twelve"
+  setStartsType,       // setter from parent (optional)
 }) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+  // If parent doesn't control underlag, keep our own local one
+  const [localStartsType, setLocalStartsType] = useState("four");
+  const activeStartsType = startsType ?? localStartsType;
+  const setActiveStartsType = setStartsType ?? setLocalStartsType;
+
   const [lapData, setLapData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: "asc",
+  });
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  // Underlag availability for current lap
+  const [availableStarts, setAvailableStarts] = useState({
+    four: false,
+    eight: false,
+    twelve: false,
+  });
+  const [availLoading, setAvailLoading] = useState(false);
 
   const competitionName =
     competitions.find((c) => c.id === +selectedCompetition)
@@ -31,32 +51,145 @@ const PaginatedLapTable = ({
     [lapData]
   );
 
-  // Hämta ENBART tabellrader för valt lopp
+  // ---- Compute which start-types exist for the current lap (controls underlag buttons)
   useEffect(() => {
-    if (!selectedLap) return;
+    if (!selectedLap || !API_BASE_URL) return;
+    const ac = new AbortController();
+    setAvailLoading(true);
+
+    (async () => {
+      try {
+        const r = await fetch(
+          `${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`,
+          { signal: ac.signal }
+        );
+        if (!r.ok) throw new Error(r.statusText);
+        const horses = await r.json();
+        const ids = horses.map((h) => h.id);
+
+        const endpointByType = {
+          four: "fourStarts",
+          eight: "eightStarts",
+          twelve: "twelveStarts",
+        };
+
+        async function hasType(typeKey) {
+          const endpoint = endpointByType[typeKey];
+          for (const id of ids) {
+            if (ac.signal.aborted) return false;
+            try {
+              const res = await fetch(
+                `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${id}`,
+                { signal: ac.signal }
+              );
+              if (!res.ok) continue;
+              const fs = await res.json();
+              if (fs?.id) return true; // We consider it existing if a real row was found
+            } catch {
+              // ignore and continue
+            }
+          }
+          return false;
+        }
+
+        const [hasFour, hasEight, hasTwelve] = await Promise.all([
+          hasType("four"),
+          hasType("eight"),
+          hasType("twelve"),
+        ]);
+
+        if (!ac.signal.aborted) {
+          const nextAvail = { four: hasFour, eight: hasEight, twelve: hasTwelve };
+          setAvailableStarts(nextAvail);
+
+          // If current underlag isn't available, switch to first available
+          if (!nextAvail[activeStartsType]) {
+            const first =
+              (nextAvail.four && "four") ||
+              (nextAvail.eight && "eight") ||
+              (nextAvail.twelve && "twelve") ||
+              null;
+            if (first) setActiveStartsType(first);
+          }
+        }
+      } catch {
+        // keep previous availability on error
+      } finally {
+        if (!ac.signal.aborted) setAvailLoading(false);
+      }
+    })();
+
+    return () => ac.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLap, API_BASE_URL]);
+
+  // ---- Fetch table rows for selected lap & active underlag
+  useEffect(() => {
+    if (!selectedLap || !API_BASE_URL) return;
     const ac = new AbortController();
     setLoading(true);
     setError(null);
+
     (async () => {
       try {
         const res = await fetch(
           `${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`,
           { signal: ac.signal }
         );
+        if (!res.ok) throw new Error(res.statusText);
         const horses = await res.json();
+
+        const endpoint =
+          activeStartsType === "eight"
+            ? "eightStarts"
+            : activeStartsType === "twelve"
+            ? "twelveStarts"
+            : "fourStarts";
+
         const rows = await Promise.all(
           horses.map(async (h, idx) => {
-            const fsRes = await fetch(
-              `${API_BASE_URL}/fourStarts/findData?completeHorseId=${h.id}`,
-              { signal: ac.signal }
-            );
-            const fs = await fsRes.json();
-            return { ...h, ...fs, position: idx + 1 };
+            try {
+              const fsRes = await fetch(
+                `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${h.id}`,
+                { signal: ac.signal }
+              );
+              // even if not ok, fall back to zero row
+              const fs = fsRes.ok ? await fsRes.json() : {};
+              return {
+                ...h,
+                ...{
+                  analys: fs?.analys ?? 0,
+                  fart: fs?.fart ?? 0,
+                  styrka: fs?.styrka ?? 0,
+                  klass: fs?.klass ?? 0,
+                  prispengar: fs?.prispengar ?? 0,
+                  kusk: fs?.kusk ?? 0,
+                  placering: fs?.placering ?? 0,
+                  form: fs?.form ?? 0,
+                },
+                position: idx + 1,
+              };
+            } catch {
+              return {
+                ...h,
+                analys: 0,
+                fart: 0,
+                styrka: 0,
+                klass: 0,
+                prispengar: 0,
+                kusk: 0,
+                placering: 0,
+                form: 0,
+                position: idx + 1,
+              };
+            }
           })
         );
-        if (!ac.signal.aborted) setLapData(rows);
-        if (!ac.signal.aborted)
+
+        if (!ac.signal.aborted) {
+          setLapData(rows);
           setSortConfig({ key: "numberOfCompleteHorse", direction: "asc" });
+        }
       } catch (e) {
         if (ac.signal.aborted) return;
         setError("Failed to fetch lap data.");
@@ -65,13 +198,14 @@ const PaginatedLapTable = ({
         if (!ac.signal.aborted) setLoading(false);
       }
     })();
-    return () => ac.abort();
-  }, [selectedLap]);
 
+    return () => ac.abort();
+  }, [selectedLap, activeStartsType, API_BASE_URL]);
+
+  // ---- Sorting
   const requestSort = (key) => {
     let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc")
-      direction = "desc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") direction = "desc";
     setSortConfig({ key, direction });
   };
 
@@ -87,24 +221,20 @@ const PaginatedLapTable = ({
     return 0;
   });
 
-  // Navigering använder dates från props
+  // ---- Navigation (dates from props)
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
-  const goNext = () =>
-    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
+  const goNext = () => idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
+  // ---- Labels
   const today = new Date().toISOString().split("T")[0];
   const yesterday = new Date(Date.now() - 864e5).toISOString().split("T")[0];
   const tomorrow = new Date(Date.now() + 864e5).toISOString().split("T")[0];
   const sv = (d) => {
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday =
-      weekday.charAt(0).toUpperCase() + weekday.slice(1);
-    const rest = date.toLocaleDateString("sv-SE", {
-      day: "numeric",
-      month: "long",
-    });
+    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
     return `${capitalizedWeekday}, ${rest}`;
   };
   const selectedDateLabel =
@@ -119,12 +249,12 @@ const PaginatedLapTable = ({
   const selectedTrackLabel =
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "";
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "";
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ??
+    "";
 
   const compName =
-    competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "";
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ??
+    "";
 
   const lapPrefix = /proposition/i.test(compName)
     ? "Prop"
@@ -138,6 +268,7 @@ const PaginatedLapTable = ({
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
       </p>
 
+      {/* Date selector */}
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={goPrev}
@@ -163,6 +294,7 @@ const PaginatedLapTable = ({
         </button>
       </div>
 
+      {/* Track buttons */}
       <div className="flex flex-wrap gap-1 mb-2">
         {tracks.map((t) => (
           <button
@@ -180,6 +312,7 @@ const PaginatedLapTable = ({
         ))}
       </div>
 
+      {/* Competition buttons */}
       <div className="flex flex-wrap gap-1 mb-2">
         {competitions.map((c) => (
           <button
@@ -197,7 +330,8 @@ const PaginatedLapTable = ({
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-1 mb-3">
+      {/* Lap buttons */}
+      <div className="flex flex-wrap gap-1 mb-2">
         {laps.map((lap) => (
           <button
             key={lap.id}
@@ -214,10 +348,73 @@ const PaginatedLapTable = ({
         ))}
       </div>
 
+      {/* UNDERLAG buttons with stable layout (no jump) */}
+      <div className="self-start flex gap-1 mb-4 min-h-[40px] flex-nowrap overflow-x-auto items-start">
+        {availLoading && (
+          <div className="flex gap-2">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="bg-gray-300 rounded w-24 h-8 animate-pulse" />
+            ))}
+          </div>
+        )}
+
+        {!availLoading && availableStarts.four && (
+          <button
+            onClick={() => setActiveStartsType("four")}
+            disabled={loading}
+            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+              activeStartsType === "four"
+                ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            Underlag X
+          </button>
+        )}
+
+        {!availLoading && availableStarts.eight && (
+          <button
+            onClick={() => setActiveStartsType("eight")}
+            disabled={loading}
+            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+              activeStartsType === "eight"
+                ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            Underlag Y
+          </button>
+        )}
+
+        {!availLoading && availableStarts.twelve && (
+          <button
+            onClick={() => setActiveStartsType("twelve")}
+            disabled={loading}
+            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+              activeStartsType === "twelve"
+                ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            Underlag Z
+          </button>
+        )}
+
+        {!availLoading &&
+          !availableStarts.four &&
+          !availableStarts.eight &&
+          !availableStarts.twelve && (
+            <div className="text-xs text-slate-500 flex items-center h-8">
+              Inget underlag för detta lopp.
+            </div>
+          )}
+      </div>
+
+      {/* Table */}
       <div className="overflow-x-auto border border-gray-200 rounded relative">
         {loading && (
-          <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-75">
-            <div className="loader rounded-full border-4 border-t-4 border-gray-200 h-10 w-10" />
+          <div className="absolute inset-0 flex justify-center items-center bg-white/70">
+            <div className="animate-spin h-10 w-10 border-4 border-gray-200 border-t-indigo-500 rounded-full" />
           </div>
         )}
 
@@ -293,7 +490,7 @@ const PaginatedLapTable = ({
               return (
                 <tr
                   key={row.id}
-                  className="border-b last:border-b-0 border-gray-200 hover:bg-blue-50 even:bg-gray-50 cursor-pointer"
+                  className="border-b last:border-b-0 border-gray-200 hover:bg-blue-50 even:bg-gray-50"
                 >
                   <td className="border-r border-blue-200 px-1">
                     <span className="inline-block border border-indigo-700 px-2 py-0.5 rounded-md text-sm font-medium bg-indigo-100 shadow-sm">
@@ -305,34 +502,22 @@ const PaginatedLapTable = ({
                   </td>
                   <td
                     className={`py-2 px-2 border-r border-gray-200 ${
-                      isMax
-                        ? "bg-orange-300 font-bold underline"
-                        : "bg-orange-50"
+                      isMax ? "bg-orange-300 font-bold underline" : "bg-orange-50"
                     }`}
                   >
                     {row.analys}
                   </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.fart}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.styrka}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.klass}
-                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.fart}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.styrka}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.klass}</td>
                   <td className="py-2 px-2 border-r border-gray-200">
                     {row.prispengar}
                   </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.kusk}
-                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.kusk}</td>
                   <td className="py-2 px-2 border-r border-gray-200">
                     {row.placering}
                   </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.form}
-                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.form}</td>
                 </tr>
               );
             })}
