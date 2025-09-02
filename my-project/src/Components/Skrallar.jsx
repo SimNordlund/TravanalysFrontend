@@ -122,7 +122,7 @@ const Skrallar = ({
             );
             if (found) {
               competitionId = c.id;
-              row._resolvedLapId = found.id; // cacheaa lap-id
+              row._resolvedLapId = found.id; 
               break;
             }
           }

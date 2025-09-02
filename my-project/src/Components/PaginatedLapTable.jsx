@@ -20,7 +20,6 @@ const PaginatedLapTable = ({
 }) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // lokalt värde om parent inte skickar setStartsCount
   const [localStartsCount, setLocalStartsCount] = useState(4); 
   const activeStartsCount = startsCount ?? localStartsCount;   
   const setActiveStartsCount = setStartsCount ?? setLocalStartsCount; 
@@ -253,7 +252,6 @@ const PaginatedLapTable = ({
         ))}
       </div>
 
-      {/* Underlag (starter) — dynamiska knappar */}
       <div className="self-start flex gap-1 mb-4 items-start min-h-[40px] flex-wrap">
         {!availLoading && availableCounts.map((n) => ( 
           <button
@@ -266,7 +264,7 @@ const PaginatedLapTable = ({
                 : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
           >
-            {n} starter{/* Changed! */}
+            {n} starter
           </button>
         ))}
       </div>

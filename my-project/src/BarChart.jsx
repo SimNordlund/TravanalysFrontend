@@ -31,7 +31,6 @@ const BarChartComponent = ({
   const [showSpinner, setShowSpinner] = useState(false);
   const [error, setError] = useState(null);
 
-  // tillgängliga starter
   const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
 
@@ -155,7 +154,6 @@ const BarChartComponent = ({
     return () => clearTimeout(t);
   }, [loading]);
 
-  // Klick: visa bara den hästen
   const handleBarClick = (evt) => {
     if (!chartRef.current) return;
     const els = getElementAtEvent(chartRef.current, evt);
@@ -281,7 +279,6 @@ const BarChartComponent = ({
         </button>
       </div>
 
-      {/* Track buttons */}
       <div className="self-start flex flex-wrap gap-1 mb-2">
         {tracks.map((t) => (
           <button
@@ -297,7 +294,6 @@ const BarChartComponent = ({
         ))}
       </div>
 
-      {/* Competition buttons */}
       <div className="self-start flex flex-wrap gap-1 mb-2">
         {competitions.map((c) => (
           <button
@@ -313,7 +309,6 @@ const BarChartComponent = ({
         ))}
       </div>
 
-      {/* Lap buttons */}
       <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-2">
         {laps.length > 0 ? (
           laps.map((lap) => (
@@ -361,7 +356,6 @@ const BarChartComponent = ({
         <p className="text-sm sm:text-base text-slate-700 font-semibold">Analys</p>
       </div>
 
-      {/* Phone-legend */}
       <div className="self-start flex flex-wrap">
         <ul ref={legendRef} className={isSmallScreen ? "grid grid-cols-1 gap-2 mb-2 text-xs" : "hidden"} />
       </div>
