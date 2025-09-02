@@ -20,8 +20,8 @@ const BarChartComponent = ({
   setSelectedView,
   setSelectedHorse,
   setVisibleHorseIdxes, //  to sync shared legend
-  startsType, 
-  setStartsType, 
+  startsType,
+  setStartsType,
 }) => {
   const legendRef = useRef(null);
   const chartRef = useRef(null);
@@ -30,6 +30,14 @@ const BarChartComponent = ({
   const [loading, setLoading] = useState(true);
   const [showSpinner, setShowSpinner] = useState(false);
   const [error, setError] = useState(null);
+
+  // Availability of underlag buttons for the current lap
+  const [availableStarts, setAvailableStarts] = useState({
+    four: false,
+    eight: false,
+    twelve: false,
+  });
+  const [availLoading, setAvailLoading] = useState(false);
 
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
@@ -69,6 +77,80 @@ const BarChartComponent = ({
     }
   }, []);
 
+  // Compute which start-types exist for the current lap (controls button visibility)
+  useEffect(() => {
+    if (!selectedLap || !API_BASE_URL) return;
+    const ac = new AbortController();
+    setAvailLoading(true);
+
+    (async () => {
+      try {
+        // get horses in lap
+        const r = await fetch(
+          `${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`,
+          { signal: ac.signal }
+        );
+        if (!r.ok) throw new Error(r.statusText);
+        const horses = await r.json();
+        const ids = horses.map((h) => h.id);
+
+        const endpointByType = {
+          four: "fourStarts",
+          eight: "eightStarts",
+          twelve: "twelveStarts",
+        };
+
+        async function hasType(typeKey) {
+          const endpoint = endpointByType[typeKey];
+          for (const id of ids) {
+            if (ac.signal.aborted) return false;
+            try {
+              const res = await fetch(
+                `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${id}`,
+                { signal: ac.signal }
+              );
+              if (!res.ok) continue;
+              const fs = await res.json();
+              // We consider it existing if a real row was found (DTO has an id)
+              if (fs?.id) return true;
+            } catch {
+              // ignore and continue
+            }
+          }
+          return false;
+        }
+
+        const [hasFour, hasEight, hasTwelve] = await Promise.all([
+          hasType("four"),
+          hasType("eight"),
+          hasType("twelve"),
+        ]);
+
+        if (!ac.signal.aborted) {
+          const nextAvail = { four: hasFour, eight: hasEight, twelve: hasTwelve };
+          setAvailableStarts(nextAvail);
+
+          // If current selection is not available, switch to the first available
+          if (!nextAvail[startsType]) {
+            const first =
+              (nextAvail.four && "four") ||
+              (nextAvail.eight && "eight") ||
+              (nextAvail.twelve && "twelve") ||
+              null;
+            if (first) setStartsType(first);
+          }
+        }
+      } catch {
+        // Keep previous availability on error
+      } finally {
+        if (!ac.signal.aborted) setAvailLoading(false);
+      }
+    })();
+
+    return () => ac.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLap]);
+
   // HÄMTA ENDAST BAR-DATA
   useEffect(() => {
     if (!selectedLap) return;
@@ -102,7 +184,7 @@ const BarChartComponent = ({
             const col = horseColors[idx % horseColors.length];
             return {
               label: `${horse.numberOfCompleteHorse}. ${horse.nameOfCompleteHorse}`,
-              data: labels.map((_, i) => (i === idx ? fs.analys : null)),
+              data: labels.map((_, i) => (i === idx ? (fs?.analys ?? 0) : null)),
               backgroundColor: col,
               borderColor: "rgba(0,0,0,1)",
               borderWidth: 0.5,
@@ -123,7 +205,7 @@ const BarChartComponent = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, startsType]); 
+  }, [selectedLap, startsType, API_BASE_URL]);
 
   useEffect(() => {
     let t;
@@ -321,7 +403,7 @@ const BarChartComponent = ({
               disabled={loading}
               className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
                 lap.id === +selectedLap
-                  ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                  ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
                   : "bg-gray-200 text-gray-700 hover:bg-blue-200"
               } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
@@ -340,40 +422,69 @@ const BarChartComponent = ({
         )}
       </div>
 
-      <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4">
-        <button
-          onClick={() => setStartsType("four")}
-          disabled={loading}
-          className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-            startsType === "four"
-              ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-              : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-          } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-        >
-          Underlag X
-        </button>
-        <button
-          onClick={() => setStartsType("eight")}
-          disabled={loading}
-          className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-            startsType === "eight"
-              ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-              : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-          } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-        >
-          Underlag Y
-        </button>
-        <button
-          onClick={() => setStartsType("twelve")}
-          disabled={loading}
-          className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-            startsType === "twelve"
-              ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-              : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-          } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-        >
-          Underlag Z
-        </button>
+      {/* UNDERLAG buttons with stable layout (no jump) */}
+      <div className="self-start flex gap-1 mb-4 min-h-[40px] flex-nowrap overflow-x-auto items-start">
+        {availLoading && (
+          <div className="flex gap-2">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="bg-gray-300 rounded w-24 h-8 animate-pulse"
+              />
+            ))}
+          </div>
+        )}
+
+        {!availLoading && availableStarts.four && (
+          <button
+            onClick={() => setStartsType("four")}
+            disabled={loading}
+            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+              startsType === "four"
+                ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            Underlag X
+          </button>
+        )}
+
+        {!availLoading && availableStarts.eight && (
+          <button
+            onClick={() => setStartsType("eight")}
+            disabled={loading}
+            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+              startsType === "eight"
+                ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            Underlag Y
+          </button>
+        )}
+
+        {!availLoading && availableStarts.twelve && (
+          <button
+            onClick={() => setStartsType("twelve")}
+            disabled={loading}
+            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+              startsType === "twelve"
+                ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            Underlag Z
+          </button>
+        )}
+
+        {!availLoading &&
+          !availableStarts.four &&
+          !availableStarts.eight &&
+          !availableStarts.twelve && (
+            <div className="text-xs text-slate-500 flex items-center h-8">
+              Inget underlag för detta lopp.
+            </div>
+          )}
       </div>
 
       <div className="w-full text-center mb-1 hidden sm:block">
