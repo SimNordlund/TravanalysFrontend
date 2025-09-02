@@ -15,43 +15,32 @@ const PaginatedLapTable = ({
   competitions,
   laps,
 
-  // OPTIONAL: if parent wants to sync underlag across views
-  startsType, // "four" | "eight" | "twelve"
-  setStartsType, // setter from parent (optional)
+  startsCount,           
+  setStartsCount,      
 }) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // If parent doesn't control underlag, keep our own local one
-  const [localStartsType, setLocalStartsType] = useState("four");
-  const activeStartsType = startsType ?? localStartsType;
-  const setActiveStartsType = setStartsType ?? setLocalStartsType;
+  // lokalt värde om parent inte skickar setStartsCount
+  const [localStartsCount, setLocalStartsCount] = useState(4); 
+  const activeStartsCount = startsCount ?? localStartsCount;   
+  const setActiveStartsCount = setStartsCount ?? setLocalStartsCount; 
 
   const [lapData, setLapData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [sortConfig, setSortConfig] = useState({
-    key: null,
-    direction: "asc",
-  });
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
-  // Underlag availability for current lap
-  const [availableStarts, setAvailableStarts] = useState({
-    four: false,
-    eight: false,
-    twelve: false,
-  });
+  const [availableCounts, setAvailableCounts] = useState([]); 
   const [availLoading, setAvailLoading] = useState(false);
 
   const competitionName =
-    competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "Analys";
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "Analys";
 
   const maxAnalysValue = useMemo(
     () => Math.max(...lapData.map((r) => Number(r.analys) || -Infinity)),
     [lapData]
   );
 
-  // ---- Compute which start-types exist for the current lap (controls underlag buttons)
   useEffect(() => {
     if (!selectedLap || !API_BASE_URL) return;
     const ac = new AbortController();
@@ -59,75 +48,24 @@ const PaginatedLapTable = ({
 
     (async () => {
       try {
-        const r = await fetch(
-          `${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`,
-          { signal: ac.signal }
-        );
+        const r = await fetch(`${API_BASE_URL}/starts/available?lapId=${selectedLap}`, { signal: ac.signal });
         if (!r.ok) throw new Error(r.statusText);
-        const horses = await r.json();
-        const ids = horses.map((h) => h.id);
-
-        const endpointByType = {
-          four: "fourStarts",
-          eight: "eightStarts",
-          twelve: "twelveStarts",
-        };
-
-        async function hasType(typeKey) {
-          const endpoint = endpointByType[typeKey];
-          for (const id of ids) {
-            if (ac.signal.aborted) return false;
-            try {
-              const res = await fetch(
-                `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${id}`,
-                { signal: ac.signal }
-              );
-              if (!res.ok) continue;
-              const fs = await res.json();
-              if (fs?.id) return true; // exists if DTO has an id
-            } catch {
-              // ignore and continue
-            }
-          }
-          return false;
-        }
-
-        const [hasFour, hasEight, hasTwelve] = await Promise.all([
-          hasType("four"),
-          hasType("eight"),
-          hasType("twelve"),
-        ]);
-
-        if (!ac.signal.aborted) {
-          const nextAvail = {
-            four: hasFour,
-            eight: hasEight,
-            twelve: hasTwelve,
-          };
-          setAvailableStarts(nextAvail);
-
-          // If current underlag isn't available, switch to first available
-          if (!nextAvail[activeStartsType]) {
-            const first =
-              (nextAvail.four && "four") ||
-              (nextAvail.eight && "eight") ||
-              (nextAvail.twelve && "twelve") ||
-              null;
-            if (first) setActiveStartsType(first);
-          }
+        const counts = await r.json(); 
+        setAvailableCounts(counts);
+        if (counts.length && !counts.includes(activeStartsCount)) {
+          setActiveStartsCount(counts[0]); 
         }
       } catch {
-        // keep previous availability on error
+
       } finally {
         if (!ac.signal.aborted) setAvailLoading(false);
       }
     })();
 
     return () => ac.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLap, API_BASE_URL]);
 
-  // ---- Fetch table rows for selected lap & active underlag
+
   useEffect(() => {
     if (!selectedLap || !API_BASE_URL) return;
     const ac = new AbortController();
@@ -143,18 +81,12 @@ const PaginatedLapTable = ({
         if (!res.ok) throw new Error(res.statusText);
         const horses = await res.json();
 
-        const endpoint =
-          activeStartsType === "eight"
-            ? "eightStarts"
-            : activeStartsType === "twelve"
-            ? "twelveStarts"
-            : "fourStarts";
-
         const rows = await Promise.all(
           horses.map(async (h, idx) => {
             try {
+              
               const fsRes = await fetch(
-                `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${h.id}`,
+                `${API_BASE_URL}/starts/findData?completeHorseId=${h.id}&starter=${activeStartsCount}`,
                 { signal: ac.signal }
               );
               const fs = fsRes.ok ? await fsRes.json() : {};
@@ -175,14 +107,7 @@ const PaginatedLapTable = ({
             } catch {
               return {
                 ...h,
-                analys: 0,
-                fart: 0,
-                styrka: 0,
-                klass: 0,
-                prispengar: 0,
-                kusk: 0,
-                placering: 0,
-                form: 0,
+                analys: 0, fart: 0, styrka: 0, klass: 0, prispengar: 0, kusk: 0, placering: 0, form: 0,
                 position: idx + 1,
               };
             }
@@ -203,13 +128,12 @@ const PaginatedLapTable = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, activeStartsType, API_BASE_URL]);
+  }, [selectedLap, activeStartsCount, API_BASE_URL]); 
 
-  // ---- Sorting
+
   const requestSort = (key) => {
     let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc")
-      direction = "desc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") direction = "desc";
     setSortConfig({ key, direction });
   };
 
@@ -225,51 +149,37 @@ const PaginatedLapTable = ({
     return 0;
   });
 
-  // ---- Navigation (dates from props)
+
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
-  const goNext = () =>
-    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
+  const goNext = () => idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
-  // ---- Labels
+
   const today = new Date().toISOString().split("T")[0];
   const yesterday = new Date(Date.now() - 864e5).toISOString().split("T")[0];
   const tomorrow = new Date(Date.now() + 864e5).toISOString().split("T")[0];
   const sv = (d) => {
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday =
-      weekday.charAt(0).toUpperCase() + weekday.slice(1);
-    const rest = date.toLocaleDateString("sv-SE", {
-      day: "numeric",
-      month: "long",
-    });
+    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
     return `${capitalizedWeekday}, ${rest}`;
   };
   const selectedDateLabel =
-    selectedDate === today
-      ? `Idag, ${sv(selectedDate)}`
-      : selectedDate === yesterday
-      ? `Igår, ${sv(selectedDate)}`
-      : selectedDate === tomorrow
-      ? `Imorgon, ${sv(selectedDate)}`
-      : sv(selectedDate);
+    selectedDate === today ? `Idag, ${sv(selectedDate)}` :
+    selectedDate === yesterday ? `Igår, ${sv(selectedDate)}` :
+    selectedDate === tomorrow ? `Imorgon, ${sv(selectedDate)}` : sv(selectedDate);
 
   const selectedTrackLabel =
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "";
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "";
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "";
 
   const compName =
-    competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "";
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "";
 
-  const lapPrefix = /proposition/i.test(compName)
-    ? "Prop"
-    : /^(vinnare|plats)$/i.test(compName.trim())
-    ? "Lopp"
-    : "Avd";
+  const lapPrefix = /proposition/i.test(compName) ? "Prop"
+    : /^(vinnare|plats)$/i.test(compName.trim()) ? "Lopp" : "Avd";
 
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
@@ -279,11 +189,7 @@ const PaginatedLapTable = ({
 
       {/* Date selector */}
       <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={goPrev}
-          disabled={idx <= 0 || loading}
-          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
-        >
+        <button onClick={goPrev} disabled={idx <= 0 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
           &#8592;
         </button>
 
@@ -294,11 +200,7 @@ const PaginatedLapTable = ({
           max={dates[dates.length - 1]?.date}
         />
 
-        <button
-          onClick={goNext}
-          disabled={idx >= dates.length - 1 || loading}
-          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
-        >
+        <button onClick={goNext} disabled={idx >= dates.length - 1 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
           &#8594;
         </button>
       </div>
@@ -311,9 +213,7 @@ const PaginatedLapTable = ({
             onClick={() => setSelectedTrack(t.id)}
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              t.id === +selectedTrack
-                ? "bg-emerald-500 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              t.id === +selectedTrack ? "bg-emerald-500 text-white font-semibold shadow" : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
           >
             {t.nameOfTrack}
@@ -329,9 +229,7 @@ const PaginatedLapTable = ({
             onClick={() => setSelectedCompetition(c.id)}
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              c.id === +selectedCompetition
-                ? "bg-teal-600 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              c.id === +selectedCompetition ? "bg-teal-600 text-white font-semibold shadow" : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
           >
             {c.nameOfCompetition}
@@ -347,9 +245,7 @@ const PaginatedLapTable = ({
             onClick={() => setSelectedLap(lap.id)}
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              lap.id === +selectedLap
-                ? "bg-indigo-500 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              lap.id === +selectedLap ? "bg-indigo-500 text-white font-semibold shadow" : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
           >
             {`${lapPrefix} ${lap.nameOfLap}`}
@@ -357,57 +253,24 @@ const PaginatedLapTable = ({
         ))}
       </div>
 
-      {/* Underlag buttons — no skeletons and no scroll; reserve height to prevent jump */}
-      <div className="self-start flex gap-1 mb-4 items-start min-h-[40px] flex-wrap">{/* //fix: removed skeleton + reserved height, no overflow scroll */}
-        {!availLoading && ( //fix
-          <> {/* fix */}
-            {availableStarts.four && ( //fix
-              <button
-                onClick={() => setActiveStartsType("four")}
-                disabled={loading}
-                className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                  activeStartsType === "four"
-                    ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-              >
-                Underlag X
-              </button>
-            )}
-
-            {availableStarts.eight && (
-              <button
-                onClick={() => setActiveStartsType("eight")}
-                disabled={loading}
-                className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                  activeStartsType === "eight"
-                    ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-              >
-                Underlag Y
-              </button>
-            )}
-
-            {availableStarts.twelve && (
-              <button
-                onClick={() => setActiveStartsType("twelve")}
-                disabled={loading}
-                className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                  activeStartsType === "twelve"
-                    ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-              >
-                Underlag Z
-              </button>
-            )}
-            {/* If none available, render nothing; min-h keeps layout stable */} {/* fix */}
-          </>
-        )}
+      {/* Underlag (starter) — dynamiska knappar */}
+      <div className="self-start flex gap-1 mb-4 items-start min-h-[40px] flex-wrap">
+        {!availLoading && availableCounts.map((n) => ( 
+          <button
+            key={n}
+            onClick={() => setActiveStartsCount(n)} 
+            disabled={loading}
+            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+              activeStartsCount === n
+                ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            {n} starter{/* Changed! */}
+          </button>
+        ))}
       </div>
 
-      {/* Table */}
       <div className="overflow-x-auto border border-gray-200 rounded relative">
         {loading && (
           <div className="absolute inset-0 flex justify-center items-center bg-white/70">
@@ -418,66 +281,16 @@ const PaginatedLapTable = ({
         <table className="w-full min-w-max border-collapse text-sm">
           <thead className="bg-gray-100 border-b border-gray-200">
             <tr>
-              <th
-                onClick={() => requestSort("numberOfCompleteHorse")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                #
-              </th>
-              <th
-                onClick={() => requestSort("nameOfCompleteHorse")}
-                className="py-2 px-2 font-semibold cursor-pointer text-left border-r last:border-r-0 border-gray-300"
-              >
-                Häst
-              </th>
-              <th
-                onClick={() => requestSort("analys")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100"
-              >
-                {competitionName}
-              </th>
-              <th
-                onClick={() => requestSort("fart")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                Kapacitet
-              </th>
-              <th
-                onClick={() => requestSort("styrka")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                Prestation
-              </th>
-              <th
-                onClick={() => requestSort("klass")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                Motstånd
-              </th>
-              <th
-                onClick={() => requestSort("prispengar")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                Klass
-              </th>
-              <th
-                onClick={() => requestSort("kusk")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                Skrik
-              </th>
-              <th
-                onClick={() => requestSort("placering")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                Placering
-              </th>
-              <th
-                onClick={() => requestSort("form")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                Form
-              </th>
+              <th onClick={() => requestSort("numberOfCompleteHorse")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">#</th>
+              <th onClick={() => requestSort("nameOfCompleteHorse")} className="py-2 px-2 font-semibold cursor-pointer text-left border-r last:border-r-0 border-gray-300">Häst</th>
+              <th onClick={() => requestSort("analys")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100">{competitionName}</th>
+              <th onClick={() => requestSort("fart")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Kapacitet</th>
+              <th onClick={() => requestSort("styrka")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Prestation</th>
+              <th onClick={() => requestSort("klass")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Motstånd</th>
+              <th onClick={() => requestSort("prispengar")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Klass</th>
+              <th onClick={() => requestSort("kusk")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Skrik</th>
+              <th onClick={() => requestSort("placering")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Placering</th>
+              <th onClick={() => requestSort("form")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Form</th>
             </tr>
           </thead>
 
@@ -485,48 +298,23 @@ const PaginatedLapTable = ({
             {sortedLapData.map((row) => {
               const isMax = Number(row.analys) === maxAnalysValue;
               return (
-                <tr
-                  key={row.id}
-                  className="border-b last:border-b-0 border-gray-200 hover:bg-blue-50 even:bg-gray-50"
-                >
+                <tr key={row.id} className="border-b last:border-b-0 border-gray-200 hover:bg-blue-50 even:bg-gray-50">
                   <td className="border-r border-blue-200 px-1">
                     <span className="inline-block border border-indigo-700 px-2 py-0.5 rounded-md text-sm font-medium bg-indigo-100 shadow-sm">
                       {row.numberOfCompleteHorse}
                     </span>
                   </td>
-                  <td className="py-2 px-2 text-left border-r border-gray-200">
-                    {row.nameOfCompleteHorse}
-                  </td>
-                  <td
-                    className={`py-2 px-2 border-r border-gray-200 ${
-                      isMax
-                        ? "bg-orange-300 font-bold underline"
-                        : "bg-orange-50"
-                    }`}
-                  >
+                  <td className="py-2 px-2 text-left border-r border-gray-200">{row.nameOfCompleteHorse}</td>
+                  <td className={`py-2 px-2 border-r border-gray-200 ${isMax ? "bg-orange-300 font-bold underline" : "bg-orange-50"}`}>
                     {row.analys}
                   </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.fart}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.styrka}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.klass}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.prispengar}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.kusk}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.placering}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.form}
-                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.fart}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.styrka}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.klass}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.prispengar}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.kusk}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.placering}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.form}</td>
                 </tr>
               );
             })}

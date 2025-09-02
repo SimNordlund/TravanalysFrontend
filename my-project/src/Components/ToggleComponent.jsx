@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import SpiderChart from "./SpiderChart";
@@ -23,7 +24,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState(initialSelectedView);
   const [selectedHorse, setSelectedHorse] = useState(null);
-  const [startsType, setStartsType] = useState("four"); 
+  const [startsCount, setStartsCount] = useState(4); 
 
   const [visibleHorseIdxes, setVisibleHorseIdxes] = useState([]);
   const [horseLegendItems, setHorseLegendItems] = useState([]);
@@ -39,7 +40,6 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const pendingLapRef = useRef(null);
   const setPendingLapId = (lapId) => { pendingLapRef.current = lapId; };
 
-  // URL sync
   useEffect(() => {
     if (!syncWithRoute) return;
     const nextView = routeToView[viewParam] || "spider";
@@ -58,7 +58,6 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
   const switchView = (viewKey) => setViewAndMaybeNavigate(viewKey);
 
-  // helper to pick closest date
   const pickClosestDate = (arr) => {
     if (!arr?.length) return "";
     const today = new Date();
@@ -72,7 +71,6 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     return best.date;
   };
 
-  // bootstrap dates
   useEffect(() => {
     const ac = new AbortController();
     (async () => {
@@ -92,7 +90,6 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     return () => ac.abort();
   }, []);
 
-  // tracks
   useEffect(() => {
     if (!selectedDate) return;
     const ac = new AbortController();
@@ -109,7 +106,6 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     return () => ac.abort();
   }, [selectedDate]);
 
-  // competitions
   useEffect(() => {
     if (!selectedTrack) return;
     const ac = new AbortController();
@@ -125,7 +121,6 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     return () => ac.abort();
   }, [selectedTrack]);
 
-  // laps
   useEffect(() => {
     if (!selectedCompetition) return;
     const ac = new AbortController();
@@ -145,13 +140,11 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     return () => ac.abort();
   }, [selectedCompetition]);
 
-  // reset when lap changes
   useEffect(() => {
     setSelectedHorse(null);
     setVisibleHorseIdxes([]);
   }, [selectedLap]);
 
-  // shared legend callbacks
   const handleMetaChange = ({ items, suggestedVisibleIdxes, top5Idx, top3Idx }) => { 
     setHorseLegendItems(items || []);
     setVisibleHorseIdxes((prev) => (prev?.length ? prev : (suggestedVisibleIdxes || [])));
@@ -206,12 +199,11 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 setSelectedView={setViewAndMaybeNavigate}
                 setSelectedHorse={setSelectedHorse}
                 setVisibleHorseIdxes={setVisibleHorseIdxes}
-                startsType={startsType}                 
-                setStartsType={setStartsType}           
+                startsCount={startsCount}            
+                setStartsCount={setStartsCount}      
               />
             </div>
 
-            {/* Spider + shared legend layout */}
             <div className="min-h-[400px] sm:grid sm:grid-cols-[minmax(0,1fr)_16rem] sm:gap-6">
               <div className="min-w-0">
                 <SpiderChart
@@ -226,7 +218,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                   selectedHorse={selectedHorse}
                   visibleHorseIdxes={visibleHorseIdxes}
                   onMetaChange={handleMetaChange}
-                  startsType={startsType}               
+                  startsCount={startsCount}           
                 />
               </div>
               <div className="mt-0 ml-4 sm:mt-32 sm:justify-self-end sm:w-64 shrink-0">
@@ -246,7 +238,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 selectedLap={selectedLap}
                 selectedHorse={selectedHorse}
                 visibleHorseIdxes={visibleHorseIdxes}
-                startsType={startsType}                 
+                startsCount={startsCount}            
               />
             </div>
           </div>
@@ -266,6 +258,8 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             tracks={tracks}
             competitions={competitions}
             laps={laps}
+            startsCount={startsCount}               
+            setStartsCount={setStartsCount}         
           />
         </div>
 

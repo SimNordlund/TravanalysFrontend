@@ -12,9 +12,9 @@ const SpiderChart = ({
   selectedLap,
   setSelectedLap,
   selectedHorse,
-  visibleHorseIdxes, // from parent
-  onMetaChange, // report legend items + suggested visible
-  startsType,
+  visibleHorseIdxes,
+  onMetaChange,
+  startsCount, 
 }) => {
   const horseColors = [
     "rgba(0, 0, 255, 0.5)",
@@ -53,7 +53,6 @@ const SpiderChart = ({
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // fetch data (no hidden flags here)
   useEffect(() => {
     if (!selectedLap) return;
     const ac = new AbortController();
@@ -70,14 +69,9 @@ const SpiderChart = ({
 
         const arr = await Promise.all(
           horses.map(async (horse, idx) => {
-            const endpoint =
-              startsType === "eight"
-                ? "eightStarts"
-                : startsType === "twelve"
-                ? "twelveStarts"
-                : "fourStarts";
+            
             const rs = await fetch(
-              `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${horse.id}`,
+              `${API_BASE_URL}/starts/findData?completeHorseId=${horse.id}&starter=${startsCount}`,
               { signal: ac.signal }
             );
             if (!rs.ok) throw new Error(rs.statusText);
@@ -98,10 +92,7 @@ const SpiderChart = ({
             fs.fart,
           ],
           backgroundColor: horseColors[idx % horseColors.length],
-          borderColor: horseColors[idx % horseColors.length].replace(
-            "0.5",
-            "1"
-          ),
+          borderColor: horseColors[idx % horseColors.length].replace("0.5", "1"),
           borderWidth: 2,
           pointRadius: 2,
         }));
@@ -143,9 +134,8 @@ const SpiderChart = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, selectedHorse, startsType]);
+  }, [selectedLap, selectedHorse, startsCount]); 
 
-  // apply visibility from parent
   useEffect(() => {
     if (!rawDatasets.length) {
       setData((p) => ({ ...p, datasets: [] }));
@@ -176,7 +166,7 @@ const SpiderChart = ({
           padding: 5,
           font: (ctx) => ({
             size: ctx.chart.width < 640 ? 13 : 15,
-            weight: 500, // font-semibold
+            weight: 500,
             family:
               "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto",
           }),
@@ -191,15 +181,11 @@ const SpiderChart = ({
   return (
     <div className="flex flex-col mt-0 px-2 pb-2 mb-2 sm:mb-0">
       <div className="w-full text-center mb-0">
-        <p className="text-sm sm:text-base text-slate-700 font-semibold">
-          Analysperspektiven
-        </p>
+        <p className="text-sm sm:text-base text-slate-700 font-semibold">Analysperspektiven</p>
       </div>
       <div className="w-full max-w-[490px] mx-auto">
         <div className="relative w-full aspect-square">
-          {data.datasets.length > 0 && !loading && (
-            <Radar data={data} options={options} />
-          )}
+          {data.datasets.length > 0 && !loading && <Radar data={data} options={options} />}
           {!loading && data.datasets.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-500">
               No data found for this lap.
@@ -212,9 +198,7 @@ const SpiderChart = ({
           )}
         </div>
       </div>
-      {error && (
-        <div className="text-red-600 mt-4 text-center">Error: {error}</div>
-      )}
+      {error && <div className="text-red-600 mt-4 text-center">Error: {error}</div>}
     </div>
   );
 };

@@ -24,7 +24,7 @@ const AnalysChart = ({
   selectedLap,
   selectedHorse,
   visibleHorseIdxes,
-  startsType,
+  startsCount, 
 }) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -34,14 +34,7 @@ const AnalysChart = ({
 
   const [title, setTitle] = useState("");
   const [data, setData] = useState({
-    labels: [
-      "Delanalys 1",
-      "Delanalys 2",
-      "Delanalys 3",
-      "Delanalys 4",
-      "Delanalys 5",
-      "Analys",
-    ],
+    labels: ["Delanalys 1", "Delanalys 2", "Delanalys 3", "Delanalys 4", "Delanalys 5", "Analys"],
     datasets: [],
   });
 
@@ -69,14 +62,9 @@ const AnalysChart = ({
 
         const all = await Promise.all(
           horses.map(async (horse, idx) => {
-            const endpoint =
-              startsType === "eight"
-                ? "eightStarts"
-                : startsType === "twelve"
-                ? "twelveStarts"
-                : "fourStarts";
+            
             const rs = await fetch(
-              `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${horse.id}`,
+              `${API_BASE_URL}/starts/findData?completeHorseId=${horse.id}&starter=${startsCount}`,
               { signal: ac.signal }
             );
             if (!rs.ok) throw new Error(rs.statusText);
@@ -107,17 +95,9 @@ const AnalysChart = ({
           .filter(Boolean)
           .map((x) => {
             const color = horseColors[x.idx % horseColors.length];
-            const stroke = color.replace("0.5", "1");
             return {
               label: `${x.horse.numberOfCompleteHorse}. ${x.horse.nameOfCompleteHorse}`,
-              data: [
-                x.fs.a1 ?? 0,
-                x.fs.a2 ?? 0,
-                x.fs.a3 ?? 0,
-                x.fs.a4 ?? 0,
-                x.fs.a5 ?? 0,
-                x.fs.a6 ?? 0,
-              ],
+              data: [x.fs.a1 ?? 0, x.fs.a2 ?? 0, x.fs.a3 ?? 0, x.fs.a4 ?? 0, x.fs.a5 ?? 0, x.fs.a6 ?? 0],
               backgroundColor: color,
               borderColor: "rgba(0,0,0,1)",
               borderWidth: 0.5,
@@ -125,21 +105,10 @@ const AnalysChart = ({
           });
 
         setData({
-          labels: [
-            "Delanalys 1",
-            "Delanalys 2",
-            "Delanalys 3",
-            "Delanalys 4",
-            "Delanalys 5",
-            "Analys",
-          ],
+          labels: ["Delanalys 1", "Delanalys 2", "Delanalys 3", "Delanalys 4", "Delanalys 5", "Analys"],
           datasets,
         });
-        setTitle(
-          datasets.length === 1
-            ? datasets[0].label
-            : `${datasets.length} hästar`
-        );
+        setTitle(datasets.length === 1 ? datasets[0].label : `${datasets.length} hästar`);
         setLoading(false);
       } catch (e) {
         if (ac.signal.aborted) return;
@@ -150,7 +119,7 @@ const AnalysChart = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, selectedHorse, visibleHorseIdxes, startsType]);
+  }, [selectedLap, selectedHorse, visibleHorseIdxes, startsCount]); 
 
   const options = {
     responsive: true,
@@ -160,7 +129,7 @@ const AnalysChart = ({
       x: { ticks: { padding: 4 }, stacked: false },
     },
     plugins: {
-      legend: { display: false }, // shared legend handles this
+      legend: { display: false },
       tooltip: {
         enabled: true,
         callbacks: {
@@ -174,20 +143,14 @@ const AnalysChart = ({
   return (
     <div className="flex flex-col justify-center items-center mt-1 sm:mt-0 px-2 pb-10">
       <div className="w-full text-center mb-1">
-        <p className="text-sm sm:text-base text-slate-700 font-semibold">
-          Från Delanalyser till Analys
-        </p>
+        <p className="text-sm sm:text-base text-slate-700 font-semibold">Från Delanalyser till Analys</p>
       </div>
 
       <div className="w-full max-w-[950px] mx-auto">
         <div className="relative w-full h-[300px] sm:h-[300px]">
-          {data?.datasets?.length > 0 && !loading && !error && (
-            <Bar data={data} options={options} />
-          )}
+          {data?.datasets?.length > 0 && !loading && !error && <Bar data={data} options={options} />}
           {!loading && !error && data?.datasets?.length === 0 && (
-            <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-500">
-              Ingen data.
-            </div>
+            <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-500">Ingen data.</div>
           )}
           {showSpinner && loading && (
             <div className="absolute inset-0 flex items-center justify-center">

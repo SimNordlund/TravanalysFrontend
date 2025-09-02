@@ -19,9 +19,9 @@ const BarChartComponent = ({
   laps,
   setSelectedView,
   setSelectedHorse,
-  setVisibleHorseIdxes, //  to sync shared legend
-  startsType,
-  setStartsType,
+  setVisibleHorseIdxes,
+  startsCount,            
+  setStartsCount,       
 }) => {
   const legendRef = useRef(null);
   const chartRef = useRef(null);
@@ -31,18 +31,13 @@ const BarChartComponent = ({
   const [showSpinner, setShowSpinner] = useState(false);
   const [error, setError] = useState(null);
 
-  // Availability of underlag buttons for the current lap
-  const [availableStarts, setAvailableStarts] = useState({
-    four: false,
-    eight: false,
-    twelve: false,
-  });
+  // tillgängliga starter
+  const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
 
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
-  const goNext = () =>
-    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
+  const goNext = () => idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
   const horseColors = [
     "rgba(0, 0, 255, 0.5)",
@@ -77,7 +72,7 @@ const BarChartComponent = ({
     }
   }, []);
 
-  // Compute which start-types exist for the current lap (controls button visibility)
+
   useEffect(() => {
     if (!selectedLap || !API_BASE_URL) return;
     const ac = new AbortController();
@@ -85,74 +80,21 @@ const BarChartComponent = ({
 
     (async () => {
       try {
-        // get horses in lap
-        const r = await fetch(
-          `${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`,
-          { signal: ac.signal }
-        );
+      
+        const r = await fetch(`${API_BASE_URL}/starts/available?lapId=${selectedLap}`, { signal: ac.signal });
         if (!r.ok) throw new Error(r.statusText);
-        const horses = await r.json();
-        const ids = horses.map((h) => h.id);
-
-        const endpointByType = {
-          four: "fourStarts",
-          eight: "eightStarts",
-          twelve: "twelveStarts",
-        };
-
-        async function hasType(typeKey) {
-          const endpoint = endpointByType[typeKey];
-          for (const id of ids) {
-            if (ac.signal.aborted) return false;
-            try {
-              const res = await fetch(
-                `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${id}`,
-                { signal: ac.signal }
-              );
-              if (!res.ok) continue;
-              const fs = await res.json();
-              // We consider it existing if a real row was found (DTO has an id)
-              if (fs?.id) return true;
-            } catch {
-              // ignore and continue
-            }
-          }
-          return false;
-        }
-
-        const [hasFour, hasEight, hasTwelve] = await Promise.all([
-          hasType("four"),
-          hasType("eight"),
-          hasType("twelve"),
-        ]);
-
-        if (!ac.signal.aborted) {
-          const nextAvail = {
-            four: hasFour,
-            eight: hasEight,
-            twelve: hasTwelve,
-          };
-          setAvailableStarts(nextAvail);
-
-          // If current selection is not available, switch to the first available
-          if (!nextAvail[startsType]) {
-            const first =
-              (nextAvail.four && "four") ||
-              (nextAvail.eight && "eight") ||
-              (nextAvail.twelve && "twelve") ||
-              null;
-            if (first) setStartsType(first);
-          }
+        const counts = await r.json();
+        setAvailableCounts(counts);
+        if (counts.length && !counts.includes(startsCount)) {
+          setStartsCount(counts[0]); 
         }
       } catch {
-        // Keep previous availability on error
       } finally {
         if (!ac.signal.aborted) setAvailLoading(false);
       }
     })();
 
     return () => ac.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLap]);
 
   // HÄMTA ENDAST BAR-DATA
@@ -173,14 +115,9 @@ const BarChartComponent = ({
 
         const datasets = await Promise.all(
           completeHorses.map(async (horse, idx) => {
-            const endpoint =
-              startsType === "eight"
-                ? "eightStarts"
-                : startsType === "twelve"
-                ? "twelveStarts"
-                : "fourStarts";
+            
             const rs = await fetch(
-              `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${horse.id}`,
+              `${API_BASE_URL}/starts/findData?completeHorseId=${horse.id}&starter=${startsCount}`,
               { signal: ac.signal }
             );
             if (!rs.ok) throw new Error(rs.statusText);
@@ -209,7 +146,7 @@ const BarChartComponent = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, startsType, API_BASE_URL]);
+  }, [selectedLap, startsCount, API_BASE_URL]); 
 
   useEffect(() => {
     let t;
@@ -218,14 +155,14 @@ const BarChartComponent = ({
     return () => clearTimeout(t);
   }, [loading]);
 
-  // Restore: click a bar → show only that horse in Spider + Analys
+  // Klick: visa bara den hästen
   const handleBarClick = (evt) => {
     if (!chartRef.current) return;
     const els = getElementAtEvent(chartRef.current, evt);
     if (!els.length) return;
     const { datasetIndex } = els[0];
     setSelectedHorse(datasetIndex);
-    setVisibleHorseIdxes?.([datasetIndex]); // sync shared legend selection
+    setVisibleHorseIdxes?.([datasetIndex]);
     setSelectedView("spider");
   };
 
@@ -244,11 +181,8 @@ const BarChartComponent = ({
         li.style.opacity = visible ? 1 : 0.35;
 
         li.onclick = () => {
-          if (chart.isDatasetVisible(item.datasetIndex)) {
-            chart.hide(item.datasetIndex);
-          } else {
-            chart.show(item.datasetIndex);
-          }
+          if (chart.isDatasetVisible(item.datasetIndex)) chart.hide(item.datasetIndex);
+          else chart.show(item.datasetIndex);
         };
 
         const box = document.createElement("span");
@@ -269,10 +203,7 @@ const BarChartComponent = ({
     maintainAspectRatio: false,
     scales: {
       y: { beginAtZero: true, minBarLength: 10 },
-      x: {
-        stacked: true,
-        ticks: { autoSkip: false, maxRotation: 0, padding: 2 },
-      },
+      x: { stacked: true, ticks: { autoSkip: false, maxRotation: 0, padding: 2 } },
     },
     plugins: {
       legend: {
@@ -295,12 +226,8 @@ const BarChartComponent = ({
     const date = new Date(d);
     if (Number.isNaN(date.getTime())) return "";
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday =
-      weekday.charAt(0).toUpperCase() + weekday.slice(1);
-    const rest = date.toLocaleDateString("sv-SE", {
-      day: "numeric",
-      month: "long",
-    });
+    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
     return `${capitalizedWeekday}, ${rest}`;
   };
 
@@ -318,12 +245,10 @@ const BarChartComponent = ({
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad";
 
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "v75";
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "v75";
 
   const compName =
-    competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "";
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "";
 
   const lapPrefix = /proposition/i.test(compName)
     ? "Prop"
@@ -340,11 +265,7 @@ const BarChartComponent = ({
       </p>
 
       <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={goPrev}
-          disabled={idx <= 0 || loading}
-          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
-        >
+        <button onClick={goPrev} disabled={idx <= 0 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
           &#8592;
         </button>
 
@@ -355,15 +276,12 @@ const BarChartComponent = ({
           max={dates[dates.length - 1]?.date}
         />
 
-        <button
-          onClick={goNext}
-          disabled={idx >= dates.length - 1 || loading}
-          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
-        >
+        <button onClick={goNext} disabled={idx >= dates.length - 1 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">
           &#8594;
         </button>
       </div>
 
+      {/* Track buttons */}
       <div className="self-start flex flex-wrap gap-1 mb-2">
         {tracks.map((t) => (
           <button
@@ -371,9 +289,7 @@ const BarChartComponent = ({
             onClick={() => setSelectedTrack(t.id)}
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              t.id === +selectedTrack
-                ? "bg-emerald-500 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              t.id === +selectedTrack ? "bg-emerald-500 text-white font-semibold shadow" : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
           >
             {t.nameOfTrack}
@@ -381,6 +297,7 @@ const BarChartComponent = ({
         ))}
       </div>
 
+      {/* Competition buttons */}
       <div className="self-start flex flex-wrap gap-1 mb-2">
         {competitions.map((c) => (
           <button
@@ -388,9 +305,7 @@ const BarChartComponent = ({
             onClick={() => setSelectedCompetition(c.id)}
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              c.id === +selectedCompetition
-                ? "bg-teal-600 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              c.id === +selectedCompetition ? "bg-teal-600 text-white font-semibold shadow" : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
           >
             {c.nameOfCompetition}
@@ -398,6 +313,7 @@ const BarChartComponent = ({
         ))}
       </div>
 
+      {/* Lap buttons */}
       <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-2">
         {laps.length > 0 ? (
           laps.map((lap) => (
@@ -417,85 +333,41 @@ const BarChartComponent = ({
         ) : (
           <div className="flex gap-2">
             {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-gray-300 rounded w-16 h-6 sm:w-20 sm:h-8 animate-pulse"
-              />
+              <div key={i} className="bg-gray-300 rounded w-16 h-6 sm:w-20 sm:h-8 animate-pulse" />
             ))}
           </div>
         )}
       </div>
 
-      {/* UNDERLAG buttons (no skeleton) with reserved height to avoid layout shift */}
       <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4 min-h-[40px]">
-        {/* fix: reserve space so the chart doesn't jump */}
-        {!availLoading && (
-          <>
-            {availableStarts.four && (
-              <button
-                onClick={() => setStartsType("four")}
-                disabled={loading}
-                className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                  startsType === "four"
-                    ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-              >
-                Underlag X
-              </button>
-            )}
-
-            {availableStarts.eight && (
-              <button
-                onClick={() => setStartsType("eight")}
-                disabled={loading}
-                className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                  startsType === "eight"
-                    ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-              >
-                Underlag Y
-              </button>
-            )}
-
-            {availableStarts.twelve && (
-              <button
-                onClick={() => setStartsType("twelve")}
-                disabled={loading}
-                className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                  startsType === "twelve"
-                    ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-              >
-                Underlag Z
-              </button>
-            )}
-          </>
-        )}
+        {!availLoading &&
+          availableCounts.map((n) => ( 
+            <button
+              key={n}
+              onClick={() => setStartsCount(n)}
+              disabled={loading}
+              className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+                startsCount === n
+                  ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                  : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+            >
+              {n} starter
+            </button>
+          ))}
       </div>
 
       <div className="w-full text-center mb-1 hidden sm:block">
-        <p className="text-sm sm:text-base text-slate-700 font-semibold">
-          Analys
-        </p>
+        <p className="text-sm sm:text-base text-slate-700 font-semibold">Analys</p>
       </div>
 
-      {/* BarChart-specific legend for phones only */}
+      {/* Phone-legend */}
       <div className="self-start flex flex-wrap">
-        <ul
-          ref={legendRef}
-          className={
-            isSmallScreen ? "grid grid-cols-1 gap-2 mb-2 text-xs" : "hidden"
-          }
-        />
+        <ul ref={legendRef} className={isSmallScreen ? "grid grid-cols-1 gap-2 mb-2 text-xs" : "hidden"} />
       </div>
 
       <div className="w-full text-center mb-1 sm:hidden">
-        <p className="text-sm sm:text-base text-slate-700 font-semibold">
-          Analys
-        </p>
+        <p className="text-sm sm:text-base text-slate-700 font-semibold">Analys</p>
       </div>
 
       <div className="w-full flex justify-center">
@@ -516,11 +388,7 @@ const BarChartComponent = ({
 
           {showSpinner && loading && (
             <div className="flex flex-col items-center">
-              <img
-                src={travhorsi}
-                alt="Loading…"
-                className="h-24 w-24 animate-spin"
-              />
+              <img src={travhorsi} alt="Loading…" className="h-24 w-24 animate-spin" />
             </div>
           )}
         </div>
