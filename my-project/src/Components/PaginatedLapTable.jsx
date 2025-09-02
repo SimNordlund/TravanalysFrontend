@@ -16,8 +16,8 @@ const PaginatedLapTable = ({
   laps,
 
   // OPTIONAL: if parent wants to sync underlag across views
-  startsType,          // "four" | "eight" | "twelve"
-  setStartsType,       // setter from parent (optional)
+  startsType, // "four" | "eight" | "twelve"
+  setStartsType, // setter from parent (optional)
 }) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -84,7 +84,7 @@ const PaginatedLapTable = ({
               );
               if (!res.ok) continue;
               const fs = await res.json();
-              if (fs?.id) return true; // We consider it existing if a real row was found
+              if (fs?.id) return true; // exists if DTO has an id
             } catch {
               // ignore and continue
             }
@@ -99,7 +99,11 @@ const PaginatedLapTable = ({
         ]);
 
         if (!ac.signal.aborted) {
-          const nextAvail = { four: hasFour, eight: hasEight, twelve: hasTwelve };
+          const nextAvail = {
+            four: hasFour,
+            eight: hasEight,
+            twelve: hasTwelve,
+          };
           setAvailableStarts(nextAvail);
 
           // If current underlag isn't available, switch to first available
@@ -153,7 +157,6 @@ const PaginatedLapTable = ({
                 `${API_BASE_URL}/${endpoint}/findData?completeHorseId=${h.id}`,
                 { signal: ac.signal }
               );
-              // even if not ok, fall back to zero row
               const fs = fsRes.ok ? await fsRes.json() : {};
               return {
                 ...h,
@@ -205,7 +208,8 @@ const PaginatedLapTable = ({
   // ---- Sorting
   const requestSort = (key) => {
     let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") direction = "desc";
+    if (sortConfig.key === key && sortConfig.direction === "asc")
+      direction = "desc";
     setSortConfig({ key, direction });
   };
 
@@ -224,7 +228,8 @@ const PaginatedLapTable = ({
   // ---- Navigation (dates from props)
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
-  const goNext = () => idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
+  const goNext = () =>
+    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
   // ---- Labels
   const today = new Date().toISOString().split("T")[0];
@@ -233,8 +238,12 @@ const PaginatedLapTable = ({
   const sv = (d) => {
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
-    const rest = date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
+    const capitalizedWeekday =
+      weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    const rest = date.toLocaleDateString("sv-SE", {
+      day: "numeric",
+      month: "long",
+    });
     return `${capitalizedWeekday}, ${rest}`;
   };
   const selectedDateLabel =
@@ -249,12 +258,12 @@ const PaginatedLapTable = ({
   const selectedTrackLabel =
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "";
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ??
-    "";
+    competitions.find((c) => c.id === +selectedCompetition)
+      ?.nameOfCompetition ?? "";
 
   const compName =
-    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ??
-    "";
+    competitions.find((c) => c.id === +selectedCompetition)
+      ?.nameOfCompetition ?? "";
 
   const lapPrefix = /proposition/i.test(compName)
     ? "Prop"
@@ -348,66 +357,54 @@ const PaginatedLapTable = ({
         ))}
       </div>
 
-      {/* UNDERLAG buttons with stable layout (no jump) */}
-      <div className="self-start flex gap-1 mb-4 min-h-[40px] flex-nowrap overflow-x-auto items-start">
-        {availLoading && (
-          <div className="flex gap-2">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-gray-300 rounded w-24 h-8 animate-pulse" />
-            ))}
-          </div>
-        )}
+      {/* Underlag buttons — no skeletons and no scroll; reserve height to prevent jump */}
+      <div className="self-start flex gap-1 mb-4 items-start min-h-[40px] flex-wrap">{/* //fix: removed skeleton + reserved height, no overflow scroll */}
+        {!availLoading && ( //fix
+          <> {/* fix */}
+            {availableStarts.four && ( //fix
+              <button
+                onClick={() => setActiveStartsType("four")}
+                disabled={loading}
+                className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+                  activeStartsType === "four"
+                    ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
+                Underlag X
+              </button>
+            )}
 
-        {!availLoading && availableStarts.four && (
-          <button
-            onClick={() => setActiveStartsType("four")}
-            disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              activeStartsType === "four"
-                ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            Underlag X
-          </button>
-        )}
+            {availableStarts.eight && (
+              <button
+                onClick={() => setActiveStartsType("eight")}
+                disabled={loading}
+                className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+                  activeStartsType === "eight"
+                    ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
+                Underlag Y
+              </button>
+            )}
 
-        {!availLoading && availableStarts.eight && (
-          <button
-            onClick={() => setActiveStartsType("eight")}
-            disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              activeStartsType === "eight"
-                ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            Underlag Y
-          </button>
+            {availableStarts.twelve && (
+              <button
+                onClick={() => setActiveStartsType("twelve")}
+                disabled={loading}
+                className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+                  activeStartsType === "twelve"
+                    ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
+                Underlag Z
+              </button>
+            )}
+            {/* If none available, render nothing; min-h keeps layout stable */} {/* fix */}
+          </>
         )}
-
-        {!availLoading && availableStarts.twelve && (
-          <button
-            onClick={() => setActiveStartsType("twelve")}
-            disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              activeStartsType === "twelve"
-                ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            Underlag Z
-          </button>
-        )}
-
-        {!availLoading &&
-          !availableStarts.four &&
-          !availableStarts.eight &&
-          !availableStarts.twelve && (
-            <div className="text-xs text-slate-500 flex items-center h-8">
-              Inget underlag för detta lopp.
-            </div>
-          )}
       </div>
 
       {/* Table */}
@@ -502,22 +499,34 @@ const PaginatedLapTable = ({
                   </td>
                   <td
                     className={`py-2 px-2 border-r border-gray-200 ${
-                      isMax ? "bg-orange-300 font-bold underline" : "bg-orange-50"
+                      isMax
+                        ? "bg-orange-300 font-bold underline"
+                        : "bg-orange-50"
                     }`}
                   >
                     {row.analys}
                   </td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.fart}</td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.styrka}</td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.klass}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.fart}
+                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.styrka}
+                  </td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.klass}
+                  </td>
                   <td className="py-2 px-2 border-r border-gray-200">
                     {row.prispengar}
                   </td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.kusk}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.kusk}
+                  </td>
                   <td className="py-2 px-2 border-r border-gray-200">
                     {row.placering}
                   </td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.form}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">
+                    {row.form}
+                  </td>
                 </tr>
               );
             })}

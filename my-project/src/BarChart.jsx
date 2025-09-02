@@ -127,7 +127,11 @@ const BarChartComponent = ({
         ]);
 
         if (!ac.signal.aborted) {
-          const nextAvail = { four: hasFour, eight: hasEight, twelve: hasTwelve };
+          const nextAvail = {
+            four: hasFour,
+            eight: hasEight,
+            twelve: hasTwelve,
+          };
           setAvailableStarts(nextAvail);
 
           // If current selection is not available, switch to the first available
@@ -184,7 +188,7 @@ const BarChartComponent = ({
             const col = horseColors[idx % horseColors.length];
             return {
               label: `${horse.numberOfCompleteHorse}. ${horse.nameOfCompleteHorse}`,
-              data: labels.map((_, i) => (i === idx ? (fs?.analys ?? 0) : null)),
+              data: labels.map((_, i) => (i === idx ? fs?.analys ?? 0 : null)),
               backgroundColor: col,
               borderColor: "rgba(0,0,0,1)",
               borderWidth: 0.5,
@@ -422,69 +426,54 @@ const BarChartComponent = ({
         )}
       </div>
 
-      {/* UNDERLAG buttons with stable layout (no jump) */}
-      <div className="self-start flex gap-1 mb-4 min-h-[40px] flex-nowrap overflow-x-auto items-start">
-        {availLoading && (
-          <div className="flex gap-2">
-            {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="bg-gray-300 rounded w-24 h-8 animate-pulse"
-              />
-            ))}
-          </div>
-        )}
+      {/* UNDERLAG buttons (no skeleton) with reserved height to avoid layout shift */}
+      <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4 min-h-[40px]">
+        {/* fix: reserve space so the chart doesn't jump */}
+        {!availLoading && (
+          <>
+            {availableStarts.four && (
+              <button
+                onClick={() => setStartsType("four")}
+                disabled={loading}
+                className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+                  startsType === "four"
+                    ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
+                Underlag X
+              </button>
+            )}
 
-        {!availLoading && availableStarts.four && (
-          <button
-            onClick={() => setStartsType("four")}
-            disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              startsType === "four"
-                ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            Underlag X
-          </button>
-        )}
+            {availableStarts.eight && (
+              <button
+                onClick={() => setStartsType("eight")}
+                disabled={loading}
+                className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+                  startsType === "eight"
+                    ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
+                Underlag Y
+              </button>
+            )}
 
-        {!availLoading && availableStarts.eight && (
-          <button
-            onClick={() => setStartsType("eight")}
-            disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              startsType === "eight"
-                ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            Underlag Y
-          </button>
+            {availableStarts.twelve && (
+              <button
+                onClick={() => setStartsType("twelve")}
+                disabled={loading}
+                className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+                  startsType === "twelve"
+                    ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
+                Underlag Z
+              </button>
+            )}
+          </>
         )}
-
-        {!availLoading && availableStarts.twelve && (
-          <button
-            onClick={() => setStartsType("twelve")}
-            disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              startsType === "twelve"
-                ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-            } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            Underlag Z
-          </button>
-        )}
-
-        {!availLoading &&
-          !availableStarts.four &&
-          !availableStarts.eight &&
-          !availableStarts.twelve && (
-            <div className="text-xs text-slate-500 flex items-center h-8">
-              Inget underlag för detta lopp.
-            </div>
-          )}
       </div>
 
       <div className="w-full text-center mb-1 hidden sm:block">
