@@ -365,7 +365,7 @@ const BarChartComponent = ({
       </div>
 
       <div className="w-full flex justify-center">
-        <div className="w-full sm:h-[35vh] h-[30vh] relative flex items-center justify-center">
+        <div className="w-full h-[240px] sm:h-[340px] relative flex items-center justify-center">
           {data.datasets.length > 0 && !loading && (
             <Bar
               ref={chartRef}
