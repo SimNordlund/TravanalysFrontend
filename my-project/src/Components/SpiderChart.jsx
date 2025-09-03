@@ -109,8 +109,8 @@ const SpiderChart = ({
           .slice(0, 5)
           .map((x) => x.i);
         const suggestedVisibleIdxes =
-          selectedHorse !== null ? [selectedHorse] : top5Idx;
-
+        selectedHorse !== null ? [selectedHorse] : raw.map((_, i) => i);
+      
         if (!ac.signal.aborted) {
           setRawDatasets(raw);
           setLoading(false);
