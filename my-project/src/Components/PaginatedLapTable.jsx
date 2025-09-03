@@ -27,7 +27,7 @@ const PaginatedLapTable = ({
   const [lapData, setLapData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [sortConfig, setSortConfig] = useState({ key: "analys", direction: "desc" }); //Changed!
 
   const [availableCounts, setAvailableCounts] = useState([]); 
   const [availLoading, setAvailLoading] = useState(false);
@@ -83,7 +83,6 @@ const PaginatedLapTable = ({
         const rows = await Promise.all(
           horses.map(async (h, idx) => {
             try {
-              
               const fsRes = await fetch(
                 `${API_BASE_URL}/starts/findData?completeHorseId=${h.id}&starter=${activeStartsCount}`,
                 { signal: ac.signal }
@@ -92,14 +91,14 @@ const PaginatedLapTable = ({
               return {
                 ...h,
                 ...{
-                  analys: fs?.analys ?? 0,
-                  fart: fs?.fart ?? 0,
-                  styrka: fs?.styrka ?? 0,
-                  klass: fs?.klass ?? 0,
-                  prispengar: fs?.prispengar ?? 0,
-                  kusk: fs?.kusk ?? 0,
-                  placering: fs?.placering ?? 0,
-                  form: fs?.form ?? 0,
+                  analys: Number(fs?.analys ?? 0),     //Changed!
+                  fart: Number(fs?.fart ?? 0),         //Changed!
+                  styrka: Number(fs?.styrka ?? 0),     //Changed!
+                  klass: Number(fs?.klass ?? 0),       //Changed!
+                  prispengar: Number(fs?.prispengar ?? 0), //Changed!
+                  kusk: Number(fs?.kusk ?? 0),         //Changed!
+                  placering: Number(fs?.placering ?? 0), //Changed!
+                  form: Number(fs?.form ?? 0),         //Changed!
                 },
                 position: idx + 1,
               };
@@ -115,7 +114,7 @@ const PaginatedLapTable = ({
 
         if (!ac.signal.aborted) {
           setLapData(rows);
-          setSortConfig({ key: "numberOfCompleteHorse", direction: "asc" });
+          setSortConfig({ key: "analys", direction: "desc" }); //Changed!
         }
       } catch (e) {
         if (ac.signal.aborted) return;
@@ -141,10 +140,14 @@ const PaginatedLapTable = ({
     const aVal = a[sortConfig.key];
     const bVal = b[sortConfig.key];
     if (aVal === undefined || bVal === undefined) return 0;
-    const aStr = typeof aVal === "string" ? aVal.toLowerCase() : aVal;
-    const bStr = typeof bVal === "string" ? bVal.toLowerCase() : bVal;
-    if (aStr < bStr) return sortConfig.direction === "asc" ? -1 : 1;
-    if (aStr > bStr) return sortConfig.direction === "asc" ? 1 : -1;
+
+    // Säkerställ numerisk sortering för tal – inte strängjämförelse //Changed!
+    const numKeys = new Set(["analys","fart","styrka","klass","prispengar","kusk","placering","form"]); //Changed!
+    const av = numKeys.has(sortConfig.key) ? Number(aVal) : (typeof aVal === "string" ? aVal.toLowerCase() : aVal); //Changed!
+    const bv = numKeys.has(sortConfig.key) ? Number(bVal) : (typeof bVal === "string" ? bVal.toLowerCase() : bVal); //Changed!
+
+    if (av < bv) return sortConfig.direction === "asc" ? -1 : 1;
+    if (av > bv) return sortConfig.direction === "asc" ? 1 : -1;
     return 0;
   });
 
