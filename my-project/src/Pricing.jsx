@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import Swish from "./Components/Swish";
-import { CheckIcon } from "@heroicons/react/20/solid";
 import LikeButton from "./Components/LikeButton";
-import FacebookLike from "./Components/FacebookLike";
 
 const includedFeatures = [
   "Unik statistik",
@@ -31,9 +29,6 @@ export default function Pricing() {
           </h2>
           <div className="flex gap-x-2">
             <LikeButton />
-          </div>
-          <div className="ml-5 sm:ml-0">
-            <FacebookLike />
           </div>
         </div>
 
