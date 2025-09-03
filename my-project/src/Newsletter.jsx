@@ -137,7 +137,7 @@ export default function Newsletter() {
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:gap-y-2 sm:grid-cols-2 sm:mt-6">
             <div className="flex flex-col items-center">
               <a
-                href="tel:0706493763"
+                href="tel:0703776228"
                 className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
               >
                 <PhoneIcon className="h-8 w-8 text-white" aria-hidden="true" />{" "}
@@ -145,10 +145,10 @@ export default function Newsletter() {
               <dt className="mt-4 font-semibold text-white">Ring oss</dt>
               <dd className="mt-2 leading-7 text-gray-300">
                 <a
-                  href="tel:0706493763"
+                  href="tel:0703776228"
                   className="text-gray-300 hover:text-white"
                 >
-                  070-649 37 63
+                  070-377 62 28
                 </a>
               </dd>
             </div>
