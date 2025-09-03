@@ -141,13 +141,13 @@ const AnalysChart = ({
   };
 
   return (
-    <div className="flex flex-col justify-center items-center mt-1 sm:mt-0 px-2 pb-10">
+    <div className="flex flex-col justify-center items-center mt-1 sm:mt-0 px-2 pb-5">
       <div className="w-full text-center mb-1">
         <p className="text-sm sm:text-base text-slate-700 font-semibold">Delanalyser med de bästa perspektiven</p>
       </div>
 
       <div className="w-full max-w-[950px] mx-auto">
-        <div className="relative w-full h-[220px] sm:h-[250px]">
+        <div className="relative w-full h-[220px] sm:h-[300px]">
           {data?.datasets?.length > 0 && !loading && !error && <Bar data={data} options={options} />}
           {!loading && !error && data?.datasets?.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-500">Ingen data.</div>

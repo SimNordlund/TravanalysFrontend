@@ -233,7 +233,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
               </div>
             </div>
 
-            <div className="min-h-[400px]">
+            <div className="min-h-[200px]">
               <AnalysChart
                 selectedLap={selectedLap}
                 selectedHorse={selectedHorse}
