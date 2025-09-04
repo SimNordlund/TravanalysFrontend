@@ -44,7 +44,7 @@ const SharedHorseLegend = ({
             title={it.label}
           >
             <span
-              className="inline-block w-20 h-3 mr-2 rounded"
+              className="inline-block w-20 h-3 mr-2 rounded border border-slate-500"
               style={{ background: it.color }}
             />
             <span className={`${isVisible(it.idx) ? "" : "line-through"}`}>
