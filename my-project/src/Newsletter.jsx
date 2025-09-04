@@ -8,19 +8,40 @@ export default function Newsletter() {
   const [phone, setPhone] = useState("");
   const [consent, setConsent] = useState(false);
   const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false); //Changed!
   const hideTimer = useRef();
 
-    useEffect(() => {                                        
-    if (!message) return;                                   
-    clearTimeout(hideTimer.current);                          
-    hideTimer.current = setTimeout(() => setMessage(""), 15000); 
-    return () => clearTimeout(hideTimer.current);            
-  }, [message]);                                              
+  useEffect(() => {
+    if (!message) return;
+    clearTimeout(hideTimer.current);
+    hideTimer.current = setTimeout(() => setMessage(""), 15000);
+    return () => clearTimeout(hideTimer.current);
+  }, [message]);
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+  // Enkel telefonvalidering: minst 7 siffror efter att vi tagit bort mellanslag, bindestreck etc. //Changed!
+  const isPhoneValid = (raw) => { //Changed!
+    if (!raw) return true; // tomt är OK om email finns //Changed!
+    const digits = raw.replace(/\D/g, ""); //Changed!
+    return digits.length >= 7 && digits.length <= 15; //Changed!
+  }; //Changed!
+
+  // Försök tolka JSON men krascha inte om backend returnerar text //Changed!
+  const safeParseJson = async (response) => { //Changed!
+    try { //Changed!
+      const ct = response.headers.get("content-type") || ""; //Changed!
+      if (ct.includes("application/json")) return await response.json(); //Changed!
+      const text = await response.text(); //Changed!
+      return text ? { message: text } : null; //Changed!
+    } catch { //Changed!
+      return null; //Changed!
+    } //Changed!
+  }; //Changed!
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!consent) {
       alert("Du måste godkänna lagring av uppgifter.");
       return;
@@ -30,8 +51,14 @@ export default function Newsletter() {
       return;
     }
 
+    // Frontend-validering av telefonnummer //Changed!
+    if (phone && !isPhoneValid(phone)) { //Changed!
+      setIsError(true); //Changed!
+      setMessage("Felaktigt format, kunde inte spara"); //Changed!
+      return; //Changed!
+    } //Changed!
+
     try {
-      
       const payload = {};
       if (email) payload.email = email;
       if (phone) payload.phone = phone;
@@ -42,20 +69,29 @@ export default function Newsletter() {
         body: JSON.stringify(payload),
       });
 
-      const text = await response.text(); 
+      // Egen feltext vid 400 eller annan valideringsmiss //Changed!
+      if (!response.ok) { //Changed!
+        setIsError(true); //Changed!
+        if (response.status === 400) { //Changed!
+          setMessage("Felaktigt format, kunde inte spara"); //Changed!
+        } else { //Changed!
+          const data = await safeParseJson(response); //Changed!
+          const serverMsg =
+            (data && (data.message || data.error)) || "Misslyckades att spara uppgifter"; //Changed!
+          setMessage(serverMsg); //Changed!
+        } //Changed!
+        return; //Changed!
+      } //Changed!
 
-      if (response.ok) {
-        
-        setMessage("Tack! Du får nu uppdateringar när något spännande sker."); 
-        setEmail(""); 
-        setPhone(""); 
-        setConsent(false); 
-      } else {
-        
-        setMessage(text || "Misslyckades att spara uppgifter"); 
-      }
+      // OK-svar //Changed!
+      setIsError(false); //Changed!
+      setMessage("Tack! Du får nu uppdateringar när något spännande sker."); //Changed!
+      setEmail("");
+      setPhone("");
+      setConsent(false);
     } catch (err) {
       console.error(err);
+      setIsError(true); //Changed!
       setMessage("Något gick fel, försök igen senare."); 
     }
   };
@@ -68,9 +104,12 @@ export default function Newsletter() {
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Prenumerera
             </h2>
+             <h3 className="text-1xl font-bold tracking-tight text-white sm:text-1xl mt-2 sm:mt-2">
+              Ange mejl och/eller telefonnummer
+            </h3>
             <form
               onSubmit={handleSubmit}
-              className="mt-8 flex flex-col gap-y-4"
+              className="mt-4 flex flex-col gap-y-4"
             >
               <label htmlFor="email-address" className="sr-only">
                 Email address
@@ -94,10 +133,12 @@ export default function Newsletter() {
                 name="phone"
                 type="tel"
                 autoComplete="tel"
+                inputMode="tel" //Changed!
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 placeholder="Skriv in ditt telefonnummer"
+                pattern="[\d\s()+-]{7,}" //Changed! (hjälper viss browservalidering)
               />
 
               <div className="flex items-center">
@@ -125,15 +166,25 @@ export default function Newsletter() {
                 Prenumerera
               </button>
             </form>
-            {message && ( 
-              <div className="rounded-md bg-green-600/20 p-3">
-                {" "}
-                
-                <p className="text-sm text-green-300">{message}</p> 
-              </div> 
-            )}{" "}
-            
+
+            {message && (
+              <div
+                className={`rounded-md p-3 mt-3 ${
+                  isError ? "bg-red-600/20" : "bg-green-600/20"
+                }`} //Changed!
+              >
+                <p
+                  className={`text-sm ${
+                    isError ? "text-red-300" : "text-green-300"
+                  }`} //Changed!
+                >
+                  {message}
+                </p>
+              </div>
+            )}
           </div>
+
+          {/* ...resten oförändrat... */}
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:gap-y-2 sm:grid-cols-2 sm:mt-6">
             <div className="flex flex-col items-center">
               <a
