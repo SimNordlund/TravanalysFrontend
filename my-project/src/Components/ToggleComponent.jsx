@@ -221,7 +221,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                   startsCount={startsCount}           
                 />
               </div>
-              <div className="mt-0 ml-4 sm:mt-32 sm:justify-self-end sm:w-64 shrink-0">
+              <div className="mt-0 ml-4 sm:mt-28 sm:justify-self-end sm:w-64 shrink-0">
                 <SharedHorseLegend
                   items={horseLegendItems}
                   visibleIdxes={visibleHorseIdxes}
