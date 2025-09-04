@@ -3,6 +3,11 @@ import { Bar, getElementAtEvent } from "react-chartjs-2";
 import travhorsi from "./Bilder/travhorsi2.png";
 import DatePicker from "./Components/DatePicker";
 import Chart from "chart.js/auto";
+import { Weight } from "lucide-react";
+
+Chart.defaults.font.family =
+  "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'"; //Changed!
+Chart.defaults.font.weight = 400;
 
 const BarChartComponent = ({
   selectedDate,
@@ -208,7 +213,11 @@ const BarChartComponent = ({
         display: !isSmallScreen,
         position: isSmallScreen ? "top" : "right",
         align: "start",
-        labels: { boxWidth: 42 },
+        labels: {
+        boxWidth: 42,
+        color: "#000",
+        font: { family: Chart.defaults.font.family, weight: 370, size: 12 }, //ÄNDRA STORLEK FÖR MINDRE BARCHART? 
+      },
       },
       tooltip: { enabled: true, callbacks: { title: () => "Analys" } },
     },
