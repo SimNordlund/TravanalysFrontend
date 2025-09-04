@@ -1,4 +1,4 @@
-import React, { useState } from "react"; //Changed!
+import React, { useState } from "react"; 
 
 const SharedHorseLegend = ({
   items,
@@ -7,50 +7,49 @@ const SharedHorseLegend = ({
   onShowAll,
   onShowTop5,
   onShowTop3,
-  // Optional: låt föräldern styra aktivt läge genom att skicka in defaultActive/active
-  defaultActive = "all", //Changed!
-  active: controlledActive, //Changed!
+  defaultActive = "all", 
+  active: controlledActive,
 }) => {
   const isVisible = (i) => visibleIdxes?.includes(i);
 
-  // Om controlledActive finns används det, annars intern state //Changed!
-  const [uncontrolledActive, setUncontrolledActive] = useState(defaultActive); //Changed!
-  const active = controlledActive ?? uncontrolledActive; //Changed!
 
-  // DRY: klassgenerator för knapparna //Changed!
-  const btnBase = "px-2 py-1 text-xs rounded sm:text-1xl font-semibold tracking-tight"; //Changed!
-  const activeCls = "bg-orange-500 hover:bg-orange-600 text-white shadow-md border-2 border-slate-600"; //Changed!
-  const inactiveCls = "bg-gray-200 text-black hover:bg-blue-200"; //Changed!
-  const cls = (key) => `${btnBase} ${active === key ? activeCls : inactiveCls}`; //Changed!
+  const [uncontrolledActive, setUncontrolledActive] = useState(defaultActive); 
+  const active = controlledActive ?? uncontrolledActive; 
 
-  // Helpers som både sätter aktiv knapp och anropar din callback //Changed!
-  const handleTop3 = () => { setUncontrolledActive("top3"); onShowTop3?.(); }; //Changed!
-  const handleTop5 = () => { setUncontrolledActive("top5"); onShowTop5?.(); }; //Changed!
-  const handleAll  = () => { setUncontrolledActive("all");  onShowAll?.();  }; //Changed!
+
+  const btnBase = "px-2 py-1 text-xs rounded sm:text-1xl tracking-tight"; 
+  const activeCls = "bg-orange-500 hover:bg-orange-600 text-white shadow-md border-2 border-slate-600 font-semibold"; 
+  const inactiveCls = "bg-gray-200 text-black hover:bg-blue-200"; 
+  const cls = (key) => `${btnBase} ${active === key ? activeCls : inactiveCls}`; 
+
+
+  const handleTop3 = () => { setUncontrolledActive("top3"); onShowTop3?.(); }; 
+  const handleTop5 = () => { setUncontrolledActive("top5"); onShowTop5?.(); }; 
+  const handleAll  = () => { setUncontrolledActive("all");  onShowAll?.();  }; 
 
   return (
     <div className="w-full">
       <div className="flex gap-2 mb:gap-3 mb-4">
         <button
-          onClick={handleTop3} //Changed!
-          className={cls("top3")} //Changed!
-          aria-pressed={active === "top3"} //Changed!
+          onClick={handleTop3} 
+          className={cls("top3")} 
+          aria-pressed={active === "top3"} 
         >
           Visa topp 3
         </button>
 
         <button
-          onClick={handleTop5} //Changed!
-          className={cls("top5")} //Changed!
-          aria-pressed={active === "top5"} //Changed!
+          onClick={handleTop5} 
+          className={cls("top5")} 
+          aria-pressed={active === "top5"} 
         >
           Visa topp 5
         </button>
 
         <button
-          onClick={handleAll} //Changed!
-          className={cls("all")} //Changed!
-          aria-pressed={active === "all"} //Changed!
+          onClick={handleAll} 
+          className={cls("all")} 
+          aria-pressed={active === "all"} 
         >
           Visa alla
         </button>
