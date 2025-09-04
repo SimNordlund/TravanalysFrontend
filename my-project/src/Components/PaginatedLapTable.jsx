@@ -200,6 +200,7 @@ const PaginatedLapTable = ({
           onChange={setSelectedDate}
           min={dates[0]?.date}
           max={dates[dates.length - 1]?.date}
+          availableDates={dates.map((d) => d.date)}
         />
 
         <button onClick={goNext} disabled={idx >= dates.length - 1 || loading} className="p-1 text-4xl md:text-5xl disabled:opacity-40">

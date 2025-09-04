@@ -189,6 +189,7 @@ const Skrallar = ({
           onChange={setSelectedDate}
           min={dates[0]?.date}
           max={dates[dates.length - 1]?.date}
+          availableDates={dates.map((d) => d.date)}
         />
 
         <button
