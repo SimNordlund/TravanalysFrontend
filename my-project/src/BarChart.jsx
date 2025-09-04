@@ -184,7 +184,7 @@ const BarChartComponent = ({
         };
 
         const box = document.createElement("span");
-        box.className = "inline-block w-20 h-3 mr-2 rounded";
+        box.className = "inline-block w-20 h-3 mr-2 rounded border border-slate-500";
         box.style.background = item.fillStyle;
 
         const text = document.createElement("span");
