@@ -53,7 +53,7 @@ export default function IntroWithCarousel() {
       <div className="mx-auto max-w-7xl px-4 lg:px-0">
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-10 lg:mx-0 lg:max-w-none lg:grid-cols-2">
          
-         {/* <div className="order-1 lg:order-1 flex items-center">
+          <div className="order-1 lg:order-1 flex items-center">
             <HeroCarousel
               slides={slides}
               auto
@@ -65,7 +65,7 @@ export default function IntroWithCarousel() {
               imgClassName="px-3 md:px-0 pt-0 py-1 md:py-7"
               letterboxBg="bg-slate-100"
             />
-          </div> */}
+          </div>
 
         
           <div className="order-2 lg:order-2 lg:pl-8">
