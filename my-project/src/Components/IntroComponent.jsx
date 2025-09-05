@@ -13,18 +13,18 @@ const features = [
   {
     name: "Grafiskt beslutsunderlag",
     description:
-      "Utnyttja vårt kraftfulla analysverktyg. Utforska beslutsunderlaget i den form som passar dig.",
+      "Utnyttja vårt kraftfulla analysverktyg. Utforska beslutsunderlaget i den form som passar dig. Summeringen och analysperspektiven bryts ner i olika delanalyser som ofta skvallrar om en kommande bra prestation.",
     icon: CloudArrowUpIcon,
   },
   {
     name: "För spelare, kusk, tränare och ägare",
     description:
-      "Tjänster värdefulla för alla olika roller. Utvärdera och ge feedback i din roll. ",
+      "Analysverktyget kan användas av travsportens alla intressenter och roller. Fungerar som spelarens stöd för att lägga till eller ta bort en häst - eller bekräfta sin spelidé. Tränarnas och ägarnas stöd i anmälningsprocessen då analyser för propositioner även kommer presenteras.",
     icon: UserGroupIcon,
   },
   {
     name: "Ta hjälp av Trav-olta",
-    description: "Vår finurliga AI-kompis hjälper till med analysen.",
+    description: "Vi har även en travkunnig och finurlig AI-kompis kallad Trav-olta som gärna hjälper till med analysen.",
     icon: ChatBubbleOvalLeftEllipsisIcon,
   },
  // {
@@ -39,7 +39,7 @@ const slides = [skräll1, skräll2, skräll3];
 
 export default function IntroComponent() {
   return (
-    <div className="overflow-hidden bg-white pt-6 pb-0 sm:pt-16 sm:pb-20">
+    <div className="overflow-hidden bg-white pt-6 pb-0 sm:pt-8 sm:pb-10">
       <div className="mx-auto max-w-7xl px-6 lg:px-0">
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
           <div className="lg:mt-6 lg:pr-8">
@@ -79,7 +79,7 @@ export default function IntroComponent() {
             src={vinst1}
             width={2432}
             height={1442}
-            className="hidden sm:block w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-24 lg:-ml-24 mt-0"
+            className="hidden sm:block w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-24 lg:-ml-24 mt-20"
           />
         </div>
       </div>
