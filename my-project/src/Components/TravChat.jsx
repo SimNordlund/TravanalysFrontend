@@ -117,7 +117,8 @@ export default function TravChat() {
                }`}
         >
           <div className="flex items-center justify-between bg-blue-600 text-white p-3">
-            <span>Trav-olta 💬</span>
+            <div>Trav-olta 💬</div> 
+            <div className="text-orange-400 font-bold">BETA</div>
             <div className="flex items-center gap-2">
               <button onClick={() => setIsMaximized((m) => !m)}>
                 {isMaximized ? <Minimize2 /> : <Maximize2 />}
