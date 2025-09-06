@@ -150,11 +150,11 @@ const AnalysChart = ({
       tooltip: {
         enabled: true,
         callbacks: {
-          title: (items) => items?.[0]?.label ?? "Delanalys", //Changed!
+          title: (items) => items?.[0]?.label ?? "Delanalys", 
 
           label: (item) => {
-            const horse = item.dataset?.label ?? ""; //Changed!
-            return `${horse}: ${item.formattedValue}`; //Changed!
+            const horse = item.dataset?.label ?? ""; 
+            return `${horse}: ${item.formattedValue}`; 
           },
         },
       },
@@ -165,7 +165,7 @@ const AnalysChart = ({
     <div className="flex flex-col justify-center items-center mt-1 sm:mt-0 px-2 pb-5">
       <div className="w-full text-center mb-1">
         <p className="text-sm sm:text-base text-slate-700 font-semibold">
-          Delanalyser med de bästa perspektiven
+          Från Delanalys med några av de bästa perspektiven till total Analys
         </p>
       </div>
 
