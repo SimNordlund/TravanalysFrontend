@@ -37,10 +37,7 @@ const AnalysChart = ({
     labels: [
       "Delanalys 1",
       "Delanalys 2",
-      "Delanalys 3",
-      "Delanalys 4",
-      "Delanalys 5",
-      "Delanalys 6",
+      "Analys",
     ],
     datasets: [],
   });
@@ -123,10 +120,7 @@ const AnalysChart = ({
           labels: [
             "Delanalys 1",
             "Delanalys 2",
-            "Delanalys 3",
-            "Delanalys 4",
-            "Delanalys 5",
-            "Denanalys 6",
+            "Analys",
           ],
           datasets,
         });
