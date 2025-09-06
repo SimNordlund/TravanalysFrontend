@@ -7,8 +7,8 @@ import barbild from "./Bilder/travhorsi.png";
 const navigation = [
   { name: "Startsida", to: "/" },
   { name: "Analys", to: "/ChartPage/analys" },
-  { name: "Tabell", to: "/ChartPage/tabell" },
-  { name: "Speltips", to: "/ChartPage/speltips" },
+  { name: "Ranking", to: "/ChartPage/tabell" },
+  { name: "Spel & ROI", to: "/ChartPage/speltips" },
   { name: "Om Travanalys", to: "/Components/SkrytComponent" },
 ];
 

@@ -286,13 +286,13 @@ const PaginatedLapTable = ({
               <th onClick={() => requestSort("numberOfCompleteHorse")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">#</th>
               <th onClick={() => requestSort("nameOfCompleteHorse")} className="py-2 px-2 font-semibold cursor-pointer text-left border-r last:border-r-0 border-gray-300">Häst</th>
               <th onClick={() => requestSort("analys")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100">{competitionName}</th>
-              <th onClick={() => requestSort("fart")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Fart</th>
               <th onClick={() => requestSort("styrka")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Prestation</th>
+              <th onClick={() => requestSort("placering")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Placering</th>
+              <th onClick={() => requestSort("fart")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Fart</th>
+              <th onClick={() => requestSort("form")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Form</th>
               <th onClick={() => requestSort("klass")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Motstånd</th>
               <th onClick={() => requestSort("prispengar")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Klass</th>
               <th onClick={() => requestSort("kusk")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Skrik</th>
-              <th onClick={() => requestSort("placering")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Placering</th>
-              <th onClick={() => requestSort("form")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Form</th>
             </tr>
           </thead>
 
@@ -310,13 +310,13 @@ const PaginatedLapTable = ({
                   <td className={`py-2 px-2 border-r border-gray-200 ${isMax ? "bg-orange-300 font-bold underline" : "bg-orange-50"}`}>
                     {row.analys}
                   </td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.fart}</td>
                   <td className="py-2 px-2 border-r border-gray-200">{row.styrka}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.placering}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.fart}</td>
+                  <td className="py-2 px-2 border-r border-gray-200">{row.form}</td>
                   <td className="py-2 px-2 border-r border-gray-200">{row.klass}</td>
                   <td className="py-2 px-2 border-r border-gray-200">{row.prispengar}</td>
                   <td className="py-2 px-2 border-r border-gray-200">{row.kusk}</td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.placering}</td>
-                  <td className="py-2 px-2 border-r border-gray-200">{row.form}</td>
                 </tr>
               );
             })}

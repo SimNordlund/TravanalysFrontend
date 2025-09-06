@@ -159,8 +159,8 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
   const callouts = [
     { id: 2, name: "Analys", bgColor: "bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600", view: "spider" },
-    { id: 3, name: "Tabell", bgColor: "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600", view: "table" },
-    { id: 4, name: "Speltips", bgColor: "bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600", view: "skrallar" },
+    { id: 3, name: "Ranking", bgColor: "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600", view: "table" },
+    { id: 4, name: "Spel & ROI", bgColor: "bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600", view: "skrallar" },
   ];
 
   return (
