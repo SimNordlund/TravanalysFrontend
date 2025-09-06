@@ -169,7 +169,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         {callouts.map((c) => (
           <div key={c.id} className="group relative cursor-pointer" onClick={() => switchView(c.view)}>
             <div
-              className={`${c.bgColor} relative h-14 w-24 sm:w-72 sm:h-18 mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
+              className={`${c.bgColor} relative h-14 w-24 lg:w-72 lg:h-18 md:w-52 md:h-18  mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
                 selectedView === c.view ? "ring-2 ring-slate-800 scale-110 opacity-100 cursor-default" : "hover:opacity-70"
               }`}
             >
