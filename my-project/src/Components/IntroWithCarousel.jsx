@@ -17,7 +17,7 @@ const features = [
     description: (
       <ul className="mt-1 list-disc pl-3 space-y-0.5">
         <li>Form - Hästens prestationer ur olika perspektiv i en närtid.</li>
-        <li>Fart - Hästens tider över olika distanser, spår, kusk, bana och underlag.</li>
+        <li>Fart - Hästens presterade tider över olika distanser med hänsyn till banunderlag, startspår och kusk.</li>
         <li>Placering - Hästens placeringar från det valda analysunderlaget.</li>
         <li>Prestation - En analys och översättning till en moralisk placering.</li>
         <li>Motstånd - Alltid svårare och en merit att tävla mot hårt motstånd.</li>
@@ -68,7 +68,7 @@ export default function IntroWithCarousel() {
           </div>
 
         
-          <div className="order-2 lg:order-2 lg:pl-8">
+          <div className="order-2 lg:order-2 lg:pl-11">
             <div className="lg:max-w-lg relative"> 
               <p className="mt-3 sm:mt-2 text-4xl mb-2 sm:mb-0 font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
                 Analysperspektiven

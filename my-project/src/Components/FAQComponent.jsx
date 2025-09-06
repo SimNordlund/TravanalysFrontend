@@ -75,7 +75,7 @@ const Faqs = () => {
     },
     {
       q: "Hur använder jag Travanalys?",
-      a: "Du väljer mellan olika vyer för att se hästar och deras analyser. Konsumera via analys, ranking eller spel & ROI",
+      a: "Du väljer mellan olika vyer för att se hästar och deras analyser. Konsumera via Analys, Ranking eller Spel & ROI",
     },
     {
       q: "Hur kontaktar jag er?",
