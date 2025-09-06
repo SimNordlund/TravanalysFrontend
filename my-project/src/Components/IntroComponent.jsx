@@ -89,12 +89,12 @@ export default function IntroComponent() {
           slides={slides}
           auto
           interval={4000}
-          className="mt-5 sm:mt-10 mb-10 sm:mb-0 mx-auto w-full max-w-[clamp(18rem,100vw,28rem)] px-4 sm:px-0" //Changed! större bredd
-          heightClass="aspect-[3/4] sm:aspect-[3/4]" //Changed! höjd som passar layouten
-          roundedClass="rounded-xl ring-1 ring-gray-200 shadow-lg" //Changed! rundade hörn
-          fit="contain" //Changed! ingen beskärning
-          imgClassName="px-4 md:px-0 pt-0 md:py-8" //Changed! lite ”luft” runt bilden
-          letterboxBg="bg-slate-100" //Changed! vit bakgrund istället för grå
+          className="mt-5 sm:mt-10 mb-10 sm:mb-0 mx-auto w-full max-w-[clamp(18rem,100vw,28rem)] px-4 sm:px-0"
+          heightClass="aspect-[3/4] sm:aspect-[3/4]" 
+          roundedClass="rounded-xl ring-1 ring-gray-200 shadow-lg" 
+          fit="contain" 
+          imgClassName="px-4 md:px-0 pt-0 md:py-8" 
+          letterboxBg="bg-slate-100"
         />
       </div> 
       */}

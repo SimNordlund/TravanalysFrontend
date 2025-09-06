@@ -6,7 +6,7 @@ import Chart from "chart.js/auto";
 import { Weight } from "lucide-react";
 
 Chart.defaults.font.family =
-  "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'"; //Changed!
+  "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'"; 
 Chart.defaults.font.weight = 400;
 
 const BarChartComponent = ({

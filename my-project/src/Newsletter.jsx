@@ -8,7 +8,7 @@ export default function Newsletter() {
   const [phone, setPhone] = useState("");
   const [consent, setConsent] = useState(false);
   const [message, setMessage] = useState("");
-  const [isError, setIsError] = useState(false); //Changed!
+  const [isError, setIsError] = useState(false); 
   const hideTimer = useRef();
 
   useEffect(() => {
@@ -20,24 +20,24 @@ export default function Newsletter() {
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // Enkel telefonvalidering: minst 7 siffror efter att vi tagit bort mellanslag, bindestreck etc. //Changed!
-  const isPhoneValid = (raw) => { //Changed!
-    if (!raw) return true; // tomt är OK om email finns //Changed!
-    const digits = raw.replace(/\D/g, ""); //Changed!
-    return digits.length >= 7 && digits.length <= 15; //Changed!
-  }; //Changed!
 
-  // Försök tolka JSON men krascha inte om backend returnerar text //Changed!
-  const safeParseJson = async (response) => { //Changed!
-    try { //Changed!
-      const ct = response.headers.get("content-type") || ""; //Changed!
-      if (ct.includes("application/json")) return await response.json(); //Changed!
-      const text = await response.text(); //Changed!
-      return text ? { message: text } : null; //Changed!
-    } catch { //Changed!
-      return null; //Changed!
-    } //Changed!
-  }; //Changed!
+  const isPhoneValid = (raw) => { 
+    if (!raw) return true; 
+    const digits = raw.replace(/\D/g, ""); 
+    return digits.length >= 7 && digits.length <= 15; 
+  }; 
+
+
+  const safeParseJson = async (response) => { 
+    try { 
+      const ct = response.headers.get("content-type") || ""; 
+      if (ct.includes("application/json")) return await response.json(); 
+      const text = await response.text(); 
+      return text ? { message: text } : null; 
+    } catch { 
+      return null; 
+    } 
+  }; 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,12 +51,12 @@ export default function Newsletter() {
       return;
     }
 
-    // Frontend-validering av telefonnummer //Changed!
-    if (phone && !isPhoneValid(phone)) { //Changed!
-      setIsError(true); //Changed!
-      setMessage("Felaktigt format, kunde inte spara"); //Changed!
-      return; //Changed!
-    } //Changed!
+   
+    if (phone && !isPhoneValid(phone)) { 
+      setIsError(true); 
+      setMessage("Felaktigt format, kunde inte spara"); 
+      return; 
+    } 
 
     try {
       const payload = {};
@@ -69,29 +69,29 @@ export default function Newsletter() {
         body: JSON.stringify(payload),
       });
 
-      // Egen feltext vid 400 eller annan valideringsmiss //Changed!
-      if (!response.ok) { //Changed!
-        setIsError(true); //Changed!
-        if (response.status === 400) { //Changed!
-          setMessage("Felaktigt format, kunde inte spara"); //Changed!
-        } else { //Changed!
-          const data = await safeParseJson(response); //Changed!
+      
+      if (!response.ok) { 
+        setIsError(true); 
+        if (response.status === 400) { 
+          setMessage("Felaktigt format, kunde inte spara"); 
+        } else { 
+          const data = await safeParseJson(response); 
           const serverMsg =
-            (data && (data.message || data.error)) || "Misslyckades att spara uppgifter"; //Changed!
-          setMessage(serverMsg); //Changed!
-        } //Changed!
-        return; //Changed!
-      } //Changed!
+            (data && (data.message || data.error)) || "Misslyckades att spara uppgifter"; 
+          setMessage(serverMsg); 
+        } 
+        return; 
+      } 
 
-      // OK-svar //Changed!
-      setIsError(false); //Changed!
-      setMessage("Tack! Du får nu uppdateringar när något spännande sker."); //Changed!
+      // OK-svar 
+      setIsError(false); 
+      setMessage("Tack! Du får nu uppdateringar när något spännande sker."); 
       setEmail("");
       setPhone("");
       setConsent(false);
     } catch (err) {
       console.error(err);
-      setIsError(true); //Changed!
+      setIsError(true); 
       setMessage("Något gick fel, försök igen senare."); 
     }
   };
@@ -133,12 +133,12 @@ export default function Newsletter() {
                 name="phone"
                 type="tel"
                 autoComplete="tel"
-                inputMode="tel" //Changed!
+                inputMode="tel" 
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 placeholder="Skriv in ditt telefonnummer"
-                pattern="[\d\s()+-]{7,}" //Changed! (hjälper viss browservalidering)
+                pattern="[\d\s()+-]{7,}" 
               />
 
               <div className="flex items-center">
@@ -171,12 +171,12 @@ export default function Newsletter() {
               <div
                 className={`rounded-md p-3 mt-3 ${
                   isError ? "bg-red-600/20" : "bg-green-600/20"
-                }`} //Changed!
+                }`} 
               >
                 <p
                   className={`text-sm ${
                     isError ? "text-red-300" : "text-green-300"
-                  }`} //Changed!
+                  }`} 
                 >
                   {message}
                 </p>
@@ -184,7 +184,7 @@ export default function Newsletter() {
             )}
           </div>
 
-          {/* ...resten oförändrat... */}
+        
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:gap-y-2 sm:grid-cols-2 sm:mt-6">
             <div className="flex flex-col items-center">
               <a

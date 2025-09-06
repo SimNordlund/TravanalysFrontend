@@ -27,7 +27,7 @@ const PaginatedLapTable = ({
   const [lapData, setLapData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [sortConfig, setSortConfig] = useState({ key: "analys", direction: "desc" }); //Changed!
+  const [sortConfig, setSortConfig] = useState({ key: "analys", direction: "desc" }); 
 
   const [availableCounts, setAvailableCounts] = useState([]); 
   const [availLoading, setAvailLoading] = useState(false);
@@ -91,14 +91,14 @@ const PaginatedLapTable = ({
               return {
                 ...h,
                 ...{
-                  analys: Number(fs?.analys ?? 0),     //Changed!
-                  fart: Number(fs?.fart ?? 0),         //Changed!
-                  styrka: Number(fs?.styrka ?? 0),     //Changed!
-                  klass: Number(fs?.klass ?? 0),       //Changed!
-                  prispengar: Number(fs?.prispengar ?? 0), //Changed!
-                  kusk: Number(fs?.kusk ?? 0),         //Changed!
-                  placering: Number(fs?.placering ?? 0), //Changed!
-                  form: Number(fs?.form ?? 0),         //Changed!
+                  analys: Number(fs?.analys ?? 0),     
+                  fart: Number(fs?.fart ?? 0),         
+                  styrka: Number(fs?.styrka ?? 0),     
+                  klass: Number(fs?.klass ?? 0),       
+                  prispengar: Number(fs?.prispengar ?? 0), 
+                  kusk: Number(fs?.kusk ?? 0),         
+                  placering: Number(fs?.placering ?? 0), 
+                  form: Number(fs?.form ?? 0),         
                 },
                 position: idx + 1,
               };
@@ -114,7 +114,7 @@ const PaginatedLapTable = ({
 
         if (!ac.signal.aborted) {
           setLapData(rows);
-          setSortConfig({ key: "analys", direction: "desc" }); //Changed!
+          setSortConfig({ key: "analys", direction: "desc" }); 
         }
       } catch (e) {
         if (ac.signal.aborted) return;
@@ -141,10 +141,9 @@ const PaginatedLapTable = ({
     const bVal = b[sortConfig.key];
     if (aVal === undefined || bVal === undefined) return 0;
 
-    // Säkerställ numerisk sortering för tal – inte strängjämförelse //Changed!
-    const numKeys = new Set(["analys","fart","styrka","klass","prispengar","kusk","placering","form"]); //Changed!
-    const av = numKeys.has(sortConfig.key) ? Number(aVal) : (typeof aVal === "string" ? aVal.toLowerCase() : aVal); //Changed!
-    const bv = numKeys.has(sortConfig.key) ? Number(bVal) : (typeof bVal === "string" ? bVal.toLowerCase() : bVal); //Changed!
+    const numKeys = new Set(["analys","fart","styrka","klass","prispengar","kusk","placering","form"]); 
+    const av = numKeys.has(sortConfig.key) ? Number(aVal) : (typeof aVal === "string" ? aVal.toLowerCase() : aVal); 
+    const bv = numKeys.has(sortConfig.key) ? Number(bVal) : (typeof bVal === "string" ? bVal.toLowerCase() : bVal); 
 
     if (av < bv) return sortConfig.direction === "asc" ? -1 : 1;
     if (av > bv) return sortConfig.direction === "asc" ? 1 : -1;

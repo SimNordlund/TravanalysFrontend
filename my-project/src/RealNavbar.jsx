@@ -51,17 +51,15 @@ export default function Example() {
                 </Disclosure.Button>
               </div>
 
-              {/* Mitten: logga + desktopnavigation */}
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center text-indigo-600">
                   {" "}
-                  {/* //Changed! färgen styrs av text-* */}
                   <div
-                    className="h-10 w-10" // välj bredd själv (t.ex. w-12) /* //Changed! */
+                    className="h-10 w-10" 
                     style={{
-                      WebkitMask: `url(${barbild}) center / contain no-repeat`, //Changed!
-                      mask: `url(${barbild}) center / contain no-repeat`, //Changed!
-                      backgroundColor: "currentColor", //Changed!
+                      WebkitMask: `url(${barbild}) center / contain no-repeat`, 
+                      mask: `url(${barbild}) center / contain no-repeat`, 
+                      backgroundColor: "currentColor", 
                     }}
                     aria-label="Travanalys"
                     title="Travanalys"
