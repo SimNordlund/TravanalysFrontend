@@ -4,7 +4,7 @@ import {
   HeartIcon,
   ChatBubbleOvalLeftEllipsisIcon,
 } from "@heroicons/react/20/solid";
-import vinst1 from "../Bilder/Vinst.jpg";
+import vinst1 from "../Bilder/Vinst2.jpg";
 import skräll1 from "../Bilder/skräll1.png";
 import skräll2 from "../Bilder/skräll2.png";
 import skräll3 from "../Bilder/skräll3.png";
