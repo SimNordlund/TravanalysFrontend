@@ -20,9 +20,9 @@ const features = [
         <li>Fart - Hästens presterade tider över olika distanser med hänsyn till banunderlag, startspår och kusk.</li>
         <li>Placering - Hästens placeringar från det valda analysunderlaget.</li>
         <li>Prestation - En analys och översättning till en moralisk placering.</li>
-        <li>Motstånd - Alltid svårare och en merit att tävla mot hårt motstånd.</li>
+        <li>Motstånd - Alltid svårare och meriterande att tävla mot hårt motstånd.</li>
         <li>Klass - Oftast mer utmanande att tävla i höga prisklasser.</li>
-        <li>Skrik - Trender som skvallrar om kommande bra prestationer.</li>
+        <li>Skrik - Trender i analysunderlag och spekulationer som skvallrar om dold form.</li>
         <li>Analys - Den sammansatta vinstchansen visualiserad i ett stapeldiagram.</li>
       </ul>
     ),
