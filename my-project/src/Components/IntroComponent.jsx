@@ -41,7 +41,7 @@ export default function IntroComponent() {
   return (
     <div className="overflow-hidden bg-white pt-6 pb-0 sm:pt-10 sm:pb-10">
       <div className="mx-auto max-w-7xl px-6 lg:px-0">
-        <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+        <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 xl:mx-0 xl:max-w-none xl:grid-cols-2">
           <div className="lg:mt-6 lg:pr-8">
             <div className="lg:max-w-lg">
               <h3 className="text-base/7 font-semibold text-orange-600">
@@ -79,7 +79,7 @@ export default function IntroComponent() {
             src={vinst1}
             width={2432}
             height={1442}
-            className="hidden md:block w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 md:w-[53rem] md:-ml-24 lg:-ml-24 mt-16"
+            className="hidden md:block w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 md:w-[53rem] md:-ml-24 xl:-ml-24 mt-16"
           />
         </div>
       </div>
