@@ -105,10 +105,7 @@ const AnalysChart = ({
               data: [
                 x.fs.a1 ?? 0,
                 x.fs.a2 ?? 0,
-                x.fs.a3 ?? 0,
-                x.fs.a4 ?? 0,
-                x.fs.a5 ?? 0,
-                x.fs.a6 ?? 0,
+                x.fs.analys ?? 0,
               ],
               backgroundColor: color,
               borderColor: "rgba(0,0,0,1)",
