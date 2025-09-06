@@ -164,7 +164,7 @@ const AnalysChart = ({
   return (
     <div className="flex flex-col justify-center items-center mt-1 sm:mt-0 px-2 pb-5">
       <div className="w-full text-center mb-1">
-        <p className="text-sm sm:text-base text-slate-700 font-semibold">
+        <p className="text-sm sm:text-base text-slate-700 font-bold">
           Från Delanalys med några av de bästa perspektiven till total Analys
         </p>
       </div>
