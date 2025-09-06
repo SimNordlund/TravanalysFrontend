@@ -71,11 +71,11 @@ const Faqs = () => {
   const faqsList = [
     {
       q: "Vad är Travanalys för någonting?",
-      a: "Skrällarsytt besluntsunderlag. Vi analyserar hästar och ger dig en djupare insikt i deras prestationer. Vi är i en utvecklingsfas och kommer att lansera fler funktioner och vyer inom kort.",
+      a: "Travsportens beslutsunderlag. Vi analyserar hästar och ger dig en djupare insikt i deras prestationer. Vi är i en utvecklingsfas och kommer att lansera fler funktioner och vyer inom kort.",
     },
     {
       q: "Hur använder jag Travanalys?",
-      a: "Du väljer mellan olika vyer för att se hästar och deras analyser. Konsumera via diagram, tabell eller fördjupad analys",
+      a: "Du väljer mellan olika vyer för att se hästar och deras analyser. Konsumera via analys, tabell eller speltips",
     },
     {
       q: "Hur kontaktar jag er?",
@@ -91,11 +91,11 @@ const Faqs = () => {
     },
        {
       q: "Vem är Trav-olta?",
-      a: "Det är vår AI-baserade travbot. Klicka på chatboxen längst ner i högra hörnet för att testa honom! Han har koll på startlistor, odds och roi m.m.",
+      a: "Det är vår AI-baserade travbot. Klicka på chatboxen längst ner i högra hörnet för att testa honom! Han har koll på startlistor, odds och roi m.m. Men tänk på att han är i en BETA-version",
     },
        {
       q: "När lanserar ni?",
-      a: "Vi är i en beta-fas och lanserar kontinuerligt nya funktioner. Följ oss på sociala medier för senaste nytt.",
+      a: "Vi är i en beta-fas och lanserar kontinuerligt nya funktioner. Följ oss på sociala medier eller prenumerera för senaste nytt.",
     },
   ];
 
