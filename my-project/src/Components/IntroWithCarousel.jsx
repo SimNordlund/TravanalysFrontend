@@ -18,9 +18,9 @@ const features = [
       <ul className="mt-1 list-disc pl-3 space-y-0.5">
         <li>Form - Hästens prestationer ur olika perspektiv i en närtid.</li>
         <li>Fart - Hästens tider över olika distanser, spår, kusk, bana och underlag.</li>
-        <li>Plac - Hästens placeringar från det valda analysunderlaget.</li>
-        <li>Prest - Den bedömda prestationen som inte alltid är placeringen.</li>
-        <li>Motst - Alltid svårare och en merit att tävla mot hårt motstånd.</li>
+        <li>Placering - Hästens placeringar från det valda analysunderlaget.</li>
+        <li>Prestation - En analys och översättning till en moralisk placering.</li>
+        <li>Motstånd - Alltid svårare och en merit att tävla mot hårt motstånd.</li>
         <li>Klass - Oftast mer utmanande att tävla i höga prisklasser.</li>
         <li>Skrik - Trender som skvallrar om kommande bra prestationer.</li>
         <li>Analys - Den sammansatta vinstchansen visualiserad i ett stapeldiagram.</li>
