@@ -11,20 +11,49 @@ import skräll1 from "../Bilder/skräll1.png";
 import skräll2 from "../Bilder/skräll2.png";
 import skräll3 from "../Bilder/skräll3.png";
 
+
+function BoldFirst({ text }) {
+  const match = text.match(/^(\S+)\s*-\s*(.*)$/); // fångar "FörstaOrdet - resten"
+  if (match) {
+    const [, first, rest] = match;
+    return (
+      <>
+        <span className="font-semibold">{first}</span> - {rest}
+      </>
+    );
+  }
+  // fallback om bindestreck saknas
+  const [first, ...rest] = text.split(" ");
+  return (
+    <>
+      <span className="font-semibold">{first}</span>
+      {rest.length ? " " + rest.join(" ") : ""}
+    </>
+  );
+}
+
 const features = [
   {
     name: "Vår analysmodell",
     description: (
-      <ul className="mt-1 list-disc pl-3 space-y-0.5">
-        <li>Form - Hästens prestationer ur olika perspektiv i en närtid.</li>
-        <li>Fart - Hästens presterade tider över olika distanser med hänsyn till banunderlag, startspår och kusk.</li>
-        <li>Placering - Hästens placeringar från det valda analysunderlaget.</li>
-        <li>Prestation - En analys och översättning till en moralisk placering.</li>
-        <li>Motstånd - Alltid svårare och meriterande att tävla mot hårt motstånd.</li>
-        <li>Klass - Oftast mer utmanande att tävla i höga prisklasser.</li>
-        <li>Skrik - Trender i analysunderlag och spekulationer som skvallrar om dold form.</li>
-        <li>Analys - Den sammansatta vinstchansen visualiserad i ett stapeldiagram.</li>
-      </ul>
+        <ul className="mt-1 list-disc pl-3 space-y-0.5">
+    {/* Changed! */}
+    <li><BoldFirst text="Form - Hästens prestationer ur olika perspektiv i en närtid." /></li>
+    {/* Changed! */}
+    <li><BoldFirst text="Fart - Hästens presterade tider över olika distanser med hänsyn till banunderlag, startspår och kusk." /></li>
+    {/* Changed! */}
+    <li><BoldFirst text="Placering - Hästens placeringar från det valda analysunderlaget." /></li>
+    {/* Changed! */}
+    <li><BoldFirst text="Prestation - En analys och översättning till en moralisk placering." /></li>
+    {/* Changed! */}
+    <li><BoldFirst text="Motstånd - Alltid svårare och meriterande att tävla mot hårt motstånd." /></li>
+    {/* Changed! */}
+    <li><BoldFirst text="Klass - Oftast mer utmanande att tävla i höga prisklasser." /></li>
+    {/* Changed! */}
+    <li><BoldFirst text="Skrik - Trender i analysunderlag och spekulationer som skvallrar om dold form." /></li>
+    {/* Changed! */}
+    <li><BoldFirst text="Analys - Den sammansatta vinstchansen visualiserad i ett stapeldiagram." /></li>
+  </ul>
     ),
     icon: AcademicCapIcon,
   },
