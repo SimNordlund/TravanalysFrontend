@@ -129,10 +129,9 @@ const PaginatedLapTable = ({
   }, [selectedLap, activeStartsCount, API_BASE_URL]); 
 
 
+  //Sortering på tabell. Fallande (Desc). Ändra detta om annan sortering. 
   const requestSort = (key) => {
-    let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") direction = "desc";
-    setSortConfig({ key, direction });
+    setSortConfig({ key, direction: "desc" });
   };
 
   const sortedLapData = [...lapData].sort((a, b) => {
@@ -141,7 +140,7 @@ const PaginatedLapTable = ({
     const bVal = b[sortConfig.key];
     if (aVal === undefined || bVal === undefined) return 0;
 
-    const numKeys = new Set(["analys","fart","styrka","klass","prispengar","kusk","placering","form"]); 
+    const numKeys = new Set(["analys","fart","styrka","klass","prispengar","kusk","placering","form","numberOfCompleteHorse"]); 
     const av = numKeys.has(sortConfig.key) ? Number(aVal) : (typeof aVal === "string" ? aVal.toLowerCase() : aVal); 
     const bv = numKeys.has(sortConfig.key) ? Number(bVal) : (typeof bVal === "string" ? bVal.toLowerCase() : bVal); 
 
