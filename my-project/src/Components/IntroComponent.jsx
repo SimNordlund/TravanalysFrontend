@@ -1,7 +1,6 @@
 import {
   CloudArrowUpIcon,
   UserGroupIcon,
-  HeartIcon,
   ChatBubbleOvalLeftEllipsisIcon,
 } from "@heroicons/react/20/solid";
 import vinst1 from "../Bilder/Vinst2.jpg";
@@ -27,12 +26,6 @@ const features = [
     description: "Vi har även en travkunnig och finurlig AI-kompis kallad Trav-olta som gärna hjälper till med analysen.",
     icon: ChatBubbleOvalLeftEllipsisIcon,
   },
- // {
- //   name: "Kostnadsfritt.",
- //   description:
- //     "Vi utvecklar dessa folkliga tjänster tillsammans. Ditt bidrag är din feedback.",
- //   icon: HeartIcon,
- // },
 ];
 
 const slides = [skräll1, skräll2, skräll3];
@@ -47,9 +40,6 @@ export default function IntroComponent() {
               <h3 className="text-base/7 font-semibold text-orange-600">
                 BETA-version!
               </h3>
-            {/*  <h2 className="text-base/7 font-semibold text-indigo-600">
-                Överlägsen analys
-              </h2>  */}
               <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
                 Travsportens beslutsunderlag
               </p>
@@ -83,21 +73,6 @@ export default function IntroComponent() {
           />
         </div>
       </div>
-      {/*}
-      <div>
-      <HeroCarousel
-          slides={slides}
-          auto
-          interval={4000}
-          className="mt-5 sm:mt-10 mb-10 sm:mb-0 mx-auto w-full max-w-[clamp(18rem,100vw,28rem)] px-4 sm:px-0"
-          heightClass="aspect-[3/4] sm:aspect-[3/4]" 
-          roundedClass="rounded-xl ring-1 ring-gray-200 shadow-lg" 
-          fit="contain" 
-          imgClassName="px-4 md:px-0 pt-0 md:py-8" 
-          letterboxBg="bg-slate-100"
-        />
-      </div> 
-      */}
     </div>
   );
 }
