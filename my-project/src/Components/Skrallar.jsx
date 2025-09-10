@@ -7,14 +7,14 @@ const Skrallar = ({
   setSelectedView,
   setSelectedHorse,
   dates,
-  selectedTrack,                 
-  setSelectedTrack,              
-  selectedCompetition,           
-  setSelectedCompetition,        
-  selectedLap,                   
-  setSelectedLap,                
-  tracks,                        
-  setPendingLapId,               
+  selectedTrack,
+  setSelectedTrack,
+  selectedCompetition,
+  setSelectedCompetition,
+  selectedLap,
+  setSelectedLap,
+  tracks,
+  setPendingLapId,
 }) => {
   const [horses, setHorses] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -55,7 +55,8 @@ const Skrallar = ({
 
   const requestSort = (key) => {
     let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") direction = "desc";
+    if (sortConfig.key === key && sortConfig.direction === "asc")
+      direction = "desc";
     setSortConfig({ key, direction });
   };
 
@@ -78,10 +79,11 @@ const Skrallar = ({
 
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
-  const goNext = () => idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
+  const goNext = () =>
+    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
   // Hoppa till rätt bana → spelform → lopp och markera häst
-  const handleRowClick = async (row) => {                               
+  const handleRowClick = async (row) => {
     try {
       // 1) TRACK
       let trackId =
@@ -92,7 +94,9 @@ const Skrallar = ({
         const list = await fetch(
           `${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`
         ).then((r) => r.json());
-        trackId = list.find((t) => t.nameOfTrack === row.nameOfTrack)?.id || list[0]?.id;
+        trackId =
+          list.find((t) => t.nameOfTrack === row.nameOfTrack)?.id ||
+          list[0]?.id;
       }
       if (!trackId) return;
       setSelectedTrack(trackId);
@@ -106,7 +110,8 @@ const Skrallar = ({
 
         if (row.nameOfCompetition) {
           competitionId =
-            comps.find((c) => c.nameOfCompetition === row.nameOfCompetition)?.id ?? null;
+            comps.find((c) => c.nameOfCompetition === row.nameOfCompetition)
+              ?.id ?? null;
         }
         if (!competitionId && comps.length === 1) competitionId = comps[0].id;
 
@@ -117,12 +122,11 @@ const Skrallar = ({
             ).then((r) => r.json());
             const found = lapsJSON.find(
               (l) =>
-                String(l.nameOfLap) === String(row.lap) ||
-                l.id === row.lapId
+                String(l.nameOfLap) === String(row.lap) || l.id === row.lapId
             );
             if (found) {
               competitionId = c.id;
-              row._resolvedLapId = found.id; 
+              row._resolvedLapId = found.id;
               break;
             }
           }
@@ -144,8 +148,8 @@ const Skrallar = ({
       }
       if (!lapId) return;
 
-      setPendingLapId(lapId);     
-      setSelectedLap(lapId);                                       
+      setPendingLapId(lapId);
+      setSelectedLap(lapId);
 
       // 4) HÄSTINDEX I JUST DETTA LOPP
       let horseIndex = 0;
@@ -157,11 +161,9 @@ const Skrallar = ({
           (h) =>
             (row.completeHorseId && h.id === row.completeHorseId) ||
             (row.horseId && h.id === row.horseId) ||
-            (
-              String(h.numberOfCompleteHorse) === String(row.numberOfHorse) &&
+            (String(h.numberOfCompleteHorse) === String(row.numberOfHorse) &&
               (h.nameOfCompleteHorse || "").toLowerCase() ===
-                (row.nameOfHorse || "").toLowerCase()
-            )
+                (row.nameOfHorse || "").toLowerCase())
         );
         if (idx >= 0) horseIndex = idx;
       } catch {}
@@ -171,7 +173,15 @@ const Skrallar = ({
     } catch (e) {
       console.error("handleRowClick error:", e);
     }
-  };                                                                   
+  };
+
+  const formatSE = (v) => {
+    //Changed!
+    if (v === null || v === undefined || v === "") return "";
+    const num = Number(typeof v === "string" ? v.replace(",", ".") : v); 
+    if (!Number.isFinite(num)) return String(v); 
+    return num.toFixed(2); 
+  };
 
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
@@ -211,22 +221,71 @@ const Skrallar = ({
         <table className="w-full min-w-max border-collapse text-sm">
           <thead className="bg-gray-100 border-b border-gray-200">
             <tr>
-              <th onClick={() => requestSort("numberOfHorse")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">#</th>
-              <th onClick={() => requestSort("nameOfHorse")} className="py-2 px-2 font-semibold cursor-pointer text-left border-r last:border-r-0 border-gray-300">Häst</th>
-              <th onClick={() => requestSort("analys")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100">Analys</th>
-              <th onClick={() => requestSort("resultat")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Placering</th>
-              <th onClick={() => requestSort("roiTotalt")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">ROI Totalt</th>
-              <th onClick={() => requestSort("roiVinnare")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Odds Vinnare</th>
-              <th onClick={() => requestSort("roiPlats")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Odds Plats</th>
-              <th onClick={() => requestSort("lap")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Lopp</th>
-              <th onClick={() => requestSort("nameOfTrack")} className="py-2 px-2 font-semibold cursor-pointer">Bana</th>
+              <th
+                onClick={() => requestSort("numberOfHorse")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                #
+              </th>
+              <th
+                onClick={() => requestSort("nameOfHorse")}
+                className="py-2 px-2 font-semibold cursor-pointer text-left border-r last:border-r-0 border-gray-300"
+              >
+                Häst
+              </th>
+              <th
+                onClick={() => requestSort("analys")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100"
+              >
+                Analys
+              </th>
+              <th
+                onClick={() => requestSort("resultat")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                Placering
+              </th>
+              <th
+                onClick={() => requestSort("roiTotalt")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                ROI Totalt
+              </th>
+              <th
+                onClick={() => requestSort("roiVinnare")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                Odds Vinnare
+              </th>
+              <th
+                onClick={() => requestSort("roiPlats")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                Odds Plats
+              </th>
+              <th
+                onClick={() => requestSort("lap")}
+                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+              >
+                Lopp
+              </th>
+              <th
+                onClick={() => requestSort("nameOfTrack")}
+                className="py-2 px-2 font-semibold cursor-pointer"
+              >
+                Bana
+              </th>
             </tr>
           </thead>
           <tbody>
             {sortedHorses.map((row) => (
               <tr
-                key={row.horseId ?? row.completeHorseId ?? `${row.nameOfHorse}-${row.lap}-${row.nameOfTrack}`}
-                onClick={() => handleRowClick(row)} 
+                key={
+                  row.horseId ??
+                  row.completeHorseId ??
+                  `${row.nameOfHorse}-${row.lap}-${row.nameOfTrack}`
+                }
+                onClick={() => handleRowClick(row)}
                 className="border-b last:border-b-0 border-gray-200 hover:bg-blue-50 cursor-pointer even:bg-gray-50"
               >
                 <td className="py-1 px-2 border-r border-gray-200 align-middle">
@@ -247,10 +306,10 @@ const Skrallar = ({
                   {row.roiTotalt}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
-                  {row.roiVinnare}
+                  {formatSE(row.roiVinnare)}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
-                  {row.roiPlats}
+                  {formatSE(row.roiPlats)}
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
                   {row.lap}
@@ -259,8 +318,15 @@ const Skrallar = ({
               </tr>
             ))}
             <tr className="font-semibold bg-gray-50">
-              <td colSpan={4} className="py-2 px-2 text-right border-r border-gray-200">Summa:</td>
-              <td className="py-2 px-2 border-r border-gray-200">{totalRoiTotalt}</td>
+              <td
+                colSpan={4}
+                className="py-2 px-2 text-right border-r border-gray-200"
+              >
+                Summa:
+              </td>
+              <td className="py-2 px-2 border-r border-gray-200">
+                {totalRoiTotalt}
+              </td>
               <td className="py-2 px-2 border-r border-gray-200"></td>
               <td className="py-2 px-2 border-r border-gray-200"></td>
               <td className="py-2 px-2 border-r border-gray-200"></td>
