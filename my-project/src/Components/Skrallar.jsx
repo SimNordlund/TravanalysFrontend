@@ -175,6 +175,7 @@ const Skrallar = ({
     }
   };
 
+  //Formatering. Två decimaler. Används för ROI odds. 
   const formatSE = (v) => {
     if (v === null || v === undefined || v === "") return "";
     const num = Number(typeof v === "string" ? v.replace(",", ".") : v); 

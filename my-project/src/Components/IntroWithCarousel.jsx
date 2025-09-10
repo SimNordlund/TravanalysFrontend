@@ -7,6 +7,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { useState } from "react"; 
 import HeroCarousel from "../Components/HeroCarousel";
+import skräll5 from "../Bilder/skräll5.png";
 import skräll4 from "../Bilder/skräll4.png";
 import skräll3 from "../Bilder/skräll3.png";
 
@@ -71,7 +72,7 @@ const features = [
   // { name: "Kostnadsfritt.", description: "Vi utvecklar dessa folkliga tjänster tillsammans. Ditt bidrag är din feedback.", icon: HeartIcon },
 ];
 
-const slides = [skräll4, skräll3];
+const slides = [skräll4, skräll3, skräll5];
 
 export default function IntroWithCarousel() {
   const [isOpen, setIsOpen] = useState(false); 
