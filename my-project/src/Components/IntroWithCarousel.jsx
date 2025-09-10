@@ -8,7 +8,7 @@ import {
 import { useState } from "react"; 
 import HeroCarousel from "../Components/HeroCarousel";
 import skräll4 from "../Bilder/skräll4.png";
-import skräll2 from "../Bilder/skräll2.png";
+import skräll3 from "../Bilder/skräll3.png";
 
 
 function BoldFirst({ text }) {
@@ -71,7 +71,7 @@ const features = [
   // { name: "Kostnadsfritt.", description: "Vi utvecklar dessa folkliga tjänster tillsammans. Ditt bidrag är din feedback.", icon: HeartIcon },
 ];
 
-const slides = [skräll4, skräll2];
+const slides = [skräll4, skräll3];
 
 export default function IntroWithCarousel() {
   const [isOpen, setIsOpen] = useState(false); 

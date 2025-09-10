@@ -176,11 +176,9 @@ const Skrallar = ({
   };
 
   const formatSE = (v) => {
-    //Changed!
     if (v === null || v === undefined || v === "") return "";
     const num = Number(typeof v === "string" ? v.replace(",", ".") : v); 
     if (!Number.isFinite(num)) return String(v); 
-
     if (num != 0) return num.toFixed(2); 
     if (num === 0) return "0";
   };
