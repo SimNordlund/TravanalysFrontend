@@ -216,8 +216,8 @@ const Skrallar = ({
               <th onClick={() => requestSort("analys")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100">Analys</th>
               <th onClick={() => requestSort("resultat")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Placering</th>
               <th onClick={() => requestSort("roiTotalt")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">ROI Totalt</th>
-              <th onClick={() => requestSort("roiVinnare")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">ROI Vinnare</th>
-              <th onClick={() => requestSort("roiPlats")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">ROI Plats</th>
+              <th onClick={() => requestSort("roiVinnare")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Odds Vinnare</th>
+              <th onClick={() => requestSort("roiPlats")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Odds Plats</th>
               <th onClick={() => requestSort("lap")} className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300">Lopp</th>
               <th onClick={() => requestSort("nameOfTrack")} className="py-2 px-2 font-semibold cursor-pointer">Bana</th>
             </tr>
