@@ -471,7 +471,7 @@ const RoiTable = ({
                 onClick={() => requestSort("roiTotalt")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
-                ROI Totalt
+                ROI Lopp
               </th>
               <th
                 onClick={() => requestSort("roiVinnare")}
