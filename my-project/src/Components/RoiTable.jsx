@@ -415,7 +415,7 @@ const RoiTable = ({
       </div>
 
      
-      <div className="self-start flex gap-1 mb-4 items-start min-h-[40px] flex-wrap">
+      {/* <div className="self-start flex gap-1 mb-4 items-start min-h-[40px] flex-wrap">
         {!availLoading &&
           availableCounts.map((n) => (
             <button
@@ -431,7 +431,7 @@ const RoiTable = ({
               {n} starter
             </button>
           ))}
-      </div>
+      </div> */}
 
       <div className="overflow-x-auto border border-gray-200 rounded relative">
         {loading && (
