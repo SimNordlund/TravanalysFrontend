@@ -1,12 +1,13 @@
-
+// ToggleComponent.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import SpiderChart from "./SpiderChart";
 import BarChart from "../BarChart";
 import PaginatedLapTable from "./PaginatedLapTable";
-import Skrallar from "./Skrallar";
+// import Skrallar from "./Skrallar"; //Changed! (ersatt av RoiTable)
 import AnalysChart from "./AnalysChart";
 import SharedHorseLegend from "./SharedHorseLegend";
+import RoiTable from "./RoiTable"; //Changed!
 
 const ToggleComponent = ({ syncWithRoute = false }) => {
   const { view: viewParam } = useParams();
@@ -264,7 +265,8 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         </div>
 
         <div className={`${selectedView === "skrallar" ? "" : "hidden"} min-h-[600px]`}>
-          <Skrallar
+          {/*Changed!: Ersätt Skrallar med RoiTable och skicka in extra props */}
+          <RoiTable //Changed!
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
             selectedTrack={selectedTrack}
@@ -273,10 +275,14 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             setSelectedCompetition={setSelectedCompetition}
             selectedLap={selectedLap}
             setSelectedLap={setSelectedLap}
-            setSelectedView={setViewAndMaybeNavigate}
-            setSelectedHorse={setSelectedHorse}
             dates={dates}
             tracks={tracks}
+            competitions={competitions} //Changed!
+            laps={laps}                 //Changed!
+            startsCount={startsCount}   //Changed!
+            setStartsCount={setStartsCount} //Changed!
+            setSelectedView={setViewAndMaybeNavigate}
+            setSelectedHorse={setSelectedHorse}
             setPendingLapId={setPendingLapId}
           />
         </div>
