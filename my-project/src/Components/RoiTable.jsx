@@ -103,8 +103,8 @@ const RoiTable = ({
   const selectedTrackLabel =
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? ""; //Changed!
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ??
-    ""; //Changed!
+    competitions.find((c) => c.id === +selectedCompetition)
+      ?.nameOfCompetition ?? ""; //Changed!
   const selectedLapName =
     laps.find((l) => l.id === +selectedLap)?.nameOfLap ?? ""; //Changed!
 
@@ -119,11 +119,14 @@ const RoiTable = ({
   const matchesTrack = (r) => {
     if (!selectedTrack) return true;
     if (r.trackId && +r.trackId === +selectedTrack) return true;
-    return (r.nameOfTrack || "").toLowerCase() === selectedTrackLabel.toLowerCase();
+    return (
+      (r.nameOfTrack || "").toLowerCase() === selectedTrackLabel.toLowerCase()
+    );
   };
   const matchesCompetition = (r) => {
     if (!selectedCompetition) return true;
-    if (r.competitionId && +r.competitionId === +selectedCompetition) return true;
+    if (r.competitionId && +r.competitionId === +selectedCompetition)
+      return true;
     return (
       (r.nameOfCompetition || "").toLowerCase() ===
       selectedCompetitionLabel.toLowerCase()
@@ -136,14 +139,26 @@ const RoiTable = ({
   };
 
   const visibleRows = useMemo(
-    () => rows.filter((r) => matchesTrack(r) && matchesCompetition(r) && matchesLap(r)),
-    [rows, selectedTrack, selectedCompetition, selectedLap, tracks, competitions, laps]
+    () =>
+      rows.filter(
+        (r) => matchesTrack(r) && matchesCompetition(r) && matchesLap(r)
+      ),
+    [
+      rows,
+      selectedTrack,
+      selectedCompetition,
+      selectedLap,
+      tracks,
+      competitions,
+      laps,
+    ]
   ); //Changed!
 
   // Sortering (bättre nummerhantering som i PaginatedLapTable)
   const requestSort = (key) => {
     let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") direction = "desc";
+    if (sortConfig.key === key && sortConfig.direction === "asc")
+      direction = "desc";
     setSortConfig({ key, direction });
   };
 
@@ -314,7 +329,6 @@ const RoiTable = ({
     }
   };
 
-
   const formatSE = (v) => {
     if (v === null || v === undefined || v === "") return "";
     const num = Number(typeof v === "string" ? v.replace(",", ".") : v);
@@ -323,17 +337,31 @@ const RoiTable = ({
     return "0";
   };
 
+
+  const vinnareCompetitions = useMemo(
+    () =>
+      competitions.filter(
+        (c) => (c.nameOfCompetition || "").toLowerCase() === "vinnare"
+      ),
+    [competitions]
+  );
+
+    useEffect(() => {
+    const v = vinnareCompetitions[0];
+    if (!v) return;
+    if (!selectedCompetition || +selectedCompetition !== +v.id) {
+      setSelectedCompetition && setSelectedCompetition(v.id);
+    }
+  }, [vinnareCompetitions]);
+
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
-  
       <p className="sm:text-xl text-lg font-semibold text-slate-800 mt-0 mb-4 sm:mt-0 sm:mb-2 px-4 py-1 flex flex-col justify-center items-center">
-     
         {selectedDateLabel}{" "}
         {selectedTrackLabel ? ` | ${selectedTrackLabel}` : ""}{" "}
         {selectedCompetitionLabel ? ` | ${selectedCompetitionLabel}` : ""}
       </p>
 
-  
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={goPrev}
@@ -360,7 +388,6 @@ const RoiTable = ({
         </button>
       </div>
 
- 
       <div className="flex flex-wrap gap-1 mb-2">
         {tracks.map((t) => (
           <button
@@ -378,24 +405,24 @@ const RoiTable = ({
         ))}
       </div>
 
-
       <div className="flex flex-wrap gap-1 mb-2">
-        {competitions.map((c) => (
+        {vinnareCompetitions.map((c) => (
           <button
             key={c.id}
-            onClick={() => setSelectedCompetition && setSelectedCompetition(c.id)}
+            onClick={() =>
+              setSelectedCompetition && setSelectedCompetition(c.id)
+            }
             disabled={loading}
             className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
               c.id === +selectedCompetition
-                ? "bg-teal-600 text-white font-semibold shadow"
+                ? "bg-orange-600 text-white font-semibold shadow"
                 : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
           >
-            {c.nameOfCompetition}
+            ROI
           </button>
         ))}
       </div>
-
 
       <div className="flex flex-wrap gap-1 mb-2">
         {laps.map((lap) => (
@@ -414,7 +441,6 @@ const RoiTable = ({
         ))}
       </div>
 
-     
       {/* <div className="self-start flex gap-1 mb-4 items-start min-h-[40px] flex-wrap">
         {!availLoading &&
           availableCounts.map((n) => (
@@ -485,7 +511,6 @@ const RoiTable = ({
               >
                 Odds Plats
               </th>
-          
             </tr>
           </thead>
 
