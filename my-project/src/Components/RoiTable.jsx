@@ -512,12 +512,12 @@ const RoiTable = ({
               >
                 Odds Plats
               </th>
-              <th
+            {/*  <th
                 onClick={() => requestSort("roiSinceDayOne")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
                 ROI Totalt
-              </th>
+              </th> */}
             </tr>
           </thead>
 
@@ -555,9 +555,9 @@ const RoiTable = ({
                 <td className="py-2 px-2 border-r border-gray-200">
                   {formatSE(row.roiPlats)}
                 </td>
-                <td className="py-2 px-2 border-r border-gray-200">
+             {/*    <td className="py-2 px-2 border-r border-gray-200">
                   {formatSE(row.roiSinceDayOne)}
-                </td>
+                </td> */}
               </tr>
             ))}
             <tr className="font-semibold bg-gray-50">
@@ -572,7 +572,7 @@ const RoiTable = ({
               </td>
               <td className="py-2 px-2 border-r border-gray-200"></td>
               <td className="py-2 px-2 border-r border-gray-200"></td>
-              <td className="py-2 px-2 border-r border-gray-200"></td>
+              {/* <td className="py-2 px-2 border-r border-gray-200"></td> */}
             </tr>
           </tbody>
         </table>
