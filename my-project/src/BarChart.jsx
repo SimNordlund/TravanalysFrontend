@@ -319,7 +319,7 @@ const BarChartComponent = ({
         ))}
       </div>
 
-      <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-2">
+      <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-0 sm:mb-2">
         {laps.length > 0 ? (
           laps.map((lap) => (
             <button
