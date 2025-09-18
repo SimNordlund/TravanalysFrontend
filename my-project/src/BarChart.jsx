@@ -326,7 +326,7 @@ const BarChartComponent = ({
               key={lap.id}
               onClick={() => setSelectedLap(lap.id)}
               disabled={loading}
-              className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded mb-1 ${
+              className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded mb-1 sm:mb-0 ${
                 lap.id === +selectedLap
                   ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
                   : "bg-gray-200 text-gray-700 hover:bg-blue-200"
@@ -351,13 +351,13 @@ const BarChartComponent = ({
               key={n}
               onClick={() => setStartsCount(n)}
               disabled={loading}
-              className={`mt-0.5 px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+              className={`mt-0.5 sm:mb:0 px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
                 startsCount === n
                   ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
                   : "bg-gray-200 text-gray-700 hover:bg-blue-200"
               } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              {n} starter
+              {n} Starter
             </button>
           ))}
       </div>
