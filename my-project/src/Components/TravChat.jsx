@@ -6,9 +6,9 @@ import {
   Maximize2,
   Minimize2,
   MessageCircle,
-  Mic,        //Changed!
-  Square,     //Changed!
-  Volume2,    //Changed!
+  Mic,        
+  Square,     
+  Volume2,    
 } from "lucide-react";
 
 export default function TravChat() {
@@ -26,7 +26,7 @@ export default function TravChat() {
   const tailRef = useRef(null);
 
   const CHATBOT_URL = import.meta.env.VITE_API_CHATBOT_URL;
-  const VOICE_URL = `${CHATBOT_URL}/voice/chat`; //Changed!
+  const VOICE_URL = `${CHATBOT_URL}/voice/chat`; 
 
   const [hasUnread, setHasUnread] = useState(() => {
     const opened = sessionStorage.getItem("travchat-opened");
@@ -43,10 +43,10 @@ export default function TravChat() {
   }, [messages]);
 
   // === Röstinspelning state/refs ===
-  const [recording, setRecording] = useState(false);                   //Changed!
-  const mediaRecorderRef = useRef(null);                               //Changed!
-  const audioChunksRef = useRef([]);                                   //Changed!
-  const [lastAudioUrl, setLastAudioUrl] = useState(null);              //Changed!
+  const [recording, setRecording] = useState(false);                   
+  const mediaRecorderRef = useRef(null);                               
+  const audioChunksRef = useRef([]);                                   
+  const [lastAudioUrl, setLastAudioUrl] = useState(null);              
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -92,61 +92,61 @@ export default function TravChat() {
   };
 
   // === Skicka ljud till /voice/chat och spela upp svaret ===
-  async function sendAudio(blob) {                                     //Changed!
-    const form = new FormData();                                       //Changed!
-    form.append("file", blob, "input.webm");                           //Changed!
+  async function sendAudio(blob) {                                     
+    const form = new FormData();                                       
+    form.append("file", blob, "input.webm");                           
 
-    setStreaming(true);                                                //Changed!
-    try {                                                              //Changed!
-      const res = await fetch(VOICE_URL, { method: "POST", body: form }); //Changed!
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);              //Changed!
-      const { text, audioBase64 } = await res.json();                  //Changed!
+    setStreaming(true);                                                
+    try {                                                              
+      const res = await fetch(VOICE_URL, { method: "POST", body: form }); 
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);              
+      const { text, audioBase64 } = await res.json();                  
 
-      // Lägg till textsvar i chatten                                     //Changed!
-      setMessages((m) => [...m, { role: "assistant", content: text }]); //Changed!
+      // Lägg till textsvar i chatten                                     
+      setMessages((m) => [...m, { role: "assistant", content: text }]); 
 
-      // Spela upp ljud                                                    //Changed!
-      const url = `data:audio/mp3;base64,${audioBase64}`;               //Changed!
-      setLastAudioUrl(url);                                             //Changed!
-      const audio = new Audio(url);                                     //Changed!
-      audio.play().catch(() => {});                                     //Changed!
+      // Spela upp ljud                                                    
+      const url = `data:audio/mp3;base64,${audioBase64}`;               
+      setLastAudioUrl(url);                                             
+      const audio = new Audio(url);                                     
+      audio.play().catch(() => {});                                     
 
-      if (!isOpenRef.current) setHasUnread(true);                       //Changed!
-    } catch (err) {                                                     //Changed!
-      setMessages((m) => [...m, { role: "assistant", content: "❌ " + err.message }]); //Changed!
-    } finally {                                                         //Changed!
-      setStreaming(false);                                              //Changed!
-    }                                                                   //Changed!
-  }                                                                     //Changed!
+      if (!isOpenRef.current) setHasUnread(true);                       
+    } catch (err) {                                                     
+      setMessages((m) => [...m, { role: "assistant", content: "❌ " + err.message }]); 
+    } finally {                                                         
+      setStreaming(false);                                              
+    }                                                                   
+  }                                                                     
 
   // === Starta/stoppa inspelning ===
-  async function startRecording() {                                     //Changed!
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); //Changed!
+  async function startRecording() {                                     
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); 
     const mime =
       MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
         ? "audio/webm;codecs=opus"
         : MediaRecorder.isTypeSupported("audio/mp4")
         ? "audio/mp4"
-        : "";                                                           //Changed!
-    const mr = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined); //Changed!
+        : "";                                                           
+    const mr = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined); 
 
-    audioChunksRef.current = [];                                        //Changed!
-    mr.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data); }; //Changed!
-    mr.onstop = () => {                                                 //Changed!
-      const blob = new Blob(audioChunksRef.current, { type: mime || "audio/webm" }); //Changed!
-      sendAudio(blob);                                                  //Changed!
-      stream.getTracks().forEach(t => t.stop());                        //Changed!
-    };                                                                  //Changed!
+    audioChunksRef.current = [];                                        
+    mr.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data); }; 
+    mr.onstop = () => {                                                 
+      const blob = new Blob(audioChunksRef.current, { type: mime || "audio/webm" }); 
+      sendAudio(blob);                                                  
+      stream.getTracks().forEach(t => t.stop());                        
+    };                                                                  
 
-    mediaRecorderRef.current = mr;                                      //Changed!
-    mr.start();                                                         //Changed!
-    setRecording(true);                                                 //Changed!
-  }                                                                     //Changed!
+    mediaRecorderRef.current = mr;                                      
+    mr.start();                                                         
+    setRecording(true);                                                 
+  }                                                                     
 
-  function stopRecording() {                                            //Changed!
-    mediaRecorderRef.current?.stop();                                   //Changed!
-    setRecording(false);                                                //Changed!
-  }                                                                     //Changed!
+  function stopRecording() {                                            
+    mediaRecorderRef.current?.stop();                                   
+    setRecording(false);                                                
+  }                                                                     
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
@@ -218,18 +218,18 @@ export default function TravChat() {
             <div ref={tailRef} />
           </div>
 
-          <div className="p-4 flex flex-col gap-3 border-t dark:border-gray-700"> {/* Changed! */}
-            <div className="flex gap-2">                                         {/* Changed! */}
-              <button                                                             //Changed!
-                onClick={() => (recording ? stopRecording() : startRecording())}  //Changed!
-                disabled={streaming}                                              //Changed!
-                aria-label={recording ? "Stoppa inspelning" : "Spela in röst"}    //Changed!
+          <div className="p-4 flex flex-col gap-3 border-t dark:border-gray-700"> 
+            <div className="flex gap-2">                                         
+              <button                                                             
+                onClick={() => (recording ? stopRecording() : startRecording())}  
+                disabled={streaming}                                              
+                aria-label={recording ? "Stoppa inspelning" : "Spela in röst"}    
                 className={`h-12 w-12 shrink-0 rounded-xl flex items-center justify-center
                             ${recording ? "bg-red-600 text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-900"}
-                            disabled:opacity-50`}                                  //Changed!
+                            disabled:opacity-50`}                                  
               >
-                {recording ? <Square /> : <Mic />}                                {/* Changed! */}
-              </button>                                                            {/* Changed! */}
+                {recording ? <Square /> : <Mic />}                                
+              </button>                                                            
 
               <textarea
                 className="flex-1 resize-none rounded-xl border p-3 focus:outline-none focus:ring
@@ -253,16 +253,16 @@ export default function TravChat() {
               >
                 {streaming ? <Loader2 className="animate-spin" /> : <PaperPlaneIcon />}
               </button>
-            </div>                                                                 {/* Changed! */}
+            </div>                                                                 
 
-            {lastAudioUrl && (                                                     //Changed!
-              <div className="px-1">                                              {/* Changed! */}
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300"> {/* Changed! */}
-                  <Volume2 className="h-4 w-4" /> Ljudsvar                         {/* Changed! */}
-                </div>                                                             {/* Changed! */}
-                <audio controls src={lastAudioUrl} className="mt-1 w-full" />      {/* Changed! */}
+            {lastAudioUrl && (                                                     
+              <div className="px-1">                                              
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300"> 
+                  <Volume2 className="h-4 w-4" /> Ljudsvar                         
+                </div>                                                             
+                <audio controls src={lastAudioUrl} className="mt-1 w-full" />      
               </div>                                                               
-            )}                                                                      {/* Changed! */}
+            )}                                                                      
           </div>
         </div>
       )}
