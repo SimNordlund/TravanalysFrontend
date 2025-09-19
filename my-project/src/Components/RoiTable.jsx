@@ -471,49 +471,49 @@ const RoiTable = ({
           <thead className="bg-gray-100 border-b border-gray-200">
             <tr>
               <th
-                onClick={() => requestSort("numberOfHorse")}
+              //  onClick={() => requestSort("numberOfHorse")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
                 #
               </th>
               <th
-                onClick={() => requestSort("nameOfHorse")}
+              //  onClick={() => requestSort("nameOfHorse")}
                 className="py-2 px-2 font-semibold cursor-pointer text-left border-r last:border-r-0 border-gray-300"
               >
                 Häst
               </th>
               <th
-                onClick={() => requestSort("analys")}
+              //  onClick={() => requestSort("analys")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100"
               >
                 Analys
               </th>
               <th
-                onClick={() => requestSort("resultat")}
+              //  onClick={() => requestSort("resultat")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
                 Placering
               </th>
               <th
-                onClick={() => requestSort("roiTotalt")}
+              //  onClick={() => requestSort("roiTotalt")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
                 ROI Lopp
               </th>
               <th
-                onClick={() => requestSort("roiVinnare")}
+              //  onClick={() => requestSort("roiVinnare")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
                 Odds Vinnare
               </th>
               <th
-                onClick={() => requestSort("roiPlats")}
+              //  onClick={() => requestSort("roiPlats")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
                 Odds Plats
               </th>
               <th
-                onClick={() => requestSort("roiSinceDayOne")}
+              //  onClick={() => requestSort("roiSinceDayOne")}
                 className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
               >
                 ROI Totalt
