@@ -1,5 +1,4 @@
-// src/components/TravChat.jsx
-import { useRef, useState, useEffect } from "react"; //Changed!
+import { useRef, useState, useEffect } from "react";
 import {
   Send as PaperPlaneIcon,
   Loader2,
@@ -27,7 +26,7 @@ export default function TravChat() {
   const tailRef = useRef(null);
 
   const CHATBOT_URL = import.meta.env.VITE_API_CHATBOT_URL;
-  const VOICE_API = `${CHATBOT_URL}/voice`; //Changed!
+  const VOICE_URL = `${CHATBOT_URL}/voice/chat`; //Changed!
 
   const [hasUnread, setHasUnread] = useState(() => {
     const opened = sessionStorage.getItem("travchat-opened");
@@ -35,163 +34,119 @@ export default function TravChat() {
   });
 
   const isOpenRef = useRef(isOpen);
-  useEffect(() => { isOpenRef.current = isOpen; }, [isOpen]);
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
 
   useEffect(() => {
     tailRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // ========== Röstinspelning ==========
-  const [recording, setRecording] = useState(false);           //Changed!
-  const mediaRecorderRef = useRef(null);                       //Changed!
-  const audioChunksRef = useRef([]);                           //Changed!
+  // === Röstinspelning state/refs ===
+  const [recording, setRecording] = useState(false);                   //Changed!
+  const mediaRecorderRef = useRef(null);                               //Changed!
+  const audioChunksRef = useRef([]);                                   //Changed!
+  const [lastAudioUrl, setLastAudioUrl] = useState(null);              //Changed!
 
-  async function startRecording() {                            //Changed!
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+
+    const user = { role: "user", content: input.trim() };
+    setMessages((m) => [...m, user]);
+    setInput("");
+    setStreaming(true);
+
+    try {
+      const res = await fetch(
+        `${CHATBOT_URL}/chat-stream?message=${encodeURIComponent(user.content)}`
+      );
+      const reader = res.body.getReader();
+      const dec = new TextDecoder("utf-8");
+
+      let assistant = "";
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        assistant += dec.decode(value, { stream: true });
+
+        setMessages((m) => {
+          const copy = [...m];
+          if (copy.at(-1)?.role === "assistant")
+            copy[copy.length - 1] = { role: "assistant", content: assistant };
+          else copy.push({ role: "assistant", content: assistant });
+          return copy;
+        });
+      }
+
+      if (!isOpenRef.current) setHasUnread(true);
+    } catch (err) {
+      setMessages((m) => [
+        ...m,
+        { role: "assistant", content: "❌ " + err.message },
+      ]);
+      if (!isOpenRef.current) setHasUnread(true);
+    } finally {
+      setStreaming(false);
+    }
+  };
+
+  // === Skicka ljud till /voice/chat och spela upp svaret ===
+  async function sendAudio(blob) {                                     //Changed!
+    const form = new FormData();                                       //Changed!
+    form.append("file", blob, "input.webm");                           //Changed!
+
+    setStreaming(true);                                                //Changed!
+    try {                                                              //Changed!
+      const res = await fetch(VOICE_URL, { method: "POST", body: form }); //Changed!
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);              //Changed!
+      const { text, audioBase64 } = await res.json();                  //Changed!
+
+      // Lägg till textsvar i chatten                                     //Changed!
+      setMessages((m) => [...m, { role: "assistant", content: text }]); //Changed!
+
+      // Spela upp ljud                                                    //Changed!
+      const url = `data:audio/mp3;base64,${audioBase64}`;               //Changed!
+      setLastAudioUrl(url);                                             //Changed!
+      const audio = new Audio(url);                                     //Changed!
+      audio.play().catch(() => {});                                     //Changed!
+
+      if (!isOpenRef.current) setHasUnread(true);                       //Changed!
+    } catch (err) {                                                     //Changed!
+      setMessages((m) => [...m, { role: "assistant", content: "❌ " + err.message }]); //Changed!
+    } finally {                                                         //Changed!
+      setStreaming(false);                                              //Changed!
+    }                                                                   //Changed!
+  }                                                                     //Changed!
+
+  // === Starta/stoppa inspelning ===
+  async function startRecording() {                                     //Changed!
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); //Changed!
     const mime =
       MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
         ? "audio/webm;codecs=opus"
         : MediaRecorder.isTypeSupported("audio/mp4")
         ? "audio/mp4"
-        : "";
-    const mr = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+        : "";                                                           //Changed!
+    const mr = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined); //Changed!
 
-    audioChunksRef.current = [];
-    mr.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data); };
-    mr.onstop = () => {
-      const blob = new Blob(audioChunksRef.current, { type: mime || "audio/webm" });
-      sendAudio(blob); //Changed!
-      stream.getTracks().forEach(t => t.stop());
-    };
+    audioChunksRef.current = [];                                        //Changed!
+    mr.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data); }; //Changed!
+    mr.onstop = () => {                                                 //Changed!
+      const blob = new Blob(audioChunksRef.current, { type: mime || "audio/webm" }); //Changed!
+      sendAudio(blob);                                                  //Changed!
+      stream.getTracks().forEach(t => t.stop());                        //Changed!
+    };                                                                  //Changed!
 
-    mediaRecorderRef.current = mr;
-    mr.start();
-    setRecording(true);
-  }
+    mediaRecorderRef.current = mr;                                      //Changed!
+    mr.start();                                                         //Changed!
+    setRecording(true);                                                 //Changed!
+  }                                                                     //Changed!
 
-  function stopRecording() {                                   //Changed!
-    mediaRecorderRef.current?.stop();
-    setRecording(false);
-  }
-
-  // ========== Progressiv TTS (kö) ==========
-  const ttsQueueRef = useRef([]);                              //Changed!
-  const isPlayingRef = useRef(false);                          //Changed!
-  const enableVoiceRef = useRef(true);                         //Changed!
-
-  function playNext() {                                        //Changed!
-    const next = ttsQueueRef.current.shift();
-    if (!next) { isPlayingRef.current = false; return; }
-    isPlayingRef.current = true;
-    const audio = new Audio(next);
-    audio.onended = () => playNext();
-    audio.play().catch(() => playNext());
-  }
-
-  async function speakChunk(text) {                             //Changed!
-    if (!enableVoiceRef.current) return;
-    const trimmed = (text || "").trim();
-    if (trimmed.length < 8) return;
-
-    try {
-      const res = await fetch(`${VOICE_API}/tts`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: trimmed, voice: "ALLOY", speed: 1.0 }),
-      });
-      if (!res.ok) throw new Error(`TTS HTTP ${res.status}`);
-      const { audioBase64 } = await res.json();
-      const url = `data:audio/mp3;base64,${audioBase64}`;
-      ttsQueueRef.current.push(url);
-      if (!isPlayingRef.current) playNext();
-    } catch (e) {
-      console.warn("TTS misslyckades:", e);
-    }
-  }
-
-  // ========== Strömma chattsvar + progressiv TTS ==========
-  async function streamAnswerWithTTS(userText) {                //Changed!
-    setMessages((m) => [...m, { role: "user", content: userText }]);
-    setStreaming(true);
-
-    try {
-      const res = await fetch(`${CHATBOT_URL}/chat-stream?message=${encodeURIComponent(userText)}`);
-      if (!res.ok || !res.body) throw new Error(`HTTP ${res.status}`);
-      const reader = res.body.getReader();
-      const dec = new TextDecoder("utf-8");
-
-      let assistant = "";
-      let speakBuffer = "";
-
-      const flushSpeakable = () => {
-        const parts = speakBuffer.split(/(?<=[\.\!\?])\s+/); // hela meningar   //Changed!
-        speakBuffer = parts.pop() ?? ""; // lämna ev. ofullständig mening       //Changed!
-        for (const p of parts) speakChunk(p);
-      };
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-
-        const chunk = dec.decode(value, { stream: true });
-        assistant += chunk;
-        speakBuffer += chunk;
-
-        setMessages((m) => {
-          const copy = [...m];
-          if (copy.at(-1)?.role === "assistant") {
-            copy[copy.length - 1] = { role: "assistant", content: assistant };
-          } else {
-            copy.push({ role: "assistant", content: assistant });
-          }
-          return copy;
-        });
-
-        if (speakBuffer.length > 120 || /\n{2,}/.test(speakBuffer)) { // heuristik //Changed!
-          flushSpeakable();
-        }
-      }
-
-      if (speakBuffer.trim()) speakChunk(speakBuffer.trim());         // sista bit //Changed!
-      if (!isOpenRef.current) setHasUnread(true);
-    } catch (err) {
-      setMessages((m) => [...m, { role: "assistant", content: "❌ " + err.message }]);
-      if (!isOpenRef.current) setHasUnread(true);
-    } finally {
-      setStreaming(false);
-    }
-  }
-
-  // ========== Skicka text ==========
-  const sendMessage = async () => {                               //Changed!
-    if (!input.trim()) return;
-    const text = input.trim();
-    setInput("");
-    await streamAnswerWithTTS(text);
-  };
-
-  // ========== Skicka ljud: STT -> stream + progressiv TTS ==========
-  async function sendAudio(blob) {                                //Changed!
-    const form = new FormData();
-    form.append("file", blob, "input.webm");
-
-    setStreaming(true);
-    try {
-      const stt = await fetch(`${VOICE_API}/transcribe`, { method: "POST", body: form });
-      if (!stt.ok) throw new Error(`STT HTTP ${stt.status}`);
-      const { text } = await stt.json();
-
-      if (!text || !text.trim()) {
-        setMessages((m) => [...m, { role: "assistant", content: "❌ Hörde inget." }]);
-        return;
-      }
-      await streamAnswerWithTTS(text.trim());
-    } catch (err) {
-      setMessages((m) => [...m, { role: "assistant", content: "❌ " + err.message }]);
-    } finally {
-      setStreaming(false);
-    }
-  }
+  function stopRecording() {                                            //Changed!
+    mediaRecorderRef.current?.stop();                                   //Changed!
+    setRecording(false);                                                //Changed!
+  }                                                                     //Changed!
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
@@ -208,8 +163,14 @@ export default function TravChat() {
           <MessageCircle size={28} />
           {hasUnread && (
             <>
-              <span className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-blue-700 opacity-85 animate-ping" />
-              <span className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-red-600 ring-1 ring-white" />
+              <span
+                className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-blue-700 opacity-85 animate-ping"
+                aria-hidden="true"
+              />
+              <span
+                className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-red-600 ring-1 ring-white"
+                aria-hidden="true"
+              />
               <span className="sr-only">Oläst meddelande</span>
             </>
           )}
@@ -218,7 +179,11 @@ export default function TravChat() {
         <div
           className={`flex flex-col bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden
                transition-all duration-300
-               ${isMaximized ? "w-[90vw] h-[90vh]" : "w-[90vw] max-w-[400px] h-[80vh] max-h-[600px]"}`}
+               ${
+                 isMaximized
+                   ? "w-[90vw] h-[90vh]"
+                   : "w-[90vw] max-w-[400px] h-[80vh] max-h-[600px]"
+               }`}
         >
           <div className="flex items-center justify-between bg-blue-600 text-white p-3">
             <div>Trav-olta 💬</div>
@@ -227,7 +192,11 @@ export default function TravChat() {
               <button onClick={() => setIsMaximized((m) => !m)}>
                 {isMaximized ? <Minimize2 /> : <Maximize2 />}
               </button>
-              <button onClick={() => { setIsOpen(false); }}>
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                }}
+              >
                 <X />
               </button>
             </div>
@@ -249,33 +218,18 @@ export default function TravChat() {
             <div ref={tailRef} />
           </div>
 
-          <div className="p-4 flex flex-col gap-3 border-t dark:border-gray-700">
-            <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300">
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  onChange={(e) => (enableVoiceRef.current = e.target.checked)} //Changed!
-                />
-                <span>Läs upp svaret medan det kommer</span>
-              </label>
-              <div className="flex items-center gap-2">
-                <Volume2 className="h-4 w-4" />
-                <span>Röstläge</span>
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                onClick={() => (recording ? stopRecording() : startRecording())}
-                disabled={streaming}
-                aria-label={recording ? "Stoppa inspelning" : "Spela in röst"}
+          <div className="p-4 flex flex-col gap-3 border-t dark:border-gray-700"> {/* Changed! */}
+            <div className="flex gap-2">                                         {/* Changed! */}
+              <button                                                             //Changed!
+                onClick={() => (recording ? stopRecording() : startRecording())}  //Changed!
+                disabled={streaming}                                              //Changed!
+                aria-label={recording ? "Stoppa inspelning" : "Spela in röst"}    //Changed!
                 className={`h-12 w-12 shrink-0 rounded-xl flex items-center justify-center
                             ${recording ? "bg-red-600 text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-900"}
-                            disabled:opacity-50`}
+                            disabled:opacity-50`}                                  //Changed!
               >
-                {recording ? <Square /> : <Mic />}
-              </button>
+                {recording ? <Square /> : <Mic />}                                {/* Changed! */}
+              </button>                                                            {/* Changed! */}
 
               <textarea
                 className="flex-1 resize-none rounded-xl border p-3 focus:outline-none focus:ring
@@ -299,7 +253,16 @@ export default function TravChat() {
               >
                 {streaming ? <Loader2 className="animate-spin" /> : <PaperPlaneIcon />}
               </button>
-            </div>
+            </div>                                                                 {/* Changed! */}
+
+            {lastAudioUrl && (                                                     //Changed!
+              <div className="px-1">                                              {/* Changed! */}
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300"> {/* Changed! */}
+                  <Volume2 className="h-4 w-4" /> Ljudsvar                         {/* Changed! */}
+                </div>                                                             {/* Changed! */}
+                <audio controls src={lastAudioUrl} className="mt-1 w-full" />      {/* Changed! */}
+              </div>                                                               
+            )}                                                                      {/* Changed! */}
           </div>
         </div>
       )}
