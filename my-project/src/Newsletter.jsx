@@ -193,7 +193,7 @@ export default function Newsletter() {
               >
                 <DocumentTextIcon className="h-8 w-8 text-white" aria-hidden="true" />{" "}
               </a>
-              <dt className="mt-4 font-semibold text-white">Köpandel</dt>
+              <dt className="mt-4 font-semibold text-white">Köpandel.se</dt>
               <dd className="mt-2 leading-7 text-gray-300">
                 <a
                   href="https://www.atg.se/kopandel/spel/325442_V75_2025-09-20_15_5"
