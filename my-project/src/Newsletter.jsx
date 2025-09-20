@@ -1,4 +1,4 @@
-import { ReceiptPercentIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
+import { DocumentTextIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import { FaFacebook } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
@@ -191,7 +191,7 @@ export default function Newsletter() {
                href="https://www.atg.se/kopandel/spel/325442_V75_2025-09-20_15_5"
                 className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
               >
-                <ReceiptPercentIcon className="h-8 w-8 text-white" aria-hidden="true" />{" "}
+                <DocumentTextIcon className="h-8 w-8 text-white" aria-hidden="true" />{" "}
               </a>
               <dt className="mt-4 font-semibold text-white">Köpandel</dt>
               <dd className="mt-2 leading-7 text-gray-300">
