@@ -1,4 +1,3 @@
-// RoiTable.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import DatePicker from "./DatePicker";
 
@@ -6,7 +5,6 @@ const RoiTable = ({
   selectedDate,
   setSelectedDate,
 
-  //Changed!: Nya props för knapparna (samma kontrakt som PaginatedLapTable)
   selectedTrack,
   setSelectedTrack,
   selectedCompetition,
@@ -18,33 +16,33 @@ const RoiTable = ({
   competitions = [],
   laps = [],
 
-  //Changed!: Starter-knappar och ev. delat state
+
   startsCount,
   setStartsCount,
 
-  // Oförändrad navigering vid klick på rad (från Skrallar)
+
   setSelectedView,
   setSelectedHorse,
   setPendingLapId,
 }) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // Data
-  const [rows, setRows] = useState([]); //Changed!
+
+  const [rows, setRows] = useState([]); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Sortering
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
-  //Changed!: Starter-knappar (som i PaginatedLapTable)
+  const [sortConfig, setSortConfig] = useState({ key: "analys", direction: "desc" }); 
+
+
   const [localStartsCount, setLocalStartsCount] = useState(4);
-  const activeStartsCount = startsCount ?? localStartsCount; //Changed!
-  const setActiveStartsCount = setStartsCount ?? setLocalStartsCount; //Changed!
-  const [availableCounts, setAvailableCounts] = useState([]); //Changed!
-  const [availLoading, setAvailLoading] = useState(false); //Changed!
+  const activeStartsCount = startsCount ?? localStartsCount; 
+  const setActiveStartsCount = setStartsCount ?? setLocalStartsCount; 
+  const [availableCounts, setAvailableCounts] = useState([]); 
+  const [availLoading, setAvailLoading] = useState(false); 
 
-  //Changed!: Hämta tillgängliga "starter" för valt lopp (UI-match med PaginatedLapTable)
+
   useEffect(() => {
     if (!selectedLap || !API_BASE_URL) return;
     const ac = new AbortController();
@@ -67,9 +65,9 @@ const RoiTable = ({
       }
     })();
     return () => ac.abort();
-  }, [selectedLap, API_BASE_URL]); //Changed!
+  }, [selectedLap, API_BASE_URL]); 
 
-  // Hämta ROI-/skräll-data per datum (som tidigare Skrallar)
+  // Hämta ROI-/skräll-data per datum 
   useEffect(() => {
     if (!selectedDate) return;
     const ac = new AbortController();
@@ -99,23 +97,22 @@ const RoiTable = ({
     return () => ac.abort();
   }, [selectedDate, API_BASE_URL]);
 
-  //Changed!: Hjälpare för att mappa id → namn
+
   const selectedTrackLabel =
-    tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? ""; //Changed!
+    tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? ""; 
   const selectedCompetitionLabel =
     competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? ""; //Changed!
+      ?.nameOfCompetition ?? ""; 
   const selectedLapName =
-    laps.find((l) => l.id === +selectedLap)?.nameOfLap ?? ""; //Changed!
+    laps.find((l) => l.id === +selectedLap)?.nameOfLap ?? ""; 
 
-  //Changed!: Lap-prefix (kopierat från PaginatedLapTable)
   const lapPrefix = /proposition/i.test(selectedCompetitionLabel)
     ? "Prop"
     : /^(vinnare|plats)$/i.test(selectedCompetitionLabel.trim())
     ? "Lopp"
     : "Avd";
 
-  //Changed!: Filtrera datat enligt valda knappar (Bana/Spelform/Lopp)
+
   const matchesTrack = (r) => {
     if (!selectedTrack) return true;
     if (r.trackId && +r.trackId === +selectedTrack) return true;
@@ -152,9 +149,9 @@ const RoiTable = ({
       competitions,
       laps,
     ]
-  ); //Changed!
+  ); 
 
-  // Sortering (bättre nummerhantering som i PaginatedLapTable)
+  // Sortering 
   const requestSort = (key) => {
     let direction = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc")
@@ -170,7 +167,7 @@ const RoiTable = ({
     "roiVinnare",
     "roiPlats",
     "roiSinceDayOne",
-  ]); //Changed!
+  ]); 
 
   const sortedRows = useMemo(() => {
     const data = [...visibleRows];
@@ -197,7 +194,7 @@ const RoiTable = ({
       if (av > bv) return sortConfig.direction === "asc" ? 1 : -1;
       return 0;
     });
-  }, [visibleRows, sortConfig]); //Changed!
+  }, [visibleRows, sortConfig]); 
 
   // Summering
   const totalRoiTotalt = useMemo(
@@ -237,7 +234,7 @@ const RoiTable = ({
       ? `Imorgon, ${sv(selectedDate)}`
       : sv(selectedDate);
 
-  // Klick på rad → hoppa till spider (återanvänder din logik)
+  // Klick på rad → hoppa till spider 
   const handleRowClick = async (row) => {
     try {
       // 1) TRACK
@@ -338,7 +335,6 @@ const RoiTable = ({
     return "0";
   };
 
-
   const vinnareCompetitions = useMemo(
     () =>
       competitions.filter(
@@ -347,7 +343,7 @@ const RoiTable = ({
     [competitions]
   );
 
-    useEffect(() => {
+  useEffect(() => {
     const v = vinnareCompetitions[0];
     if (!v) return;
     if (!selectedCompetition || +selectedCompetition !== +v.id) {
@@ -471,53 +467,45 @@ const RoiTable = ({
           <thead className="bg-gray-100 border-b border-gray-200">
             <tr>
               <th
-              //  onClick={() => requestSort("numberOfHorse")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+                className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300" 
               >
                 #
               </th>
               <th
-              //  onClick={() => requestSort("nameOfHorse")}
-                className="py-2 px-2 font-semibold cursor-pointer text-left border-r last:border-r-0 border-gray-300"
+                className="py-2 px-2 font-semibold text-left border-r last:border-r-0 border-gray-300" 
               >
                 Häst
               </th>
               <th
-              //  onClick={() => requestSort("analys")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100"
+                className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300 bg-orange-100" 
               >
                 Analys
               </th>
               <th
-              //  onClick={() => requestSort("resultat")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+                className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300" 
               >
                 Placering
               </th>
               <th
-              //  onClick={() => requestSort("roiTotalt")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+                className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300" 
               >
                 ROI Lopp
               </th>
               <th
-              //  onClick={() => requestSort("roiVinnare")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+                className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300" 
               >
                 Odds Vinnare
               </th>
               <th
-              //  onClick={() => requestSort("roiPlats")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+                className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300" 
               >
                 Odds Plats
               </th>
               <th
-              //  onClick={() => requestSort("roiSinceDayOne")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
+                className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300" 
               >
                 ROI Totalt
-              </th> 
+              </th>
             </tr>
           </thead>
 
@@ -557,7 +545,7 @@ const RoiTable = ({
                 </td>
                 <td className="py-2 px-2 border-r border-gray-200">
                   {formatSE(row.roiSinceDayOne)}
-                </td> 
+                </td>
               </tr>
             ))}
             <tr className="font-semibold bg-gray-50">
@@ -572,7 +560,7 @@ const RoiTable = ({
               </td>
               <td className="py-2 px-2 border-r border-gray-200"></td>
               <td className="py-2 px-2 border-r border-gray-200"></td>
-          <td className="py-2 px-2 border-r border-gray-200"></td> 
+              <td className="py-2 px-2 border-r border-gray-200"></td>
             </tr>
           </tbody>
         </table>
