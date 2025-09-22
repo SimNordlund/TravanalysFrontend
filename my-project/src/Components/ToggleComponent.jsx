@@ -1,13 +1,12 @@
-// ToggleComponent.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import SpiderChart from "./SpiderChart";
 import BarChart from "../BarChart";
 import PaginatedLapTable from "./PaginatedLapTable";
-// import Skrallar from "./Skrallar"; //Changed! (ersatt av RoiTable)
+
 import AnalysChart from "./AnalysChart";
 import SharedHorseLegend from "./SharedHorseLegend";
-import RoiTable from "./RoiTable"; //Changed!
+import RoiTable from "./RoiTable";
 
 const ToggleComponent = ({ syncWithRoute = false }) => {
   const { view: viewParam } = useParams();
@@ -25,7 +24,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState(initialSelectedView);
   const [selectedHorse, setSelectedHorse] = useState(null);
-  const [startsCount, setStartsCount] = useState(4); 
+  const [startsCount, setStartsCount] = useState(4);
 
   const [visibleHorseIdxes, setVisibleHorseIdxes] = useState([]);
   const [horseLegendItems, setHorseLegendItems] = useState([]);
@@ -40,6 +39,8 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
   const pendingLapRef = useRef(null);
   const setPendingLapId = (lapId) => { pendingLapRef.current = lapId; };
+
+  const [legendMode, setLegendMode] = useState("all"); //Changed!
 
   useEffect(() => {
     if (!syncWithRoute) return;
@@ -146,17 +147,32 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     setVisibleHorseIdxes([]);
   }, [selectedLap]);
 
-  const handleMetaChange = ({ items, suggestedVisibleIdxes, top5Idx, top3Idx }) => { 
+  const handleMetaChange = ({ items, suggestedVisibleIdxes, top5Idx, top3Idx }) => {
     setHorseLegendItems(items || []);
-    setVisibleHorseIdxes((prev) => (prev?.length ? prev : (suggestedVisibleIdxes || [])));
+    setVisibleHorseIdxes((prev) => (
+      legendMode === "top3" && Array.isArray(top3Idx) ? top3Idx     //Changed!
+      : legendMode === "top5" && Array.isArray(top5Idx) ? top5Idx   //Changed!
+      : (prev?.length ? prev : (suggestedVisibleIdxes || []))       //Changed!
+    ));
     if (Array.isArray(top5Idx)) setTop5Idxes(top5Idx);
-    if (Array.isArray(top3Idx)) setTop3Idxes(top3Idx); 
+    if (Array.isArray(top3Idx)) setTop3Idxes(top3Idx);
   };
+
   const toggleLegendIdx = (idx) =>
     setVisibleHorseIdxes((prev) => (prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]));
-  const showAllLegend = () => setVisibleHorseIdxes(horseLegendItems.map((x) => x.idx));
-  const showTop5Legend = () => setVisibleHorseIdxes(top5Idxes); 
-  const showTop3Legend = () => setVisibleHorseIdxes(top3Idxes);
+
+  const showAllLegend = () => {                                 //Changed!
+    setLegendMode("all");                                       //Changed!
+    setVisibleHorseIdxes(horseLegendItems.map((x) => x.idx));   //Changed!
+  };
+  const showTop5Legend = () => {                                //Changed!
+    setLegendMode("top5");                                      //Changed!
+    setVisibleHorseIdxes(top5Idxes);                            //Changed!
+  };
+  const showTop3Legend = () => {                                //Changed!
+    setLegendMode("top3");                                      //Changed!
+    setVisibleHorseIdxes(top3Idxes);                            //Changed!
+  };
 
   const callouts = [
     { id: 2, name: "Analys", bgColor: "bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600", view: "spider" },
@@ -200,8 +216,9 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 setSelectedView={setViewAndMaybeNavigate}
                 setSelectedHorse={setSelectedHorse}
                 setVisibleHorseIdxes={setVisibleHorseIdxes}
-                startsCount={startsCount}            
-                setStartsCount={setStartsCount}      
+                startsCount={startsCount}
+                setStartsCount={setStartsCount}
+                setLegendMode={setLegendMode}        //Changed!
               />
             </div>
 
@@ -219,7 +236,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                   selectedHorse={selectedHorse}
                   visibleHorseIdxes={visibleHorseIdxes}
                   onMetaChange={handleMetaChange}
-                  startsCount={startsCount}           
+                  startsCount={startsCount}
                 />
               </div>
               <div className="mt-0 ml-4 sm:mt-28 sm:justify-self-end sm:w-64 shrink-0">
@@ -230,6 +247,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                   onShowAll={showAllLegend}
                   onShowTop5={showTop5Legend}
                   onShowTop3={showTop3Legend}
+                  active={legendMode}                 //Changed!
                 />
               </div>
             </div>
@@ -239,7 +257,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 selectedLap={selectedLap}
                 selectedHorse={selectedHorse}
                 visibleHorseIdxes={visibleHorseIdxes}
-                startsCount={startsCount}            
+                startsCount={startsCount}
               />
             </div>
           </div>
@@ -259,14 +277,13 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             tracks={tracks}
             competitions={competitions}
             laps={laps}
-            startsCount={startsCount}               
-            setStartsCount={setStartsCount}         
+            startsCount={startsCount}
+            setStartsCount={setStartsCount}
           />
         </div>
 
         <div className={`${selectedView === "skrallar" ? "" : "hidden"} min-h-[600px]`}>
-          {/*Changed!: Ersätt Skrallar med RoiTable och skicka in extra props */}
-          <RoiTable //Changed!
+          <RoiTable
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
             selectedTrack={selectedTrack}
@@ -277,10 +294,10 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             setSelectedLap={setSelectedLap}
             dates={dates}
             tracks={tracks}
-            competitions={competitions} //Changed!
-            laps={laps}                 //Changed!
-            startsCount={startsCount}   //Changed!
-            setStartsCount={setStartsCount} //Changed!
+            competitions={competitions}
+            laps={laps}
+            startsCount={startsCount}
+            setStartsCount={setStartsCount}
             setSelectedView={setViewAndMaybeNavigate}
             setSelectedHorse={setSelectedHorse}
             setPendingLapId={setPendingLapId}

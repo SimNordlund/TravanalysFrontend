@@ -6,7 +6,7 @@ import Chart from "chart.js/auto";
 import { Weight } from "lucide-react";
 
 Chart.defaults.font.family =
-  "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'"; 
+  "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'";
 Chart.defaults.font.weight = 400;
 
 const BarChartComponent = ({
@@ -25,8 +25,9 @@ const BarChartComponent = ({
   setSelectedView,
   setSelectedHorse,
   setVisibleHorseIdxes,
-  startsCount,            
-  setStartsCount,       
+  startsCount,
+  setStartsCount,
+  setLegendMode, //Changed!
 }) => {
   const legendRef = useRef(null);
   const chartRef = useRef(null);
@@ -76,7 +77,6 @@ const BarChartComponent = ({
     }
   }, []);
 
-
   useEffect(() => {
     if (!selectedLap || !API_BASE_URL) return;
     const ac = new AbortController();
@@ -84,13 +84,12 @@ const BarChartComponent = ({
 
     (async () => {
       try {
-      
         const r = await fetch(`${API_BASE_URL}/starts/available?lapId=${selectedLap}`, { signal: ac.signal });
         if (!r.ok) throw new Error(r.statusText);
         const counts = await r.json();
         setAvailableCounts(counts);
         if (counts.length && !counts.includes(startsCount)) {
-          setStartsCount(counts[0]); 
+          setStartsCount(counts[0]);
         }
       } catch {
       } finally {
@@ -119,7 +118,6 @@ const BarChartComponent = ({
 
         const datasets = await Promise.all(
           completeHorses.map(async (horse, idx) => {
-            
             const rs = await fetch(
               `${API_BASE_URL}/starts/findData?completeHorseId=${horse.id}&starter=${startsCount}`,
               { signal: ac.signal }
@@ -150,7 +148,7 @@ const BarChartComponent = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, startsCount, API_BASE_URL]); 
+  }, [selectedLap, startsCount, API_BASE_URL]);
 
   useEffect(() => {
     let t;
@@ -166,6 +164,7 @@ const BarChartComponent = ({
     const { datasetIndex } = els[0];
     setSelectedHorse(datasetIndex);
     setVisibleHorseIdxes?.([datasetIndex]);
+    setLegendMode?.("all");            //Changed!
     setSelectedView("spider");
   };
 
@@ -214,10 +213,10 @@ const BarChartComponent = ({
         position: isSmallScreen ? "top" : "right",
         align: "start",
         labels: {
-        boxWidth: 42,
-        color: "#000",
-        font: { family: Chart.defaults.font.family, weight: 370, size: 12 }, //ÄNDRA STORLEK FÖR MINDRE BARCHART? 
-      },
+          boxWidth: 42,
+          color: "#000",
+          font: { family: Chart.defaults.font.family, weight: 370, size: 12 }, //ÄNDRA STORLEK FÖR MINDRE BARCHART?
+        },
       },
       tooltip: { enabled: true, callbacks: { title: () => "Analys" } },
     },
@@ -346,7 +345,7 @@ const BarChartComponent = ({
 
       <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4 min-h-[40px]">
         {!availLoading &&
-          availableCounts.map((n) => ( 
+          availableCounts.map((n) => (
             <button
               key={n}
               onClick={() => setStartsCount(n)}
