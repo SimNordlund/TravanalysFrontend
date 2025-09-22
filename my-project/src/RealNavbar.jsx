@@ -6,10 +6,10 @@ import barbild from "./Bilder/travhorsi.png";
 
 const navigation = [
   { name: "Startsida", to: "/" },
-  { name: "Analys", to: "/ChartPage/analys" },
-  { name: "Ranking", to: "/ChartPage/tabell" },
-  { name: "Spel & ROI", to: "/ChartPage/speltips" },
-  { name: "Om Travanalys", to: "/Components/SkrytComponent" },
+  { name: "Analys", to: "/chart/analys" },
+  { name: "Ranking", to: "/chart/tabell" },
+  { name: "Spel & ROI", to: "/chart/speltips" },
+  { name: "Om Travanalys", to: "/about" },
 ];
 
 function classNames(...classes) {

@@ -18,11 +18,11 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
-        <Route path="/Components/SkrytComponent" element={<FAQComponent/>} />
+        <Route path="/about" element={<FAQComponent/>} />
         <Route path="/Components/ReducedButtons" element={<ReducedButtons/>} />
         <Route path="/Components/GitHubLoginButton" element={<Home/>} />
-        <Route path="/ChartPage/:view" element={<ToggleComponent syncWithRoute={true} />} /> 
-        <Route path="/ChartPage" element={<Navigate to="/ChartPage/analys" replace />} />
+        <Route path="/chart/:view" element={<ToggleComponent syncWithRoute={true} />} /> 
+        <Route path="/chart" element={<Navigate to="/ChartPage/analys" replace />} />
       </Routes>
       <ChatBox />
       <Newsletter />

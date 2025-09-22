@@ -53,7 +53,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     setSelectedView(viewKey);
     if (viewKey !== "spider") setSelectedHorse(null);
     if (syncWithRoute) {
-      const target = `/ChartPage/${viewToRoute[viewKey]}`;
+      const target = `/chart/${viewToRoute[viewKey]}`;
       if (location.pathname !== target) navigate(target);
     }
   };

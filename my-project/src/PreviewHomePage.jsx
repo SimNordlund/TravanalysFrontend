@@ -15,7 +15,7 @@ const callouts = [
     id: 3,
     name: 'Tabeller',
     bgColor: 'bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600',
-    href: '/ChartPage',
+    href: '/chart',
   },
 ];
 
