@@ -16,10 +16,8 @@ const RoiTable = ({
   competitions = [],
   laps = [],
 
-
   startsCount,
   setStartsCount,
-
 
   setSelectedView,
   setSelectedHorse,
@@ -27,21 +25,17 @@ const RoiTable = ({
 }) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-
   const [rows, setRows] = useState([]); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-
   const [sortConfig, setSortConfig] = useState({ key: "analys", direction: "desc" }); 
-
 
   const [localStartsCount, setLocalStartsCount] = useState(4);
   const activeStartsCount = startsCount ?? localStartsCount; 
   const setActiveStartsCount = setStartsCount ?? setLocalStartsCount; 
   const [availableCounts, setAvailableCounts] = useState([]); 
   const [availLoading, setAvailLoading] = useState(false); 
-
 
   useEffect(() => {
     if (!selectedLap || !API_BASE_URL) return;
@@ -111,7 +105,6 @@ const RoiTable = ({
     : /^(vinnare|plats)$/i.test(selectedCompetitionLabel.trim())
     ? "Lopp"
     : "Avd";
-
 
   const matchesTrack = (r) => {
     if (!selectedTrack) return true;
@@ -206,7 +199,7 @@ const RoiTable = ({
     [sortedRows]
   );
 
-  // Datumetikett (kopierad från PaginatedLapTable)
+  // Datumetikett 
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
   const goNext = () =>
@@ -234,7 +227,6 @@ const RoiTable = ({
       ? `Imorgon, ${sv(selectedDate)}`
       : sv(selectedDate);
 
-  // Klick på rad → hoppa till spider 
   const handleRowClick = async (row) => {
     try {
       // 1) TRACK
