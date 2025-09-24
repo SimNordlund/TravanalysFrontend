@@ -34,6 +34,7 @@ const PaginatedLapTable = ({
 
   const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
+  const starterLabel = (n) => (n === 0 ? "Alla" : n); 
 
   const competitionName =
     competitions.find((c) => c.id === +selectedCompetition)
@@ -331,7 +332,7 @@ const PaginatedLapTable = ({
                   : "bg-gray-200 text-gray-700 hover:bg-blue-200"
               } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              {n} starter
+               {starterLabel(n)} starter
             </button>
           ))}
       </div>
