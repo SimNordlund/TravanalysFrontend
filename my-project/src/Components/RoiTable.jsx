@@ -4,7 +4,6 @@ import DatePicker from "./DatePicker";
 const RoiTable = ({
   selectedDate,
   setSelectedDate,
-
   selectedTrack,
   setSelectedTrack,
   selectedCompetition,
@@ -15,10 +14,8 @@ const RoiTable = ({
   tracks = [],
   competitions = [],
   laps = [],
-
   startsCount,
   setStartsCount,
-
   setSelectedView,
   setSelectedHorse,
   setPendingLapId,
@@ -28,14 +25,16 @@ const RoiTable = ({
   const [rows, setRows] = useState([]); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  const [sortConfig, setSortConfig] = useState({ key: "analys", direction: "desc" }); 
+  const [sortConfig, setSortConfig] = useState({ key: "analys", direction: "desc" });
 
   const [localStartsCount, setLocalStartsCount] = useState(4);
-  const activeStartsCount = startsCount ?? localStartsCount; 
-  const setActiveStartsCount = setStartsCount ?? setLocalStartsCount; 
-  const [availableCounts, setAvailableCounts] = useState([]); 
-  const [availLoading, setAvailLoading] = useState(false); 
+  const activeStartsCount = startsCount ?? localStartsCount;
+  const setActiveStartsCount = setStartsCount ?? setLocalStartsCount;
+
+  const [availableCounts, setAvailableCounts] = useState([]);
+  const [availLoading, setAvailLoading] = useState(false);
+
+  const [tipsFilter, setTipsFilter] = useState(1); 
 
   useEffect(() => {
     if (!selectedLap || !API_BASE_URL) return;
@@ -59,9 +58,8 @@ const RoiTable = ({
       }
     })();
     return () => ac.abort();
-  }, [selectedLap, API_BASE_URL]); 
+  }, [selectedLap, API_BASE_URL]);
 
-  // Hämta ROI-/skräll-data per datum 
   useEffect(() => {
     if (!selectedDate) return;
     const ac = new AbortController();
@@ -74,12 +72,11 @@ const RoiTable = ({
           { signal: ac.signal }
         );
         const data = await res.json();
-        const filtered = data.filter(
-          (h) => !Number.isNaN(Number(h.tips)) && Number(h.tips) >= 1
-        );
-        if (!ac.signal.aborted) {
-          setRows(filtered.map((h, idx) => ({ ...h, position: idx + 1 })));
-        }
+
+        const raw = data
+          .filter((h) => !Number.isNaN(Number(h.tips)))
+          .map((h, idx) => ({ ...h, position: idx + 1 }));
+        if (!ac.signal.aborted) setRows(raw);
       } catch {
         if (ac.signal.aborted) return;
         setError("Kunde inte hämta ROI-data.");
@@ -91,14 +88,13 @@ const RoiTable = ({
     return () => ac.abort();
   }, [selectedDate, API_BASE_URL]);
 
-
   const selectedTrackLabel =
-    tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? ""; 
+    tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "";
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? ""; 
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ??
+    "";
   const selectedLapName =
-    laps.find((l) => l.id === +selectedLap)?.nameOfLap ?? ""; 
+    laps.find((l) => l.id === +selectedLap)?.nameOfLap ?? "";
 
   const lapPrefix = /proposition/i.test(selectedCompetitionLabel)
     ? "Prop"
@@ -109,19 +105,18 @@ const RoiTable = ({
   const matchesTrack = (r) => {
     if (!selectedTrack) return true;
     if (r.trackId && +r.trackId === +selectedTrack) return true;
-    return (
-      (r.nameOfTrack || "").toLowerCase() === selectedTrackLabel.toLowerCase()
-    );
+    return (r.nameOfTrack || "").toLowerCase() === selectedTrackLabel.toLowerCase();
   };
+
   const matchesCompetition = (r) => {
     if (!selectedCompetition) return true;
-    if (r.competitionId && +r.competitionId === +selectedCompetition)
-      return true;
+    if (r.competitionId && +r.competitionId === +selectedCompetition) return true;
     return (
       (r.nameOfCompetition || "").toLowerCase() ===
       selectedCompetitionLabel.toLowerCase()
     );
   };
+
   const matchesLap = (r) => {
     if (!selectedLap) return true;
     if (r.lapId && +r.lapId === +selectedLap) return true;
@@ -131,10 +126,15 @@ const RoiTable = ({
   const visibleRows = useMemo(
     () =>
       rows.filter(
-        (r) => matchesTrack(r) && matchesCompetition(r) && matchesLap(r)
+        (r) =>
+          Number(r.tips) === Number(tipsFilter) && // 1 (V&P) 2 (DD) 3 (Trio)
+          matchesTrack(r) &&
+          matchesCompetition(r) &&
+          matchesLap(r)
       ),
     [
       rows,
+      tipsFilter,
       selectedTrack,
       selectedCompetition,
       selectedLap,
@@ -142,13 +142,12 @@ const RoiTable = ({
       competitions,
       laps,
     ]
-  ); 
+  );
 
-  // Sortering 
+  // Sortering
   const requestSort = (key) => {
     let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc")
-      direction = "desc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") direction = "desc";
     setSortConfig({ key, direction });
   };
 
@@ -160,7 +159,7 @@ const RoiTable = ({
     "roiVinnare",
     "roiPlats",
     "roiSinceDayOne",
-  ]); 
+  ]);
 
   const sortedRows = useMemo(() => {
     const data = [...visibleRows];
@@ -169,7 +168,6 @@ const RoiTable = ({
       const aVal = a[sortConfig.key];
       const bVal = b[sortConfig.key];
       if (aVal === undefined || bVal === undefined) return 0;
-
       const toNum = (v) =>
         typeof v === "string" ? Number(v.replace(",", ".")) : Number(v);
       const av = numericKeys.has(sortConfig.key)
@@ -182,14 +180,12 @@ const RoiTable = ({
         : typeof bVal === "string"
         ? bVal.toLowerCase()
         : bVal;
-
       if (av < bv) return sortConfig.direction === "asc" ? -1 : 1;
       if (av > bv) return sortConfig.direction === "asc" ? 1 : -1;
       return 0;
     });
-  }, [visibleRows, sortConfig]); 
+  }, [visibleRows, sortConfig]);
 
-  // Summering
   const totalRoiTotalt = useMemo(
     () =>
       sortedRows.reduce(
@@ -199,25 +195,25 @@ const RoiTable = ({
     [sortedRows]
   );
 
-  // Datumetikett 
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
-  const goNext = () =>
-    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
+  const goNext = () => idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
+
   const today = new Date().toISOString().split("T")[0];
   const yesterday = new Date(Date.now() - 864e5).toISOString().split("T")[0];
   const tomorrow = new Date(Date.now() + 864e5).toISOString().split("T")[0];
+
   const sv = (d) => {
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday =
-      weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
     const rest = date.toLocaleDateString("sv-SE", {
       day: "numeric",
       month: "long",
     });
     return `${capitalizedWeekday}, ${rest}`;
   };
+
   const selectedDateLabel =
     selectedDate === today
       ? `Idag, ${sv(selectedDate)}`
@@ -234,13 +230,13 @@ const RoiTable = ({
         row.trackId ??
         tracks.find((t) => t.nameOfTrack === row.nameOfTrack)?.id ??
         null;
+
       if (!trackId) {
         const list = await fetch(
           `${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`
         ).then((r) => r.json());
         trackId =
-          list.find((t) => t.nameOfTrack === row.nameOfTrack)?.id ||
-          list[0]?.id;
+          list.find((t) => t.nameOfTrack === row.nameOfTrack)?.id || list[0]?.id;
       }
       if (!trackId) return;
       setSelectedTrack && setSelectedTrack(trackId);
@@ -254,8 +250,8 @@ const RoiTable = ({
 
         if (row.nameOfCompetition) {
           competitionId =
-            comps.find((c) => c.nameOfCompetition === row.nameOfCompetition)
-              ?.id ?? null;
+            comps.find((c) => c.nameOfCompetition === row.nameOfCompetition)?.id ??
+            null;
         }
         if (!competitionId && comps.length === 1) competitionId = comps[0].id;
 
@@ -295,7 +291,7 @@ const RoiTable = ({
       setPendingLapId && setPendingLapId(lapId);
       setSelectedLap && setSelectedLap(lapId);
 
-      // 4) HÄSTINDEX I JUST DETTA LOPP
+      // 4) HÄSTINDEX
       let horseIndex = 0;
       try {
         const horsesInLap = await fetch(
@@ -311,7 +307,6 @@ const RoiTable = ({
         );
         if (idx >= 0) horseIndex = idx;
       } catch {}
-
       setSelectedHorse && setSelectedHorse(horseIndex);
       setSelectedView && setSelectedView("spider");
     } catch (e) {
@@ -343,12 +338,16 @@ const RoiTable = ({
     }
   }, [vinnareCompetitions]);
 
+ 
+  const isSystemMode = tipsFilter === 2 || tipsFilter === 3; 
+  const horseColTitle = isSystemMode ? "System" : "Häst"; 
+
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
       <p className="sm:text-xl text-lg font-semibold text-slate-800 mt-0 mb-4 sm:mt-0 sm:mb-2 px-4 py-1 flex flex-col justify-center items-center">
         {selectedDateLabel}{" "}
-        {selectedTrackLabel ? ` | ${selectedTrackLabel}` : ""}{" "}
-        {selectedCompetitionLabel ? ` | ${selectedCompetitionLabel}` : ""}
+        {selectedTrackLabel ? `| ${selectedTrackLabel}` : ""}{" "}
+        {selectedCompetitionLabel ? `| ${selectedCompetitionLabel}` : ""}
       </p>
 
       <div className="flex items-center justify-between mb-4">
@@ -359,7 +358,6 @@ const RoiTable = ({
         >
           &#8592;
         </button>
-
         <DatePicker
           value={selectedDate}
           onChange={setSelectedDate}
@@ -367,7 +365,6 @@ const RoiTable = ({
           max={dates[dates.length - 1]?.date}
           availableDates={dates.map((d) => d.date)}
         />
-
         <button
           onClick={goNext}
           disabled={idx >= dates.length - 1 || loading}
@@ -396,23 +393,54 @@ const RoiTable = ({
 
       <div className="flex flex-wrap gap-1 mb-2">
         {vinnareCompetitions.map((c) => (
-          <button
-            key={c.id}
-            onClick={() =>
-              setSelectedCompetition && setSelectedCompetition(c.id)
-            }
-            disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              c.id === +selectedCompetition
-                ? "bg-orange-600 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-            }`}
-          >
-            ROI VP
-          </button>
+          <React.Fragment key={c.id}>
+            <button
+              onClick={() => {
+                setSelectedCompetition && setSelectedCompetition(c.id);
+                setTipsFilter(1);
+              }}
+              disabled={loading}
+              className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+                c.id === +selectedCompetition && tipsFilter === 1
+                  ? "bg-orange-600 text-white font-semibold shadow"
+                  : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              }`}
+            >
+              ROI V&P 
+            </button>
+            <button
+              onClick={() => {
+                setSelectedCompetition && setSelectedCompetition(c.id);
+                setTipsFilter(2);
+              }}
+              disabled={loading}
+              className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+                c.id === +selectedCompetition && tipsFilter === 2
+                  ? "bg-purple-600 text-white font-semibold shadow"
+                  : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              }`}
+            >
+              ROI DD {/* tips = 2 */}
+            </button>
+            <button
+              onClick={() => {
+                setSelectedCompetition && setSelectedCompetition(c.id);
+                setTipsFilter(3);
+              }}
+              disabled={loading}
+              className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+                c.id === +selectedCompetition && tipsFilter === 3
+                  ? "bg-green-600 text-white font-semibold shadow"
+                  : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              }`}
+            >
+              ROI TRIO {/* tips = 3 */}
+            </button>
+          </React.Fragment>
         ))}
       </div>
 
+      {/* Avdelningar */}
       <div className="flex flex-wrap gap-1 mb-2">
         {laps.map((lap) => (
           <button
@@ -430,77 +458,42 @@ const RoiTable = ({
         ))}
       </div>
 
-      {/* <div className="self-start flex gap-1 mb-4 items-start min-h-[40px] flex-wrap">
-        {!availLoading &&
-          availableCounts.map((n) => (
-            <button
-              key={n}
-              onClick={() => setActiveStartsCount(n)}
-              disabled={loading}
-              className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                activeStartsCount === n
-                  ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                  : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-              } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              {n} starter
-            </button>
-          ))}
-      </div> */}
-
+      {/* Tabellen */}
       <div className="overflow-x-auto border border-gray-200 rounded relative">
         {loading && (
           <div className="absolute inset-0 flex justify-center items-center bg-white/70">
             <div className="animate-spin h-10 w-10 border-4 border-gray-200 border-t-indigo-500 rounded-full" />
           </div>
         )}
-
         <table className="w-full min-w-max border-collapse text-sm">
           <thead className="bg-gray-100 border-b border-gray-200">
             <tr>
-              <th
-                className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300" 
-              >
+              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
                 #
               </th>
-              <th
-                className="py-2 px-2 font-semibold text-left border-r last:border-r-0 border-gray-300" 
-              >
-                Häst
+              <th className="py-2 px-2 font-semibold text-left border-r last:border-r-0 border-gray-300">
+                {horseColTitle} {/* //Changed! */}
               </th>
-              <th
-                className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300 bg-orange-100" 
-              >
+              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300 bg-orange-100">
                 Analys
               </th>
-              <th
-                className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300" 
-              >
+              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
                 Placering
               </th>
-              <th
-                className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300" 
-              >
+              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
                 ROI Lopp
               </th>
-              <th
-                className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300" 
-              >
+              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
                 Odds Vinnare
               </th>
-              <th
-                className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300" 
-              >
+              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
                 Odds Plats
               </th>
-              <th
-                className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300" 
-              >
+              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
                 ROI Totalt
               </th>
             </tr>
           </thead>
-
           <tbody>
             {sortedRows.map((row) => (
               <tr
