@@ -40,7 +40,7 @@ const BarChartComponent = ({
   const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
   const starterLabel = (n) => { 
-  if (n === 0) return "ABC-rank"; 
+  if (n === 0) return "ABC"; 
   if (n === 1) return `${n} start`; 
   return `${n} starter`; 
 };
