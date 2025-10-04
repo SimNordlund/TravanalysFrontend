@@ -39,7 +39,12 @@ const BarChartComponent = ({
 
   const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
-  const starterLabel = (n) => (n === 0 ? "Alla" : n);
+  const starterLabel = (n) => { 
+  if (n === 0) return "ABC-rank"; 
+  if (n === 1) return `${n} start`; 
+  return `${n} starter`; 
+};
+
 
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
@@ -357,7 +362,7 @@ const BarChartComponent = ({
                   : "bg-gray-200 text-gray-700 hover:bg-blue-200"
               } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              {starterLabel(n)} starter
+              {starterLabel(n)}
             </button>
           ))}
       </div>
