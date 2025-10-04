@@ -196,7 +196,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         ))}
       </div>
 
-      <div className="sm:max-w-5xl sm:mx-auto bg-white ml-4 mr-4 sm:pl-8 sm:pr-8 sm:pb-2 rounded-xl shadow-lg min-h-[70vh]">
+      <div className="sm:max-w-5xl sm:mx-auto bg-white ml-3 mr-3 sm:pl-8 sm:pr-8 sm:pb-2 rounded-xl shadow-lg min-h-[70vh]">
         {(selectedView === "bar" || selectedView === "spider") && (
           <div className="grid grid-cols-1 gap-4">
             <div className="min-h-[400px]">
