@@ -24,7 +24,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState(initialSelectedView);
   const [selectedHorse, setSelectedHorse] = useState(null);
-  const [startsCount, setStartsCount] = useState(4);
+  const [startsCount, setStartsCount] = useState(0);
 
   const [visibleHorseIdxes, setVisibleHorseIdxes] = useState([]);
   const [horseLegendItems, setHorseLegendItems] = useState([]);
@@ -40,7 +40,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const pendingLapRef = useRef(null);
   const setPendingLapId = (lapId) => { pendingLapRef.current = lapId; };
 
-  const [legendMode, setLegendMode] = useState("all"); //Changed!
+  const [legendMode, setLegendMode] = useState("all"); 
 
   useEffect(() => {
     if (!syncWithRoute) return;
@@ -218,7 +218,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 setVisibleHorseIdxes={setVisibleHorseIdxes}
                 startsCount={startsCount}
                 setStartsCount={setStartsCount}
-                setLegendMode={setLegendMode}        //Changed!
+                setLegendMode={setLegendMode}        
               />
             </div>
 
