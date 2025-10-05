@@ -13,10 +13,21 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const routeToView = { analys: "spider", tabell: "table", speltips: "skrallar" };
-  const viewToRoute = { spider: "analys", table: "tabell", skrallar: "speltips", bar: "analys" };
+  const routeToView = {
+    analys: "spider",
+    tabell: "table",
+    speltips: "skrallar",
+  };
+  const viewToRoute = {
+    spider: "analys",
+    table: "tabell",
+    skrallar: "speltips",
+    bar: "analys",
+  };
 
-  const initialSelectedView = syncWithRoute ? routeToView[viewParam] || "spider" : "spider";
+  const initialSelectedView = syncWithRoute
+    ? routeToView[viewParam] || "spider"
+    : "spider";
 
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTrack, setSelectedTrack] = useState("");
@@ -38,9 +49,11 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const pendingLapRef = useRef(null);
-  const setPendingLapId = (lapId) => { pendingLapRef.current = lapId; };
+  const setPendingLapId = (lapId) => {
+    pendingLapRef.current = lapId;
+  };
 
-  const [legendMode, setLegendMode] = useState("all"); 
+  const [legendMode, setLegendMode] = useState("all");
 
   useEffect(() => {
     if (!syncWithRoute) return;
@@ -63,11 +76,13 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const pickClosestDate = (arr) => {
     if (!arr?.length) return "";
     const today = new Date();
-    let best = arr[0], bestDiff = Infinity;
+    let best = arr[0],
+      bestDiff = Infinity;
     for (const d of arr) {
       const diff = Math.abs(new Date(d.date) - today);
       if (diff < bestDiff || (diff === bestDiff && new Date(d.date) >= today)) {
-        best = d; bestDiff = diff;
+        best = d;
+        bestDiff = diff;
       }
     }
     return best.date;
@@ -77,17 +92,22 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     const ac = new AbortController();
     (async () => {
       try {
-        const r = await fetch(`${API_BASE_URL}/track/dates`, { signal: ac.signal });
+        const r = await fetch(`${API_BASE_URL}/track/dates`, {
+          signal: ac.signal,
+        });
         const all = await r.json();
-        const uniqueSorted = Array.from(new Map(all.map((d) => [d.date, d])).values())
-          .sort((a, b) => a.date.localeCompare(b.date));
+        const uniqueSorted = Array.from(
+          new Map(all.map((d) => [d.date, d])).values()
+        ).sort((a, b) => a.date.localeCompare(b.date));
         setDates(uniqueSorted);
         if (!selectedDate) {
           const todayStr = new Date().toISOString().split("T")[0];
           const hasToday = uniqueSorted.find((x) => x.date === todayStr);
           setSelectedDate(hasToday ? todayStr : pickClosestDate(uniqueSorted));
         }
-      } catch (e) { console.error("dates:", e); }
+      } catch (e) {
+        console.error("dates:", e);
+      }
     })();
     return () => ac.abort();
   }, []);
@@ -97,13 +117,22 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     const ac = new AbortController();
     (async () => {
       try {
-        const r = await fetch(`${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`, { signal: ac.signal });
+        const r = await fetch(
+          `${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`,
+          { signal: ac.signal }
+        );
         const d = await r.json();
         setTracks(d);
-        if (!d?.length) { setSelectedTrack(""); return; }
+        if (!d?.length) {
+          setSelectedTrack("");
+          return;
+        }
         const ok = d.some((t) => t.id === +selectedTrack);
         if (!ok) setSelectedTrack(d[0].id);
-      } catch (e) { console.error("tracks:", e); setTracks([]); }
+      } catch (e) {
+        console.error("tracks:", e);
+        setTracks([]);
+      }
     })();
     return () => ac.abort();
   }, [selectedDate]);
@@ -113,12 +142,18 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     const ac = new AbortController();
     (async () => {
       try {
-        const r = await fetch(`${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`, { signal: ac.signal });
+        const r = await fetch(
+          `${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`,
+          { signal: ac.signal }
+        );
         const d = await r.json();
         setCompetitions(d);
         const ok = d?.some((c) => c.id === +selectedCompetition);
         if (!ok && d?.length) setSelectedCompetition(d[0].id);
-      } catch (e) { console.error("competitions:", e); setCompetitions([]); }
+      } catch (e) {
+        console.error("competitions:", e);
+        setCompetitions([]);
+      }
     })();
     return () => ac.abort();
   }, [selectedTrack]);
@@ -128,16 +163,24 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     const ac = new AbortController();
     (async () => {
       try {
-        const r = await fetch(`${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`, { signal: ac.signal });
+        const r = await fetch(
+          `${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`,
+          { signal: ac.signal }
+        );
         const d = await r.json();
         setLaps(d || []);
         const desired = pendingLapRef.current;
         if (desired && d?.some((l) => l.id === +desired)) {
-          setSelectedLap(desired); pendingLapRef.current = null; return;
+          setSelectedLap(desired);
+          pendingLapRef.current = null;
+          return;
         }
         const ok = d?.some((l) => l.id === +selectedLap);
         if (!ok && d?.length) setSelectedLap(d[0].id);
-      } catch (e) { console.error("laps:", e); setLaps([]); }
+      } catch (e) {
+        console.error("laps:", e);
+        setLaps([]);
+      }
     })();
     return () => ac.abort();
   }, [selectedCompetition]);
@@ -147,50 +190,86 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     setVisibleHorseIdxes([]);
   }, [selectedLap]);
 
-  const handleMetaChange = ({ items, suggestedVisibleIdxes, top5Idx, top3Idx }) => {
+  const handleMetaChange = ({
+    items,
+    suggestedVisibleIdxes,
+    top5Idx,
+    top3Idx,
+  }) => {
     setHorseLegendItems(items || []);
-    setVisibleHorseIdxes((prev) => (
-      legendMode === "top3" && Array.isArray(top3Idx) ? top3Idx     //Changed!
-      : legendMode === "top5" && Array.isArray(top5Idx) ? top5Idx   //Changed!
-      : (prev?.length ? prev : (suggestedVisibleIdxes || []))       //Changed!
-    ));
+    setVisibleHorseIdxes((prev) =>
+      legendMode === "top3" && Array.isArray(top3Idx)
+        ? top3Idx
+        : legendMode === "top5" && Array.isArray(top5Idx)
+        ? top5Idx
+        : prev?.length
+        ? prev
+        : suggestedVisibleIdxes || []
+    );
     if (Array.isArray(top5Idx)) setTop5Idxes(top5Idx);
     if (Array.isArray(top3Idx)) setTop3Idxes(top3Idx);
   };
 
   const toggleLegendIdx = (idx) =>
-    setVisibleHorseIdxes((prev) => (prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]));
+    setVisibleHorseIdxes((prev) =>
+      prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
+    );
 
-  const showAllLegend = () => {                                 //Changed!
-    setLegendMode("all");                                       //Changed!
-    setVisibleHorseIdxes(horseLegendItems.map((x) => x.idx));   //Changed!
+  const showAllLegend = () => {
+    setLegendMode("all");
+    setVisibleHorseIdxes(horseLegendItems.map((x) => x.idx));
   };
-  const showTop5Legend = () => {                                //Changed!
-    setLegendMode("top5");                                      //Changed!
-    setVisibleHorseIdxes(top5Idxes);                            //Changed!
+  const showTop5Legend = () => {
+    setLegendMode("top5");
+    setVisibleHorseIdxes(top5Idxes);
   };
-  const showTop3Legend = () => {                                //Changed!
-    setLegendMode("top3");                                      //Changed!
-    setVisibleHorseIdxes(top3Idxes);                            //Changed!
+  const showTop3Legend = () => {
+    setLegendMode("top3");
+    setVisibleHorseIdxes(top3Idxes);
   };
 
   const callouts = [
-    { id: 2, name: "Analys", bgColor: "bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600", view: "spider" },
-    { id: 3, name: "Ranking", bgColor: "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600", view: "table" },
-    { id: 4, name: "Spel & ROI", bgColor: "bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600", view: "skrallar" },
+    {
+      id: 2,
+      name: "Analys",
+      bgColor: "bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600",
+      view: "spider",
+    },
+    {
+      id: 3,
+      name: "Ranking",
+      bgColor: "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600",
+      view: "table",
+    },
+    {
+      id: 4,
+      name: "Spel & ROI",
+      bgColor: "bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600",
+      view: "skrallar",
+    },
   ];
 
   return (
     <div className="text-center pt-12 pb-12 sm:pt-16 sm:pb-14 bg-slate-100">
       <div className="flex justify-center gap-x-4 sm:gap-x-10 flex-nowrap overflow-auto mb-4 sm:mb-8 pt-2 pb-3">
         {callouts.map((c) => (
-          <div key={c.id} className="group relative cursor-pointer" onClick={() => switchView(c.view)}>
+          <div
+            key={c.id}
+            className="group relative cursor-pointer"
+            onClick={() => switchView(c.view)}
+          >
             <div
-              className={`${c.bgColor} relative h-14 w-24 lg:w-72 lg:h-18 md:w-52 md:h-18  mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
-                selectedView === c.view ? "ring-2 ring-slate-800 scale-110 opacity-100 cursor-default" : "hover:opacity-70"
+              className={`${
+                c.bgColor
+              } relative h-14 w-24 lg:w-72 lg:h-18 md:w-52 md:h-18  mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
+                selectedView === c.view
+                  ? "ring-2 ring-slate-800 scale-110 opacity-100 cursor-default"
+                  : "hover:opacity-70"
               }`}
             >
-              <h3 className="sm:text-2xl font-semibold text-white text-center">{c.name}</h3>
+              <h3 className="sm:text-2xl font-semibold text-white text-center">
+                {c.name}
+              </h3>
             </div>
           </div>
         ))}
@@ -218,7 +297,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 setVisibleHorseIdxes={setVisibleHorseIdxes}
                 startsCount={startsCount}
                 setStartsCount={setStartsCount}
-                setLegendMode={setLegendMode}        
+                setLegendMode={setLegendMode}
               />
             </div>
 
@@ -247,11 +326,10 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                   onShowAll={showAllLegend}
                   onShowTop5={showTop5Legend}
                   onShowTop3={showTop3Legend}
-                  active={legendMode}                 //Changed!
+                  active={legendMode}
                 />
               </div>
             </div>
-
             <div className="min-h-[200px]">
               <AnalysChart
                 selectedLap={selectedLap}
@@ -263,7 +341,11 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           </div>
         )}
 
-        <div className={`${selectedView === "table" ? "" : "hidden"} min-h-[600px]`}>
+        <div
+          className={`${
+            selectedView === "table" ? "" : "hidden"
+          } min-h-[600px]`}
+        >
           <PaginatedLapTable
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
@@ -282,7 +364,11 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           />
         </div>
 
-        <div className={`${selectedView === "skrallar" ? "" : "hidden"} min-h-[600px]`}>
+        <div
+          className={`${
+            selectedView === "skrallar" ? "" : "hidden"
+          } min-h-[600px]`}
+        >
           <RoiTable
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}

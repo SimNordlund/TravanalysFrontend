@@ -27,7 +27,7 @@ const BarChartComponent = ({
   setVisibleHorseIdxes,
   startsCount,
   setStartsCount,
-  setLegendMode, //Changed!
+  setLegendMode, 
 }) => {
   const legendRef = useRef(null);
   const chartRef = useRef(null);
@@ -173,7 +173,7 @@ const BarChartComponent = ({
     const { datasetIndex } = els[0];
     setSelectedHorse(datasetIndex);
     setVisibleHorseIdxes?.([datasetIndex]);
-    setLegendMode?.("all"); //Changed!
+    setLegendMode?.("all"); 
     setSelectedView("spider");
   };
 

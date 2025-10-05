@@ -34,11 +34,7 @@ const AnalysChart = ({
 
   const [title, setTitle] = useState("");
   const [data, setData] = useState({
-    labels: [
-      "Delanalys 1",
-      "Delanalys 2",
-      "Analys",
-    ],
+    labels: ["Delanalys 1", "Delanalys 2", "Analys"],
     datasets: [],
   });
 
@@ -95,6 +91,17 @@ const AnalysChart = ({
           }
         }
 
+        const idxToHorseNo = new Map( 
+          all.map((x) => [x.idx, x.horse?.numberOfCompleteHorse ?? 0]) 
+        );
+
+        indicesToShow.sort(
+          (
+            a,
+            b 
+          ) => idxToHorseNo.get(a) - idxToHorseNo.get(b) 
+        );
+
         const datasets = indicesToShow
           .map((i) => all.find((x) => x.idx === i))
           .filter(Boolean)
@@ -102,11 +109,7 @@ const AnalysChart = ({
             const color = horseColors[x.idx % horseColors.length];
             return {
               label: `${x.horse.numberOfCompleteHorse}. ${x.horse.nameOfCompleteHorse}`,
-              data: [
-                x.fs.a1 ?? 0,
-                x.fs.a2 ?? 0,
-                x.fs.a3 ?? 0,
-              ],
+              data: [x.fs.a1 ?? 0, x.fs.a2 ?? 0, x.fs.a3 ?? 0],
               backgroundColor: color,
               borderColor: "rgba(0,0,0,1)",
               borderWidth: 0.5,
@@ -114,11 +117,7 @@ const AnalysChart = ({
           });
 
         setData({
-          labels: [
-            "Delanalys 1",
-            "Delanalys 2",
-            "Analys",
-          ],
+          labels: ["Delanalys 1", "Delanalys 2", "Analys"],
           datasets,
         });
         setTitle(
@@ -150,11 +149,11 @@ const AnalysChart = ({
       tooltip: {
         enabled: true,
         callbacks: {
-          title: (items) => items?.[0]?.label ?? "Delanalys", 
+          title: (items) => items?.[0]?.label ?? "Delanalys",
 
           label: (item) => {
-            const horse = item.dataset?.label ?? ""; 
-            return `${horse}: ${item.formattedValue}`; 
+            const horse = item.dataset?.label ?? "";
+            return `${horse}: ${item.formattedValue}`;
           },
         },
       },

@@ -472,7 +472,7 @@ const RoiTable = ({
                 #
               </th>
               <th className="py-2 px-2 font-semibold text-left border-r last:border-r-0 border-gray-300">
-                {horseColTitle} {/* //Changed! */}
+                {horseColTitle} 
               </th>
               <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300 bg-orange-100">
                 Analys
