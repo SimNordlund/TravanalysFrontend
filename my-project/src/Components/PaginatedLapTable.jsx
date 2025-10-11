@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import DatePicker from "./DatePicker";
+import { Weight, ChevronLeft, ChevronRight } from "lucide-react";
 
 const PaginatedLapTable = ({
   selectedDate,
@@ -238,18 +239,17 @@ const PaginatedLapTable = ({
 
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
-      <p className="sm:text-xl text-lg font-semibold text-slate-800 mt-0 mb-4 sm:mt-0 sm:mb-2 px-4 py-1 flex flex-col justify-center items-center">
+      <p className="sm:text-xl text-lg font-semibold text-slate-800 mt-0 mb-4 sm:mt-0 sm:mb-5 px-4 py-1 flex flex-col justify-center items-center">
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
       </p>
 
-      {/* Date selector */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between sm:justify-self-center mb-4">
         <button
           onClick={goPrev}
           disabled={idx <= 0 || loading}
-          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
+          className="mb-1 mr-6 sm:mr-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition" 
         >
-          &#8592;
+         <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
 
         <DatePicker
@@ -263,9 +263,9 @@ const PaginatedLapTable = ({
         <button
           onClick={goNext}
           disabled={idx >= dates.length - 1 || loading}
-          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
+          className="mb-1 ml-6 sm:ml-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
-          &#8594;
+          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
       </div>
 
