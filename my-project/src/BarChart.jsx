@@ -3,7 +3,7 @@ import { Bar, getElementAtEvent } from "react-chartjs-2";
 import travhorsi from "./Bilder/travhorsi2.png";
 import DatePicker from "./Components/DatePicker";
 import Chart from "chart.js/auto";
-import { Weight } from "lucide-react";
+import { Weight, ChevronLeft, ChevronRight } from "lucide-react"; 
 
 Chart.defaults.font.family =
   "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'";
@@ -40,7 +40,7 @@ const BarChartComponent = ({
   const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
   const starterLabel = (n) => {
-    if (n === 0) return "Rank ABC";
+    if (n === 0) return "Total";
     if (n === 1) return `${n} start`;
     return `${n} starter`;
   };
@@ -286,17 +286,17 @@ const BarChartComponent = ({
 
   return (
     <div className="mx-auto max-w-screen-none px-2 pt-5 sm:py-4 relative">
-      <p className="sm:text-xl text-lg font-semibold text-slate-800 mt-1 mb-4 sm:mt-2 sm:mb-2 px-4 py-1 flex flex-col justify-center items-center">
+      <p className="sm:text-xl text-lg font-semibold text-slate-800 mt-1 mb-4 sm:mt-2 sm:mb-5 px-4 py-1 flex flex-col justify-center items-center">
         {selectedDateLabel} | {selectedTrackLabel} | {selectedCompetitionLabel}
       </p>
 
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between sm:justify-self-center mb-4">
         <button
           onClick={goPrev}
           disabled={idx <= 0 || loading}
-          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
+          className="mb-1 mr-6 sm:mr-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition" 
         >
-          &#8592;
+          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
 
         <DatePicker
@@ -310,9 +310,9 @@ const BarChartComponent = ({
         <button
           onClick={goNext}
           disabled={idx >= dates.length - 1 || loading}
-          className="p-1 text-4xl md:text-5xl disabled:opacity-40"
+         className="mb-1 ml-6 sm:ml-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
-          &#8594;
+         <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
       </div>
 
