@@ -398,7 +398,7 @@ const BarChartComponent = ({
 
       <div className="w-full text-center mb-1 hidden sm:block">
         <p className="text-sm sm:text-base text-slate-700 font-bold">
-          Analys och övergripande underlag
+          Total analys och övergripande beslutsunderlag
         </p>
       </div>
 
@@ -413,7 +413,7 @@ const BarChartComponent = ({
 
       <div className="w-full text-center mb-1 sm:hidden">
         <p className="text-sm sm:text-base text-slate-700 font-bold">
-          Analys och övergripande underlag
+          Total analys och övergripande beslutsunderlag
         </p>
       </div>
 
