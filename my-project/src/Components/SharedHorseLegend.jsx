@@ -28,8 +28,8 @@ const SharedHorseLegend = ({
   const handleAll  = () => { setUncontrolledActive("all");  onShowAll?.();  }; 
 
   return (
-    <div className="w-full">
-      <div className="flex gap-2 mb:gap-3 mb-4">
+    <div className="w-full mb-4">
+      <div className="flex gap-2 mb:gap-3 mb-6">
         <button
           onClick={handleTop3} 
           className={cls("top3")} 
