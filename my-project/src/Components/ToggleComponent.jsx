@@ -330,14 +330,16 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 />
               </div>
             </div>
-            <div className="min-h-[200px]">
-              <AnalysChart
-                selectedLap={selectedLap}
-                selectedHorse={selectedHorse}
-                visibleHorseIdxes={visibleHorseIdxes}
-                startsCount={startsCount}
-              />
-            </div>
+            {startsCount > 0 && (
+              <div className="min-h-[200px]">
+                <AnalysChart
+                  selectedLap={selectedLap}
+                  selectedHorse={selectedHorse}
+                  visibleHorseIdxes={visibleHorseIdxes}
+                  startsCount={startsCount}
+                />
+              </div>
+            )}
           </div>
         )}
 
