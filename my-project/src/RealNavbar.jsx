@@ -9,7 +9,7 @@ const navigation = [
   { name: "Analys", to: "/chart/analys" },
   { name: "Ranking", to: "/chart/tabell" },
   { name: "Spel & ROI", to: "/chart/speltips" },
-  { name: "Om Travanalys", to: "/about" },
+  { name: "Om travanalys.se", to: "/about" },
 ];
 
 function classNames(...classes) {
@@ -96,7 +96,7 @@ export default function Example() {
                     className="mt-0 font-semibold text-lg sm:text-xl text-white"
                   >
                     <span className="inline-flex items-baseline">
-                      Travanalys
+                      travanalys.se
                       <sup className="ml-1 text-[0.85em] leading-none text-white/80">
                         ™
                       </sup>

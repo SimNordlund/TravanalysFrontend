@@ -70,11 +70,11 @@ const FaqsCard = ({ faqsList, idx }) => {
 const Faqs = () => {
   const faqsList = [
     {
-      q: "Vad är Travanalys för någonting?",
+      q: "Vad är travanalys.se för någonting?",
       a: "Travsportens beslutsunderlag. Vi analyserar hästar och ger dig en djupare insikt i deras prestationer. Vi är i en utvecklingsfas och kommer att lansera fler funktioner och vyer inom kort.",
     },
     {
-      q: "Hur använder jag Travanalys?",
+      q: "Hur använder jag travanalys.se?",
       a: "Du väljer mellan olika vyer för att se hästar och deras analyser. Konsumera via Analys, Ranking eller Spel & ROI",
     },
     {
@@ -83,10 +83,10 @@ const Faqs = () => {
     },
     {
       q: "Kostar det något?",
-      a: "Nej, Travanalys är helt gratis att använda. Vi kommer att lansera en premiumversion inom kort.",
+      a: "Nej, travanalys.se är helt gratis att använda. Vi kommer att lansera en premiumversion inom kort.",
     },
     {
-      q: "Vilka ligger bakom Travanalys?",
+      q: "Vilka ligger bakom travanalys.se?",
       a: "Vi är ett gäng travnördar som vill göra det enklare för dig att hitta vinnarna.",
     },
        {
@@ -102,7 +102,7 @@ const Faqs = () => {
   return (
     <section className="leading-relaxed max-w-screen-xl mt-12 mx-auto px-4 md:px-8">
       <div className="space-y-3 text-center">
-        <h1 className="text-3xl text-gray-800 font-semibold">Vad är Travanalys?</h1>
+        <h1 className="text-3xl text-gray-800 font-semibold">Vad är travanalys.se?</h1>
         <p className="text-gray-600 max-w-lg mx-auto text-lg">
           Hittar du inte ditt svar? Kontakta oss så hjälper vi dig.
         </p>

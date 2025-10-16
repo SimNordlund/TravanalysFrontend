@@ -25,7 +25,7 @@ export default function Pricing() {
       <div className="mx-auto max-w-7xl px-6 lg:px-8 mt">
         <div className="flex flex-col items-center justify-center gap-y-2 sm:flex-row sm:gap-x-4">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Gilla Travanalys
+            Gilla travanalys.se
           </h2>
           <div className="flex gap-x-2">
             <LikeButton />
@@ -81,7 +81,7 @@ export default function Pricing() {
                   {copyStatus}
                 </a>
                 <p className="mt-6 text-xs leading-5 text-gray-600 ">
-                  Stötta Travanalys med valfri slant via Swish.
+                  Stötta travanalys.se med valfri slant via Swish.
                 </p>
               </div>
             </div>
