@@ -95,18 +95,25 @@ export default function Example() {
                     to="/"
                     className="mt-0 font-semibold text-lg sm:text-xl text-white"
                   >
-                    <span className="inline-flex items-center">                  
+                    <span className="inline-flex items-center">
                       <span
-                        className="mr-2 h-5 w-5" 
+                        className="mr-1 h-5 w-5"
                         style={{
-                          WebkitMask: `url(${bars}) center / contain no-repeat`, 
-                          mask: `url(${bars}) center / contain no-repeat`, 
-                          backgroundColor: "currentColor", 
+                          WebkitMaskImage: `url(${bars})`, 
+                          maskImage: `url(${bars})`, 
+                          WebkitMaskRepeat: "no-repeat", 
+                          maskRepeat: "no-repeat", 
+                          WebkitMaskPosition: "center", 
+                          maskPosition: "center", 
+                          WebkitMaskSize: "contain", 
+                          maskSize: "contain", 
+                          backgroundColor: "currentColor",
+                          display: "inline-block", 
                         }}
                         aria-hidden="true"
                       />
                       <span>travanalys.se</span>
-{/*                       <sup className="ml-1 text-[0.85em] leading-none text-white/80">
+                      {/*                       <sup className="ml-1 text-[0.85em] leading-none text-white/80">
                         ™
                       </sup> */}
                     </span>
