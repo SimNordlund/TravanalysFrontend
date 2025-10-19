@@ -3,7 +3,6 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate, NavLink } from "react-router-dom";
 import barbild from "./Bilder/travhorsi.png";
-import bars from "./Bilder/bars1337.svg";
 
 const navigation = [
   { name: "Startsida", to: "/" },
@@ -99,8 +98,8 @@ export default function Example() {
                       <span
                         className="mr-1 h-5 w-5"
                         style={{
-                          WebkitMaskImage: `url(${bars})`, 
-                          maskImage: `url(${bars})`, 
+                          WebkitMaskImage: "url(/bars1337.svg)", 
+                          maskImage: "url(/bars1337.svg)", 
                           WebkitMaskRepeat: "no-repeat", 
                           maskRepeat: "no-repeat", 
                           WebkitMaskPosition: "center", 
