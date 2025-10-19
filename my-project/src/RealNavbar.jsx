@@ -3,7 +3,7 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate, NavLink } from "react-router-dom";
 import barbild from "./Bilder/travhorsi.png";
-import bars from "./Bilder/bars.svg";
+import bars from "./Bilder/bars1337.svg";
 
 const navigation = [
   { name: "Startsida", to: "/" },
