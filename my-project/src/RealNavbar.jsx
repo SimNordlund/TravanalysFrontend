@@ -3,6 +3,7 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate, NavLink } from "react-router-dom";
 import barbild from "./Bilder/travhorsi.png";
+import bars from "./Bilder/bars.svg";
 
 const navigation = [
   { name: "Startsida", to: "/" },
@@ -52,14 +53,14 @@ export default function Example() {
               </div>
 
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex flex-shrink-0 items-center text-indigo-600">
+                <div className="hidden sm:flex flex-shrink-0 items-center text-indigo-600">
                   {" "}
                   <div
-                    className="h-10 w-10" 
+                    className="h-10 w-10"
                     style={{
-                      WebkitMask: `url(${barbild}) center / contain no-repeat`, 
-                      mask: `url(${barbild}) center / contain no-repeat`, 
-                      backgroundColor: "currentColor", 
+                      WebkitMask: `url(${barbild}) center / contain no-repeat`,
+                      mask: `url(${barbild}) center / contain no-repeat`,
+                      backgroundColor: "currentColor",
                     }}
                     aria-label="Travanalys"
                     title="Travanalys"
@@ -88,18 +89,26 @@ export default function Example() {
                 </div>
               </div>
 
-       
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <div>
                   <NavLink
                     to="/"
                     className="mt-0 font-semibold text-lg sm:text-xl text-white"
                   >
-                    <span className="inline-flex items-baseline">
-                      travanalys.se
-                      <sup className="ml-1 text-[0.85em] leading-none text-white/80">
+                    <span className="inline-flex items-center">                  
+                      <span
+                        className="mr-2 h-5 w-5" 
+                        style={{
+                          WebkitMask: `url(${bars}) center / contain no-repeat`, 
+                          mask: `url(${bars}) center / contain no-repeat`, 
+                          backgroundColor: "currentColor", 
+                        }}
+                        aria-hidden="true"
+                      />
+                      <span>travanalys.se</span>
+{/*                       <sup className="ml-1 text-[0.85em] leading-none text-white/80">
                         ™
-                      </sup>
+                      </sup> */}
                     </span>
                   </NavLink>
                 </div>
