@@ -35,7 +35,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState(initialSelectedView);
   const [selectedHorse, setSelectedHorse] = useState(null);
-  const [startsCount, setStartsCount] = useState(0);
+  const [startsCount, setStartsCount] = useState(4);
 
   const [visibleHorseIdxes, setVisibleHorseIdxes] = useState([]);
   const [horseLegendItems, setHorseLegendItems] = useState([]);
