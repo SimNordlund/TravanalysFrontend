@@ -9,7 +9,7 @@ const navigation = [
   { name: "Analys", to: "/chart/analys" },
   { name: "Ranking", to: "/chart/tabell" },
   { name: "Spel & ROI", to: "/chart/speltips" },
-  { name: "Frågor & Svar", to: "/about" },
+  { name: "Frågor & Svar", to: "/faq" },
 ];
 
 function classNames(...classes) {
