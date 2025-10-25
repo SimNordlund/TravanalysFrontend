@@ -18,7 +18,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
-        <Route path="/about" element={<FAQComponent/>} />
+        <Route path="/faq" element={<FAQComponent/>} />
         <Route path="/Components/ReducedButtons" element={<ReducedButtons/>} />
         <Route path="/Components/GitHubLoginButton" element={<Home/>} />
         <Route path="/chart/:view" element={<ToggleComponent syncWithRoute={true} />} /> 
