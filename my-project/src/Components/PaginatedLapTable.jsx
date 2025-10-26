@@ -36,7 +36,7 @@ const PaginatedLapTable = ({
   const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
   const starterLabel = (n) => { 
-  if (n === 0) return "Total"; 
+  if (n === 0) return "Analys"; 
   if (n === 1) return `${n} start`; 
   return `${n} starter`; 
 }; 
