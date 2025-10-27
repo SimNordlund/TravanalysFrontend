@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import {
+  useParams,
+  useNavigate,
+  useLocation,
+  useSearchParams, 
+} from "react-router-dom";
 import SpiderChart from "./SpiderChart";
 import BarChart from "../BarChart";
 import PaginatedLapTable from "./PaginatedLapTable";
-
 import AnalysChart from "./AnalysChart";
 import SharedHorseLegend from "./SharedHorseLegend";
 import RoiTable from "./RoiTable";
@@ -12,6 +16,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const { view: viewParam } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams(); 
 
   const routeToView = {
     analys: "spider",
@@ -36,16 +41,15 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [selectedView, setSelectedView] = useState(initialSelectedView);
   const [selectedHorse, setSelectedHorse] = useState(null);
   const [startsCount, setStartsCount] = useState(0);
-
   const [visibleHorseIdxes, setVisibleHorseIdxes] = useState([]);
   const [horseLegendItems, setHorseLegendItems] = useState([]);
   const [top5Idxes, setTop5Idxes] = useState([]);
   const [top3Idxes, setTop3Idxes] = useState([]);
-
   const [dates, setDates] = useState([]);
   const [tracks, setTracks] = useState([]);
   const [competitions, setCompetitions] = useState([]);
   const [laps, setLaps] = useState([]);
+
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const pendingLapRef = useRef(null);
@@ -54,6 +58,71 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   };
 
   const [legendMode, setLegendMode] = useState("all");
+
+  const initialQuery = useRef({
+    date: searchParams.get("date") || "",
+    track: searchParams.get("track") || "",
+    competition: searchParams.get("competition") || "",
+    lap: searchParams.get("lap") || "",
+  }); 
+
+  // Synk-flaggor
+  const hadInitialQuery = useRef(
+    Boolean(
+      initialQuery.current.date ||
+        initialQuery.current.track ||
+        initialQuery.current.competition ||
+        initialQuery.current.lap
+    )
+  ); 
+  const shouldSyncQueryRef = useRef(hadInitialQuery.current); 
+  const lastWrittenQueryRef = useRef(""); 
+
+  const markUserInteraction = () => {
+    shouldSyncQueryRef.current = true;
+  }; 
+  const withUserSync = (setter) => (v) => {
+    markUserInteraction();
+    setter(v);
+  }; 
+
+  const setSelectedDateUser = withUserSync(setSelectedDate); 
+  const setSelectedTrackUser = withUserSync(setSelectedTrack); 
+  const setSelectedCompetitionUser = withUserSync(setSelectedCompetition); 
+  const setSelectedLapUser = withUserSync(setSelectedLap); 
+  const setStartsCountUser = withUserSync(setStartsCount); 
+
+  const appliedFromQuery = useRef({
+    track: false,
+    competition: false,
+    lap: false,
+  });
+  const normalize = (s) => (s ?? "").toString().trim().toLowerCase();
+  const compact = (s) =>
+    (s ?? "").toString().trim().toLowerCase().replace(/[^a-z0-9]/g, ""); 
+
+  // Lyssna på externa URL-förändringar (t.ex. du ändrar ?lap=1 -> 2 i adressfältet)
+  useEffect(() => {
+    const curr = searchParams.toString(); 
+    if (curr === lastWrittenQueryRef.current) return; // vår egen skrivning – ignorera 
+
+    // Läs in ny query och tillåt omappning i effekterna                 
+    initialQuery.current = {
+      date: searchParams.get("date") || "",
+      track: searchParams.get("track") || "",
+      competition: searchParams.get("competition") || "",
+      lap: searchParams.get("lap") || "",
+    };
+    appliedFromQuery.current = { track: false, competition: false, lap: false };
+
+    // Sätt datum direkt om det finns                                     
+    const qDate = initialQuery.current.date;
+    if (qDate && qDate !== selectedDate) setSelectedDate(qDate);
+
+    // Börja synka till URL (nu använder man URL aktivt)                  
+    shouldSyncQueryRef.current = true;
+    // Övriga fält mappas när listorna är hämtade (se effekter nedan)
+  }, [searchParams]); 
 
   useEffect(() => {
     if (!syncWithRoute) return;
@@ -67,10 +136,14 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     if (viewKey !== "spider") setSelectedHorse(null);
     if (syncWithRoute) {
       const target = `/chart/${viewToRoute[viewKey]}`;
-      if (location.pathname !== target) navigate(target);
+      if (location.pathname !== target) {
+        navigate({
+          pathname: target,
+          search: shouldSyncQueryRef.current ? `?${searchParams.toString()}` : "",
+        });
+      }
     }
   };
-
   const switchView = (viewKey) => setViewAndMaybeNavigate(viewKey);
 
   const pickClosestDate = (arr) => {
@@ -88,6 +161,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     return best.date;
   };
 
+  // DATUM
   useEffect(() => {
     const ac = new AbortController();
     (async () => {
@@ -100,18 +174,24 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           new Map(all.map((d) => [d.date, d])).values()
         ).sort((a, b) => a.date.localeCompare(b.date));
         setDates(uniqueSorted);
+
         if (!selectedDate) {
-          const todayStr = new Date().toISOString().split("T")[0];
-          const hasToday = uniqueSorted.find((x) => x.date === todayStr);
-          setSelectedDate(hasToday ? todayStr : pickClosestDate(uniqueSorted));
+          if (initialQuery.current.date) {
+            setSelectedDate(initialQuery.current.date);
+          } else {
+            const todayStr = new Date().toISOString().split("T")[0];
+            const hasToday = uniqueSorted.find((x) => x.date === todayStr);
+            setSelectedDate(hasToday ? todayStr : pickClosestDate(uniqueSorted));
+          }
         }
       } catch (e) {
         console.error("dates:", e);
       }
     })();
     return () => ac.abort();
-  }, []);
+  }, []); // first load
 
+  // BANOR
   useEffect(() => {
     if (!selectedDate) return;
     const ac = new AbortController();
@@ -127,6 +207,22 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           setSelectedTrack("");
           return;
         }
+
+        // Försök applicera query "track" (namn eller id) först
+        if (!appliedFromQuery.current.track && initialQuery.current.track) {
+          const q = initialQuery.current.track;
+          const byId = d.find((t) => String(t.id) === q);
+          const byName = d.find(
+            (t) => normalize(t.nameOfTrack) === normalize(q)
+          );
+          const target = byId || byName;
+          if (target) {
+            setSelectedTrack(target.id);
+            appliedFromQuery.current.track = true;
+            return;
+          }
+        }
+
         const ok = d.some((t) => t.id === +selectedTrack);
         if (!ok) setSelectedTrack(d[0].id);
       } catch (e) {
@@ -137,6 +233,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     return () => ac.abort();
   }, [selectedDate]);
 
+  // OMGÅNGAR (competition)
   useEffect(() => {
     if (!selectedTrack) return;
     const ac = new AbortController();
@@ -148,6 +245,35 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         );
         const d = await r.json();
         setCompetitions(d);
+
+        // Robustare matchning av competition                               
+        if (
+          !appliedFromQuery.current.competition &&
+          initialQuery.current.competition
+        ) {
+          const q = initialQuery.current.competition;
+          const items = Array.isArray(d) ? d : [];
+
+          const byId = items.find((c) => String(c.id) === q);
+          const byExact =
+            items.find(
+              (c) => normalize(c.nameOfCompetition) === normalize(q)
+            ) || null;
+
+          const qComp = compact(q);
+          const byCode =
+            items.find((c) =>
+              compact(c.nameOfCompetition).includes(qComp)
+            ) || null;
+
+          const target = byId || byExact || byCode; 
+          if (target) {
+            setSelectedCompetition(target.id);
+            appliedFromQuery.current.competition = true;
+            return;
+          }
+        }
+
         const ok = d?.some((c) => c.id === +selectedCompetition);
         if (!ok && d?.length) setSelectedCompetition(d[0].id);
       } catch (e) {
@@ -169,12 +295,61 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         );
         const d = await r.json();
         setLaps(d || []);
+
+
         const desired = pendingLapRef.current;
         if (desired && d?.some((l) => l.id === +desired)) {
           setSelectedLap(desired);
           pendingLapRef.current = null;
           return;
         }
+
+                                                  
+        if (!appliedFromQuery.current.lap && initialQuery.current.lap) {
+          const qRaw = initialQuery.current.lap;
+          const onlyDigits = /^\d+$/.test(qRaw);
+          const firstNumber = (s) => {
+            const m = String(s).match(/\d+/);
+            return m ? parseInt(m[0], 10) : null;
+          };
+          const items = Array.isArray(d) ? d : [];
+          const qNum = onlyDigits ? parseInt(qRaw, 10) : null;
+
+          const byId =
+            !onlyDigits || qRaw.length >= 4
+              ? items.find((l) => String(l.id) === qRaw)
+              : null;
+
+          const byExactName = items.find(
+            (l) => normalize(l.nameOfLap) === normalize(qRaw)
+          );
+
+          const byNumberToken =
+            qNum != null
+              ? items.find((l) => firstNumber(l.nameOfLap) === qNum)
+              : null;
+
+          let byOrdinal = null;
+          if (qNum != null && qNum >= 1 && qNum <= items.length) {
+            const sorted = [...items].sort((a, b) => {
+              const na = firstNumber(a.nameOfLap) ?? Number.POSITIVE_INFINITY;
+              const nb = firstNumber(b.nameOfLap) ?? Number.POSITIVE_INFINITY;
+              return na - nb;
+            });
+            byOrdinal =
+              sorted.find((l) => firstNumber(l.nameOfLap) === qNum) ||
+              sorted[qNum - 1] ||
+              null;
+          }
+
+          const target = byExactName || byNumberToken || byId || byOrdinal;
+          if (target) {
+            setSelectedLap(target.id);
+            appliedFromQuery.current.lap = true;
+            return;
+          }
+        }
+
         const ok = d?.some((l) => l.id === +selectedLap);
         if (!ok && d?.length) setSelectedLap(d[0].id);
       } catch (e) {
@@ -189,6 +364,47 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     setSelectedHorse(null);
     setVisibleHorseIdxes([]);
   }, [selectedLap]);
+
+  useEffect(() => {
+    if (!shouldSyncQueryRef.current) return; 
+
+    const params = new URLSearchParams(searchParams);
+
+    if (selectedDate) params.set("date", selectedDate);
+    else params.delete("date");
+
+    if (selectedTrack) {
+      const t = tracks.find((x) => x.id === +selectedTrack);
+      params.set("track", t?.nameOfTrack ?? String(selectedTrack));
+    } else params.delete("track");
+
+    if (selectedCompetition) {
+      const c = competitions.find((x) => x.id === +selectedCompetition);
+      params.set(
+        "competition",
+        c?.nameOfCompetition ?? String(selectedCompetition)
+      );
+    } else params.delete("competition");
+
+    if (selectedLap) {
+      const l = laps.find((x) => x.id === +selectedLap);
+      params.set("lap", l?.nameOfLap ?? String(selectedLap));
+    } else params.delete("lap");
+
+    const next = params.toString();
+    if (next !== searchParams.toString()) {
+      lastWrittenQueryRef.current = next; 
+      setSearchParams(params, { replace: true });
+    }
+  }, [
+    selectedDate,
+    selectedTrack,
+    selectedCompetition,
+    selectedLap,
+    tracks,
+    competitions,
+    laps,
+  ]); 
 
   const handleMetaChange = ({
     items,
@@ -259,9 +475,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             onClick={() => switchView(c.view)}
           >
             <div
-              className={`${
-                c.bgColor
-              } relative h-14 w-24 lg:w-72 lg:h-18 md:w-52 md:h-18  mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
+              className={`${c.bgColor} relative h-14 w-24 lg:w-72 lg:h-18 md:w-52 md:h-18 mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
                 selectedView === c.view
                   ? "ring-2 ring-slate-800 scale-110 opacity-100 cursor-default"
                   : "hover:opacity-70"
@@ -281,13 +495,13 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             <div className="min-h-[400px]">
               <BarChart
                 selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
+                setSelectedDate={setSelectedDateUser} 
                 selectedTrack={selectedTrack}
-                setSelectedTrack={setSelectedTrack}
+                setSelectedTrack={setSelectedTrackUser} 
                 selectedCompetition={selectedCompetition}
-                setSelectedCompetition={setSelectedCompetition}
+                setSelectedCompetition={setSelectedCompetitionUser} 
                 selectedLap={selectedLap}
-                setSelectedLap={setSelectedLap}
+                setSelectedLap={setSelectedLapUser} 
                 dates={dates}
                 tracks={tracks}
                 competitions={competitions}
@@ -296,7 +510,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 setSelectedHorse={setSelectedHorse}
                 setVisibleHorseIdxes={setVisibleHorseIdxes}
                 startsCount={startsCount}
-                setStartsCount={setStartsCount}
+                setStartsCount={setStartsCountUser} 
                 setLegendMode={setLegendMode}
               />
             </div>
@@ -305,31 +519,45 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
               <div className="min-w-0">
                 <SpiderChart
                   selectedDate={selectedDate}
-                  setSelectedDate={setSelectedDate}
+                  setSelectedDate={setSelectedDateUser} 
                   selectedTrack={selectedTrack}
-                  setSelectedTrack={setSelectedTrack}
+                  setSelectedTrack={setSelectedTrackUser} 
                   selectedCompetition={selectedCompetition}
-                  setSelectedCompetition={setSelectedCompetition}
+                  setSelectedCompetition={setSelectedCompetitionUser} 
                   selectedLap={selectedLap}
-                  setSelectedLap={setSelectedLap}
+                  setSelectedLap={setSelectedLapUser} 
                   selectedHorse={selectedHorse}
                   visibleHorseIdxes={visibleHorseIdxes}
                   onMetaChange={handleMetaChange}
                   startsCount={startsCount}
                 />
               </div>
+
               <div className="mt-0 ml-4 sm:mt-28 sm:justify-self-end sm:w-64 shrink-0">
                 <SharedHorseLegend
                   items={horseLegendItems}
                   visibleIdxes={visibleHorseIdxes}
-                  onToggle={toggleLegendIdx}
-                  onShowAll={showAllLegend}
-                  onShowTop5={showTop5Legend}
-                  onShowTop3={showTop3Legend}
+                  onToggle={(i) => {
+                    markUserInteraction(); 
+                    toggleLegendIdx(i);
+                  }}
+                  onShowAll={() => {
+                    markUserInteraction(); 
+                    showAllLegend();
+                  }}
+                  onShowTop5={() => {
+                    markUserInteraction(); 
+                    showTop5Legend();
+                  }}
+                  onShowTop3={() => {
+                    markUserInteraction(); 
+                    showTop3Legend();
+                  }}
                   active={legendMode}
                 />
               </div>
             </div>
+
             {startsCount > 0 && (
               <div className="min-h-[200px]">
                 <AnalysChart
@@ -343,49 +571,41 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           </div>
         )}
 
-        <div
-          className={`${
-            selectedView === "table" ? "" : "hidden"
-          } min-h-[600px]`}
-        >
+        <div className={`${selectedView === "table" ? "" : "hidden"} min-h-[600px]`}>
           <PaginatedLapTable
             selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
+            setSelectedDate={setSelectedDateUser} 
             selectedTrack={selectedTrack}
-            setSelectedTrack={setSelectedTrack}
+            setSelectedTrack={setSelectedTrackUser} 
             selectedCompetition={selectedCompetition}
-            setSelectedCompetition={setSelectedCompetition}
+            setSelectedCompetition={setSelectedCompetitionUser} 
             selectedLap={selectedLap}
-            setSelectedLap={setSelectedLap}
+            setSelectedLap={setSelectedLapUser} 
             dates={dates}
             tracks={tracks}
             competitions={competitions}
             laps={laps}
             startsCount={startsCount}
-            setStartsCount={setStartsCount}
+            setStartsCount={setStartsCountUser} 
           />
         </div>
 
-        <div
-          className={`${
-            selectedView === "skrallar" ? "" : "hidden"
-          } min-h-[600px]`}
-        >
+        <div className={`${selectedView === "skrallar" ? "" : "hidden"} min-h-[600px]`}>
           <RoiTable
             selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
+            setSelectedDate={setSelectedDateUser} 
             selectedTrack={selectedTrack}
-            setSelectedTrack={setSelectedTrack}
+            setSelectedTrack={setSelectedTrackUser} 
             selectedCompetition={selectedCompetition}
-            setSelectedCompetition={setSelectedCompetition}
+            setSelectedCompetition={setSelectedCompetitionUser} 
             selectedLap={selectedLap}
-            setSelectedLap={setSelectedLap}
+            setSelectedLap={setSelectedLapUser} 
             dates={dates}
             tracks={tracks}
             competitions={competitions}
             laps={laps}
             startsCount={startsCount}
-            setStartsCount={setStartsCount}
+            setStartsCount={setStartsCountUser} 
             setSelectedView={setViewAndMaybeNavigate}
             setSelectedHorse={setSelectedHorse}
             setPendingLapId={setPendingLapId}
