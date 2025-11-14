@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react"; //Changed!
 import {
   CloudArrowUpIcon,
   UserGroupIcon,
@@ -12,7 +13,7 @@ const features = [
   {
     name: "Grafiskt beslutsunderlag",
     description:
-      "Konsumera det grafiska beslutsunderlaget från den övergripande summeringen till olika djupdykningar i detaljer. Summeringen och analysperspektiven bryts ner i olika delanalyser som ofta skvallrar om en kommande bra prestation.",
+      "Konsumera det grafiska beslutsunderlaget från den övergripande summeringen till olika djupdykningar i detaljer. Summeringen och analysperspektiven bryts ner i olika delanalyser som ofta skvallrar om en kommande bra prestation.",
     icon: CloudArrowUpIcon,
   },
   {
@@ -23,7 +24,8 @@ const features = [
   },
   {
     name: "Ta hjälp av Trav-olta",
-    description: "Vi har även en travkunnig och finurlig AI-kompis kallad Trav-olta som gärna hjälper till med analysen.",
+    description:
+      "Vi har även en travkunnig och finurlig AI-kompis kallad Trav-olta som gärna hjälper till med analysen.",
     icon: ChatBubbleOvalLeftEllipsisIcon,
   },
 ];
@@ -31,23 +33,84 @@ const features = [
 const slides = [skräll1, skräll2, skräll3];
 
 export default function IntroComponent() {
+  const [banner, setBanner] = useState(null); //Changed!
+
+  useEffect(() => { //Changed!
+    const fetchBanner = async () => { //Changed!
+      try { //Changed!
+        // Ändra URL/port här om din backend ligger någon annanstans //Changed!
+        const res = await fetch("http://localhost:8080/banner"); //Changed!
+        console.log("Banner response status:", res.status); //Changed!
+
+        if (!res.ok) { //Changed!
+          // Fallback om backend inte svarar //Changed!
+          setBanner({
+            mening: "Kolla in skrällen enligt analysen",
+            url: "https://travanaly.se",
+          }); //Changed!
+          return; //Changed!
+        }
+
+        const data = await res.json(); //Changed!
+        console.log("Banner data:", data); //Changed!
+
+        if (Array.isArray(data) && data.length > 0) { //Changed!
+          setBanner(data[0]); //Changed!
+        } else { //Changed!
+          setBanner({
+            mening: "Kolla in skrällen enligt analysen",
+            url: "https://travanaly.se",
+          }); //Changed!
+        }
+      } catch (error) { //Changed!
+        console.error("Kunde inte hämta banner", error); //Changed!
+        setBanner({
+          mening: "Kolla in skrällen enligt analysen",
+          url: "https://travanaly.se",
+        }); //Changed!
+      }
+    };
+
+    fetchBanner(); //Changed!
+  }, []); //Changed!
+
   return (
     <div className="overflow-hidden bg-white pt-6 pb-0 sm:pt-10 sm:pb-10">
       <div className="mx-auto max-w-7xl px-6 lg:px-0">
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 xl:mx-0 xl:max-w-none xl:grid-cols-2">
           <div className="lg:mt-6 lg:pr-8">
             <div className="lg:max-w-lg">
+              {/* //Changed! Banner-länk ovanför BETA-version */}
+              {banner && (
+                <a
+                  href={banner.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-x-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-orange-500 px-4 py-1 mb-4 text-xs font-semibold text-white shadow-lg ring-1 ring-black/5 hover:scale-[1.02] hover:shadow-xl hover:ring-black/10 transition"
+                >
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-lg">
+                    🔥
+                  </span>
+                  <span className="flex flex-col text-left">
+                    <span className="text-[0.65rem] uppercase tracking-wide text-white/80">
+                      Skräll enligt analysen
+                    </span>
+                    <span className="text-xs sm:text-sm truncate max-w-[14rem] sm:max-w-xs">
+                      {banner.mening}
+                    </span>
+                  </span>
+                  <span aria-hidden="true" className="ml-2 text-base">
+                    →
+                  </span>
+                </a>
+              )}
+
               <h3 className="text-base/7 font-semibold text-orange-600">
                 BETA-version!
               </h3>
               <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
                 Travsportens beslutsunderlag
               </p>
-              {/* <p className="mt-6 sm:mt-4 text-lg/8 text-gray-600">
-                Utnyttja verktyget för att hitta vinnarna. Utforska vår
-                Skräll-detector. Konsumera via diagram, tabell eller fördjupad
-                analys.
-              </p> */}
               <dl className="mt-6 max-w-xl space-y-6 text-base/7 text-gray-600 lg:max-w-none">
                 {features.map((feature) => (
                   <div key={feature.name} className="relative pl-9">
