@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"; //Changed!
+import { useEffect, useState } from "react";
 import {
   CloudArrowUpIcon,
   UserGroupIcon,
@@ -33,46 +33,45 @@ const features = [
 const slides = [skräll1, skräll2, skräll3];
 
 export default function IntroComponent() {
-  const [banner, setBanner] = useState(null); //Changed!
+  const [banner, setBanner] = useState(null);
+  const API_BASE_URL =
+    import.meta.env.VITE_API_BASE_URL ||
+    "https://travanalyserver-latest.onrender.com";
 
-  useEffect(() => { //Changed!
-    const fetchBanner = async () => { //Changed!
-      try { //Changed!
-        // Ändra URL/port här om din backend ligger någon annanstans //Changed!
-        const res = await fetch("http://localhost:8080/banner"); //Changed!
-        console.log("Banner response status:", res.status); //Changed!
+  useEffect(() => {
+    const fetchBanner = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/banner`);
 
-        if (!res.ok) { //Changed!
-          // Fallback om backend inte svarar //Changed!
+        if (!res.ok) {
           setBanner({
             mening: "Kolla in skrällen enligt analysen",
-            url: "https://travanaly.se",
-          }); //Changed!
-          return; //Changed!
+            url: "https://travanalys.se",
+          });
+          return;
         }
 
-        const data = await res.json(); //Changed!
-        console.log("Banner data:", data); //Changed!
+        const data = await res.json();
 
-        if (Array.isArray(data) && data.length > 0) { //Changed!
-          setBanner(data[0]); //Changed!
-        } else { //Changed!
+        if (Array.isArray(data) && data.length > 0) {
+          setBanner(data[0]);
+        } else {
           setBanner({
             mening: "Kolla in skrällen enligt analysen",
-            url: "https://travanaly.se",
-          }); //Changed!
+            url: "https://travanalys.se",
+          });
         }
-      } catch (error) { //Changed!
-        console.error("Kunde inte hämta banner", error); //Changed!
+      } catch (error) {
+        console.error("Kunde inte hämta banner", error);
         setBanner({
           mening: "Kolla in skrällen enligt analysen",
-          url: "https://travanaly.se",
-        }); //Changed!
+          url: "https://travanalys.se",
+        });
       }
     };
 
-    fetchBanner(); //Changed!
-  }, []); //Changed!
+    fetchBanner();
+  }, [API_BASE_URL]);
 
   return (
     <div className="overflow-hidden bg-white pt-6 pb-0 sm:pt-10 sm:pb-10">
@@ -80,7 +79,6 @@ export default function IntroComponent() {
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 xl:mx-0 xl:max-w-none xl:grid-cols-2">
           <div className="lg:mt-6 lg:pr-8">
             <div className="lg:max-w-lg">
-              {/* //Changed! Banner-länk ovanför BETA-version */}
               {banner && (
                 <a
                   href={banner.url}
@@ -120,7 +118,7 @@ export default function IntroComponent() {
                         className="absolute top-1 left-1 size-5 text-indigo-600"
                       />
                       {feature.name}
-                    </dt>{" "}
+                    </dt>
                     <dd className="block">{feature.description}</dd>
                   </div>
                 ))}
