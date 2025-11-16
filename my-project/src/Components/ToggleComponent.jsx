@@ -98,23 +98,22 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     lap: false,
   });
 
-  //Changed! Robust normalisering (hanterar t.ex. Gävle/Gavle)
+ 
   const fold = (s) =>
     (s ?? "")
       .toString()
       .normalize("NFD")
       .replace(/\p{Diacritic}/gu, "");
-  const normalize = (s) => fold(s).trim().toLowerCase(); //Changed!
-  const compact = (s) => normalize(s).replace(/[^a-z0-9]/g, ""); //Changed!
+  const normalize = (s) => fold(s).trim().toLowerCase(); 
+  const compact = (s) => normalize(s).replace(/[^a-z0-9]/g, ""); 
 
-  //Changed! Håll koll på när vi försökt mappa competition/lap för rätt förälder
-  const lastTrackForCompetitionApplyRef = useRef(null); //Changed!
-  const lastCompetitionForLapApplyRef = useRef(null); //Changed!
+  const lastTrackForCompetitionApplyRef = useRef(null); 
+  const lastCompetitionForLapApplyRef = useRef(null); 
 
   // Lyssna på externa URL-förändringar (t.ex. man ändrar i adressfältet)
   useEffect(() => {
     const curr = searchParams.toString();
-    if (curr === lastWrittenQueryRef.current) return; // vår egen skrivning – ignorera
+    if (curr === lastWrittenQueryRef.current) return; 
 
     // Läs in ny query och tillåt omappning i effekterna
     initialQuery.current = {
@@ -123,11 +122,11 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
       competition: searchParams.get("competition") || "",
       lap: searchParams.get("lap") || "",
     };
-    appliedFromQuery.current = { track: false, competition: false, lap: false }; //Changed!
+    appliedFromQuery.current = { track: false, competition: false, lap: false }; 
 
-    // Nollställ “senast applicerad förälder” så vi får försöka igen //Changed!
-    lastTrackForCompetitionApplyRef.current = null; //Changed!
-    lastCompetitionForLapApplyRef.current = null; //Changed!
+    // Nollställ “senast applicerad förälder” så vi får försöka igen 
+    lastTrackForCompetitionApplyRef.current = null; 
+    lastCompetitionForLapApplyRef.current = null; 
 
     // Sätt datum direkt om det finns
     const qDate = initialQuery.current.date;
@@ -233,12 +232,11 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             (t) => normalize(t.nameOfTrack) === normalize(q)
           );
           const target = byId || byName;
-          appliedFromQuery.current.track = true; //Changed!
+          appliedFromQuery.current.track = true; 
           if (target) {
             setSelectedTrack(target.id);
             return;
           }
-          // Ingen träff → låt fallback ske nedan
         }
 
         const ok = d.some((t) => t.id === +selectedTrack);
@@ -255,12 +253,11 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   useEffect(() => {
     if (!selectedTrack) return;
 
-    //Changed! Om banan bytts, tillåt ny mappning av competition-query
     if (
       initialQuery.current.competition &&
       lastTrackForCompetitionApplyRef.current !== selectedTrack
     ) {
-      appliedFromQuery.current.competition = false; //Changed!
+      appliedFromQuery.current.competition = false; 
     }
 
     const ac = new AbortController();
@@ -288,8 +285,8 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           );
           const target = byId || byExact || byCompact;
 
-          appliedFromQuery.current.competition = true; //Changed!
-          lastTrackForCompetitionApplyRef.current = selectedTrack; //Changed!
+          appliedFromQuery.current.competition = true; 
+          lastTrackForCompetitionApplyRef.current = selectedTrack; 
 
           if (target) {
             setSelectedCompetition(target.id);
@@ -314,12 +311,11 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   useEffect(() => {
     if (!selectedCompetition) return;
 
-    //Changed! Om competition bytts, tillåt ny mappning av lap-query
     if (
       initialQuery.current.lap &&
       lastCompetitionForLapApplyRef.current !== selectedCompetition
     ) {
-      appliedFromQuery.current.lap = false; //Changed!
+      appliedFromQuery.current.lap = false; 
     }
 
     const ac = new AbortController();
@@ -378,8 +374,8 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
           const target = byExactName || byNumberToken || byId || byOrdinal;
 
-          appliedFromQuery.current.lap = true; //Changed!
-          lastCompetitionForLapApplyRef.current = selectedCompetition; //Changed!
+          appliedFromQuery.current.lap = true; 
+          lastCompetitionForLapApplyRef.current = selectedCompetition; 
 
           if (target) {
             setSelectedLap(target.id);
@@ -409,13 +405,12 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   useEffect(() => {
     if (!shouldSyncQueryRef.current) return;
 
-    //Changed! Skriv inte tillbaka medan vi fortfarande försöker applicera queryn
     const isApplyingQuery =
       (!!initialQuery.current.track && !appliedFromQuery.current.track) ||
       (!!initialQuery.current.competition &&
         !appliedFromQuery.current.competition) ||
       (!!initialQuery.current.lap && !appliedFromQuery.current.lap);
-    if (isApplyingQuery) return; //Changed!
+    if (isApplyingQuery) return; 
 
     const params = new URLSearchParams(searchParams);
 
@@ -429,10 +424,9 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
     if (selectedCompetition) {
       const c = competitions.find((x) => x.id === +selectedCompetition);
-      //Changed! Skriv alltid det valda namnet – inte inkommande token – så URL speglar UI
       params.set(
         "competition",
-        c?.nameOfCompetition ?? String(selectedCompetition) //Changed!
+        c?.nameOfCompetition ?? String(selectedCompetition) 
       );
     } else params.delete("competition");
 
