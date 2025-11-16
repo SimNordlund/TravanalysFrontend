@@ -223,23 +223,6 @@ const RoiTable = ({
       ? `Imorgon, ${sv(selectedDate)}`
       : sv(selectedDate);
 
-  // ---------------------------
-  // UI
-  // ---------------------------
-
-  //Changed! Tog bort specialhantering som auto-valde "Vinnare".
-  // const vinnareCompetitions = useMemo(() => competitions.filter(
-  //   (c) => (c.nameOfCompetition || "").toLowerCase() === "vinnare"
-  // ), [competitions]); //Changed! (borttagen)
-
-  // useEffect(() => {
-  //   const v = vinnareCompetitions[0];
-  //   if (!v) return;
-  //   if (!selectedCompetition || +selectedCompetition !== +v.id) {
-  //     setSelectedCompetition && setSelectedCompetition(v.id);
-  //   }
-  // }, [vinnareCompetitions]); //Changed! (borttagen)
-
   const isSystemMode = tipsFilter === 2 || tipsFilter === 3;
   const horseColTitle = isSystemMode ? "System" : "Häst";
 
@@ -298,7 +281,7 @@ const RoiTable = ({
       {/* ROI-lägen (påverkar INTE selectedCompetition längre) */}
       <div className="flex flex-wrap gap-1 mb-2">
         <button
-          onClick={() => setTipsFilter(1)} //Changed!
+          onClick={() => setTipsFilter(1)} 
           disabled={loading}
           className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
             tipsFilter === 1
@@ -309,7 +292,7 @@ const RoiTable = ({
           ROI V&P
         </button>
         <button
-          onClick={() => setTipsFilter(2)} //Changed!
+          onClick={() => setTipsFilter(2)} 
           disabled={loading}
           className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
             tipsFilter === 2
@@ -320,7 +303,7 @@ const RoiTable = ({
           ROI DD
         </button>
         <button
-          onClick={() => setTipsFilter(3)} //Changed!
+          onClick={() => setTipsFilter(3)} 
           disabled={loading}
           className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
             tipsFilter === 3
