@@ -32,8 +32,15 @@ const features = [
 
 const slides = [skräll1, skräll2, skräll3];
 
+const FALLBACK_BANNER = {                             //Changed!
+  mening: "Kolla in skrällen enligt analysen",        //Changed!
+  url: "https://travanalys.se",                       //Changed!
+};                                                    //Changed!
+
 export default function IntroComponent() {
-  const [banner, setBanner] = useState(null);
+  const [banners, setBanners] = useState([]);         //Changed!
+  const [currentIndex, setCurrentIndex] = useState(0); //Changed!
+
   const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL ||
     "https://travanalyserver-latest.onrender.com";
@@ -44,34 +51,35 @@ export default function IntroComponent() {
         const res = await fetch(`${API_BASE_URL}/banner`);
 
         if (!res.ok) {
-          setBanner({
-            mening: "Kolla in skrällen enligt analysen",
-            url: "https://travanalys.se",
-          });
+          setBanners([FALLBACK_BANNER]);             //Changed!
           return;
         }
 
         const data = await res.json();
 
         if (Array.isArray(data) && data.length > 0) {
-          setBanner(data[0]);
+          setBanners(data);                          //Changed!
         } else {
-          setBanner({
-            mening: "Kolla in skrällen enligt analysen",
-            url: "https://travanalys.se",
-          });
+          setBanners([FALLBACK_BANNER]);             //Changed!
         }
       } catch (error) {
         console.error("Kunde inte hämta banner", error);
-        setBanner({
-          mening: "Kolla in skrällen enligt analysen",
-          url: "https://travanalys.se",
-        });
+        setBanners([FALLBACK_BANNER]);               //Changed!
       }
     };
 
     fetchBanner();
   }, [API_BASE_URL]);
+
+  useEffect(() => {                                   //Changed!
+    if (banners.length <= 1) return;                 //Changed!
+    const intervalId = setInterval(() => {           //Changed!
+      setCurrentIndex((prev) => (prev + 1) % banners.length); //Changed!
+    }, 8000); // 8 sek mellan byten, ändra om du vill         //Changed!
+    return () => clearInterval(intervalId);          //Changed!
+  }, [banners]);                                     //Changed!
+
+  const banner = banners[currentIndex];              //Changed!
 
   return (
     <div className="overflow-hidden bg-white pt-6 pb-0 sm:pt-10 sm:pb-10">
