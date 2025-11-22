@@ -33,7 +33,7 @@ const features = [
 const slides = [skräll1, skräll2, skräll3];
 //Behöver uppdatera med .env urler sen
 const FALLBACK_BANNER = {
-  mening: "Kolla in skrällen enligt analysen ",
+  mening: "Kolla in skrällen enligt analysen awdawdawdawdawdawdawdawdadadawda ",
   url: "https://travanalys.se",
 };
 
@@ -93,11 +93,11 @@ export default function IntroComponent() {
                   href={banner.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex max-w-full items-center gap-x-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-orange-500 pl-6 pr-7 py-1 mb-4 text-xs font-semibold text-white shadow-lg ring-1 ring-black/5 hover:scale-[1.02] hover:shadow-xl hover:ring-black/10 transition"
+                  className="inline-flex max-w-full items-center gap-x-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-orange-500 pl-5 pr-3 py-1 mb-4 text-xs font-semibold text-white shadow-lg ring-1 ring-black/5 hover:scale-[1.02] hover:shadow-xl hover:ring-black/10 transition"
                 >
                   <span className="flex min-w-0 text-left">
                     <span
-                      className="block truncate text-xs sm:text-base max-w-[18rem] sm:max-w-[26rem] md:max-w-[32rem]" 
+                      className="block truncate text-xs sm:text-base max-w-[80vw] sm:max-w-[26rem] md:max-w-[32rem]" 
                       title={banner.mening}
                     >
                       {banner.mening}
@@ -105,7 +105,7 @@ export default function IntroComponent() {
                   </span>
                   <span
                     aria-hidden="true"
-                    className="ml-1 mr-0 text-2xl flex-shrink-0"
+                    className="ml-0 mr-0 text-2xl flex-shrink-0 mb-1"
                   >
                     →
                   </span>
