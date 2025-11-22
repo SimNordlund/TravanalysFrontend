@@ -31,19 +31,19 @@ const features = [
 ];
 
 const slides = [skräll1, skräll2, skräll3];
-
-const FALLBACK_BANNER = {                             //Changed!
-  mening: "Kolla in skrällen enligt analysen",        //Changed!
-  url: "https://travanalys.se",                       //Changed!
-};                                                    //Changed!
+//Behöver uppdatera med .env urler sen 
+const FALLBACK_BANNER = {                             
+  mening: "Kolla in skrällen enligt analysen",        
+  url: "https://travanalys.se",                       
+};                                                    
 
 export default function IntroComponent() {
-  const [banners, setBanners] = useState([]);         //Changed!
-  const [currentIndex, setCurrentIndex] = useState(0); //Changed!
+  const [banners, setBanners] = useState([]);         
+  const [currentIndex, setCurrentIndex] = useState(0); 
 
   const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL ||
-    "https://travanalyserver-latest.onrender.com";
+    "https://travanalyserver-latest.onrender.com"; //Uppdatera med url för prod och dev sen 
 
   useEffect(() => {
     const fetchBanner = async () => {
@@ -51,35 +51,36 @@ export default function IntroComponent() {
         const res = await fetch(`${API_BASE_URL}/banner`);
 
         if (!res.ok) {
-          setBanners([FALLBACK_BANNER]);             //Changed!
+          setBanners([FALLBACK_BANNER]);             
           return;
         }
 
         const data = await res.json();
 
         if (Array.isArray(data) && data.length > 0) {
-          setBanners(data);                          //Changed!
+          setBanners(data);                          
         } else {
-          setBanners([FALLBACK_BANNER]);             //Changed!
+          setBanners([FALLBACK_BANNER]);             
         }
       } catch (error) {
         console.error("Kunde inte hämta banner", error);
-        setBanners([FALLBACK_BANNER]);               //Changed!
+        setBanners([FALLBACK_BANNER]);               
       }
     };
 
     fetchBanner();
   }, [API_BASE_URL]);
 
-  useEffect(() => {                                   //Changed!
-    if (banners.length <= 1) return;                 //Changed!
-    const intervalId = setInterval(() => {           //Changed!
-      setCurrentIndex((prev) => (prev + 1) % banners.length); //Changed!
-    }, 8000); // 8 sek mellan byten, ändra om du vill         //Changed!
-    return () => clearInterval(intervalId);          //Changed!
-  }, [banners]);                                     //Changed!
+  // Auto-rotate banner 
+  useEffect(() => {                                   
+    if (banners.length <= 1) return;                 
+    const intervalId = setInterval(() => {           
+      setCurrentIndex((prev) => (prev + 1) % banners.length); 
+    }, 4000); // 4 sek mellan byten   
+    return () => clearInterval(intervalId);          
+  }, [banners]);                                     
 
-  const banner = banners[currentIndex];              //Changed!
+  const banner = banners[currentIndex];              
 
   return (
     <div className="overflow-hidden bg-white pt-6 pb-0 sm:pt-10 sm:pb-10">
@@ -101,7 +102,7 @@ export default function IntroComponent() {
                   {/*   <span className="text-[0.65rem] uppercase tracking-wide text-white/80">
                       Skräll enligt analysen
                     </span> */}
-                    <span className="text-xs sm:text-sm truncate max-w-[14rem] sm:max-w-xs">
+                    <span className="text-xs sm:text-base max-w-[14rem] sm:max-w-xs">
                       {banner.mening}
                     </span>
                   </span>
