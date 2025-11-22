@@ -93,11 +93,8 @@ export default function IntroComponent() {
                   href={banner.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-x-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-orange-500 px-4 py-1 mb-4 text-xs font-semibold text-white shadow-lg ring-1 ring-black/5 hover:scale-[1.02] hover:shadow-xl hover:ring-black/10 transition"
+                  className="inline-flex items-center gap-x-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-orange-500 pl-6 pr-7 py-1 mb-4 text-xs font-semibold text-white shadow-lg ring-1 ring-black/5 hover:scale-[1.02] hover:shadow-xl hover:ring-black/10 transition"
                 >
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-lg">
-                    🔥
-                  </span>
                   <span className="flex flex-col text-left">
                   {/*   <span className="text-[0.65rem] uppercase tracking-wide text-white/80">
                       Skräll enligt analysen
@@ -106,7 +103,7 @@ export default function IntroComponent() {
                       {banner.mening}
                     </span>
                   </span>
-                  <span aria-hidden="true" className="ml-2 text-base">
+                  <span aria-hidden="true" className="mr-0 text-base">
                     →
                   </span>
                 </a>
