@@ -98,9 +98,9 @@ export default function IntroComponent() {
                     🔥
                   </span>
                   <span className="flex flex-col text-left">
-                    <span className="text-[0.65rem] uppercase tracking-wide text-white/80">
+                  {/*   <span className="text-[0.65rem] uppercase tracking-wide text-white/80">
                       Skräll enligt analysen
-                    </span>
+                    </span> */}
                     <span className="text-xs sm:text-sm truncate max-w-[14rem] sm:max-w-xs">
                       {banner.mening}
                     </span>
