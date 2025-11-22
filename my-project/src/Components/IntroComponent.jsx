@@ -31,19 +31,20 @@ const features = [
 ];
 
 const slides = [skräll1, skräll2, skräll3];
-//Behöver uppdatera med .env urler sen 
-const FALLBACK_BANNER = {                             
-  mening: "Kolla in skrällen enligt analysen",        
-  url: "https://travanalys.se",                       
-};                                                    
+//Behöver uppdatera med .env urler sen
+const FALLBACK_BANNER = {
+  mening:
+    "Kolla in skrällen enligt analysen Kolla in skrällen enligt analysen ",
+  url: "https://travanalys.se",
+};
 
 export default function IntroComponent() {
-  const [banners, setBanners] = useState([]);         
-  const [currentIndex, setCurrentIndex] = useState(0); 
+  const [banners, setBanners] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL ||
-    "https://travanalyserver-latest.onrender.com"; //Uppdatera med url för prod och dev sen 
+    "https://travanalyserver-latest.onrender.com"; //Uppdatera med url för prod och dev sen
 
   useEffect(() => {
     const fetchBanner = async () => {
@@ -51,36 +52,36 @@ export default function IntroComponent() {
         const res = await fetch(`${API_BASE_URL}/banner`);
 
         if (!res.ok) {
-          setBanners([FALLBACK_BANNER]);             
+          setBanners([FALLBACK_BANNER]);
           return;
         }
 
         const data = await res.json();
 
         if (Array.isArray(data) && data.length > 0) {
-          setBanners(data);                          
+          setBanners(data);
         } else {
-          setBanners([FALLBACK_BANNER]);             
+          setBanners([FALLBACK_BANNER]);
         }
       } catch (error) {
         console.error("Kunde inte hämta banner", error);
-        setBanners([FALLBACK_BANNER]);               
+        setBanners([FALLBACK_BANNER]);
       }
     };
 
     fetchBanner();
   }, [API_BASE_URL]);
 
-  // Auto-rotate banner 
-  useEffect(() => {                                   
-    if (banners.length <= 1) return;                 
-    const intervalId = setInterval(() => {           
-      setCurrentIndex((prev) => (prev + 1) % banners.length); 
-    }, 4000); // 4 sek mellan byten   
-    return () => clearInterval(intervalId);          
-  }, [banners]);                                     
+  // Auto-rotate banner
+  useEffect(() => {
+    if (banners.length <= 1) return;
+    const intervalId = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % banners.length);
+    }, 4000); // 4 sek mellan byten
+    return () => clearInterval(intervalId);
+  }, [banners]);
 
-  const banner = banners[currentIndex];              
+  const banner = banners[currentIndex];
 
   return (
     <div className="overflow-hidden bg-white pt-6 pb-0 sm:pt-10 sm:pb-10">
@@ -93,17 +94,22 @@ export default function IntroComponent() {
                   href={banner.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-x-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-orange-500 pl-6 pr-7 py-1 mb-4 text-xs font-semibold text-white shadow-lg ring-1 ring-black/5 hover:scale-[1.02] hover:shadow-xl hover:ring-black/10 transition"
+                  className="inline-flex max-w-full items-center gap-x-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-orange-500 pl-6 pr-7 py-1 mb-4 text-xs font-semibold text-white shadow-lg ring-1 ring-black/5 hover:scale-[1.02] hover:shadow-xl hover:ring-black/10 transition" //Changed!
                 >
-                  <span className="flex flex-col text-left">
-                  {/*   <span className="text-[0.65rem] uppercase tracking-wide text-white/80">
-                      Skräll enligt analysen
-                    </span> */}
-                    <span className="text-xs sm:text-base max-w-[14rem] sm:max-w-xs">
+                  <span className="flex min-w-0 text-left">
+                    {" "}
+                    {/* //Changed! */}
+                    <span
+                      className="truncate text-xs sm:text-base max-w-[14rem] sm:max-w-xs" //Changed!
+                      title={banner.mening} //Changed! (visar full text vid hover)
+                    >
                       {banner.mening}
                     </span>
                   </span>
-                  <span aria-hidden="true" className="mr-0 text-base">
+                  <span
+                    aria-hidden="true"
+                    className="ml-1 mr-0 text-2xl flex-shrink-0" //Changed!
+                  >
                     →
                   </span>
                 </a>
