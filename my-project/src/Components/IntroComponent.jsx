@@ -105,7 +105,7 @@ export default function IntroComponent() {
                   </span>
                   <span
                     aria-hidden="true"
-                    className="ml-0 mr-0 text-2xl flex-shrink-0 mb-1"
+                    className="ml-0 mr-0 text-2xl flex-shrink-0 sm:mb-1"
                   >
                     →
                   </span>
