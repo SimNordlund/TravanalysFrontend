@@ -55,12 +55,12 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [competitions, setCompetitions] = useState([]);
   const [laps, setLaps] = useState([]);
 
-  const [banners, setBanners] = useState([]); //Changed!
-  const [currentIndex, setCurrentIndex] = useState(0); //Changed!
+  const [banners, setBanners] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL ||
-    "https://travanalyserver-latest.onrender.com"; //Changed!
+    "https://travanalyserver-latest.onrender.com";
 
   const pendingLapRef = useRef(null);
   const setPendingLapId = (lapId) => {
@@ -121,45 +121,45 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
   // Banner: hämta + fallback + auto-rotate
   useEffect(() => {
-    //Changed!
+  
     const fetchBanner = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/banner`); //Changed!
+        const res = await fetch(`${API_BASE_URL}/banner`);
 
         if (!res.ok) {
-          setBanners([FALLBACK_BANNER]); //Changed!
-          setCurrentIndex(0); //Changed!
+          setBanners([FALLBACK_BANNER]);
+          setCurrentIndex(0);
           return;
         }
 
         const data = await res.json();
 
         if (Array.isArray(data) && data.length > 0) {
-          setBanners(data); //Changed!
+          setBanners(data);
         } else {
-          setBanners([FALLBACK_BANNER]); //Changed!
+          setBanners([FALLBACK_BANNER]);
         }
-        setCurrentIndex(0); //Changed!
+        setCurrentIndex(0);
       } catch (error) {
         console.error("Kunde inte hämta banner", error);
-        setBanners([FALLBACK_BANNER]); //Changed!
-        setCurrentIndex(0); //Changed!
+        setBanners([FALLBACK_BANNER]);
+        setCurrentIndex(0);
       }
     };
 
     fetchBanner();
-  }, [API_BASE_URL]); //Changed!
+  }, [API_BASE_URL]);
 
   useEffect(() => {
-    //Changed!
+  
     if (banners.length <= 1) return;
     const intervalId = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % banners.length);
     }, 4000);
     return () => clearInterval(intervalId);
-  }, [banners]); //Changed!
+  }, [banners]);
 
-  const banner = banners[currentIndex]; //Changed!
+  const banner = banners[currentIndex];
 
   // Lyssna på externa URL-förändringar (t.ex. man ändrar i adressfältet)
   useEffect(() => {
@@ -539,9 +539,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   return (
     <div className="text-center pt-12 pb-12 sm:pt-16 sm:pb-14 bg-slate-100">
       {banner && (
-        //Changed!
         <div className="flex justify-center">
-          {/* //Changed! */}
           <a
             href={banner.url}
             target="_blank"
