@@ -33,7 +33,7 @@ const features = [
 const slides = [skräll1, skräll2, skräll3];
 //Behöver uppdatera med .env urler sen
 const FALLBACK_BANNER = {
-  mening: "Kolla in skrällen enligt analysen awdawdawdawdawdawdawdawdadadawda ",
+  mening: "Kolla in skrällen enligt analysen",
   url: "https://travanalys.se",
 };
 
