@@ -199,7 +199,7 @@ export default function Newsletter() {
                   href="https://www.atg.se/kopandel/spel/325442_V85_2025-12-20_18_3"
                   className="text-gray-300 hover:text-white"
                 >
-                  travanalys.se - V85
+                  travanalys.se - V86
                 </a>
               </dd>
             </div>
