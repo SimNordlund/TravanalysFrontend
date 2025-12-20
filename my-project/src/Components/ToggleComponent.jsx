@@ -252,7 +252,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
       }
     })();
     return () => ac.abort();
-  }, []); // first load
+  }, []); 
 
   // BANOR
   useEffect(() => {
@@ -271,7 +271,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           return;
         }
 
-        // Försök applicera query "track" (namn eller id) först
+        // Försök applicera query
         if (!appliedFromQuery.current.track && initialQuery.current.track) {
           const q = initialQuery.current.track;
           const byId = d.find((t) => String(t.id) === q);
@@ -294,7 +294,6 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     return () => ac.abort();
   }, [selectedDate]);
 
-  // OMGÅNGAR (competition)
   useEffect(() => {
     if (!selectedTrack) return;
 
