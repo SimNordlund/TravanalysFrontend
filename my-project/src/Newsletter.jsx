@@ -47,7 +47,7 @@ export default function Newsletter() {
       return;
     }
     if (!email && !phone) {
-      alert("Fyll i epost, telefonnummer eller båda.");
+      alert("Fyll i e-post, telefonnummer eller båda.");
       return;
     }
 
@@ -105,7 +105,7 @@ export default function Newsletter() {
               Prenumerera
             </h2>
              <h3 className="text-1xl font-bold tracking-tight text-white sm:text-1xl mt-2 sm:mt-2">
-              Ange epost och/eller telefonnummer
+              Ange e-post och/eller telefonnummer
             </h3>
             <form
               onSubmit={handleSubmit}
@@ -122,7 +122,7 @@ export default function Newsletter() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                placeholder="Skriv in din epost"
+                placeholder="Skriv in din e-post"
               />
 
               <label htmlFor="phone-number" className="sr-only">
