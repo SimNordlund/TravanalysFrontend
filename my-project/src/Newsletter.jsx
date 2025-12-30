@@ -47,7 +47,7 @@ export default function Newsletter() {
       return;
     }
     if (!email && !phone) {
-      alert("Fyll i mejl, telefonnummer eller båda.");
+      alert("Fyll i epost, telefonnummer eller båda.");
       return;
     }
 
@@ -105,7 +105,7 @@ export default function Newsletter() {
               Prenumerera
             </h2>
              <h3 className="text-1xl font-bold tracking-tight text-white sm:text-1xl mt-2 sm:mt-2">
-              Ange mejl och/eller telefonnummer
+              Ange epost och/eller telefonnummer
             </h3>
             <form
               onSubmit={handleSubmit}
@@ -122,7 +122,7 @@ export default function Newsletter() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                placeholder="Skriv in din mejl"
+                placeholder="Skriv in din epost"
               />
 
               <label htmlFor="phone-number" className="sr-only">
@@ -188,7 +188,7 @@ export default function Newsletter() {
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:gap-y-2 sm:grid-cols-2 sm:mt-6">
             <div className="flex flex-col items-center">
               <a
-               href="https://www.atg.se/kopandel/spel/325442_V85_2025-12-27_16_3"
+               href="https://www.atg.se/kopandel/spel/325442_V85_2025-12-31_8_3"
                 className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
               >
                 <DocumentTextIcon className="h-8 w-8 text-white" aria-hidden="true" />{" "}
@@ -196,10 +196,10 @@ export default function Newsletter() {
               <dt className="mt-4 font-semibold text-white">Köpandel.se</dt>
               <dd className="mt-2 leading-7 text-gray-300">
                 <a
-                  href="https://www.atg.se/kopandel/spel/325442_V85_2025-12-27_16_3"
+                  href="https://www.atg.se/kopandel/spel/325442_V85_2025-12-31_8_3"
                   className="text-gray-300 hover:text-white"
                 >
-                  travanalys.se - V85
+                  travanalys.se
                 </a>
               </dd>
             </div>
