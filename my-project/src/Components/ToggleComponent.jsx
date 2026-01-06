@@ -17,6 +17,8 @@ const FALLBACK_BANNER = {
   url: "https://travanalys.se",
 };
 
+const normalizeStarter = (v) => String(v ?? "").trim() || "0"; //Changed!
+
 const ToggleComponent = ({ syncWithRoute = false }) => {
   const { view: viewParam } = useParams();
   const navigate = useNavigate();
@@ -45,7 +47,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState(initialSelectedView);
   const [selectedHorse, setSelectedHorse] = useState(null);
-  const [startsCount, setStartsCount] = useState(0);
+  const [startsCount, setStartsCount] = useState("0"); //Changed!
   const [visibleHorseIdxes, setVisibleHorseIdxes] = useState([]);
   const [horseLegendItems, setHorseLegendItems] = useState([]);
   const [top5Idxes, setTop5Idxes] = useState([]);
@@ -121,7 +123,6 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
   // Banner: hämta + fallback + auto-rotate
   useEffect(() => {
-  
     const fetchBanner = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/banner`);
@@ -151,7 +152,6 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   }, [API_BASE_URL]);
 
   useEffect(() => {
-  
     if (banners.length <= 1) return;
     const intervalId = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % banners.length);
@@ -202,7 +202,9 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
       if (location.pathname !== target) {
         navigate({
           pathname: target,
-          search: shouldSyncQueryRef.current ? `?${searchParams.toString()}` : "",
+          search: shouldSyncQueryRef.current
+            ? `?${searchParams.toString()}`
+            : "",
         });
       }
     }
@@ -244,7 +246,9 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           } else {
             const todayStr = new Date().toISOString().split("T")[0];
             const hasToday = uniqueSorted.find((x) => x.date === todayStr);
-            setSelectedDate(hasToday ? todayStr : pickClosestDate(uniqueSorted));
+            setSelectedDate(
+              hasToday ? todayStr : pickClosestDate(uniqueSorted)
+            );
           }
         }
       } catch (e) {
@@ -252,7 +256,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
       }
     })();
     return () => ac.abort();
-  }, []); 
+  }, []);
 
   // BANOR
   useEffect(() => {
@@ -275,7 +279,9 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         if (!appliedFromQuery.current.track && initialQuery.current.track) {
           const q = initialQuery.current.track;
           const byId = d.find((t) => String(t.id) === q);
-          const byName = d.find((t) => normalize(t.nameOfTrack) === normalize(q));
+          const byName = d.find(
+            (t) => normalize(t.nameOfTrack) === normalize(q)
+          );
           const target = byId || byName;
           appliedFromQuery.current.track = true;
           if (target) {
@@ -314,7 +320,10 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         const d = await r.json();
         setCompetitions(d);
 
-        if (!appliedFromQuery.current.competition && initialQuery.current.competition) {
+        if (
+          !appliedFromQuery.current.competition &&
+          initialQuery.current.competition
+        ) {
           const q = initialQuery.current.competition;
           const items = Array.isArray(d) ? d : [];
           const byId = items.find((c) => String(c.id) === q);
@@ -390,10 +399,14 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
               ? items.find((l) => String(l.id) === qRaw)
               : null;
 
-          const byExactName = items.find((l) => normalize(l.nameOfLap) === normalize(qRaw));
+          const byExactName = items.find(
+            (l) => normalize(l.nameOfLap) === normalize(qRaw)
+          );
 
           const byNumberToken =
-            qNum != null ? items.find((l) => firstNumber(l.nameOfLap) === qNum) : null;
+            qNum != null
+              ? items.find((l) => firstNumber(l.nameOfLap) === qNum)
+              : null;
 
           let byOrdinal = null;
           if (qNum != null && qNum >= 1 && qNum <= items.length) {
@@ -442,7 +455,8 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
     const isApplyingQuery =
       (!!initialQuery.current.track && !appliedFromQuery.current.track) ||
-      (!!initialQuery.current.competition && !appliedFromQuery.current.competition) ||
+      (!!initialQuery.current.competition &&
+        !appliedFromQuery.current.competition) ||
       (!!initialQuery.current.lap && !appliedFromQuery.current.lap);
     if (isApplyingQuery) return;
 
@@ -458,7 +472,10 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
     if (selectedCompetition) {
       const c = competitions.find((x) => x.id === +selectedCompetition);
-      params.set("competition", c?.nameOfCompetition ?? String(selectedCompetition));
+      params.set(
+        "competition",
+        c?.nameOfCompetition ?? String(selectedCompetition)
+      );
     } else params.delete("competition");
 
     if (selectedLap) {
@@ -481,7 +498,12 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     laps,
   ]);
 
-  const handleMetaChange = ({ items, suggestedVisibleIdxes, top5Idx, top3Idx }) => {
+  const handleMetaChange = ({
+    items,
+    suggestedVisibleIdxes,
+    top5Idx,
+    top3Idx,
+  }) => {
     setHorseLegendItems(items || []);
     setVisibleHorseIdxes((prev) =>
       legendMode === "top3" && Array.isArray(top3Idx)
@@ -571,7 +593,9 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             onClick={() => switchView(c.view)}
           >
             <div
-              className={`${c.bgColor} relative h-14 w-24 lg:w-72 lg:h-18 md:w-52 md:h-18 mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
+              className={`${
+                c.bgColor
+              } relative h-14 w-24 lg:w-72 lg:h-18 md:w-52 md:h-18 mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
                 selectedView === c.view
                   ? "ring-2 ring-slate-800 scale-110 opacity-100 cursor-default"
                   : "hover:opacity-70"
@@ -654,7 +678,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
               </div>
             </div>
 
-            {startsCount > 0 && (
+            {normalizeStarter(startsCount) !== "0" && ( //Changed!
               <div className="min-h-[200px]">
                 <AnalysChart
                   selectedLap={selectedLap}
@@ -667,7 +691,11 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           </div>
         )}
 
-        <div className={`${selectedView === "table" ? "" : "hidden"} min-h-[600px]`}>
+        <div
+          className={`${
+            selectedView === "table" ? "" : "hidden"
+          } min-h-[600px]`}
+        >
           <PaginatedLapTable
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDateUser}
@@ -686,7 +714,11 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           />
         </div>
 
-        <div className={`${selectedView === "skrallar" ? "" : "hidden"} min-h-[600px]`}>
+        <div
+          className={`${
+            selectedView === "skrallar" ? "" : "hidden"
+          } min-h-[600px]`}
+        >
           <RoiTable
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDateUser}
