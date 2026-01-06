@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import DatePicker from "./DatePicker";
-import { Weight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react"; //Changed! (tog bort Weight som inte används)
 
 const PaginatedLapTable = ({
   selectedDate,
@@ -21,8 +21,11 @@ const PaginatedLapTable = ({
 }) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const [localStartsCount, setLocalStartsCount] = useState(4);
-  const activeStartsCount = startsCount ?? localStartsCount;
+  const normalizeStarter = (v) => String(v ?? "").trim() || "0"; //Changed!
+
+  //Changed! localStartsCount som string istället för number
+  const [localStartsCount, setLocalStartsCount] = useState("0"); //Changed!
+  const activeStartsCount = normalizeStarter(startsCount ?? localStartsCount); //Changed!
   const setActiveStartsCount = setStartsCount ?? setLocalStartsCount;
 
   const [lapData, setLapData] = useState([]);
@@ -35,21 +38,24 @@ const PaginatedLapTable = ({
 
   const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
-  const starterLabel = (n) => { 
-  if (n === 0) return "Analys"; 
-  if (n === 1) return `${n} start`; 
-  return `${n} starter`; 
-}; 
+
+  //Changed! tog bort "start/starter" hårdkodat
+  const starterLabel = (starter) => { //Changed!
+    const s = normalizeStarter(starter); //Changed!
+    if (s === "0") return "Analys"; //Changed!
+    return s; //Changed!
+  };
 
   const competitionName =
-    competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "Analys";
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ??
+    "Analys";
 
   const maxAnalysValue = useMemo(
     () => Math.max(...lapData.map((r) => Number(r.analys) || -Infinity)),
     [lapData]
   );
 
+  // Hämta tillgängliga starters (som strings)
   useEffect(() => {
     if (!selectedLap || !API_BASE_URL) return;
     const ac = new AbortController();
@@ -62,10 +68,16 @@ const PaginatedLapTable = ({
           { signal: ac.signal }
         );
         if (!r.ok) throw new Error(r.statusText);
-        const counts = await r.json();
-        setAvailableCounts(counts);
-        if (counts.length && !counts.includes(activeStartsCount)) {
-          setActiveStartsCount(counts[0]);
+
+        const countsRaw = await r.json(); //Changed!
+        const counts = (Array.isArray(countsRaw) ? countsRaw : [])
+          .map((c) => normalizeStarter(c)); //Changed!
+
+        setAvailableCounts(counts); //Changed!
+
+        const current = normalizeStarter(activeStartsCount); //Changed!
+        if (counts.length && !counts.includes(current)) { //Changed!
+          setActiveStartsCount(counts[0]); //Changed!
         }
       } catch {
       } finally {
@@ -74,7 +86,7 @@ const PaginatedLapTable = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, API_BASE_URL]);
+  }, [selectedLap, API_BASE_URL, activeStartsCount, setActiveStartsCount]); //Changed!
 
   useEffect(() => {
     if (!selectedLap || !API_BASE_URL) return;
@@ -91,11 +103,13 @@ const PaginatedLapTable = ({
         if (!res.ok) throw new Error(res.statusText);
         const horses = await res.json();
 
+        const starterParam = encodeURIComponent(normalizeStarter(activeStartsCount)); //Changed!
+
         const rows = await Promise.all(
           horses.map(async (h, idx) => {
             try {
               const fsRes = await fetch(
-                `${API_BASE_URL}/starts/findData?completeHorseId=${h.id}&starter=${activeStartsCount}`,
+                `${API_BASE_URL}/starts/findData?completeHorseId=${h.id}&starter=${starterParam}`, //Changed!
                 { signal: ac.signal }
               );
               const fs = fsRes.ok ? await fsRes.json() : {};
@@ -144,21 +158,24 @@ const PaginatedLapTable = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, activeStartsCount, API_BASE_URL]);
+  }, [selectedLap, activeStartsCount, API_BASE_URL]); //Changed!
 
-    // Sortering på tabeller. 
-  const firstDirForKey = (key) => { 
-    const ascFirst = new Set(["nameOfCompleteHorse", "numberOfCompleteHorse"]); 
-    return ascFirst.has(key) ? "asc" : "desc"; 
-  }; 
+  // Sortering på tabeller.
+  const firstDirForKey = (key) => {
+    const ascFirst = new Set(["nameOfCompleteHorse", "numberOfCompleteHorse"]);
+    return ascFirst.has(key) ? "asc" : "desc";
+  };
 
-  const requestSort = (key) => { 
-    if (sortConfig.key !== key) { 
+  const requestSort = (key) => {
+    if (sortConfig.key !== key) {
       setSortConfig({ key, direction: firstDirForKey(key) });
-    } else { 
-      setSortConfig({ key, direction: sortConfig.direction === "asc" ? "desc" : "asc" }); 
-    } 
-  }; 
+    } else {
+      setSortConfig({
+        key,
+        direction: sortConfig.direction === "asc" ? "desc" : "asc",
+      });
+    }
+  };
 
   const sortedLapData = [...lapData].sort((a, b) => {
     if (!sortConfig.key) return 0;
@@ -177,11 +194,13 @@ const PaginatedLapTable = ({
       "form",
       "numberOfCompleteHorse",
     ]);
+
     const av = numKeys.has(sortConfig.key)
       ? Number(aVal)
       : typeof aVal === "string"
       ? aVal.toLowerCase()
       : aVal;
+
     const bv = numKeys.has(sortConfig.key)
       ? Number(bVal)
       : typeof bVal === "string"
@@ -201,6 +220,7 @@ const PaginatedLapTable = ({
   const today = new Date().toISOString().split("T")[0];
   const yesterday = new Date(Date.now() - 864e5).toISOString().split("T")[0];
   const tomorrow = new Date(Date.now() + 864e5).toISOString().split("T")[0];
+
   const sv = (d) => {
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
@@ -212,6 +232,7 @@ const PaginatedLapTable = ({
     });
     return `${capitalizedWeekday}, ${rest}`;
   };
+
   const selectedDateLabel =
     selectedDate === today
       ? `Idag, ${sv(selectedDate)}`
@@ -224,12 +245,12 @@ const PaginatedLapTable = ({
   const selectedTrackLabel =
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "";
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "";
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ??
+    "";
 
   const compName =
-    competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "";
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ??
+    "";
 
   const lapPrefix = /proposition/i.test(compName)
     ? "Prop"
@@ -247,9 +268,9 @@ const PaginatedLapTable = ({
         <button
           onClick={goPrev}
           disabled={idx <= 0 || loading}
-          className="mb-1 mr-6 sm:mr-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition" 
+          className="mb-1 mr-6 sm:mr-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
-         <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 [stroke-width:3]" />
+          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 [stroke-width:3]" />
         </button>
 
         <DatePicker
@@ -327,16 +348,16 @@ const PaginatedLapTable = ({
         {!availLoading &&
           availableCounts.map((n) => (
             <button
-              key={n}
-              onClick={() => setActiveStartsCount(n)}
+              key={String(n)} //Changed!
+              onClick={() => setActiveStartsCount(normalizeStarter(n))} //Changed!
               disabled={loading}
               className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                activeStartsCount === n
+                normalizeStarter(activeStartsCount) === normalizeStarter(n) //Changed!
                   ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
                   : "bg-gray-200 text-gray-700 hover:bg-blue-200"
               } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-               {starterLabel(n)}
+              {starterLabel(n)}
             </button>
           ))}
       </div>

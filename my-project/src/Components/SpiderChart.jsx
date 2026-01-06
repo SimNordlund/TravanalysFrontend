@@ -14,7 +14,7 @@ const SpiderChart = ({
   selectedHorse,
   visibleHorseIdxes,
   onMetaChange,
-  startsCount, 
+  startsCount,
 }) => {
   const horseColors = [
     "rgba(0, 0, 255, 0.5)",
@@ -34,17 +34,11 @@ const SpiderChart = ({
     "rgba(128, 0, 128, 0.5)",
   ];
 
+  const normalizeStarter = (v) => String(v ?? "").trim() || "0"; //Changed!
+
   const [rawDatasets, setRawDatasets] = useState([]);
   const [data, setData] = useState({
-    labels: [
-      "Prestation",
-      "Placering",
-      "Skrik",
-      "Motstånd",
-      "Klass",
-      "Form",
-      "Fart",
-    ],
+    labels: ["Prestation", "Placering", "Skrik", "Motstånd", "Klass", "Form", "Fart"],
     datasets: [],
   });
   const [loading, setLoading] = useState(true);
@@ -54,7 +48,7 @@ const SpiderChart = ({
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-    if (!selectedLap) return;
+    if (!selectedLap || !API_BASE_URL) return; //Changed!
     const ac = new AbortController();
     setLoading(true);
 
@@ -67,11 +61,12 @@ const SpiderChart = ({
         if (!r.ok) throw new Error(r.statusText);
         const horses = await r.json();
 
+        const starterParam = encodeURIComponent(normalizeStarter(startsCount)); //Changed!
+
         const arr = await Promise.all(
           horses.map(async (horse, idx) => {
-            
             const rs = await fetch(
-              `${API_BASE_URL}/starts/findData?completeHorseId=${horse.id}&starter=${startsCount}`,
+              `${API_BASE_URL}/starts/findData?completeHorseId=${horse.id}&starter=${starterParam}`, //Changed!
               { signal: ac.signal }
             );
             if (!rs.ok) throw new Error(rs.statusText);
@@ -108,9 +103,10 @@ const SpiderChart = ({
           .sort((a, b) => b.val - a.val)
           .slice(0, 5)
           .map((x) => x.i);
+
         const suggestedVisibleIdxes =
-        selectedHorse !== null ? [selectedHorse] : raw.map((_, i) => i);
-      
+          selectedHorse !== null ? [selectedHorse] : raw.map((_, i) => i);
+
         if (!ac.signal.aborted) {
           setRawDatasets(raw);
           setLoading(false);
@@ -134,7 +130,7 @@ const SpiderChart = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, selectedHorse, startsCount]); 
+  }, [selectedLap, selectedHorse, startsCount, API_BASE_URL]); //Changed!
 
   useEffect(() => {
     if (!rawDatasets.length) {
@@ -181,16 +177,23 @@ const SpiderChart = ({
   return (
     <div className="flex flex-col mt-0 px-2 pb-2 mb-2 sm:mb-0">
       <div className="w-full text-center mb-0">
-        <p className="text-sm sm:text-base text-slate-700 font-bold">Analysperspektiven till en total analys</p>
+        <p className="text-sm sm:text-base text-slate-700 font-bold">
+          Analysperspektiven till en total analys
+        </p>
       </div>
+
       <div className="w-full max-w-[490px] mx-auto">
         <div className="relative w-full aspect-square">
-          {data.datasets.length > 0 && !loading && <Radar data={data} options={options} />}
+          {data.datasets.length > 0 && !loading && (
+            <Radar data={data} options={options} />
+          )}
+
           {!loading && data.datasets.length === 0 && (
             <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-500">
               No data found for this lap.
             </div>
           )}
+
           {showSpinner && loading && (
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="animate-spin h-10 w-10 border-4 border-indigo-400 border-t-transparent rounded-full" />
@@ -198,8 +201,12 @@ const SpiderChart = ({
           )}
         </div>
       </div>
-      {error && <div className="text-red-600 mt-4 text-center">Error: {error}</div>}
+
+      {error && (
+        <div className="text-red-600 mt-4 text-center">Error: {error}</div>
+      )}
     </div>
   );
 };
+
 export default SpiderChart;

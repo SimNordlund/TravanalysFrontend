@@ -3,7 +3,7 @@ import { Bar, getElementAtEvent } from "react-chartjs-2";
 import travhorsi from "./Bilder/travhorsi2.png";
 import DatePicker from "./Components/DatePicker";
 import Chart from "chart.js/auto";
-import { Weight, ChevronLeft, ChevronRight } from "lucide-react"; 
+import { ChevronLeft, ChevronRight } from "lucide-react"; //Changed! (tog bort Weight som inte används)
 
 Chart.defaults.font.family =
   "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'";
@@ -27,7 +27,7 @@ const BarChartComponent = ({
   setVisibleHorseIdxes,
   startsCount,
   setStartsCount,
-  setLegendMode, 
+  setLegendMode,
 }) => {
   const legendRef = useRef(null);
   const chartRef = useRef(null);
@@ -39,10 +39,13 @@ const BarChartComponent = ({
 
   const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
-  const starterLabel = (n) => {
-    if (n === 0) return "Analys";
-    if (n === 1) return `${n} start`;
-    return `${n} starter`;
+
+  const normalizeStarter = (v) => String(v ?? "").trim() || "0"; //Changed!
+
+  const starterLabel = (starter) => { //Changed!
+    const s = normalizeStarter(starter); //Changed!
+    if (s === "0") return "Analys"; //Changed!
+    return s; //Changed! (tog bort hårdkodat "start"/"starter")
   };
 
   const idx = dates.findIndex((d) => d.date === selectedDate);
@@ -81,8 +84,9 @@ const BarChartComponent = ({
     if (!API_BASE_URL) {
       setError("VITE_API_BASE_URL saknas. Lägg till den i .env och starta om.");
     }
-  }, []);
+  }, [API_BASE_URL]); //Changed!
 
+  // Hämta vilka "starter" som finns för loppet (nu som STRINGS)
   useEffect(() => {
     if (!selectedLap || !API_BASE_URL) return;
     const ac = new AbortController();
@@ -95,10 +99,16 @@ const BarChartComponent = ({
           { signal: ac.signal }
         );
         if (!r.ok) throw new Error(r.statusText);
-        const counts = await r.json();
-        setAvailableCounts(counts);
-        if (counts.length && !counts.includes(startsCount)) {
-          setStartsCount(counts[0]);
+
+        const countsRaw = await r.json(); //Changed!
+        const counts = (Array.isArray(countsRaw) ? countsRaw : []) //Changed!
+          .map((c) => normalizeStarter(c)); //Changed!
+
+        setAvailableCounts(counts); //Changed!
+
+        const current = normalizeStarter(startsCount); //Changed!
+        if (counts.length && !counts.includes(current)) { //Changed!
+          setStartsCount(counts[0]); //Changed!
         }
       } catch {
       } finally {
@@ -107,11 +117,11 @@ const BarChartComponent = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap]);
+  }, [selectedLap, API_BASE_URL, startsCount, setStartsCount]); //Changed!
 
   // HÄMTA ENDAST BAR-DATA
   useEffect(() => {
-    if (!selectedLap) return;
+    if (!selectedLap || !API_BASE_URL) return; //Changed!
     const ac = new AbortController();
     setLoading(true);
 
@@ -125,10 +135,12 @@ const BarChartComponent = ({
         const completeHorses = await r.json();
         const labels = completeHorses.map((h) => `${h.numberOfCompleteHorse}.`);
 
+        const starterParam = encodeURIComponent(normalizeStarter(startsCount)); //Changed!
+
         const datasets = await Promise.all(
           completeHorses.map(async (horse, idx) => {
             const rs = await fetch(
-              `${API_BASE_URL}/starts/findData?completeHorseId=${horse.id}&starter=${startsCount}`,
+              `${API_BASE_URL}/starts/findData?completeHorseId=${horse.id}&starter=${starterParam}`, //Changed!
               { signal: ac.signal }
             );
             if (!rs.ok) throw new Error(rs.statusText);
@@ -157,7 +169,7 @@ const BarChartComponent = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, startsCount, API_BASE_URL]);
+  }, [selectedLap, startsCount, API_BASE_URL]); //Changed!
 
   useEffect(() => {
     let t;
@@ -173,7 +185,7 @@ const BarChartComponent = ({
     const { datasetIndex } = els[0];
     setSelectedHorse(datasetIndex);
     setVisibleHorseIdxes?.([datasetIndex]);
-    setLegendMode?.("all"); 
+    setLegendMode?.("all");
     setSelectedView("spider");
   };
 
@@ -229,7 +241,7 @@ const BarChartComponent = ({
         labels: {
           boxWidth: 42,
           color: "#000",
-          font: { family: Chart.defaults.font.family, weight: 370, size: 12 }, //ÄNDRA STORLEK FÖR MINDRE BARCHART?
+          font: { family: Chart.defaults.font.family, weight: 370, size: 12 },
         },
       },
       tooltip: { enabled: true, callbacks: { title: () => "Analys" } },
@@ -269,12 +281,12 @@ const BarChartComponent = ({
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad";
 
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "v75";
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ??
+    "v75";
 
   const compName =
-    competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "";
+    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ??
+    "";
 
   const lapPrefix = /proposition/i.test(compName)
     ? "Prop"
@@ -294,7 +306,7 @@ const BarChartComponent = ({
         <button
           onClick={goPrev}
           disabled={idx <= 0 || loading}
-          className="mb-1 mr-6 sm:mr-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition" 
+          className="mb-1 mr-6 sm:mr-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
           <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 [stroke-width:3]" />
         </button>
@@ -312,7 +324,7 @@ const BarChartComponent = ({
           disabled={idx >= dates.length - 1 || loading}
           className="mb-1 ml-6 sm:ml-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
-         <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 [stroke-width:3]"/>
+          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 [stroke-width:3]" />
         </button>
       </div>
 
@@ -378,24 +390,6 @@ const BarChartComponent = ({
         )}
       </div>
 
-      {/* <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4 min-h-[40px]">
-        {!availLoading &&
-          availableCounts.map((n) => (
-            <button
-              key={n}
-              onClick={() => setStartsCount(n)}
-              disabled={loading}
-              className={`mt-0.5 sm:mb:0 px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                startsCount === n
-                  ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                  : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-              } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              {starterLabel(n)}
-            </button>
-          ))}
-      </div> */}
-
       <div className="w-full text-center mb-1 hidden sm:block">
         <p className="text-sm sm:text-base text-slate-700 font-bold">
           Total analys och övergripande beslutsunderlag
@@ -444,15 +438,16 @@ const BarChartComponent = ({
           )}
         </div>
       </div>
+
       <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-0 mt-3 sm:mt-4 min-h-[40px]">
         {!availLoading &&
           availableCounts.map((n) => (
             <button
-              key={n}
-              onClick={() => setStartsCount(n)}
+              key={String(n)} //Changed!
+              onClick={() => setStartsCount(String(n))} //Changed!
               disabled={loading}
               className={`mt-0.5 sm:mb:0 px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                startsCount === n
+                normalizeStarter(startsCount) === normalizeStarter(n) //Changed!
                   ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
                   : "bg-gray-200 text-gray-700 hover:bg-blue-200"
               } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
