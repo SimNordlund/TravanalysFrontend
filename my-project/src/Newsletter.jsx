@@ -85,7 +85,7 @@ export default function Newsletter() {
 
       // OK-svar 
       setIsError(false); 
-      setMessage("Tack! Du får nu uppdateringar när något spännande sker."); 
+      setMessage("Tack! Du får nu uppdateringar när något häftigt sker."); 
       setEmail("");
       setPhone("");
       setConsent(false);
