@@ -375,7 +375,7 @@ const BarChartComponent = ({
                   : "bg-gray-200 text-gray-700 hover:bg-blue-200"
               } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
-              {`${lapPrefix} ${lap.nameOfLap}`}
+              {`${lapPrefix}${lap.nameOfLap}`}
             </button>
           ))
         ) : (
