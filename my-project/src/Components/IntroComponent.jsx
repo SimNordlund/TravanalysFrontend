@@ -8,6 +8,7 @@ import vinst1 from "../Bilder/Vinst2.jpg";
 import skräll1 from "../Bilder/skräll1.png";
 import skräll2 from "../Bilder/skräll2.png";
 import skräll3 from "../Bilder/skräll3.png";
+import skräll4 from "../Bilder/skräll4.png";
 
 const features = [
   {
@@ -30,7 +31,7 @@ const features = [
   },
 ];
 
-const slides = [skräll1, skräll2, skräll3];
+const slides = [skräll1, skräll2, skräll3, skräll4];
 //Behöver uppdatera med .env urler sen
 const FALLBACK_BANNER = {
   mening: "Kolla in skrällen enligt analysen",
