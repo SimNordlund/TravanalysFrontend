@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import DatePicker from "./DatePicker";
-import { ChevronLeft, ChevronRight } from "lucide-react"; //Changed! (tog bort Weight som inte används)
+import { ChevronLeft, ChevronRight } from "lucide-react"; 
 
 const PaginatedLapTable = ({
   selectedDate,
@@ -21,11 +21,11 @@ const PaginatedLapTable = ({
 }) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const normalizeStarter = (v) => String(v ?? "").trim() || "0"; //Changed!
+  const normalizeStarter = (v) => String(v ?? "").trim() || "0"; 
 
-  //Changed! localStartsCount som string istället för number
-  const [localStartsCount, setLocalStartsCount] = useState("0"); //Changed!
-  const activeStartsCount = normalizeStarter(startsCount ?? localStartsCount); //Changed!
+  
+  const [localStartsCount, setLocalStartsCount] = useState("0"); 
+  const activeStartsCount = normalizeStarter(startsCount ?? localStartsCount); 
   const setActiveStartsCount = setStartsCount ?? setLocalStartsCount;
 
   const [lapData, setLapData] = useState([]);
@@ -39,11 +39,11 @@ const PaginatedLapTable = ({
   const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
 
-  //Changed! tog bort "start/starter" hårdkodat
-  const starterLabel = (starter) => { //Changed!
-    const s = normalizeStarter(starter); //Changed!
-    if (s === "0") return "Analys"; //Changed!
-    return s; //Changed!
+  
+  const starterLabel = (starter) => { 
+    const s = normalizeStarter(starter); 
+    if (s === "0") return "Analys"; 
+    return s; 
   };
 
   const competitionName =
@@ -69,15 +69,15 @@ const PaginatedLapTable = ({
         );
         if (!r.ok) throw new Error(r.statusText);
 
-        const countsRaw = await r.json(); //Changed!
+        const countsRaw = await r.json(); 
         const counts = (Array.isArray(countsRaw) ? countsRaw : [])
-          .map((c) => normalizeStarter(c)); //Changed!
+          .map((c) => normalizeStarter(c)); 
 
-        setAvailableCounts(counts); //Changed!
+        setAvailableCounts(counts); 
 
-        const current = normalizeStarter(activeStartsCount); //Changed!
-        if (counts.length && !counts.includes(current)) { //Changed!
-          setActiveStartsCount(counts[0]); //Changed!
+        const current = normalizeStarter(activeStartsCount); 
+        if (counts.length && !counts.includes(current)) { 
+          setActiveStartsCount(counts[0]); 
         }
       } catch {
       } finally {
@@ -86,7 +86,7 @@ const PaginatedLapTable = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, API_BASE_URL, activeStartsCount, setActiveStartsCount]); //Changed!
+  }, [selectedLap, API_BASE_URL, activeStartsCount, setActiveStartsCount]); 
 
   useEffect(() => {
     if (!selectedLap || !API_BASE_URL) return;
@@ -103,13 +103,13 @@ const PaginatedLapTable = ({
         if (!res.ok) throw new Error(res.statusText);
         const horses = await res.json();
 
-        const starterParam = encodeURIComponent(normalizeStarter(activeStartsCount)); //Changed!
+        const starterParam = encodeURIComponent(normalizeStarter(activeStartsCount)); 
 
         const rows = await Promise.all(
           horses.map(async (h, idx) => {
             try {
               const fsRes = await fetch(
-                `${API_BASE_URL}/starts/findData?completeHorseId=${h.id}&starter=${starterParam}`, //Changed!
+                `${API_BASE_URL}/starts/findData?completeHorseId=${h.id}&starter=${starterParam}`, 
                 { signal: ac.signal }
               );
               const fs = fsRes.ok ? await fsRes.json() : {};
@@ -158,7 +158,7 @@ const PaginatedLapTable = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, activeStartsCount, API_BASE_URL]); //Changed!
+  }, [selectedLap, activeStartsCount, API_BASE_URL]); 
 
   // Sortering på tabeller.
   const firstDirForKey = (key) => {
@@ -339,7 +339,7 @@ const PaginatedLapTable = ({
                 : "bg-gray-200 text-gray-700 hover:bg-blue-200"
             }`}
           >
-            {`${lapPrefix}${lap.nameOfLap}`}
+            {`${lapPrefix}${lap.nameOfLap}`} 
           </button>
         ))}
       </div>
@@ -348,11 +348,11 @@ const PaginatedLapTable = ({
         {!availLoading &&
           availableCounts.map((n) => (
             <button
-              key={String(n)} //Changed!
-              onClick={() => setActiveStartsCount(normalizeStarter(n))} //Changed!
+              key={String(n)} 
+              onClick={() => setActiveStartsCount(normalizeStarter(n))} 
               disabled={loading}
               className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                normalizeStarter(activeStartsCount) === normalizeStarter(n) //Changed!
+                normalizeStarter(activeStartsCount) === normalizeStarter(n) 
                   ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
                   : "bg-gray-200 text-gray-700 hover:bg-blue-200"
               } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
