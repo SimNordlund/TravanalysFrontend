@@ -42,7 +42,8 @@ const BarChartComponent = ({
 
   const normalizeStarter = (v) => String(v ?? "").trim() || "0"; //Changed!
 
-  const starterLabel = (starter) => { //Changed!
+  const starterLabel = (starter) => {
+    //Changed!
     const s = normalizeStarter(starter); //Changed!
     if (s === "0") return "Analys"; //Changed!
     return s; //Changed! (tog bort hårdkodat "start"/"starter")
@@ -107,7 +108,8 @@ const BarChartComponent = ({
         setAvailableCounts(counts); //Changed!
 
         const current = normalizeStarter(startsCount); //Changed!
-        if (counts.length && !counts.includes(current)) { //Changed!
+        if (counts.length && !counts.includes(current)) {
+          //Changed!
           setStartsCount(counts[0]); //Changed!
         }
       } catch {
@@ -281,12 +283,12 @@ const BarChartComponent = ({
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad";
 
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ??
-    "v75";
+    competitions.find((c) => c.id === +selectedCompetition)
+      ?.nameOfCompetition ?? "v75";
 
   const compName =
-    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ??
-    "";
+    competitions.find((c) => c.id === +selectedCompetition)
+      ?.nameOfCompetition ?? "";
 
   const lapPrefix = /proposition/i.test(compName)
     ? "Prop"
@@ -364,20 +366,28 @@ const BarChartComponent = ({
 
       <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-0 sm:mb-4">
         {laps.length > 0 ? (
-          laps.map((lap) => (
-            <button
-              key={lap.id}
-              onClick={() => setSelectedLap(lap.id)}
-              disabled={loading}
-              className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded mb-1 sm:mb-0 ${
-                lap.id === +selectedLap
-                  ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                  : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-              } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              {`${lapPrefix}${lap.nameOfLap}`}
-            </button>
-          ))
+          laps.map((lap) => {
+            
+            const lapNo = String(lap.nameOfLap).trim(); 
+            const lapText = isSmallScreen
+              ? `${lapPrefix}${lapNo}` 
+              : `${lapPrefix} ${lapNo}`; 
+
+            return (
+              <button
+                key={lap.id}
+                onClick={() => setSelectedLap(lap.id)}
+                disabled={loading}
+                className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded mb-1 sm:mb-0 ${
+                  lap.id === +selectedLap
+                    ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
+                {lapText} 
+              </button>
+            ); 
+          }) 
         ) : (
           <div className="flex gap-2">
             {[...Array(3)].map((_, i) => (
