@@ -10,6 +10,7 @@ import HeroCarousel from "../Components/HeroCarousel";
 import skräll1 from "../Bilder/skräll1.png";
 import skräll2 from "../Bilder/skräll2.png";
 import skräll3 from "../Bilder/skräll3.png";
+import skräll4 from "../Bilder/skräll4.png";
 
 
 function BoldFirst({ text }) {
@@ -72,7 +73,7 @@ const features = [
   // { name: "Kostnadsfritt.", description: "Vi utvecklar dessa folkliga tjänster tillsammans. Ditt bidrag är din feedback.", icon: HeartIcon },
 ];
 
-const slides = [skräll1, skräll2, skräll3];
+const slides = [skräll1, skräll2, skräll3, skräll4];
 
 export default function IntroWithCarousel() {
   const [isOpen, setIsOpen] = useState(false); 
