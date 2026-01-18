@@ -38,13 +38,13 @@ const PaginatedLapTable = ({
   const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
 
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640); //Changed!
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640); 
   useEffect(() => {
-    //Changed!
-    const onResize = () => setIsSmallScreen(window.innerWidth < 640); //Changed!
-    window.addEventListener("resize", onResize); //Changed!
-    return () => window.removeEventListener("resize", onResize); //Changed!
-  }, []); //Changed!
+    
+    const onResize = () => setIsSmallScreen(window.innerWidth < 640); 
+    window.addEventListener("resize", onResize); 
+    return () => window.removeEventListener("resize", onResize); 
+  }, []); 
 
   const starterLabel = (starter) => {
     const s = normalizeStarter(starter);
@@ -337,11 +337,11 @@ const PaginatedLapTable = ({
 
       <div className="flex flex-wrap gap-1 mb-2">
         {laps.map((lap) => {
-          //Changed!
-          const lapNo = String(lap.nameOfLap ?? "").trim(); //Changed!
+          
+          const lapNo = String(lap.nameOfLap ?? "").trim(); 
           const lapText = isSmallScreen
-            ? `${lapPrefix}${lapNo}` //Changed!
-            : `${lapPrefix} ${lapNo}`; //Changed!
+            ? `${lapPrefix}${lapNo}` 
+            : `${lapPrefix} ${lapNo}`; 
 
           return (
             <button
