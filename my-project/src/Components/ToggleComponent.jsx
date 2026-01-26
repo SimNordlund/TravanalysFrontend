@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react"; //Changed!
+import React, { useState, useEffect, useRef, useCallback } from "react"; 
 import {
   useParams,
   useNavigate,
@@ -17,7 +17,7 @@ const FALLBACK_BANNER = {
   url: "https://travanalys.se",
 };
 
-const normalizeStarter = (v) => String(v ?? "").trim() || "0"; //Changed!
+const normalizeStarter = (v) => String(v ?? "").trim() || "0"; 
 
 const ToggleComponent = ({ syncWithRoute = false }) => {
   const { view: viewParam } = useParams();
@@ -47,7 +47,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState(initialSelectedView);
   const [selectedHorse, setSelectedHorse] = useState(null);
-  const [startsCount, setStartsCount] = useState("0"); //Changed!
+  const [startsCount, setStartsCount] = useState("0"); 
   const [visibleHorseIdxes, setVisibleHorseIdxes] = useState([]);
   const [horseLegendItems, setHorseLegendItems] = useState([]);
   const [top5Idxes, setTop5Idxes] = useState([]);
@@ -66,9 +66,9 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
   const pendingLapRef = useRef(null);
 
-  const setPendingLapId = useCallback((lapId) => { //Changed!
-    pendingLapRef.current = lapId; //Changed!
-  }, []); //Changed!
+  const setPendingLapId = useCallback((lapId) => { 
+    pendingLapRef.current = lapId; 
+  }, []); 
 
   const [legendMode, setLegendMode] = useState("all");
 
@@ -91,35 +91,35 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const shouldSyncQueryRef = useRef(hadInitialQuery.current);
   const lastWrittenQueryRef = useRef("");
 
-  const markUserInteraction = useCallback(() => { //Changed!
-    shouldSyncQueryRef.current = true; //Changed!
-  }, []); //Changed!
+  const markUserInteraction = useCallback(() => { 
+    shouldSyncQueryRef.current = true; 
+  }, []); 
 
-  // Stabilt “user sync” wrappers (så banner-rotate inte triggar om barns effects) //Changed!
-  const setSelectedDateUser = useCallback((v) => { //Changed!
-    markUserInteraction(); //Changed!
-    setSelectedDate(v); //Changed!
-  }, [markUserInteraction]); //Changed!
+ 
+  const setSelectedDateUser = useCallback((v) => { 
+    markUserInteraction(); 
+    setSelectedDate(v); 
+  }, [markUserInteraction]); 
 
-  const setSelectedTrackUser = useCallback((v) => { //Changed!
-    markUserInteraction(); //Changed!
-    setSelectedTrack(v); //Changed!
-  }, [markUserInteraction]); //Changed!
+  const setSelectedTrackUser = useCallback((v) => { 
+    markUserInteraction(); 
+    setSelectedTrack(v); 
+  }, [markUserInteraction]); 
 
-  const setSelectedCompetitionUser = useCallback((v) => { //Changed!
-    markUserInteraction(); //Changed!
-    setSelectedCompetition(v); //Changed!
-  }, [markUserInteraction]); //Changed!
+  const setSelectedCompetitionUser = useCallback((v) => { 
+    markUserInteraction(); 
+    setSelectedCompetition(v); 
+  }, [markUserInteraction]); 
 
-  const setSelectedLapUser = useCallback((v) => { //Changed!
-    markUserInteraction(); //Changed!
-    setSelectedLap(v); //Changed!
-  }, [markUserInteraction]); //Changed!
+  const setSelectedLapUser = useCallback((v) => { 
+    markUserInteraction(); 
+    setSelectedLap(v); 
+  }, [markUserInteraction]); 
 
-  const setStartsCountUser = useCallback((v) => { //Changed!
-    markUserInteraction(); //Changed!
-    setStartsCount(v); //Changed!
-  }, [markUserInteraction]); //Changed!
+  const setStartsCountUser = useCallback((v) => { 
+    markUserInteraction(); 
+    setStartsCount(v); 
+  }, [markUserInteraction]); 
 
   const appliedFromQuery = useRef({
     track: false,
@@ -211,23 +211,23 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     if (nextView !== "spider") setSelectedHorse(null);
   }, [syncWithRoute, viewParam]);
 
-  const setViewAndMaybeNavigate = useCallback((viewKey) => { //Changed!
-    setSelectedView(viewKey); //Changed!
-    if (viewKey !== "spider") setSelectedHorse(null); //Changed!
-    if (syncWithRoute) { //Changed!
-      const target = `/chart/${viewToRoute[viewKey]}`; //Changed!
-      if (location.pathname !== target) { //Changed!
-        navigate({ //Changed!
-          pathname: target, //Changed!
+  const setViewAndMaybeNavigate = useCallback((viewKey) => { 
+    setSelectedView(viewKey); 
+    if (viewKey !== "spider") setSelectedHorse(null); 
+    if (syncWithRoute) { 
+      const target = `/chart/${viewToRoute[viewKey]}`; 
+      if (location.pathname !== target) { 
+        navigate({ 
+          pathname: target, 
           search: shouldSyncQueryRef.current
             ? `?${searchParams.toString()}`
             : "",
-        }); //Changed!
-      } //Changed!
-    } //Changed!
-  }, [syncWithRoute, location.pathname, navigate, searchParams]); //Changed!
+        }); 
+      } 
+    } 
+  }, [syncWithRoute, location.pathname, navigate, searchParams]); 
 
-  const switchView = useCallback((viewKey) => setViewAndMaybeNavigate(viewKey), [setViewAndMaybeNavigate]); //Changed!
+  const switchView = useCallback((viewKey) => setViewAndMaybeNavigate(viewKey), [setViewAndMaybeNavigate]); 
 
   const pickClosestDate = (arr) => {
     if (!arr?.length) return "";
@@ -293,7 +293,6 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           return;
         }
 
-        // Försök applicera query
         if (!appliedFromQuery.current.track && initialQuery.current.track) {
           const q = initialQuery.current.track;
           const byId = d.find((t) => String(t.id) === q);
@@ -698,7 +697,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
               </div>
             </div>
 
-            {normalizeStarter(startsCount) !== "0" && ( //Changed!
+            {normalizeStarter(startsCount) !== "0" && ( 
               <div className="min-h-[200px]">
                 <AnalysChart
                   selectedLap={selectedLap}

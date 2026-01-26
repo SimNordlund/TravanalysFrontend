@@ -3,7 +3,7 @@ import { Bar, getElementAtEvent } from "react-chartjs-2";
 import travhorsi from "./Bilder/travhorsi2.png";
 import DatePicker from "./Components/DatePicker";
 import Chart from "chart.js/auto";
-import { ChevronLeft, ChevronRight } from "lucide-react"; //Changed! (tog bort Weight som inte används)
+import { ChevronLeft, ChevronRight } from "lucide-react"; 
 
 Chart.defaults.font.family =
   "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'";
@@ -40,13 +40,13 @@ const BarChartComponent = ({
   const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
 
-  const normalizeStarter = (v) => String(v ?? "").trim() || "0"; //Changed!
+  const normalizeStarter = (v) => String(v ?? "").trim() || "0"; 
 
   const starterLabel = (starter) => {
-    //Changed!
-    const s = normalizeStarter(starter); //Changed!
-    if (s === "0") return "Analys"; //Changed!
-    return s; //Changed! (tog bort hårdkodat "start"/"starter")
+    
+    const s = normalizeStarter(starter); 
+    if (s === "0") return "Analys"; 
+    return s; 
   };
 
   const idx = dates.findIndex((d) => d.date === selectedDate);
@@ -85,9 +85,8 @@ const BarChartComponent = ({
     if (!API_BASE_URL) {
       setError("VITE_API_BASE_URL saknas. Lägg till den i .env och starta om.");
     }
-  }, [API_BASE_URL]); //Changed!
+  }, [API_BASE_URL]); 
 
-  // Hämta vilka "starter" som finns för loppet (nu som STRINGS)
   useEffect(() => {
     if (!selectedLap || !API_BASE_URL) return;
     const ac = new AbortController();
@@ -101,16 +100,16 @@ const BarChartComponent = ({
         );
         if (!r.ok) throw new Error(r.statusText);
 
-        const countsRaw = await r.json(); //Changed!
-        const counts = (Array.isArray(countsRaw) ? countsRaw : []) //Changed!
-          .map((c) => normalizeStarter(c)); //Changed!
+        const countsRaw = await r.json(); 
+        const counts = (Array.isArray(countsRaw) ? countsRaw : []) 
+          .map((c) => normalizeStarter(c)); 
 
-        setAvailableCounts(counts); //Changed!
+        setAvailableCounts(counts); 
 
-        const current = normalizeStarter(startsCount); //Changed!
+        const current = normalizeStarter(startsCount); 
         if (counts.length && !counts.includes(current)) {
-          //Changed!
-          setStartsCount(counts[0]); //Changed!
+          
+          setStartsCount(counts[0]); 
         }
       } catch {
       } finally {
@@ -119,11 +118,11 @@ const BarChartComponent = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, API_BASE_URL, startsCount, setStartsCount]); //Changed!
+  }, [selectedLap, API_BASE_URL, startsCount, setStartsCount]); 
 
   // HÄMTA ENDAST BAR-DATA
   useEffect(() => {
-    if (!selectedLap || !API_BASE_URL) return; //Changed!
+    if (!selectedLap || !API_BASE_URL) return; 
     const ac = new AbortController();
     setLoading(true);
 
@@ -137,12 +136,12 @@ const BarChartComponent = ({
         const completeHorses = await r.json();
         const labels = completeHorses.map((h) => `${h.numberOfCompleteHorse}.`);
 
-        const starterParam = encodeURIComponent(normalizeStarter(startsCount)); //Changed!
+        const starterParam = encodeURIComponent(normalizeStarter(startsCount)); 
 
         const datasets = await Promise.all(
           completeHorses.map(async (horse, idx) => {
             const rs = await fetch(
-              `${API_BASE_URL}/starts/findData?completeHorseId=${horse.id}&starter=${starterParam}`, //Changed!
+              `${API_BASE_URL}/starts/findData?completeHorseId=${horse.id}&starter=${starterParam}`, 
               { signal: ac.signal }
             );
             if (!rs.ok) throw new Error(rs.statusText);
@@ -171,7 +170,7 @@ const BarChartComponent = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, startsCount, API_BASE_URL]); //Changed!
+  }, [selectedLap, startsCount, API_BASE_URL]); 
 
   useEffect(() => {
     let t;
@@ -453,11 +452,11 @@ const BarChartComponent = ({
         {!availLoading &&
           availableCounts.map((n) => (
             <button
-              key={String(n)} //Changed!
-              onClick={() => setStartsCount(String(n))} //Changed!
+              key={String(n)} 
+              onClick={() => setStartsCount(String(n))} 
               disabled={loading}
               className={`mt-0.5 sm:mb:0 px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                normalizeStarter(startsCount) === normalizeStarter(n) //Changed!
+                normalizeStarter(startsCount) === normalizeStarter(n) 
                   ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
                   : "bg-gray-200 text-gray-700 hover:bg-blue-200"
               } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}

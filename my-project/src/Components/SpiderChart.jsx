@@ -34,7 +34,7 @@ const SpiderChart = ({
     "rgba(128, 0, 128, 0.5)",
   ];
 
-  const normalizeStarter = (v) => String(v ?? "").trim() || "0"; //Changed!
+  const normalizeStarter = (v) => String(v ?? "").trim() || "0"; 
 
   const [rawDatasets, setRawDatasets] = useState([]);
   const [data, setData] = useState({
@@ -48,7 +48,7 @@ const SpiderChart = ({
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
-    if (!selectedLap || !API_BASE_URL) return; //Changed!
+    if (!selectedLap || !API_BASE_URL) return; 
     const ac = new AbortController();
     setLoading(true);
 
@@ -61,12 +61,12 @@ const SpiderChart = ({
         if (!r.ok) throw new Error(r.statusText);
         const horses = await r.json();
 
-        const starterParam = encodeURIComponent(normalizeStarter(startsCount)); //Changed!
+        const starterParam = encodeURIComponent(normalizeStarter(startsCount)); 
 
         const arr = await Promise.all(
           horses.map(async (horse, idx) => {
             const rs = await fetch(
-              `${API_BASE_URL}/starts/findData?completeHorseId=${horse.id}&starter=${starterParam}`, //Changed!
+              `${API_BASE_URL}/starts/findData?completeHorseId=${horse.id}&starter=${starterParam}`, 
               { signal: ac.signal }
             );
             if (!rs.ok) throw new Error(rs.statusText);
@@ -130,7 +130,7 @@ const SpiderChart = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, selectedHorse, startsCount, API_BASE_URL]); //Changed!
+  }, [selectedLap, selectedHorse, startsCount, API_BASE_URL]); 
 
   useEffect(() => {
     if (!rawDatasets.length) {
