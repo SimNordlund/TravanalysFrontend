@@ -10,7 +10,6 @@ export default function Home() {
 
   return (
     <div>
-      {/*<Present />*/}
       {/*<PreviewFrontPage/>*/}
       <IntroComponent></IntroComponent>
       <IntroWithCarousel></IntroWithCarousel>
