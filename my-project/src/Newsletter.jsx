@@ -8,8 +8,12 @@ export default function Newsletter() {
   const [phone, setPhone] = useState("");
   const [consent, setConsent] = useState(false);
   const [message, setMessage] = useState("");
-  const [isError, setIsError] = useState(false); 
+  const [isError, setIsError] = useState(false);
   const hideTimer = useRef();
+
+  const [kopandelUrl, setKopandelUrl] = useState(""); 
+  const [kopandelDate, setKopandelDate] = useState(""); 
+  const [countdownText, setCountdownText] = useState(""); 
 
   useEffect(() => {
     if (!message) return;
@@ -20,24 +24,22 @@ export default function Newsletter() {
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+  const isPhoneValid = (raw) => {
+    if (!raw) return true;
+    const digits = raw.replace(/\D/g, "");
+    return digits.length >= 7 && digits.length <= 15;
+  };
 
-  const isPhoneValid = (raw) => { 
-    if (!raw) return true; 
-    const digits = raw.replace(/\D/g, ""); 
-    return digits.length >= 7 && digits.length <= 15; 
-  }; 
-
-
-  const safeParseJson = async (response) => { 
-    try { 
-      const ct = response.headers.get("content-type") || ""; 
-      if (ct.includes("application/json")) return await response.json(); 
-      const text = await response.text(); 
-      return text ? { message: text } : null; 
-    } catch { 
-      return null; 
-    } 
-  }; 
+  const safeParseJson = async (response) => {
+    try {
+      const ct = response.headers.get("content-type") || "";
+      if (ct.includes("application/json")) return await response.json();
+      const text = await response.text();
+      return text ? { message: text } : null;
+    } catch {
+      return null;
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -51,12 +53,11 @@ export default function Newsletter() {
       return;
     }
 
-   
-    if (phone && !isPhoneValid(phone)) { 
-      setIsError(true); 
-      setMessage("Felaktigt format, kunde inte spara"); 
-      return; 
-    } 
+    if (phone && !isPhoneValid(phone)) {
+      setIsError(true);
+      setMessage("Felaktigt format, kunde inte spara");
+      return;
+    }
 
     try {
       const payload = {};
@@ -69,32 +70,110 @@ export default function Newsletter() {
         body: JSON.stringify(payload),
       });
 
-      
-      if (!response.ok) { 
-        setIsError(true); 
-        if (response.status === 400) { 
-          setMessage("Felaktigt format, kunde inte spara"); 
-        } else { 
-          const data = await safeParseJson(response); 
+      if (!response.ok) {
+        setIsError(true);
+        if (response.status === 400) {
+          setMessage("Felaktigt format, kunde inte spara");
+        } else {
+          const data = await safeParseJson(response);
           const serverMsg =
-            (data && (data.message || data.error)) || "Misslyckades att spara uppgifter"; 
-          setMessage(serverMsg); 
-        } 
-        return; 
-      } 
+            (data && (data.message || data.error)) ||
+            "Misslyckades att spara uppgifter";
+          setMessage(serverMsg);
+        }
+        return;
+      }
 
-      // OK-svar 
-      setIsError(false); 
-      setMessage("Tack! Du får nu uppdateringar när något häftigt sker."); 
+      setIsError(false);
+      setMessage("Tack! Du får nu uppdateringar när något häftigt sker.");
       setEmail("");
       setPhone("");
       setConsent(false);
     } catch (err) {
       console.error(err);
-      setIsError(true); 
-      setMessage("Något gick fel, försök igen senare."); 
+      setIsError(true);
+      setMessage("Något gick fel, försök igen senare.");
     }
   };
+
+  const parseCompactDate = (value) => {
+    
+    const s = String(value || "").trim(); 
+    if (!/^\d{12}$/.test(s)) return null; 
+    const year = Number(s.slice(0, 4)); 
+    const month = Number(s.slice(4, 6)) - 1; 
+    const day = Number(s.slice(6, 8)); 
+    const hour = Number(s.slice(8, 10)); 
+    const minute = Number(s.slice(10, 12)); 
+    const d = new Date(year, month, day, hour, minute, 0); 
+    return Number.isNaN(d.getTime()) ? null : d; 
+  }; 
+
+  const formatCountdown = (targetDate) => {
+    
+    const diffMs = targetDate.getTime() - Date.now(); 
+    if (diffMs <= 0) return "Spelstopp passerad"; 
+
+    const totalSeconds = Math.floor(diffMs / 1000); 
+    const days = Math.floor(totalSeconds / 86400); 
+    const hours = Math.floor((totalSeconds % 86400) / 3600); 
+    const minutes = Math.floor((totalSeconds % 3600) / 60); 
+    const seconds = totalSeconds % 60; 
+
+    if (days > 0) {
+      
+      return `${days}d ${hours}h ${minutes}m ${seconds}s`; 
+    } 
+    return `${hours}h ${minutes}m ${seconds}s`; 
+  }; 
+
+  useEffect(() => {
+    
+    let isMounted = true; 
+
+    const loadAppUrlRow2 = async () => {
+      
+      try {
+        
+        const response = await fetch(`${API_BASE_URL}/app_url/2`); 
+        if (!response.ok) throw new Error(`HTTP ${response.status}`); 
+        const data = await response.json(); 
+
+        if (!isMounted) return; 
+        setKopandelUrl(data?.url || ""); 
+        setKopandelDate(data?.date || ""); 
+      } catch (err) {
+        
+        console.error("Kunde inte hämta app_url id=2", err); 
+      } 
+    }; 
+
+    if (API_BASE_URL) {
+      
+      loadAppUrlRow2(); 
+    } 
+
+    return () => {
+      
+      isMounted = false; 
+    }; 
+  }, [API_BASE_URL]); 
+
+  useEffect(() => {
+    
+    const target = parseCompactDate(kopandelDate); 
+    if (!target) {
+      
+      setCountdownText(""); 
+      return; 
+    } 
+
+    const tick = () => setCountdownText(formatCountdown(target)); 
+    tick(); 
+
+    const intervalId = setInterval(tick, 1000); 
+    return () => clearInterval(intervalId); 
+  }, [kopandelDate]); 
 
   return (
     <div className="relative isolate overflow-hidden bg-gray-900 py-14 sm:py-16">
@@ -104,7 +183,7 @@ export default function Newsletter() {
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Prenumerera
             </h2>
-             <h3 className="text-1xl font-bold tracking-tight text-white sm:text-1xl mt-2 sm:mt-2">
+            <h3 className="text-1xl font-bold tracking-tight text-white sm:text-1xl mt-2 sm:mt-2">
               Ange e-post och/eller telefonnummer
             </h3>
             <form
@@ -133,12 +212,12 @@ export default function Newsletter() {
                 name="phone"
                 type="tel"
                 autoComplete="tel"
-                inputMode="tel" 
+                inputMode="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
                 placeholder="Skriv in ditt telefonnummer"
-                pattern="[\d\s()+-]{7,}" 
+                pattern="[\d\s()+-]{7,}"
               />
 
               <div className="flex items-center">
@@ -171,12 +250,12 @@ export default function Newsletter() {
               <div
                 className={`rounded-md p-3 mt-3 ${
                   isError ? "bg-red-600/20" : "bg-green-600/20"
-                }`} 
+                }`}
               >
                 <p
                   className={`text-sm ${
                     isError ? "text-red-300" : "text-green-300"
-                  }`} 
+                  }`}
                 >
                   {message}
                 </p>
@@ -184,24 +263,42 @@ export default function Newsletter() {
             )}
           </div>
 
-        
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:gap-y-2 sm:grid-cols-2 sm:mt-6">
             <div className="flex flex-col items-center">
               <a
-               href="https://www.atg.se/kopandel/spel/325766_V86_2026-02-25_40_1"
+                href={kopandelUrl || "#"} 
+                target="_blank" 
+                rel="noopener noreferrer" 
                 className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
+                onClick={(e) => {
+                  if (!kopandelUrl) e.preventDefault();
+                }} 
               >
-                <DocumentTextIcon className="h-8 w-8 text-white" aria-hidden="true" />{" "}
+                <DocumentTextIcon
+                  className="h-8 w-8 text-white"
+                  aria-hidden="true"
+                />
               </a>
               <dt className="mt-4 font-semibold text-white">Köpandel.se</dt>
               <dd className="mt-2 leading-7 text-gray-300">
                 <a
-                  href="https://www.atg.se/kopandel/spel/325766_V86_2026-02-25_40_1"
+                  href={kopandelUrl || "#"} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
                   className="text-gray-300 hover:text-white"
+                  onClick={(e) => {
+                    if (!kopandelUrl) e.preventDefault();
+                  }} 
                 >
                   travanalys.se
                 </a>
               </dd>
+              <dd className="mt-1 text-sm text-indigo-300">
+                {" "}
+                
+                {countdownText || "Laddar nedräkning..."} 
+              </dd>{" "}
+              
             </div>
 
             <div className="flex flex-col items-center">
@@ -233,7 +330,10 @@ export default function Newsletter() {
                 rel="noopener noreferrer"
                 className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
               >
-                <FaFacebook className="h-8 w-8 text-white" aria-hidden="true" />{" "}
+                <FaFacebook
+                  className="h-8 w-8 text-white"
+                  aria-hidden="true"
+                />{" "}
               </a>
               <dd className="mt-2 leading-7 text-gray-300">
                 <a
