@@ -127,37 +127,54 @@ export default function Newsletter() {
     return `${hours}h ${minutes}m ${seconds}s`; 
   }; 
 
-  useEffect(() => {
-    
-    let isMounted = true; 
+    const getAppUrlIdForToday = () => { //Changed!
+    const weekday = new Intl.DateTimeFormat("en-US", { //Changed!
+      weekday: "short", //Changed!
+      timeZone: "Europe/Stockholm", //Changed!
+    }).format(new Date()); //Changed!
 
-    const loadAppUrlRow2 = async () => {
-      
+    const dayMap = { //Changed!
+      Sun: 0, //Changed!
+      Mon: 1, //Changed!
+      Tue: 2, //Changed!
+      Wed: 3, //Changed!
+      Thu: 4, //Changed!
+      Fri: 5, //Changed!
+      Sat: 6, //Changed!
+    }; //Changed!
+
+    const dayNumber = dayMap[weekday]; //Changed!
+
+    if (dayNumber >= 0 && dayNumber <= 3) return 2; //Changed!
+    return 1; //Changed!
+  }; //Changed!
+
+  useEffect(() => { //Changed!
+    let isMounted = true; //Changed!
+
+    const loadAppUrlByDay = async () => { //Changed!
       try {
-        
-        const response = await fetch(`${API_BASE_URL}/app_url/2`); 
-        if (!response.ok) throw new Error(`HTTP ${response.status}`); 
-        const data = await response.json(); 
+        const selectedId = getAppUrlIdForToday(); //Changed!
+        const response = await fetch(`${API_BASE_URL}/app_url/${selectedId}`); //Changed!
+        if (!response.ok) throw new Error(`HTTP ${response.status}`); //Changed!
+        const data = await response.json(); //Changed!
 
-        if (!isMounted) return; 
-        setKopandelUrl(data?.url || ""); 
-        setKopandelDate(data?.date || ""); 
+        if (!isMounted) return; //Changed!
+        setKopandelUrl(data?.url || ""); //Changed!
+        setKopandelDate(data?.date || ""); //Changed!
       } catch (err) {
-        
-        console.error("Kunde inte hämta app_url id=2", err); 
-      } 
-    }; 
+        console.error("Kunde inte hämta app_url för dagens id", err); //Changed!
+      }
+    }; //Changed!
 
-    if (API_BASE_URL) {
-      
-      loadAppUrlRow2(); 
-    } 
+    if (API_BASE_URL) { //Changed!
+      loadAppUrlByDay(); //Changed!
+    } //Changed!
 
-    return () => {
-      
-      isMounted = false; 
-    }; 
-  }, [API_BASE_URL]); 
+    return () => { //Changed!
+      isMounted = false; //Changed!
+    }; //Changed!
+  }, [API_BASE_URL]); //Changed!
 
   useEffect(() => {
     
