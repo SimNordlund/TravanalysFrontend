@@ -127,54 +127,54 @@ export default function Newsletter() {
     return `${hours}h ${minutes}m ${seconds}s`; 
   }; 
 
-    const getAppUrlIdForToday = () => { //Changed!
-    const weekday = new Intl.DateTimeFormat("en-US", { //Changed!
-      weekday: "short", //Changed!
-      timeZone: "Europe/Stockholm", //Changed!
-    }).format(new Date()); //Changed!
+    const getAppUrlIdForToday = () => { 
+    const weekday = new Intl.DateTimeFormat("en-US", { 
+      weekday: "short", 
+      timeZone: "Europe/Stockholm", 
+    }).format(new Date()); 
 
-    const dayMap = { //Changed!
-      Sun: 0, //Changed!
-      Mon: 1, //Changed!
-      Tue: 2, //Changed!
-      Wed: 3, //Changed!
-      Thu: 4, //Changed!
-      Fri: 5, //Changed!
-      Sat: 6, //Changed!
-    }; //Changed!
+    const dayMap = { 
+      Sun: 0, 
+      Mon: 1, 
+      Tue: 2, 
+      Wed: 3, 
+      Thu: 4, 
+      Fri: 5, 
+      Sat: 6, 
+    }; 
 
-    const dayNumber = dayMap[weekday]; //Changed!
+    const dayNumber = dayMap[weekday]; 
 
-    if (dayNumber >= 0 && dayNumber <= 3) return 2; //Changed!
-    return 1; //Changed!
-  }; //Changed!
+    if (dayNumber >= 0 && dayNumber <= 3) return 2; 
+    return 1; 
+  }; 
 
-  useEffect(() => { //Changed!
-    let isMounted = true; //Changed!
+  useEffect(() => { 
+    let isMounted = true; 
 
-    const loadAppUrlByDay = async () => { //Changed!
+    const loadAppUrlByDay = async () => { 
       try {
-        const selectedId = getAppUrlIdForToday(); //Changed!
-        const response = await fetch(`${API_BASE_URL}/app_url/${selectedId}`); //Changed!
-        if (!response.ok) throw new Error(`HTTP ${response.status}`); //Changed!
-        const data = await response.json(); //Changed!
+        const selectedId = getAppUrlIdForToday(); 
+        const response = await fetch(`${API_BASE_URL}/app_url/${selectedId}`); 
+        if (!response.ok) throw new Error(`HTTP ${response.status}`); 
+        const data = await response.json(); 
 
-        if (!isMounted) return; //Changed!
-        setKopandelUrl(data?.url || ""); //Changed!
-        setKopandelDate(data?.date || ""); //Changed!
+        if (!isMounted) return; 
+        setKopandelUrl(data?.url || ""); 
+        setKopandelDate(data?.date || ""); 
       } catch (err) {
-        console.error("Kunde inte hämta app_url för dagens id", err); //Changed!
+        console.error("Kunde inte hämta app_url för dagens id", err); 
       }
-    }; //Changed!
+    }; 
 
-    if (API_BASE_URL) { //Changed!
-      loadAppUrlByDay(); //Changed!
-    } //Changed!
+    if (API_BASE_URL) { 
+      loadAppUrlByDay(); 
+    } 
 
-    return () => { //Changed!
-      isMounted = false; //Changed!
-    }; //Changed!
-  }, [API_BASE_URL]); //Changed!
+    return () => { 
+      isMounted = false; 
+    }; 
+  }, [API_BASE_URL]); 
 
   useEffect(() => {
     
@@ -310,7 +310,7 @@ export default function Newsletter() {
                   travanalys.se
                 </a>
               </dd>
-              <dd className="mt-1 text-sm text-indigo-300">
+              <dd className="mt-1 text-sm font-bold text-indigo-300">
                 {" "}
                 
                 {countdownText || "Laddar nedräkning..."} 
