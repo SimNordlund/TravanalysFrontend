@@ -282,7 +282,7 @@ export default function Newsletter() {
                 href={kopandelUrl || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
+                className="rounded-xl bg-white/10 p-3 ring-1 ring-white/20 shadow-sm hover:ring-indigo-400/60 hover:shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-0.5"
                 onClick={(e) => {
                   if (!kopandelUrl) e.preventDefault();
                 }}
@@ -314,7 +314,7 @@ export default function Newsletter() {
             <div className="flex flex-col items-center">
               <a
                 href="mailto:travanalys@gmail.com"
-                className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
+                className="rounded-xl bg-white/10 p-3 ring-1 ring-white/20 shadow-sm hover:ring-indigo-400/60 hover:shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-0.5"
               >
                 <EnvelopeIcon
                   className="h-8 w-8 text-white"
@@ -337,13 +337,14 @@ export default function Newsletter() {
                 href="https://www.facebook.com/profile.php?id=61555396035366"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
+                className="rounded-xl bg-white/10 p-3 ring-1 ring-white/20 shadow-sm hover:ring-indigo-400/60 hover:shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-0.5"
               >
                 <FaFacebook
                   className="h-8 w-8 text-white"
                   aria-hidden="true"
                 />
               </a>
+              <dt className="mt-4 font-semibold text-white">Facebook</dt>
               <dd className="mt-2 leading-7 text-gray-300">
                 <a
                   href="https://www.facebook.com/profile.php?id=61555396035366"
@@ -357,7 +358,7 @@ export default function Newsletter() {
               <a
                 href="/TravAnalysUltimate.apk" 
                 download 
-                className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
+                className="rounded-xl bg-white/10 p-3 ring-1 ring-white/20 shadow-sm hover:ring-indigo-400/60 hover:shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-0.5"
               >
                 <ArrowDownTrayIcon
                   className="h-8 w-8 text-white"
