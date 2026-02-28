@@ -1,6 +1,7 @@
 import { DocumentTextIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import { FaFacebook } from "react-icons/fa";
-import { FaInstagram } from "react-icons/fa";
+//import { FaInstagram } from "react-icons/fa";
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { useState, useEffect, useRef } from "react";
 
 export default function Newsletter() {
@@ -11,9 +12,9 @@ export default function Newsletter() {
   const [isError, setIsError] = useState(false);
   const hideTimer = useRef();
 
-  const [kopandelUrl, setKopandelUrl] = useState(""); 
-  const [kopandelDate, setKopandelDate] = useState(""); 
-  const [countdownText, setCountdownText] = useState(""); 
+  const [kopandelUrl, setKopandelUrl] = useState("");
+  const [kopandelDate, setKopandelDate] = useState("");
+  const [countdownText, setCountdownText] = useState("");
 
   useEffect(() => {
     if (!message) return;
@@ -97,100 +98,95 @@ export default function Newsletter() {
   };
 
   const parseCompactDate = (value) => {
-    
-    const s = String(value || "").trim(); 
-    if (!/^\d{12}$/.test(s)) return null; 
-    const year = Number(s.slice(0, 4)); 
-    const month = Number(s.slice(4, 6)) - 1; 
-    const day = Number(s.slice(6, 8)); 
-    const hour = Number(s.slice(8, 10)); 
-    const minute = Number(s.slice(10, 12)); 
-    const d = new Date(year, month, day, hour, minute, 0); 
-    return Number.isNaN(d.getTime()) ? null : d; 
-  }; 
+    const s = String(value || "").trim();
+    if (!/^\d{12}$/.test(s)) return null;
+    const year = Number(s.slice(0, 4));
+    const month = Number(s.slice(4, 6)) - 1;
+    const day = Number(s.slice(6, 8));
+    const hour = Number(s.slice(8, 10));
+    const minute = Number(s.slice(10, 12));
+    const d = new Date(year, month, day, hour, minute, 0);
+    return Number.isNaN(d.getTime()) ? null : d;
+  };
 
   const formatCountdown = (targetDate) => {
-    
-    const diffMs = targetDate.getTime() - Date.now(); 
-    if (diffMs <= 0) return "Spelstopp passerad"; 
+    const diffMs = targetDate.getTime() - Date.now();
+    if (diffMs <= 0) return "Spelstopp passerad";
 
-    const totalSeconds = Math.floor(diffMs / 1000); 
-    const days = Math.floor(totalSeconds / 86400); 
-    const hours = Math.floor((totalSeconds % 86400) / 3600); 
-    const minutes = Math.floor((totalSeconds % 3600) / 60); 
-    const seconds = totalSeconds % 60; 
+    const totalSeconds = Math.floor(diffMs / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
 
     if (days > 0) {
-      
-      return `${days}d ${hours}h ${minutes}m ${seconds}s`; 
-    } 
-    return `${hours}h ${minutes}m ${seconds}s`; 
-  }; 
+      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+    return `${hours}h ${minutes}m ${seconds}s`;
+  };
 
-    const getAppUrlIdForToday = () => { 
-    const weekday = new Intl.DateTimeFormat("en-US", { 
-      weekday: "short", 
-      timeZone: "Europe/Stockholm", 
-    }).format(new Date()); 
+  const getAppUrlIdForToday = () => {
+    const weekday = new Intl.DateTimeFormat("en-US", {
+      weekday: "short",
+      timeZone: "Europe/Stockholm",
+    }).format(new Date());
 
-    const dayMap = { 
-      Sun: 0, 
-      Mon: 1, 
-      Tue: 2, 
-      Wed: 3, 
-      Thu: 4, 
-      Fri: 5, 
-      Sat: 6, 
-    }; 
+    const dayMap = {
+      Sun: 0,
+      Mon: 1,
+      Tue: 2,
+      Wed: 3,
+      Thu: 4,
+      Fri: 5,
+      Sat: 6,
+    };
 
-    const dayNumber = dayMap[weekday]; 
+    const dayNumber = dayMap[weekday];
 
-    if (dayNumber >= 0 && dayNumber <= 3) return 2; 
-    return 1; 
-  }; 
-
-  useEffect(() => { 
-    let isMounted = true; 
-
-    const loadAppUrlByDay = async () => { 
-      try {
-        const selectedId = getAppUrlIdForToday(); 
-        const response = await fetch(`${API_BASE_URL}/app_url/${selectedId}`); 
-        if (!response.ok) throw new Error(`HTTP ${response.status}`); 
-        const data = await response.json(); 
-
-        if (!isMounted) return; 
-        setKopandelUrl(data?.url || ""); 
-        setKopandelDate(data?.date || ""); 
-      } catch (err) {
-        console.error("Kunde inte hämta app_url för dagens id", err); 
-      }
-    }; 
-
-    if (API_BASE_URL) { 
-      loadAppUrlByDay(); 
-    } 
-
-    return () => { 
-      isMounted = false; 
-    }; 
-  }, [API_BASE_URL]); 
+    if (dayNumber >= 0 && dayNumber <= 3) return 2;
+    return 1;
+  };
 
   useEffect(() => {
-    
-    const target = parseCompactDate(kopandelDate); 
+    let isMounted = true;
+
+    const loadAppUrlByDay = async () => {
+      try {
+        const selectedId = getAppUrlIdForToday();
+        const response = await fetch(`${API_BASE_URL}/app_url/${selectedId}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+
+        if (!isMounted) return;
+        setKopandelUrl(data?.url || "");
+        setKopandelDate(data?.date || "");
+      } catch (err) {
+        console.error("Kunde inte hämta app_url för dagens id", err);
+      }
+    };
+
+    if (API_BASE_URL) {
+      loadAppUrlByDay();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [API_BASE_URL]);
+
+  useEffect(() => {
+    const target = parseCompactDate(kopandelDate);
     if (!target) {
-      
-      setCountdownText(""); 
-      return; 
-    } 
+      setCountdownText("");
+      return;
+    }
 
-    const tick = () => setCountdownText(formatCountdown(target)); 
-    tick(); 
+    const tick = () => setCountdownText(formatCountdown(target));
+    tick();
 
-    const intervalId = setInterval(tick, 1000); 
-    return () => clearInterval(intervalId); 
-  }, [kopandelDate]); 
+    const intervalId = setInterval(tick, 1000);
+    return () => clearInterval(intervalId);
+  }, [kopandelDate]);
 
   return (
     <div className="relative isolate overflow-hidden bg-gray-900 py-14 sm:py-16">
@@ -283,13 +279,13 @@ export default function Newsletter() {
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:gap-y-2 sm:grid-cols-2 sm:mt-6">
             <div className="flex flex-col items-center">
               <a
-                href={kopandelUrl || "#"} 
-                target="_blank" 
-                rel="noopener noreferrer" 
+                href={kopandelUrl || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
                 onClick={(e) => {
                   if (!kopandelUrl) e.preventDefault();
-                }} 
+                }}
               >
                 <DocumentTextIcon
                   className="h-8 w-8 text-white"
@@ -299,23 +295,20 @@ export default function Newsletter() {
               <dt className="mt-4 font-semibold text-white">Köpandel.se</dt>
               <dd className="mt-2 leading-7 text-gray-300">
                 <a
-                  href={kopandelUrl || "#"} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                  href={kopandelUrl || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-gray-300 hover:text-white"
                   onClick={(e) => {
                     if (!kopandelUrl) e.preventDefault();
-                  }} 
+                  }}
                 >
                   travanalys.se
                 </a>
               </dd>
               <dd className="mt-1 text-sm font-bold text-indigo-300">
-                {" "}
-                
-                {countdownText || "Laddar nedräkning..."} 
-              </dd>{" "}
-              
+                {countdownText || "Laddar nedräkning..."}
+              </dd>
             </div>
 
             <div className="flex flex-col items-center">
@@ -326,7 +319,7 @@ export default function Newsletter() {
                 <EnvelopeIcon
                   className="h-8 w-8 text-white"
                   aria-hidden="true"
-                />{" "}
+                />
               </a>
               <dt className="mt-4 font-semibold text-white">Mejla oss</dt>
               <dd className="mt-2 leading-7 text-gray-400">
@@ -339,8 +332,7 @@ export default function Newsletter() {
               </dd>
             </div>
 
-            <div className="flex flex-col items-center">
-              {" "}
+            <div className="flex flex-col items-center sm:mt-4">
               <a
                 href="https://www.facebook.com/profile.php?id=61555396035366"
                 target="_blank"
@@ -350,7 +342,7 @@ export default function Newsletter() {
                 <FaFacebook
                   className="h-8 w-8 text-white"
                   aria-hidden="true"
-                />{" "}
+                />
               </a>
               <dd className="mt-2 leading-7 text-gray-300">
                 <a
@@ -361,26 +353,26 @@ export default function Newsletter() {
                 ></a>
               </dd>
             </div>
-            <div className="flex flex-col items-center">
-              {" "}
+            <div className="flex flex-col items-center sm:mt-4">
               <a
-                href="https://www.facebook.com/profile.php?id=61555396035366"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/TravAnalysUltimate.apk" 
+                download 
                 className="rounded-md bg-white/5 p-2 ring-1 ring-white/10 hover:bg-white/10"
               >
-                <FaInstagram
+                <ArrowDownTrayIcon
                   className="h-8 w-8 text-white"
                   aria-hidden="true"
-                />{" "}
+                />
               </a>
+              <dt className="mt-4 font-semibold text-white">Ladda ner appen</dt>
               <dd className="mt-2 leading-7 text-gray-300">
                 <a
-                  href="https://www.facebook.com/profile.php?id=61555396035366"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/TravAnalysUltimate.apk" 
+                  download 
                   className="text-gray-300 hover:text-white"
-                ></a>
+                >
+                  Endast för Android
+                </a>
               </dd>
             </div>
           </dl>
