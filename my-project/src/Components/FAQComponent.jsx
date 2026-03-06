@@ -79,11 +79,11 @@ const Faqs = () => {
     },
     {
       q: "Hur kontaktar jag er?",
-      a: "Kontaktuppgifter finns längst ner på hemsidan.",
+      a: "Kontaktuppgifter finns längst ner på hemsidan. Det finns både email och facebook. Vi svarar så fort vi kan! ",
     },
     {
       q: "Kostar det något?",
-      a: "Nej, travanalys.se är helt gratis att använda. Vi kommer att lansera en premiumversion inom kort.",
+      a: "Nej, travanalys.se är helt gratis att använda.",
     },
     {
       q: "Vilka ligger bakom travanalys.se?",
@@ -92,10 +92,6 @@ const Faqs = () => {
        {
       q: "Vem är Trav-olta?",
       a: "Det är vår AI-baserade travbot. Klicka på chatboxen längst ner i högra hörnet för att testa honom! Han har koll på startlistor, odds och roi m.m. Men tänk på att han är i en BETA-version",
-    },
-       {
-      q: "När lanserar ni?",
-      a: "Vi är i en beta-fas och lanserar kontinuerligt nya funktioner. Följ oss på sociala medier eller prenumerera för senaste nytt.",
     },
   ];
 
