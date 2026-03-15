@@ -16,7 +16,7 @@ export default function TravChat() {
     {
       role: "assistant",
       content:
-        "Hej! Jag är Trav-olta och är en travbot. Du kan fråga mig om trav, tips och mycket mer!",
+        "Tjabba! Jag är Trav-olta och är en travbot. Du kan fråga mig om trav, tips och mycket mer!",
     },
   ]);
   const [input, setInput] = useState("");
@@ -42,7 +42,6 @@ export default function TravChat() {
     tailRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // === Röstinspelning state/refs ===
   const [recording, setRecording] = useState(false);                   
   const mediaRecorderRef = useRef(null);                               
   const audioChunksRef = useRef([]);                                   
@@ -91,7 +90,7 @@ export default function TravChat() {
     }
   };
 
-  // === Skicka ljud till /voice/chat och spela upp svaret ===
+  // Skicka ljud till /voice/chat och spela upp svaret 
   async function sendAudio(blob) {                                     
     const form = new FormData();                                       
     form.append("file", blob, "input.webm");                           
@@ -119,7 +118,7 @@ export default function TravChat() {
     }                                                                   
   }                                                                     
 
-  // === Starta/stoppa inspelning ===
+  // Starta/stoppa inspelning 
   async function startRecording() {                                     
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); 
     const mime =
