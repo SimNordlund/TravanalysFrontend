@@ -6,9 +6,9 @@ import {
   Maximize2,
   Minimize2,
   MessageCircle,
-  Mic,        
-  Square,     
-  Volume2,    
+  Mic,
+  Square,
+  Volume2,
 } from "lucide-react";
 
 export default function TravChat() {
@@ -26,7 +26,7 @@ export default function TravChat() {
   const tailRef = useRef(null);
 
   const CHATBOT_URL = import.meta.env.VITE_API_CHATBOT_URL;
-  const VOICE_URL = `${CHATBOT_URL}/voice/chat`; 
+  const VOICE_URL = `${CHATBOT_URL}/voice/chat`;
 
   const [hasUnread, setHasUnread] = useState(() => {
     const opened = sessionStorage.getItem("travchat-opened");
@@ -42,10 +42,47 @@ export default function TravChat() {
     tailRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const [recording, setRecording] = useState(false);                   
-  const mediaRecorderRef = useRef(null);                               
-  const audioChunksRef = useRef([]);                                   
-  const [lastAudioUrl, setLastAudioUrl] = useState(null);              
+  const [recording, setRecording] = useState(false);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const [lastAudioUrl, setLastAudioUrl] = useState(null);
+
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+  const getLinkLabel = (url, fullText) => {
+    const lowerUrl = url.toLowerCase();
+    const lowerText = (fullText || "").toLowerCase();
+
+    if (lowerText.includes("v85") || lowerUrl.includes("v85")) return "V85";
+    if (lowerText.includes("v86") || lowerUrl.includes("v86")) return "V86";
+    return "Öppna länk";
+  };
+
+  const renderMessageContent = (content) => {
+    if (!content) return null;
+
+    const parts = content.split(urlRegex);
+
+    return parts.map((part, index) => {
+      const isUrl = /^https?:\/\/[^\s]+$/.test(part);
+
+      if (isUrl) {
+        return (
+          <a
+            key={index}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-700 dark:text-blue-300 underline break-all"
+          >
+            {getLinkLabel(part, content)}
+          </a>
+        );
+      }
+
+      return <span key={index}>{part}</span>;
+    });
+  };
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -57,7 +94,7 @@ export default function TravChat() {
 
     try {
       const res = await fetch(
-        `${CHATBOT_URL}/chat-stream?message=${encodeURIComponent(user.content)}`
+        `${CHATBOT_URL}/chat-stream?message=${encodeURIComponent(user.content)}`,
       );
       const reader = res.body.getReader();
       const dec = new TextDecoder("utf-8");
@@ -82,7 +119,7 @@ export default function TravChat() {
     } catch (err) {
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: "❌ " + err.message },
+        { role: "assistant", content: "error " + err.message },
       ]);
       if (!isOpenRef.current) setHasUnread(true);
     } finally {
@@ -90,62 +127,68 @@ export default function TravChat() {
     }
   };
 
-  // Skicka ljud till /voice/chat och spela upp svaret 
-  async function sendAudio(blob) {                                     
-    const form = new FormData();                                       
-    form.append("file", blob, "input.webm");                           
+  // Skicka ljud till /voice/chat och spela upp svaret
+  async function sendAudio(blob) {
+    const form = new FormData();
+    form.append("file", blob, "input.webm");
 
-    setStreaming(true);                                                
-    try {                                                              
-      const res = await fetch(VOICE_URL, { method: "POST", body: form }); 
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);              
-      const { text, audioBase64 } = await res.json();                  
+    setStreaming(true);
+    try {
+      const res = await fetch(VOICE_URL, { method: "POST", body: form });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const { text, audioBase64 } = await res.json();
 
-      // Lägg till textsvar i chatten                                     
-      setMessages((m) => [...m, { role: "assistant", content: text }]); 
+      // Lägg till textsvar i chatten
+      setMessages((m) => [...m, { role: "assistant", content: text }]);
 
-      // Spela upp ljud                                                    
-      const url = `data:audio/mp3;base64,${audioBase64}`;               
-      setLastAudioUrl(url);                                             
-      const audio = new Audio(url);                                     
-      audio.play().catch(() => {});                                     
+      // Spela upp ljud
+      const url = `data:audio/mp3;base64,${audioBase64}`;
+      setLastAudioUrl(url);
+      const audio = new Audio(url);
+      audio.play().catch(() => {});
 
-      if (!isOpenRef.current) setHasUnread(true);                       
-    } catch (err) {                                                     
-      setMessages((m) => [...m, { role: "assistant", content: "❌ " + err.message }]); 
-    } finally {                                                         
-      setStreaming(false);                                              
-    }                                                                   
-  }                                                                     
+      if (!isOpenRef.current) setHasUnread(true);
+    } catch (err) {
+      setMessages((m) => [
+        ...m,
+        { role: "assistant", content: "error " + err.message },
+      ]);
+    } finally {
+      setStreaming(false);
+    }
+  }
 
-  // Starta/stoppa inspelning 
-  async function startRecording() {                                     
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); 
-    const mime =
-      MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
-        ? "audio/webm;codecs=opus"
-        : MediaRecorder.isTypeSupported("audio/mp4")
+  // Starta/stoppa inspelning
+  async function startRecording() {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+      ? "audio/webm;codecs=opus"
+      : MediaRecorder.isTypeSupported("audio/mp4")
         ? "audio/mp4"
-        : "";                                                           
-    const mr = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined); 
+        : "";
+    const mr = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
 
-    audioChunksRef.current = [];                                        
-    mr.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data); }; 
-    mr.onstop = () => {                                                 
-      const blob = new Blob(audioChunksRef.current, { type: mime || "audio/webm" }); 
-      sendAudio(blob);                                                  
-      stream.getTracks().forEach(t => t.stop());                        
-    };                                                                  
+    audioChunksRef.current = [];
+    mr.ondataavailable = (e) => {
+      if (e.data.size > 0) audioChunksRef.current.push(e.data);
+    };
+    mr.onstop = () => {
+      const blob = new Blob(audioChunksRef.current, {
+        type: mime || "audio/webm",
+      });
+      sendAudio(blob);
+      stream.getTracks().forEach((t) => t.stop());
+    };
 
-    mediaRecorderRef.current = mr;                                      
-    mr.start();                                                         
-    setRecording(true);                                                 
-  }                                                                     
+    mediaRecorderRef.current = mr;
+    mr.start();
+    setRecording(true);
+  }
 
-  function stopRecording() {                                            
-    mediaRecorderRef.current?.stop();                                   
-    setRecording(false);                                                
-  }                                                                     
+  function stopRecording() {
+    mediaRecorderRef.current?.stop();
+    setRecording(false);
+  }
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
@@ -205,30 +248,30 @@ export default function TravChat() {
             {messages.map((m, i) => (
               <div
                 key={i}
-                className={`whitespace-pre-wrap rounded-xl px-4 py-2 max-w-[80%] ${
+                className={`whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-xl px-4 py-2 max-w-[80%] ${
                   m.role === "user"
                     ? "ml-auto bg-blue-600 text-white"
                     : "mr-auto bg-gray-200 dark:bg-gray-700 dark:text-gray-50"
                 }`}
               >
-                {m.content}
+                {renderMessageContent(m.content)}
               </div>
             ))}
             <div ref={tailRef} />
           </div>
 
-          <div className="p-4 flex flex-col gap-3 border-t dark:border-gray-700"> 
-            <div className="flex gap-2">                                         
-              <button                                                             
-                onClick={() => (recording ? stopRecording() : startRecording())}  
-                disabled={streaming}                                              
-                aria-label={recording ? "Stoppa inspelning" : "Spela in röst"}    
+          <div className="p-4 flex flex-col gap-3 border-t dark:border-gray-700">
+            <div className="flex gap-2">
+              <button
+                onClick={() => (recording ? stopRecording() : startRecording())}
+                disabled={streaming}
+                aria-label={recording ? "Stoppa inspelning" : "Spela in röst"}
                 className={`h-12 w-12 shrink-0 rounded-xl flex items-center justify-center
                             ${recording ? "bg-red-600 text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-900"}
-                            disabled:opacity-50`}                                  
+                            disabled:opacity-50`}
               >
-                {recording ? <Square /> : <Mic />}                                
-              </button>                                                            
+                {recording ? <Square /> : <Mic />}
+              </button>
 
               <textarea
                 className="flex-1 resize-none rounded-xl border p-3 focus:outline-none focus:ring
@@ -250,18 +293,22 @@ export default function TravChat() {
                 className="h-12 w-12 shrink-0 rounded-xl bg-blue-600 text-white flex items-center justify-center
                            disabled:opacity-50"
               >
-                {streaming ? <Loader2 className="animate-spin" /> : <PaperPlaneIcon />}
+                {streaming ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <PaperPlaneIcon />
+                )}
               </button>
-            </div>                                                                 
+            </div>
 
-            {lastAudioUrl && (                                                     
-              <div className="px-1">                                              
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300"> 
-                  <Volume2 className="h-4 w-4" /> Ljudsvar                         
-                </div>                                                             
-                <audio controls src={lastAudioUrl} className="mt-1 w-full" />      
-              </div>                                                               
-            )}                                                                      
+            {lastAudioUrl && (
+              <div className="px-1">
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                  <Volume2 className="h-4 w-4" /> Ljudsvar
+                </div>
+                <audio controls src={lastAudioUrl} className="mt-1 w-full" />
+              </div>
+            )}
           </div>
         </div>
       )}
