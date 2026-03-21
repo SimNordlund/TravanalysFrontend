@@ -199,14 +199,14 @@ export default function TravChat() {
             setHasUnread(false);
             sessionStorage.setItem("travchat-opened", "1");
           }}
-          className="relative bg-blue-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center"
+          className="relative bg-indigo-500 text-white p-4 rounded-full shadow-lg flex items-center justify-center"
           aria-label="Öppna chatt"
         >
           <MessageCircle size={28} />
           {hasUnread && (
             <>
               <span
-                className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-blue-700 opacity-85 animate-ping"
+                className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-indigo-500 opacity-85 animate-ping"
                 aria-hidden="true"
               />
               <span
@@ -227,9 +227,8 @@ export default function TravChat() {
                    : "w-[90vw] max-w-[400px] h-[80vh] max-h-[600px]"
                }`}
         >
-          <div className="flex items-center justify-between bg-blue-600 text-white p-3">
-            <div>Trav-olta 💬</div>
-            <div className="text-orange-400 font-bold mr-6 sm:mr-12">BETA</div>
+          <div className="flex items-center justify-between bg-gray-300 text-black p-3">
+            <div className="font-bold">Trav-olta 💬</div>
             <div className="flex items-center gap-2">
               <button onClick={() => setIsMaximized((m) => !m)}>
                 {isMaximized ? <Minimize2 /> : <Maximize2 />}
@@ -248,10 +247,10 @@ export default function TravChat() {
             {messages.map((m, i) => (
               <div
                 key={i}
-                className={`whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-xl px-4 py-2 max-w-[80%] ${
+                className={`whitespace-pre-wrap [overflow-wrap:anywhere] rounded-xl px-4 py-2 max-w-[80%] ${
                   m.role === "user"
-                    ? "ml-auto bg-blue-600 text-white"
-                    : "mr-auto bg-gray-200 dark:bg-gray-700 dark:text-gray-50"
+                    ? "ml-auto bg-indigo-500 text-white"
+                    : "mr-auto bg-gray-100 dark:bg-gray-700 dark:text-gray-50"
                 }`}
               >
                 {renderMessageContent(m.content)}
@@ -290,7 +289,7 @@ export default function TravChat() {
               <button
                 onClick={sendMessage}
                 disabled={streaming}
-                className="h-12 w-12 shrink-0 rounded-xl bg-blue-600 text-white flex items-center justify-center
+                className="h-12 w-12 shrink-0 rounded-xl bg-indigo-500 text-white flex items-center justify-center
                            disabled:opacity-50"
               >
                 {streaming ? (
