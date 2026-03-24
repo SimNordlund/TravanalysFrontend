@@ -356,7 +356,7 @@ export default function Newsletter() {
             </div>
             <div className="flex flex-col items-center sm:mt-4">
               <a
-                href="/TravAnalysUltimate.apk" 
+                href="/TravanalysCounterV2.apk"
                 download 
                 className="rounded-xl bg-white/10 p-3 ring-1 ring-white/20 shadow-sm hover:ring-indigo-400/60 hover:shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-0.5"
               >
@@ -368,7 +368,7 @@ export default function Newsletter() {
               <dt className="mt-4 font-semibold text-white">Ladda ner appen</dt>
               <dd className="mt-2 leading-7 text-gray-300">
                 <a
-                  href="/TravAnalysUltimate.apk" 
+                  href="/TravanalysCounterV2.apk"
                   download 
                   className="text-gray-300 hover:text-white"
                 >
