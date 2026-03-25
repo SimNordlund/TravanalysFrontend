@@ -86,10 +86,10 @@ export default function IntroComponent() {
   return (
     <div className="overflow-hidden bg-white pt-6 pb-0 sm:pt-10 sm:pb-10">
       <div className="mx-auto max-w-7xl px-6 lg:px-0">
-        <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 xl:mx-0 xl:max-w-none xl:grid-cols-2">
+        <div className="mx-auto grid max-w-2xl grid-cols-1 items-start gap-x-8 gap-y-16 sm:gap-y-20 xl:mx-0 xl:max-w-none xl:grid-cols-2">
           <div className="lg:mt-6 lg:pr-8">
             <div className="lg:max-w-lg">
-              <div className="mb-4 min-h-[44px]">
+              <div className="mb-4 h-[44px] sm:h-[52px]"> 
                 {banner && (
                   <a
                     href={banner.url}
@@ -141,7 +141,7 @@ export default function IntroComponent() {
             src={vinst1}
             width={2432}
             height={1442}
-            className="hidden md:block w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 md:w-[53rem] md:-ml-24 xl:-ml-24 mt-16"
+            className="hidden self-start md:block w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 md:w-[50rem] md:-ml-24 xl:-ml-24 mt-20" 
           />
         </div>
       </div>
