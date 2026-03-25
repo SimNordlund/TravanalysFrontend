@@ -18,7 +18,7 @@ const SharedHorseLegend = ({
 
 
   const btnBase = "px-2 py-1 text-xs rounded sm:text-1xl tracking-tight"; 
-  const activeCls = "bg-orange-500 hover:bg-orange-600 text-white shadow-md border-2 border-slate-600 font-semibold"; 
+  const activeCls = "bg-indigo-500 hover:bg-indigo-600 text-white shadow-md border-2 border-slate-600 font-semibold"; 
   const inactiveCls = "bg-gray-200 text-black hover:bg-blue-200"; 
   const cls = (key) => `${btnBase} ${active === key ? activeCls : inactiveCls}`; 
 

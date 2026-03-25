@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react"; 
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   useParams,
   useNavigate,
@@ -17,7 +17,7 @@ const FALLBACK_BANNER = {
   url: "https://travanalys.se",
 };
 
-const normalizeStarter = (v) => String(v ?? "").trim() || "0"; 
+const normalizeStarter = (v) => String(v ?? "").trim() || "0";
 
 const ToggleComponent = ({ syncWithRoute = false }) => {
   const { view: viewParam } = useParams();
@@ -47,7 +47,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState(initialSelectedView);
   const [selectedHorse, setSelectedHorse] = useState(null);
-  const [startsCount, setStartsCount] = useState("0"); 
+  const [startsCount, setStartsCount] = useState("0");
   const [visibleHorseIdxes, setVisibleHorseIdxes] = useState([]);
   const [horseLegendItems, setHorseLegendItems] = useState([]);
   const [top5Idxes, setTop5Idxes] = useState([]);
@@ -57,7 +57,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [competitions, setCompetitions] = useState([]);
   const [laps, setLaps] = useState([]);
 
-  const [banners, setBanners] = useState([]);
+  const [banners, setBanners] = useState([FALLBACK_BANNER]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const API_BASE_URL =
@@ -66,9 +66,9 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
   const pendingLapRef = useRef(null);
 
-  const setPendingLapId = useCallback((lapId) => { 
-    pendingLapRef.current = lapId; 
-  }, []); 
+  const setPendingLapId = useCallback((lapId) => {
+    pendingLapRef.current = lapId;
+  }, []);
 
   const [legendMode, setLegendMode] = useState("all");
 
@@ -83,43 +83,57 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const hadInitialQuery = useRef(
     Boolean(
       initialQuery.current.date ||
-        initialQuery.current.track ||
-        initialQuery.current.competition ||
-        initialQuery.current.lap
-    )
+      initialQuery.current.track ||
+      initialQuery.current.competition ||
+      initialQuery.current.lap,
+    ),
   );
   const shouldSyncQueryRef = useRef(hadInitialQuery.current);
   const lastWrittenQueryRef = useRef("");
 
-  const markUserInteraction = useCallback(() => { 
-    shouldSyncQueryRef.current = true; 
-  }, []); 
+  const markUserInteraction = useCallback(() => {
+    shouldSyncQueryRef.current = true;
+  }, []);
 
- 
-  const setSelectedDateUser = useCallback((v) => { 
-    markUserInteraction(); 
-    setSelectedDate(v); 
-  }, [markUserInteraction]); 
+  const setSelectedDateUser = useCallback(
+    (v) => {
+      markUserInteraction();
+      setSelectedDate(v);
+    },
+    [markUserInteraction],
+  );
 
-  const setSelectedTrackUser = useCallback((v) => { 
-    markUserInteraction(); 
-    setSelectedTrack(v); 
-  }, [markUserInteraction]); 
+  const setSelectedTrackUser = useCallback(
+    (v) => {
+      markUserInteraction();
+      setSelectedTrack(v);
+    },
+    [markUserInteraction],
+  );
 
-  const setSelectedCompetitionUser = useCallback((v) => { 
-    markUserInteraction(); 
-    setSelectedCompetition(v); 
-  }, [markUserInteraction]); 
+  const setSelectedCompetitionUser = useCallback(
+    (v) => {
+      markUserInteraction();
+      setSelectedCompetition(v);
+    },
+    [markUserInteraction],
+  );
 
-  const setSelectedLapUser = useCallback((v) => { 
-    markUserInteraction(); 
-    setSelectedLap(v); 
-  }, [markUserInteraction]); 
+  const setSelectedLapUser = useCallback(
+    (v) => {
+      markUserInteraction();
+      setSelectedLap(v);
+    },
+    [markUserInteraction],
+  );
 
-  const setStartsCountUser = useCallback((v) => { 
-    markUserInteraction(); 
-    setStartsCount(v); 
-  }, [markUserInteraction]); 
+  const setStartsCountUser = useCallback(
+    (v) => {
+      markUserInteraction();
+      setStartsCount(v);
+    },
+    [markUserInteraction],
+  );
 
   const appliedFromQuery = useRef({
     track: false,
@@ -211,23 +225,29 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     if (nextView !== "spider") setSelectedHorse(null);
   }, [syncWithRoute, viewParam]);
 
-  const setViewAndMaybeNavigate = useCallback((viewKey) => { 
-    setSelectedView(viewKey); 
-    if (viewKey !== "spider") setSelectedHorse(null); 
-    if (syncWithRoute) { 
-      const target = `/chart/${viewToRoute[viewKey]}`; 
-      if (location.pathname !== target) { 
-        navigate({ 
-          pathname: target, 
-          search: shouldSyncQueryRef.current
-            ? `?${searchParams.toString()}`
-            : "",
-        }); 
-      } 
-    } 
-  }, [syncWithRoute, location.pathname, navigate, searchParams]); 
+  const setViewAndMaybeNavigate = useCallback(
+    (viewKey) => {
+      setSelectedView(viewKey);
+      if (viewKey !== "spider") setSelectedHorse(null);
+      if (syncWithRoute) {
+        const target = `/chart/${viewToRoute[viewKey]}`;
+        if (location.pathname !== target) {
+          navigate({
+            pathname: target,
+            search: shouldSyncQueryRef.current
+              ? `?${searchParams.toString()}`
+              : "",
+          });
+        }
+      }
+    },
+    [syncWithRoute, location.pathname, navigate, searchParams],
+  );
 
-  const switchView = useCallback((viewKey) => setViewAndMaybeNavigate(viewKey), [setViewAndMaybeNavigate]); 
+  const switchView = useCallback(
+    (viewKey) => setViewAndMaybeNavigate(viewKey),
+    [setViewAndMaybeNavigate],
+  );
 
   const pickClosestDate = (arr) => {
     if (!arr?.length) return "";
@@ -254,7 +274,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         });
         const all = await r.json();
         const uniqueSorted = Array.from(
-          new Map(all.map((d) => [d.date, d])).values()
+          new Map(all.map((d) => [d.date, d])).values(),
         ).sort((a, b) => a.date.localeCompare(b.date));
         setDates(uniqueSorted);
 
@@ -265,7 +285,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             const todayStr = new Date().toISOString().split("T")[0];
             const hasToday = uniqueSorted.find((x) => x.date === todayStr);
             setSelectedDate(
-              hasToday ? todayStr : pickClosestDate(uniqueSorted)
+              hasToday ? todayStr : pickClosestDate(uniqueSorted),
             );
           }
         }
@@ -284,7 +304,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
       try {
         const r = await fetch(
           `${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`,
-          { signal: ac.signal }
+          { signal: ac.signal },
         );
         const d = await r.json();
         setTracks(d);
@@ -297,7 +317,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           const q = initialQuery.current.track;
           const byId = d.find((t) => String(t.id) === q);
           const byName = d.find(
-            (t) => normalize(t.nameOfTrack) === normalize(q)
+            (t) => normalize(t.nameOfTrack) === normalize(q),
           );
           const target = byId || byName;
           appliedFromQuery.current.track = true;
@@ -332,7 +352,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
       try {
         const r = await fetch(
           `${API_BASE_URL}/competition/findByTrack?trackId=${selectedTrack}`,
-          { signal: ac.signal }
+          { signal: ac.signal },
         );
         const d = await r.json();
         setCompetitions(d);
@@ -345,10 +365,10 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           const items = Array.isArray(d) ? d : [];
           const byId = items.find((c) => String(c.id) === q);
           const byExact = items.find(
-            (c) => normalize(c.nameOfCompetition) === normalize(q)
+            (c) => normalize(c.nameOfCompetition) === normalize(q),
           );
           const byCompact = items.find(
-            (c) => compact(c.nameOfCompetition) === compact(q)
+            (c) => compact(c.nameOfCompetition) === compact(q),
           );
           const target = byId || byExact || byCompact;
 
@@ -389,7 +409,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
       try {
         const r = await fetch(
           `${API_BASE_URL}/lap/findByCompetition?competitionId=${selectedCompetition}`,
-          { signal: ac.signal }
+          { signal: ac.signal },
         );
         const d = await r.json();
         setLaps(d || []);
@@ -417,7 +437,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
               : null;
 
           const byExactName = items.find(
-            (l) => normalize(l.nameOfLap) === normalize(qRaw)
+            (l) => normalize(l.nameOfLap) === normalize(qRaw),
           );
 
           const byNumberToken =
@@ -491,7 +511,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
       const c = competitions.find((x) => x.id === +selectedCompetition);
       params.set(
         "competition",
-        c?.nameOfCompetition ?? String(selectedCompetition)
+        c?.nameOfCompetition ?? String(selectedCompetition),
       );
     } else params.delete("competition");
 
@@ -528,10 +548,10 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
       legendMode === "top3" && Array.isArray(top3Idx)
         ? top3Idx
         : legendMode === "top5" && Array.isArray(top5Idx)
-        ? top5Idx
-        : prev?.length
-        ? prev
-        : suggestedVisibleIdxes || []
+          ? top5Idx
+          : prev?.length
+            ? prev
+            : suggestedVisibleIdxes || [],
     );
     if (Array.isArray(top5Idx)) setTop5Idxes(top5Idx);
     if (Array.isArray(top3Idx)) setTop3Idxes(top3Idx);
@@ -539,7 +559,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
   const toggleLegendIdx = (idx) =>
     setVisibleHorseIdxes((prev) =>
-      prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
+      prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx],
     );
 
   const showAllLegend = () => {
@@ -571,38 +591,40 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     {
       id: 4,
       name: "Spel & ROI",
-      bgColor: "bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600",
+      bgColor: "bg-gradient-to-r from-gray-400 via-gray-500 to-gray-600",
       view: "skrallar",
     },
   ];
 
   return (
     <div className="text-center pt-12 pb-12 sm:pt-16 sm:pb-14 bg-slate-100">
-      {banner && (
-        <div className="flex justify-center">
-          <a
-            href={banner.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex max-w-full items-center gap-x-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-gray-500 pl-5 pr-3 py-1 mb-4 text-xs font-semibold text-white shadow-lg ring-1 ring-black/5 hover:scale-[1.02] hover:shadow-xl hover:ring-black/10 transition"
-          >
-            <span className="flex min-w-0 text-left">
-              <span
-                className="block truncate text-xs sm:text-base max-w-[80vw] sm:max-w-[26rem] md:max-w-[32rem]"
-                title={banner.mening}
-              >
-                {banner.mening}
-              </span>
-            </span>
-            <span
-              aria-hidden="true"
-              className="ml-0 mr-0 text-2xl flex-shrink-0 sm:mb-1"
+      <div className="mb-4 min-h-[44px]">
+        {banner && (
+          <div className="flex justify-center">
+            <a
+              href={banner.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex max-w-full items-center gap-x-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-gray-500 pl-5 pr-3 py-1 mb-4 text-xs font-semibold text-white shadow-lg ring-1 ring-black/5 hover:scale-[1.02] hover:shadow-xl hover:ring-black/10 transition"
             >
-              →
-            </span>
-          </a>
-        </div>
-      )}
+              <span className="flex min-w-0 text-left">
+                <span
+                  className="block truncate text-xs sm:text-base max-w-[80vw] sm:max-w-[26rem] md:max-w-[32rem]"
+                  title={banner.mening}
+                >
+                  {banner.mening}
+                </span>
+              </span>
+              <span
+                aria-hidden="true"
+                className="ml-0 mr-0 text-2xl flex-shrink-0 sm:mb-1"
+              >
+                →
+              </span>
+            </a>
+          </div>
+        )}
+      </div>
 
       <div className="flex justify-center gap-x-4 sm:gap-x-10 flex-nowrap overflow-auto mb-4 sm:mb-8 pt-2 pb-3">
         {callouts.map((c) => (
@@ -697,7 +719,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
               </div>
             </div>
 
-            {normalizeStarter(startsCount) !== "0" && ( 
+            {normalizeStarter(startsCount) !== "0" && (
               <div className="min-h-[200px]">
                 <AnalysChart
                   selectedLap={selectedLap}

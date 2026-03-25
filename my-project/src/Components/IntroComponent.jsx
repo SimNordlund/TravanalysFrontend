@@ -39,7 +39,7 @@ const FALLBACK_BANNER = {
 };
 
 export default function IntroComponent() {
-  const [banners, setBanners] = useState([]);
+  const [banners, setBanners] = useState([FALLBACK_BANNER]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const API_BASE_URL =
@@ -89,30 +89,31 @@ export default function IntroComponent() {
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 xl:mx-0 xl:max-w-none xl:grid-cols-2">
           <div className="lg:mt-6 lg:pr-8">
             <div className="lg:max-w-lg">
-              {banner && (
-                <a
-                  href={banner.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex max-w-full items-center gap-x-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-gray-500 pl-5 pr-3 py-1 mb-4 text-xs font-semibold text-white shadow-lg ring-1 ring-black/5 hover:scale-[1.02] hover:shadow-xl hover:ring-black/10 transition"
-                >
-                  <span className="flex min-w-0 text-left">
-                    <span
-                      className="block truncate text-xs sm:text-base max-w-[80vw] sm:max-w-[26rem] md:max-w-[32rem]" 
-                      title={banner.mening}
-                    >
-                      {banner.mening}
-                    </span>
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className="ml-0 mr-0 text-2xl flex-shrink-0 sm:mb-1"
+              <div className="mb-4 min-h-[44px]">
+                {banner && (
+                  <a
+                    href={banner.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex max-w-full items-center gap-x-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-gray-500 pl-5 pr-3 py-1 mb-4 text-xs font-semibold text-white shadow-lg ring-1 ring-black/5 hover:scale-[1.02] hover:shadow-xl hover:ring-black/10 transition"
                   >
-                    →
-                  </span>
-                </a>
-              )}
-
+                    <span className="flex min-w-0 text-left">
+                      <span
+                        className="block truncate text-xs sm:text-base max-w-[80vw] sm:max-w-[26rem] md:max-w-[32rem]"
+                        title={banner.mening}
+                      >
+                        {banner.mening}
+                      </span>
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="ml-0 mr-0 text-2xl flex-shrink-0 sm:mb-1"
+                    >
+                      →
+                    </span>
+                  </a>
+                )}
+              </div>
               <h3 className="text-base/7 font-semibold text-orange-600">
                 BETA-version!
               </h3>
