@@ -94,7 +94,7 @@ export default function IntroComponent() {
                   href={banner.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex max-w-full items-center gap-x-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-orange-500 pl-5 pr-3 py-1 mb-4 text-xs font-semibold text-white shadow-lg ring-1 ring-black/5 hover:scale-[1.02] hover:shadow-xl hover:ring-black/10 transition"
+                  className="inline-flex max-w-full items-center gap-x-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-gray-500 pl-5 pr-3 py-1 mb-4 text-xs font-semibold text-white shadow-lg ring-1 ring-black/5 hover:scale-[1.02] hover:shadow-xl hover:ring-black/10 transition"
                 >
                   <span className="flex min-w-0 text-left">
                     <span
