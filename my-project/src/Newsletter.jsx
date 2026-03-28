@@ -321,7 +321,7 @@ export default function Newsletter() {
                   aria-hidden="true"
                 />
               </a>
-              <dt className="mt-4 font-semibold text-white">Mejla oss</dt>
+              <dt className="mt-4 font-semibold text-white">Mejla</dt>
               <dd className="mt-2 leading-7 text-gray-400">
                 <a
                   href="mailto:travanalys@gmail.com"
