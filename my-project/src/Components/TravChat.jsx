@@ -206,7 +206,7 @@ export default function TravChat() {
           {hasUnread && (
             <>
               <span
-                className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-indigo-500 opacity-85 animate-ping"
+                className="absolute -top-0.5 -right-0.5 inline-flex h-3 w-3 rounded-full bg-gray-900 opacity-85 animate-ping"
                 aria-hidden="true"
               />
               <span
