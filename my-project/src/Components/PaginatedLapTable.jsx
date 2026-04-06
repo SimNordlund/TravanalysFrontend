@@ -35,6 +35,7 @@ const PaginatedLapTable = ({
     direction: "desc",
   });
 
+
   const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
 
