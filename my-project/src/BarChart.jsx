@@ -283,7 +283,7 @@ const BarChartComponent = ({
 
   const selectedCompetitionLabel =
     competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "v75";
+      ?.nameOfCompetition ?? "v85";
 
   const compName =
     competitions.find((c) => c.id === +selectedCompetition)

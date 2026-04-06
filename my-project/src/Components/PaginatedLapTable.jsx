@@ -52,6 +52,42 @@ const PaginatedLapTable = ({
     return s;
   };
 
+  useEffect(() => {
+    if (!tracks.length || !setSelectedTrack) return; 
+
+    const hasValidSelectedTrack = tracks.some((t) => t.id === +selectedTrack); 
+    if (hasValidSelectedTrack) return; 
+
+    const farjestadTrack = tracks.find( 
+      (t) => t.nameOfTrack?.trim().toLowerCase() === "färjestad" 
+    ); 
+
+    if (farjestadTrack) { 
+      setSelectedTrack(farjestadTrack.id); 
+    } else if (tracks[0]) { 
+      setSelectedTrack(tracks[0].id); 
+    } 
+  }, [tracks, selectedTrack, setSelectedTrack]); 
+
+  useEffect(() => {
+    if (!competitions.length || !setSelectedCompetition) return; 
+
+    const hasValidSelectedCompetition = competitions.some( 
+      (c) => c.id === +selectedCompetition 
+    ); 
+    if (hasValidSelectedCompetition) return; 
+
+    const defaultCompetition = competitions.find( 
+      (c) => c.nameOfCompetition?.trim().toLowerCase() === "v85" 
+    ); 
+
+    if (defaultCompetition) { 
+      setSelectedCompetition(defaultCompetition.id); 
+    } else if (competitions[0]) { 
+      setSelectedCompetition(competitions[0].id); 
+    } 
+  }, [competitions, selectedCompetition, setSelectedCompetition]); 
+
   const competitionName =
     competitions.find((c) => c.id === +selectedCompetition)
       ?.nameOfCompetition ?? "Analys";
@@ -226,40 +262,44 @@ const PaginatedLapTable = ({
   const goNext = () =>
     idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
-  const today = new Date().toISOString().split("T")[0];
-  const yesterday = new Date(Date.now() - 864e5).toISOString().split("T")[0];
-  const tomorrow = new Date(Date.now() + 864e5).toISOString().split("T")[0];
+  const today = new Date(); 
+  const todayStr = today.toISOString().split("T")[0]; 
+  const yesterdayStr = new Date(today - 864e5).toISOString().split("T")[0]; 
+  const tomorrowStr = new Date(+today + 864e5).toISOString().split("T")[0]; 
 
-  const sv = (d) => {
-    const date = new Date(d);
-    const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday =
-      weekday.charAt(0).toUpperCase() + weekday.slice(1);
-    const rest = date.toLocaleDateString("sv-SE", {
-      day: "numeric",
-      month: "long",
-    });
-    return `${capitalizedWeekday}, ${rest}`;
-  };
+  const fmt = (d) => { 
+    if (!d) return ""; 
+    const date = new Date(d); 
+    if (Number.isNaN(date.getTime())) return ""; 
+    const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" }); 
+    const capitalizedWeekday = 
+      weekday.charAt(0).toUpperCase() + weekday.slice(1); 
+    const rest = date.toLocaleDateString("sv-SE", { 
+      day: "numeric", 
+      month: "long", 
+    }); 
+    return `${capitalizedWeekday}, ${rest}`; 
+  }; 
 
-  const selectedDateLabel =
-    selectedDate === today
-      ? `Idag, ${sv(selectedDate)}`
-      : selectedDate === yesterday
-      ? `Igår, ${sv(selectedDate)}`
-      : selectedDate === tomorrow
-      ? `Imorgon, ${sv(selectedDate)}`
-      : sv(selectedDate);
+  const selectedDateLabel = !selectedDate 
+    ? "Laddar datum…" 
+    : selectedDate === todayStr 
+    ? `Idag, ${fmt(selectedDate)}` 
+    : selectedDate === yesterdayStr 
+    ? `Igår, ${fmt(selectedDate)}` 
+    : selectedDate === tomorrowStr 
+    ? `Imorgon, ${fmt(selectedDate)}` 
+    : fmt(selectedDate) || "Laddar datum…"; 
 
-  const selectedTrackLabel =
-    tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "";
+   const selectedTrackLabel =
+    tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad"; 
   const selectedCompetitionLabel =
     competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "";
+      ?.nameOfCompetition ?? "v85"; 
 
   const compName =
     competitions.find((c) => c.id === +selectedCompetition)
-      ?.nameOfCompetition ?? "";
+      ?.nameOfCompetition ?? "v85";
 
   const lapPrefix = /proposition/i.test(compName)
     ? "Prop"
