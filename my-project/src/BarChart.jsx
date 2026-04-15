@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Bar, getElementAtEvent } from "react-chartjs-2";
-import travhorsi from "./Bilder/travhorsi2.png";
 import DatePicker from "./Components/DatePicker";
 import Chart from "chart.js/auto";
 import { ChevronLeft, ChevronRight } from "lucide-react"; 
@@ -8,6 +7,278 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 Chart.defaults.font.family =
   "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'";
 Chart.defaults.font.weight = 400;
+
+const horseRunLoaderStyles = `
+.horse-run-loader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 10rem;
+  height: 7rem;
+}
+
+.horse-run-loader__svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.horse-run-loader__horse {
+  animation: horse-loader-body 640ms cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  transform-origin: 80px 58px;
+}
+
+.horse-run-loader__body,
+.horse-run-loader__head,
+.horse-run-loader__tail {
+  fill: #4f46e5;
+}
+
+.horse-run-loader__mane,
+.horse-run-loader__leg {
+  fill: none;
+  stroke: #312e81;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.horse-run-loader__mane {
+  stroke-width: 4;
+}
+
+.horse-run-loader__head {
+  animation: horse-loader-head 640ms cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  transform-box: fill-box;
+  transform-origin: 20% 70%;
+}
+
+.horse-run-loader__tail {
+  animation: horse-loader-tail 520ms cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  transform-box: fill-box;
+  transform-origin: 90% 45%;
+}
+
+.horse-run-loader__leg {
+  stroke-width: 7;
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  animation-iteration-count: infinite;
+}
+
+.horse-run-loader__leg--far {
+  stroke: #6366f1;
+  stroke-width: 6;
+  opacity: 0.7;
+}
+
+.horse-run-loader__leg--front-a {
+  animation-name: horse-loader-front-a;
+}
+
+.horse-run-loader__leg--front-b {
+  animation-name: horse-loader-front-b;
+}
+
+.horse-run-loader__leg--back-a {
+  animation-name: horse-loader-back-a;
+}
+
+.horse-run-loader__leg--back-b {
+  animation-name: horse-loader-back-b;
+}
+
+.horse-run-loader__shadow {
+  fill: #0f172a;
+  opacity: 0.12;
+  animation: horse-loader-shadow 640ms cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  transform-origin: 80px 96px;
+}
+
+.horse-run-loader__track-line {
+  animation: horse-loader-ground 720ms linear infinite;
+  stroke: #94a3b8;
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.horse-run-loader__track-line--two {
+  animation-delay: -240ms;
+}
+
+.horse-run-loader__track-line--three {
+  animation-delay: -480ms;
+}
+
+@keyframes horse-loader-body {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes horse-loader-head {
+  0%, 100% {
+    transform: rotate(-2deg) translateY(0);
+  }
+  50% {
+    transform: rotate(3deg) translateY(2px);
+  }
+}
+
+@keyframes horse-loader-tail {
+  0%, 100% {
+    transform: rotate(-9deg);
+  }
+  50% {
+    transform: rotate(12deg);
+  }
+}
+
+@keyframes horse-loader-front-a {
+  0%, 100% {
+    transform: rotate(24deg);
+  }
+  50% {
+    transform: rotate(-26deg) translateY(2px);
+  }
+}
+
+@keyframes horse-loader-front-b {
+  0%, 100% {
+    transform: rotate(-22deg) translateY(2px);
+  }
+  50% {
+    transform: rotate(26deg);
+  }
+}
+
+@keyframes horse-loader-back-a {
+  0%, 100% {
+    transform: rotate(-24deg) translateY(2px);
+  }
+  50% {
+    transform: rotate(26deg);
+  }
+}
+
+@keyframes horse-loader-back-b {
+  0%, 100% {
+    transform: rotate(24deg);
+  }
+  50% {
+    transform: rotate(-26deg) translateY(2px);
+  }
+}
+
+@keyframes horse-loader-shadow {
+  0%, 100% {
+    transform: scaleX(1);
+    opacity: 0.12;
+  }
+  50% {
+    transform: scaleX(0.78);
+    opacity: 0.08;
+  }
+}
+
+@keyframes horse-loader-ground {
+  0% {
+    transform: translateX(32px);
+    opacity: 0;
+  }
+  20%, 75% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translateX(-40px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .horse-run-loader__horse,
+  .horse-run-loader__head,
+  .horse-run-loader__tail,
+  .horse-run-loader__leg,
+  .horse-run-loader__shadow,
+  .horse-run-loader__track-line {
+    animation-duration: 1.4s;
+  }
+}
+`;
+
+const HorseRunLoader = () => (
+  <div className="horse-run-loader" role="status" aria-label="Laddar diagram">
+    <style>{horseRunLoaderStyles}</style>
+    <svg
+      className="horse-run-loader__svg"
+      viewBox="0 0 160 110"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <g>
+        <path
+          className="horse-run-loader__track-line"
+          d="M10 96 H54"
+        />
+        <path
+          className="horse-run-loader__track-line horse-run-loader__track-line--two"
+          d="M68 100 H116"
+        />
+        <path
+          className="horse-run-loader__track-line horse-run-loader__track-line--three"
+          d="M28 103 H74"
+        />
+      </g>
+      <ellipse
+        className="horse-run-loader__shadow"
+        cx="80"
+        cy="96"
+        rx="48"
+        ry="7"
+      />
+      <g className="horse-run-loader__horse">
+        <path
+          className="horse-run-loader__tail"
+          d="M38 48 C23 39 13 48 5 48 C15 60 28 62 42 54 Z"
+        />
+        <path
+          className="horse-run-loader__body"
+          d="M38 49 C45 38 60 36 74 40 C86 44 99 39 111 48 C118 54 116 64 107 68 C88 73 61 72 43 65 C35 62 32 55 38 49 Z"
+        />
+        <g className="horse-run-loader__head">
+          <path d="M104 48 C109 34 120 24 132 23 C141 22 150 29 151 36 C141 37 133 34 126 39 C121 43 118 50 113 56 Z" />
+          <path
+            className="horse-run-loader__mane"
+            d="M114 43 C118 35 124 28 132 24"
+          />
+          <circle cx="139" cy="31" r="1.8" fill="#eef2ff" />
+        </g>
+        <path
+          className="horse-run-loader__leg horse-run-loader__leg--far horse-run-loader__leg--back-b"
+          d="M65 64 C72 71 78 79 82 89 M82 89 L92 90"
+        />
+        <path
+          className="horse-run-loader__leg horse-run-loader__leg--far horse-run-loader__leg--front-b"
+          d="M91 65 C86 73 80 81 72 90 M72 90 L62 91"
+        />
+        <path
+          className="horse-run-loader__leg horse-run-loader__leg--back-a"
+          d="M52 63 C47 72 40 80 34 90 M34 90 L23 90"
+        />
+        <path
+          className="horse-run-loader__leg horse-run-loader__leg--front-a"
+          d="M104 64 C109 73 116 81 126 90 M126 90 L138 90"
+        />
+      </g>
+    </svg>
+    <span className="sr-only">Laddar diagram</span>
+  </div>
+);
 
 const BarChartComponent = ({
   selectedDate,
@@ -437,13 +708,7 @@ const BarChartComponent = ({
           )}
 
           {showSpinner && loading && (
-            <div className="flex flex-col items-center">
-              <img
-                src={travhorsi}
-                alt="Loading…"
-                className="h-24 w-24 animate-spin"
-              />
-            </div>
+            <HorseRunLoader />
           )}
         </div>
       </div>
