@@ -44,6 +44,22 @@ export default {
           "20%, 75%": { opacity: "0.75" },
           "100%": { transform: "translateX(-40px)", opacity: "0" },
         },
+        "travchat-avatar-bob": {
+          "0%, 100%": { transform: "translateY(0) rotate(-1deg)" },
+          "50%": { transform: "translateY(-3px) rotate(1deg)" },
+        },
+        "travchat-avatar-ear": {
+          "0%, 100%": { transform: "rotate(-4deg)" },
+          "50%": { transform: "rotate(8deg)" },
+        },
+        "travchat-avatar-blink": {
+          "0%, 88%, 100%": { transform: "scaleY(1)" },
+          "92%, 96%": { transform: "scaleY(0.12)" },
+        },
+        "travchat-avatar-speak": {
+          "0%, 100%": { transform: "scaleY(0.45)" },
+          "45%": { transform: "scaleY(1)" },
+        },
       },
       animation: {
         "horse-loader-body":
@@ -63,6 +79,12 @@ export default {
         "horse-loader-shadow":
           "horse-loader-shadow 640ms cubic-bezier(0.45, 0, 0.55, 1) infinite",
         "horse-loader-ground": "horse-loader-ground 720ms linear infinite",
+        "travchat-avatar-bob":
+          "travchat-avatar-bob 1.8s cubic-bezier(0.45, 0, 0.55, 1) infinite",
+        "travchat-avatar-ear":
+          "travchat-avatar-ear 1.6s cubic-bezier(0.45, 0, 0.55, 1) infinite",
+        "travchat-avatar-blink": "travchat-avatar-blink 4s ease-in-out infinite",
+        "travchat-avatar-speak": "travchat-avatar-speak 420ms ease-in-out infinite",
       },
     },
   },
