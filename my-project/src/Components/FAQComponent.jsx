@@ -1,112 +1,127 @@
-import { useRef, useState } from "react";
+import { Disclosure } from "@headlessui/react";
+import {
+  ChatBubbleOvalLeftEllipsisIcon,
+  ChevronDownIcon,
+  EnvelopeIcon,
+  SparklesIcon,
+} from "@heroicons/react/20/solid";
 
-const FaqsCard = ({ faqsList, idx }) => {
-  const answerElRef = useRef(null);
+const faqsList = [
+  {
+    q: "Vad är travanalys.se?",
+    a: "Travanalys.se är travsportens beslutsunderlag. Vi analyserar hästar och visualiserar underlaget så att du snabbare kan jämföra form, fart, prestation och andra analysperspektiv.",
+  },
+  {
+    q: "Hur använder jag travanalys.se?",
+    a: "Börja i Analys för den samlade bilden, gå vidare till Ranking när du vill jämföra fältet och använd Spel & ROI när du vill titta närmare på spelvärde och historik.",
+  },
+  {
+    q: "Kostar det något?",
+    a: "Nej, travanalys.se är gratis att använda. Tjänsten är fortfarande under utveckling och fler funktioner kommer att fyllas på efter hand.",
+  },
+  {
+    q: "Vilka ligger bakom travanalys.se?",
+    a: "Vi är ett gäng travnördar som vill göra det enklare att hitta intressanta hästar, ifrågasätta magkänslan och fatta bättre beslut inför loppen.",
+  },
+  {
+    q: "Vem är Trav-olta?",
+    a: "Trav-olta är vår AI-baserade travkompis. Du hittar honom i chatboxen längst ner till höger. Han är i beta, men kan hjälpa till med frågor om startlistor, odds, ROI och analys.",
+  },
+  {
+    q: "Hur kontaktar jag er?",
+    a: "Kontaktuppgifter finns längst ner på sidan. Hör gärna av dig med frågor, felrapporter eller idéer på sådant som skulle göra analysen ännu vassare.",
+  },
+];
 
-  const [state, setState] = useState(false);
-  const [answerH, setAnswerH] = useState("0px");
-
-  const handleOpenAnswer = () => {
-    const answerElH = answerElRef.current?.childNodes[0];
-    const offsetHeight = answerElH?.offsetHeight || 0;
-    setState(!state);
-    setAnswerH(`${offsetHeight + 20}px`);
-  };
-
-  return (
-    <div
-      className="space-y-3 mt-5 overflow-hidden border-b"
-      key={idx}
-      onClick={handleOpenAnswer}
-    >
-      <h4 className="cursor-pointer pb-5 flex items-center justify-between text-lg text-gray-700 font-medium">
-        {faqsList.q}
-        {state ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 text-gray-500 ml-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M20 12H4"
-            />
-          </svg>
-        ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 text-gray-500 ml-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-        )}
-      </h4>
-      <div
-        ref={answerElRef}
-        className="duration-300"
-        style={state ? { height: answerH } : { height: "0px" }}
-      >
-        <div>
-          <p className="text-gray-500">{faqsList.a}</p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
+const supportItems = [
+  {
+    title: "Beta-version",
+    text: "Saker kan röra på sig medan vi bygger vidare. Feedback hjälper oss att prioritera rätt.",
+    icon: SparklesIcon,
+  },
+  {
+    title: "Trav-olta hjälper till",
+    text: "Testa chatten om du vill fråga om analysen, lopp eller hur du kan tolka underlaget.",
+    icon: ChatBubbleOvalLeftEllipsisIcon,
+  },
+  {
+    title: "Saknar du något?",
+    text: "Skicka din feedback. Bra frågor blir ofta bättre funktioner.",
+    icon: EnvelopeIcon,
+  },
+];
 
 const Faqs = () => {
-  const faqsList = [
-    {
-      q: "Vad är travanalys.se för någonting?",
-      a: "Travsportens beslutsunderlag. Vi analyserar hästar och ger dig en djupare insikt i deras prestationer. Vi är i en utvecklingsfas och kommer att lansera fler funktioner och vyer inom kort.",
-    },
-    {
-      q: "Hur använder jag travanalys.se?",
-      a: "Du väljer mellan olika vyer för att se hästar och deras analyser. Konsumera via Analys, Ranking eller Spel & ROI",
-    },
-    {
-      q: "Hur kontaktar jag er?",
-      a: "Kontaktuppgifter finns längst ner på hemsidan. Det finns både email och facebook. Vi svarar så fort vi kan! ",
-    },
-    {
-      q: "Kostar det något?",
-      a: "Nej, travanalys.se är helt gratis att använda.",
-    },
-    {
-      q: "Vilka ligger bakom travanalys.se?",
-      a: "Vi är ett gäng travnördar som vill göra det enklare för dig att hitta vinnarna.",
-    },
-       {
-      q: "Vem är Trav-olta?",
-      a: "Det är vår AI-baserade travbot. Klicka på chatboxen längst ner i högra hörnet för att testa honom! Han har koll på startlistor, odds och roi m.m. Men tänk på att han är i en BETA-version",
-    },
-  ];
-
   return (
-    <section className="leading-relaxed max-w-screen-xl mt-12 mx-auto px-4 md:px-8">
-      <div className="space-y-3 text-center">
-        <h1 className="text-3xl text-gray-800 font-semibold">Vad är travanalys.se?</h1>
-        <p className="text-gray-600 max-w-lg mx-auto text-lg">
-          Hittar du inte ditt svar? Kontakta oss så hjälper vi dig.
-        </p>
-      </div>
-      <div className="mt-14 max-w-2xl mx-auto">
-        {faqsList.map((item, idx) => (
-          <FaqsCard key={idx} idx={idx} faqsList={item} />
-        ))}
+    <section className="bg-white">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-base/7 font-semibold text-orange-600">
+            Frågor & svar
+          </p>
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+            Vad vill du veta?
+          </h1>
+          <p className="mx-auto mt-5 max-w-2xl text-base/7 text-gray-600 sm:text-lg/8">
+            Här hittar du de vanligaste frågorna om travanalys.se,
+            analysvyerna och Trav-olta.
+          </p>
+        </div>
+
+        <div className="mx-auto mt-10 grid max-w-5xl gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start">
+          <aside className="rounded-xl bg-gray-900 p-6 text-white shadow-xl ring-1 ring-gray-900/10">
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Snabb hjälp
+            </h2>
+            <p className="mt-3 text-sm/6 text-gray-300">
+              Travanalys är byggt för att ge ett tydligare beslutsunderlag,
+              inte för att ersätta din egen spelidé.
+            </p>
+
+            <div className="mt-8 space-y-6">
+              {supportItems.map((item) => (
+                <div key={item.title} className="relative pl-9">
+                  <item.icon
+                    aria-hidden="true"
+                    className="absolute left-0 top-1 size-5 text-indigo-300"
+                  />
+                  <h3 className="font-semibold text-white">{item.title}</h3>
+                  <p className="mt-1 text-sm/6 text-gray-300">{item.text}</p>
+                </div>
+              ))}
+            </div>
+          </aside>
+
+          <div className="space-y-3">
+            {faqsList.map((item, idx) => (
+              <Disclosure
+                as="div"
+                key={item.q}
+                defaultOpen={idx === 0}
+                className="rounded-xl border border-gray-200 bg-white shadow-sm transition hover:border-indigo-200 hover:shadow-md"
+              >
+                {({ open }) => (
+                  <>
+                    <Disclosure.Button className="flex w-full items-start justify-between gap-x-4 px-5 py-4 text-left">
+                      <span className="text-base font-semibold text-gray-900 sm:text-lg">
+                        {item.q}
+                      </span>
+                      <ChevronDownIcon
+                        aria-hidden="true"
+                        className={`mt-1 size-5 flex-none text-indigo-600 transition-transform duration-200 ${
+                          open ? "rotate-180" : ""
+                        }`}
+                      />
+                    </Disclosure.Button>
+                    <Disclosure.Panel className="px-5 pb-5 text-sm/6 text-gray-600 sm:text-base/7">
+                      {item.a}
+                    </Disclosure.Panel>
+                  </>
+                )}
+              </Disclosure>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
