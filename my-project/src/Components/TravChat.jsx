@@ -24,7 +24,7 @@ const TravoltaAvatar = ({ size = "md", speaking = false }) => {
 
   return (
     <div
-      className={`relative shrink-0 overflow-hidden rounded-full bg-indigo-300 shadow-md ring-1 ring-indigo-900/10 ${avatarSizeClasses[size]}`}
+      className={`relative shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-gray-600 via-indigo-700 to-blue-500 shadow-md ring-1 ring-indigo-900/10 ${avatarSizeClasses[size]}`}
       aria-hidden="true"
     >
       {speaking && (
