@@ -28,7 +28,7 @@ const TravoltaAvatar = ({ size = "md", speaking = false }) => {
       aria-hidden="true"
     >
       {speaking && (
-        <span className="absolute inset-0 rounded-full bg-indigo-300/40 animate-ping" />
+        <span className="absolute inset-0 rounded-full" />
       )}
       <svg
         className="relative h-full w-full animate-travchat-avatar-bob p-1.5 motion-reduce:animate-none"
