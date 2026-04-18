@@ -24,7 +24,7 @@ const TravoltaAvatar = ({ size = "md", speaking = false }) => {
 
   return (
     <div
-      className={`relative shrink-0 overflow-hidden rounded-full bg-indigo-600 shadow-md ring-1 ring-indigo-900/10 ${avatarSizeClasses[size]}`}
+      className={`relative shrink-0 overflow-hidden rounded-full bg-indigo-300 shadow-md ring-1 ring-indigo-900/10 ${avatarSizeClasses[size]}`}
       aria-hidden="true"
     >
       {speaking && (
@@ -260,7 +260,7 @@ export default function TravChat() {
               setHasUnread(false);
               sessionStorage.setItem("travchat-opened", "1");
             }}
-            className="relative flex items-center gap-3 rounded-lg bg-gray-900 px-3 py-2 text-white shadow-xl ring-1 ring-black/10 transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:px-4 sm:py-3"
+            className="relative flex items-center gap-3 rounded-lg bg-gray-800 px-3 py-2 text-white shadow-xl ring-1 ring-black/10 transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:px-4 sm:py-3"
             aria-label="Öppna Trav-olta chatten"
           >
             <TravoltaAvatar size="sm" speaking={hasUnread} />
