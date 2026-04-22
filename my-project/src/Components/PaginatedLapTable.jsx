@@ -2,6 +2,28 @@ import React, { useEffect, useMemo, useState } from "react";
 import DatePicker from "./DatePicker";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+const ALL_COLUMN_KEYS = [
+  "numberOfCompleteHorse",
+  "nameOfCompleteHorse",
+  "analys",
+  "styrka",
+  "placering",
+  "fart",
+  "form",
+  "klass",
+  "prispengar",
+  "kusk",
+];
+
+const MOBILE_DEFAULT_COLUMN_KEYS = [
+  "nameOfCompleteHorse",
+  "analys",
+  "styrka",
+];
+
+const getDefaultVisibleColumns = (smallScreen) =>
+  smallScreen ? MOBILE_DEFAULT_COLUMN_KEYS : ALL_COLUMN_KEYS;
+
 const PaginatedLapTable = ({
   selectedDate,
   setSelectedDate,
@@ -34,7 +56,14 @@ const PaginatedLapTable = ({
     key: "analys",
     direction: "desc",
   });
-
+  const [visibleColumns, setVisibleColumns] = useState(() =>
+    [...getDefaultVisibleColumns(window.innerWidth < 640)]
+  );
+  const [hasCustomizedColumns, setHasCustomizedColumns] = useState(false);
+  const visibleColumnSet = useMemo(
+    () => new Set(visibleColumns),
+    [visibleColumns]
+  );
 
   const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
@@ -46,6 +75,12 @@ const PaginatedLapTable = ({
     window.addEventListener("resize", onResize); 
     return () => window.removeEventListener("resize", onResize); 
   }, []); 
+
+  useEffect(() => {
+    if (!hasCustomizedColumns) {
+      setVisibleColumns([...getDefaultVisibleColumns(isSmallScreen)]);
+    }
+  }, [isSmallScreen, hasCustomizedColumns]);
 
   const starterLabel = (starter) => {
     const s = normalizeStarter(starter);
@@ -308,6 +343,133 @@ const PaginatedLapTable = ({
     ? "Lopp"
     : "Avd";
 
+  const applyColumnPreset = (keys) => {
+    setVisibleColumns([...keys]);
+    setHasCustomizedColumns(true);
+  };
+
+  const resetVisibleColumns = () => {
+    setHasCustomizedColumns(false);
+    setVisibleColumns([...getDefaultVisibleColumns(isSmallScreen)]);
+  };
+
+  const toggleColumn = (key) => {
+    setHasCustomizedColumns(true);
+    setVisibleColumns((current) => {
+      if (current.includes(key)) {
+        if (current.length === 1) return current;
+        return current.filter((item) => item !== key);
+      }
+
+      return ALL_COLUMN_KEYS.filter(
+        (columnKey) => columnKey === key || current.includes(columnKey)
+      );
+    });
+  };
+
+  const columns = [
+    {
+      key: "numberOfCompleteHorse",
+      label: "#",
+      sortKey: "numberOfCompleteHorse",
+      thClassName: "text-center",
+      tdClassName: "px-1 text-center",
+      render: (row) => (
+        <span className="inline-block rounded-md border border-indigo-700 bg-indigo-100 px-2 py-0.5 text-sm font-medium shadow-sm">
+          {row.numberOfCompleteHorse}
+        </span>
+      ),
+    },
+    {
+      key: "nameOfCompleteHorse",
+      label: "Häst",
+      sortKey: "nameOfCompleteHorse",
+      thClassName: "text-left",
+      tdClassName: "text-left",
+      render: (row) => (
+        <div className="flex min-w-[10rem] items-center gap-2">
+          {!visibleColumnSet.has("numberOfCompleteHorse") && (
+            <span className="inline-block rounded-md border border-indigo-700 bg-indigo-100 px-2 py-0.5 text-sm font-medium shadow-sm">
+              {row.numberOfCompleteHorse}
+            </span>
+          )}
+          <span>{row.nameOfCompleteHorse}</span>
+        </div>
+      ),
+    },
+    {
+      key: "analys",
+      label: competitionName,
+      sortKey: "analys",
+      thClassName: "bg-orange-100 text-center",
+      tdClassName: (row) =>
+        Number(row.analys) === maxAnalysValue
+          ? "bg-orange-300 font-bold underline text-center"
+          : "bg-orange-50 text-center",
+      render: (row) => row.analys,
+    },
+    {
+      key: "styrka",
+      label: "Prestation",
+      sortKey: "styrka",
+      thClassName: "text-center",
+      tdClassName: "text-center",
+      render: (row) => row.styrka,
+    },
+    {
+      key: "placering",
+      label: "Placering",
+      sortKey: "placering",
+      thClassName: "text-center",
+      tdClassName: "text-center",
+      render: (row) => row.placering,
+    },
+    {
+      key: "fart",
+      label: "Fart",
+      sortKey: "fart",
+      thClassName: "text-center",
+      tdClassName: "text-center",
+      render: (row) => row.fart,
+    },
+    {
+      key: "form",
+      label: "Form",
+      sortKey: "form",
+      thClassName: "text-center",
+      tdClassName: "text-center",
+      render: (row) => row.form,
+    },
+    {
+      key: "klass",
+      label: "Motstånd",
+      sortKey: "klass",
+      thClassName: "text-center",
+      tdClassName: "text-center",
+      render: (row) => row.klass,
+    },
+    {
+      key: "prispengar",
+      label: "Klass",
+      sortKey: "prispengar",
+      thClassName: "text-center",
+      tdClassName: "text-center",
+      render: (row) => row.prispengar,
+    },
+    {
+      key: "kusk",
+      label: "Skrik",
+      sortKey: "kusk",
+      thClassName: "text-center",
+      tdClassName: "text-center",
+      render: (row) => row.kusk,
+    },
+  ];
+
+  const visibleTableColumns = columns.filter((column) =>
+    visibleColumnSet.has(column.key)
+  );
+
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
       <p className="sm:text-xl text-lg font-semibold text-slate-800 mt-0 mb-4 sm:mt-0 sm:mb-5 px-4 py-1 flex flex-col justify-center items-center">
@@ -419,6 +581,56 @@ const PaginatedLapTable = ({
           ))}
       </div>
 
+      <div className="mb-4 rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm font-semibold text-slate-700">
+            Visa kolumner
+          </span>
+          <button
+            type="button"
+            onClick={() => applyColumnPreset(ALL_COLUMN_KEYS)}
+            className="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200"
+          >
+            Alla
+          </button>
+          <button
+            type="button"
+            onClick={() => applyColumnPreset(MOBILE_DEFAULT_COLUMN_KEYS)}
+            className="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200"
+          >
+            Mobil
+          </button>
+          <button
+            type="button"
+            onClick={resetVisibleColumns}
+            className="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200"
+          >
+            Nollställ
+          </button>
+        </div>
+
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {columns.map((column) => {
+            const active = visibleColumnSet.has(column.key);
+
+            return (
+              <button
+                key={column.key}
+                type="button"
+                onClick={() => toggleColumn(column.key)}
+                className={`rounded px-2 py-1 text-xs font-medium transition ${
+                  active
+                    ? "bg-indigo-500 text-white shadow"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                {column.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="overflow-x-auto border border-gray-200 rounded relative">
         {loading && (
           <div className="absolute inset-0 flex justify-center items-center bg-white/70">
@@ -426,118 +638,53 @@ const PaginatedLapTable = ({
           </div>
         )}
 
-        <table className="w-full min-w-max border-collapse text-sm">
+        <table className="w-full min-w-full border-collapse text-sm">
           <thead className="bg-gray-100 border-b border-gray-200">
             <tr>
-              <th
-                onClick={() => requestSort("numberOfCompleteHorse")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                #
-              </th>
-              <th
-                onClick={() => requestSort("nameOfCompleteHorse")}
-                className="py-2 px-2 font-semibold cursor-pointer text-left border-r last:border-r-0 border-gray-300"
-              >
-                Häst
-              </th>
-              <th
-                onClick={() => requestSort("analys")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300 bg-orange-100"
-              >
-                {competitionName}
-              </th>
-              <th
-                onClick={() => requestSort("styrka")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                Prestation
-              </th>
-              <th
-                onClick={() => requestSort("placering")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                Placering
-              </th>
-              <th
-                onClick={() => requestSort("fart")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                Fart
-              </th>
-              <th
-                onClick={() => requestSort("form")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                Form
-              </th>
-              <th
-                onClick={() => requestSort("klass")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                Motstånd
-              </th>
-              <th
-                onClick={() => requestSort("prispengar")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                Klass
-              </th>
-              <th
-                onClick={() => requestSort("kusk")}
-                className="py-2 px-2 font-semibold cursor-pointer border-r last:border-r-0 border-gray-300"
-              >
-                Skrik
-              </th>
+              {visibleTableColumns.map((column, columnIndex) => (
+                <th
+                  key={column.key}
+                  onClick={() => requestSort(column.sortKey)}
+                  className={`cursor-pointer py-2 px-2 font-semibold ${
+                    column.thClassName
+                  } ${
+                    columnIndex < visibleTableColumns.length - 1
+                      ? "border-r border-gray-300"
+                      : ""
+                  }`}
+                >
+                  {column.label}
+                </th>
+              ))}
             </tr>
           </thead>
 
           <tbody>
             {sortedLapData.map((row) => {
-              const isMax = Number(row.analys) === maxAnalysValue;
               return (
                 <tr
                   key={row.id}
                   className="border-b last:border-b-0 border-gray-200 hover:bg-blue-50 even:bg-gray-50"
                 >
-                  <td className="border-r border-blue-200 px-1">
-                    <span className="inline-block border border-indigo-700 px-2 py-0.5 rounded-md text-sm font-medium bg-indigo-100 shadow-sm">
-                      {row.numberOfCompleteHorse}
-                    </span>
-                  </td>
-                  <td className="py-2 px-2 text-left border-r border-gray-200">
-                    {row.nameOfCompleteHorse}
-                  </td>
-                  <td
-                    className={`py-2 px-2 border-r border-gray-200 ${
-                      isMax
-                        ? "bg-orange-300 font-bold underline"
-                        : "bg-orange-50"
-                    }`}
-                  >
-                    {row.analys}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.styrka}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.placering}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.fart}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.form}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.klass}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.prispengar}
-                  </td>
-                  <td className="py-2 px-2 border-r border-gray-200">
-                    {row.kusk}
-                  </td>
+                  {visibleTableColumns.map((column, columnIndex) => {
+                    const tdClassName =
+                      typeof column.tdClassName === "function"
+                        ? column.tdClassName(row)
+                        : column.tdClassName;
+
+                    return (
+                      <td
+                        key={column.key}
+                        className={`py-2 px-2 align-middle ${tdClassName} ${
+                          columnIndex < visibleTableColumns.length - 1
+                            ? "border-r border-gray-200"
+                            : ""
+                        }`}
+                      >
+                        {column.render(row)}
+                      </td>
+                    );
+                  })}
                 </tr>
               );
             })}
