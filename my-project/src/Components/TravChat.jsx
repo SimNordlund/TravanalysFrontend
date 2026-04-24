@@ -17,6 +17,17 @@ const avatarSizeClasses = {
   lg: "h-14 w-14",
 };
 
+const SESSION_CONVERSATION_KEY = "travchat-conversation-id";
+
+function getConversationId() {
+  let id = sessionStorage.getItem(SESSION_CONVERSATION_KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem(SESSION_CONVERSATION_KEY, id);
+  }
+  return id;
+}
+
 const TravoltaAvatar = ({ size = "md", speaking = false }) => {
   const mouthClassName = speaking
     ? "animate-travchat-avatar-speak"
@@ -27,9 +38,7 @@ const TravoltaAvatar = ({ size = "md", speaking = false }) => {
       className={`relative shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-gray-600 via-indigo-700 to-blue-500 shadow-md ring-1 ring-indigo-900/10 ${avatarSizeClasses[size]}`}
       aria-hidden="true"
     >
-      {speaking && (
-        <span className="absolute inset-0 rounded-full" />
-      )}
+      {speaking && <span className="absolute inset-0 rounded-full" />}
       <svg
         className="relative h-full w-full animate-travchat-avatar-bob p-1.5 motion-reduce:animate-none"
         viewBox="0 0 64 64"
@@ -72,6 +81,12 @@ const TravoltaAvatar = ({ size = "md", speaking = false }) => {
 };
 
 export default function TravChat() {
+  const conversationIdRef = useRef(null);
+
+  if (!conversationIdRef.current) {
+    conversationIdRef.current = getConversationId();
+  }
+
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -154,7 +169,7 @@ export default function TravChat() {
 
     try {
       const res = await fetch(
-        `${CHATBOT_URL}/chat-stream?message=${encodeURIComponent(user.content)}`,
+        `${CHATBOT_URL}/chat-stream?message=${encodeURIComponent(user.content)}&conversationId=${encodeURIComponent(conversationIdRef.current)}`,
       );
       const reader = res.body.getReader();
       const dec = new TextDecoder("utf-8");
@@ -191,6 +206,7 @@ export default function TravChat() {
   async function sendAudio(blob) {
     const form = new FormData();
     form.append("file", blob, "input.webm");
+    form.append("conversationId", conversationIdRef.current);
 
     setStreaming(true);
     try {
@@ -309,7 +325,9 @@ export default function TravChat() {
               <button
                 onClick={() => setIsMaximized((m) => !m)}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-gray-200 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
-                aria-label={isMaximized ? "Förminska chatten" : "Maximera chatten"}
+                aria-label={
+                  isMaximized ? "Förminska chatten" : "Maximera chatten"
+                }
               >
                 {isMaximized ? (
                   <Minimize2 className="h-5 w-5" />
