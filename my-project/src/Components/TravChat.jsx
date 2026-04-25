@@ -398,7 +398,7 @@ export default function TravChat() {
               </button>
 
               <textarea
-                className="h-11 max-h-24 min-h-11 resize-none rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-50 sm:h-12 sm:text-base"
+                className="h-11 max-h-24 min-h-11 resize-none rounded-lg border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-50 sm:h-12 sm:text-base"
                 placeholder="Skriv ditt meddelande..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
