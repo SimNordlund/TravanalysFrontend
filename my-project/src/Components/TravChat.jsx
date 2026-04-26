@@ -51,10 +51,63 @@ export default function TravChat() {
     return !opened;
   });
 
+  const TYPE_CHARS_PER_TICK = 2; //JUSTERAR HASTIGHET  
+  const TYPE_INTERVAL_MS = 35; //JUSTERAR HASTIGHET 
+
+  const pendingAssistantTextRef = useRef("");
+  const typingIntervalRef = useRef(null);
+  const streamFinishedRef = useRef(true);
+
+  const stopTypingLoop = () => {
+    if (typingIntervalRef.current) {
+      clearInterval(typingIntervalRef.current);
+      typingIntervalRef.current = null;
+    }
+  };
+
   const isOpenRef = useRef(isOpen);
   useEffect(() => {
     isOpenRef.current = isOpen;
   }, [isOpen]);
+
+  const startTypingLoop = () => {
+    if (typingIntervalRef.current) return;
+
+    typingIntervalRef.current = window.setInterval(() => {
+      if (!pendingAssistantTextRef.current) {
+        if (streamFinishedRef.current) {
+          stopTypingLoop();
+          setStreaming(false);
+          if (!isOpenRef.current) setHasUnread(true);
+        }
+        return;
+      }
+
+      const nextPiece = pendingAssistantTextRef.current.slice(
+        0,
+        TYPE_CHARS_PER_TICK,
+      );
+      pendingAssistantTextRef.current =
+        pendingAssistantTextRef.current.slice(TYPE_CHARS_PER_TICK);
+
+      setMessages((m) => {
+        const copy = [...m];
+        if (copy.at(-1)?.role === "assistant") {
+          copy[copy.length - 1] = {
+            ...copy[copy.length - 1],
+            content: (copy[copy.length - 1].content || "") + nextPiece,
+          };
+        } else {
+          copy.push({ role: "assistant", content: nextPiece });
+        }
+        return copy;
+      });
+    }, TYPE_INTERVAL_MS);
+  };
+
+  useEffect(() => {
+    return () => stopTypingLoop();
+  }, []);
 
   useEffect(() => {
     tailRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -103,45 +156,51 @@ export default function TravChat() {
   };
 
   const sendMessage = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || streaming) return;
 
     const user = { role: "user", content: input.trim() };
     setMessages((m) => [...m, user]);
     setInput("");
     setStreaming(true);
 
+    pendingAssistantTextRef.current = "";
+    streamFinishedRef.current = false;
+    stopTypingLoop();
+    startTypingLoop();
+
     try {
       const res = await fetch(
         `${CHATBOT_URL}/chat-stream?message=${encodeURIComponent(user.content)}&conversationId=${encodeURIComponent(conversationIdRef.current)}`,
       );
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.body) throw new Error("No response body");
+
       const reader = res.body.getReader();
       const dec = new TextDecoder("utf-8");
 
-      let assistant = "";
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
 
-        assistant += dec.decode(value, { stream: true });
-
-        setMessages((m) => {
-          const copy = [...m];
-          if (copy.at(-1)?.role === "assistant")
-            copy[copy.length - 1] = { role: "assistant", content: assistant };
-          else copy.push({ role: "assistant", content: assistant });
-          return copy;
-        });
+        pendingAssistantTextRef.current += dec.decode(value, { stream: true });
       }
 
-      if (!isOpenRef.current) setHasUnread(true);
+      pendingAssistantTextRef.current += dec.decode();
     } catch (err) {
+      stopTypingLoop();
+      pendingAssistantTextRef.current = "";
+      streamFinishedRef.current = true;
+      setStreaming(false);
+
       setMessages((m) => [
         ...m,
         { role: "assistant", content: "error " + err.message },
       ]);
+
       if (!isOpenRef.current) setHasUnread(true);
     } finally {
-      setStreaming(false);
+      streamFinishedRef.current = true;
     }
   };
 
