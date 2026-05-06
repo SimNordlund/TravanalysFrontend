@@ -81,17 +81,17 @@ export default function IntroWithCarousel() {
       <div className="mx-auto max-w-7xl px-4 lg:px-0">
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-12 sm:gap-y-10 lg:mx-0 lg:max-w-none lg:grid-cols-2">
          
-          <div className="order-1 lg:order-1 flex items-center">
+          <div className="order-1 flex items-center lg:order-1 lg:pr-4">
             <HeroCarousel
               slides={slides}
               auto
               interval={4000}
-              className="mt-10 sm:mt-5 mb-0 sm:mb-0 mx-auto w-full max-w-[clamp(18rem,100vw,48rem)] px-0 sm:px-0" 
-              heightClass="aspect-[3/4] sm:aspect-[3/4] lg:h-[620px] lg:aspect-auto" 
-              roundedClass="rounded-xl ring-1 ring-gray-200 shadow-lg"
+              className="mx-auto mt-8 mb-0 w-full max-w-[min(100%,42rem)] sm:mt-5"
+              heightClass="aspect-[4/5] sm:aspect-[3/4] lg:h-[600px] lg:aspect-auto"
+              roundedClass="rounded-lg border border-slate-200 shadow-xl ring-1 ring-slate-100"
               fit="contain"
-              imgClassName="px-3 md:px-0 pt-0 py-1 md:py-7"
-              letterboxBg="bg-slate-100"
+              imgClassName="p-3 sm:p-5 lg:p-6"
+              letterboxBg="bg-white"
             />
           </div>
 
