@@ -86,7 +86,7 @@ export default function IntroWithCarousel() {
               slides={slides}
               auto
               interval={4000}
-              className="mx-auto mt-8 mb-0 w-full max-w-[min(100%,42rem)] sm:mt-5"
+              className="mx-auto mt-8 mb-0 w-full max-w-[min(100%,42rem)] sm:mt-5 pb-3 sm:pb-2"
               heightClass="aspect-[4/5] sm:aspect-[3/4] lg:h-[600px] lg:aspect-auto"
               roundedClass="rounded-lg border border-slate-200 shadow-xl ring-1 ring-slate-100"
               fit="contain"
