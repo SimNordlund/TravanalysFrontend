@@ -191,18 +191,20 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   }, [banners]);
 
   const banner = banners[currentIndex];
+  const searchParamString = searchParams.toString();
 
   // Lyssna på externa URL-förändringar (t.ex. man ändrar i adressfältet)
   useEffect(() => {
-    const curr = searchParams.toString();
+    const curr = searchParamString;
     if (curr === lastWrittenQueryRef.current) return;
+    const params = new URLSearchParams(searchParamString);
 
     // Läs in ny query och tillåt omappning i effekterna
     initialQuery.current = {
-      date: searchParams.get("date") || "",
-      track: searchParams.get("track") || "",
-      competition: searchParams.get("competition") || "",
-      lap: searchParams.get("lap") || "",
+      date: params.get("date") || "",
+      track: params.get("track") || "",
+      competition: params.get("competition") || "",
+      lap: params.get("lap") || "",
     };
     appliedFromQuery.current = { track: false, competition: false, lap: false };
 
@@ -212,11 +214,11 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
 
     // Sätt datum direkt om det finns
     const qDate = initialQuery.current.date;
-    if (qDate && qDate !== selectedDate) setSelectedDate(qDate);
+    if (qDate) setSelectedDate(qDate);
 
     // Börja synka till URL (nu använder man URL aktivt)
     shouldSyncQueryRef.current = true;
-  }, [searchParams, selectedDate]);
+  }, [searchParamString]);
 
   useEffect(() => {
     if (!syncWithRoute) return;
