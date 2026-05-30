@@ -10,6 +10,7 @@ import Newsletter from './Newsletter';
 import ChatBox from './Components/TravChat';
 import ToggleComponent from './Components/ToggleComponent';
 import Reveal from './Components/Reveal';
+import TestApp from './Components/TestApp';
 
 export default function App() {
   return (
@@ -30,6 +31,14 @@ export default function App() {
           element={
             <Reveal>
               <SignIn />
+            </Reveal>
+          }
+        />
+        <Route
+          path="/testapp"
+          element={
+            <Reveal>
+              <TestApp />
             </Reveal>
           }
         />
