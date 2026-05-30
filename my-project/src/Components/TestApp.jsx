@@ -8,6 +8,7 @@ function getKocka(kocka) {
   return kocka;
 }
 
+
 const simonList = [
   {
     title: "React",
@@ -27,7 +28,27 @@ const simonList = [
   },
 ];
 
-function TestApp() {
+const TestApp = () => {
+
+  const stories = [
+  {
+    title: "React",
+    url: "test.se",
+    author: "Jordan Walke",
+    num_comments: 3,
+    points: 4,
+    objectID: 0,
+  },
+  {
+    title: "Vue",
+    url: "123123.se",
+    author: "Evan You",
+    num_comments: 2,
+    points: 3,
+    objectID: 2,
+  },
+];
+
   return (
     <div>
       <h1>Yo, Hello</h1>
@@ -35,42 +56,56 @@ function TestApp() {
         {welcome.greeting}, {welcome.party}!
       </h1>
       <h1> Tjena {getKocka("XDKocka")}</h1>
-      
+
       <Search />
-      <TestList />
+      <TestList list={stories} />
+
     </div>
   );
-}
-export default TestApp;
+};
+export default TestApp; //Expoertera för att göra tillgänglig i annan fil
 
 //Ny komponent som renderar en lista av objekt från simonList
-function TestList() {
+function TestList(props) { //<List>
+  //Standard function
   return (
     <ul>
-      {simonList.map(function (item) {
-        return (
-          <li key={item.objectID}>
-            <span>{item.points}</span>
-            <span>{item.author}</span>
-            <span>{item.num_comments}</span>
-            <p>{item.title}</p>
-          </li>
-        );
-      })}
+      {props.list.map((item) => (
+        <Item key={item.objectID} item={item} />
+      ))}
     </ul>
   );
 }
 
-function Search() {
+const Item = (props) => (
+  <li>
+    <span>
+      <a href={props.item.url}>{props.item.title}</a>
+    </span>
+    <span>{props.item.author}</span>
+    <span>{props.item.num_comments}</span>
+    <span>{props.item.points}</span>
+  </li>
+)
+
+const Search = () => { //Arrow function //MEN BEHÖVER INGEN  MÅSVINGE ELLER RETURN PGA RETURNERAR INGET ANNAT ÄN JSX
+
+  const handleChange = (event) => {
+    console.log(event);
+    console.log (event.target.value);
+  };
+
+
   return (
     <div>
       <label htmlFor="search">Search</label>
-      <input
+      <input 
         id="search"
         type="text"
         className="border border-gray-300 rounded px-2 py-1"
         placeholder="Type something..."
+        onChange={handleChange}
       />
     </div>
   );
-}
+};
