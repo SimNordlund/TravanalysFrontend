@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 const title = "React";
 const welcome = {
   greeting: "Hello",
@@ -71,7 +73,7 @@ function TestList(props) { //<List>
   return (
     <ul>
       {props.list.map((item) => (
-        <Item key={item.objectID} item={item} />
+        <Item key={item.objectID} itemObjectSentIn={item} />
       ))}
     </ul>
   );
@@ -80,19 +82,23 @@ function TestList(props) { //<List>
 const Item = (props) => (
   <li>
     <span>
-      <a href={props.item.url}>{props.item.title}</a>
+      <a href={props.itemObjectSentIn.url}>{props.itemObjectSentIn.title}</a>
     </span>
-    <span>{props.item.author}</span>
-    <span>{props.item.num_comments}</span>
-    <span>{props.item.points}</span>
+    <span>{props.itemObjectSentIn.author}</span>
+    <span>{props.itemObjectSentIn.num_comments}</span>
+    <span>{props.itemObjectSentIn.points}</span>
   </li>
 )
 
 const Search = () => { //Arrow function //MEN BEHÖVER INGEN  MÅSVINGE ELLER RETURN PGA RETURNERAR INGET ANNAT ÄN JSX
 
+const [searchTerm, setSearchTerm] = React.useState(""); //React. är behövd pga hur jag importar annars om man bara tar in stae kan man använda useState("") direkt 
+
   const handleChange = (event) => {
     console.log(event);
     console.log (event.target.value);
+
+    setSearchTerm(event.target.value);
   };
 
 
@@ -106,6 +112,8 @@ const Search = () => { //Arrow function //MEN BEHÖVER INGEN  MÅSVINGE ELLER RE
         placeholder="Type something..."
         onChange={handleChange}
       />
+
+      <p>Searching for <strong>{searchTerm}</strong> </p>.
     </div>
   );
 };
