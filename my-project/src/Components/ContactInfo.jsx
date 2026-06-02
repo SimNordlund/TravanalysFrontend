@@ -22,7 +22,7 @@ const features = [
   {
     name: 'Advanced security',
     description:
-      'Arcu egestas dolor vel iaculis in ipsum mauris. Tincidunt mattis aliquet hac quis. Id hac maecenas ac donec pharetra eget.',
+      'Arcu egestas dolor vel iaculis in t hac quis. Id hac maecenas ac donec pharetra eget.',
     icon: FingerPrintIcon,
   },
 ]
