@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 const title = "React";
 const welcome = {
@@ -9,7 +9,6 @@ const welcome = {
 function getKocka(kocka) {
   return kocka;
 }
-
 
 const simonList = [
   {
@@ -31,25 +30,28 @@ const simonList = [
 ];
 
 const TestApp = () => {
-
   const stories = [
-  {
-    title: "React",
-    url: "test.se",
-    author: "Jordan Walke",
-    num_comments: 3,
-    points: 4,
-    objectID: 0,
-  },
-  {
-    title: "Vue",
-    url: "123123.se",
-    author: "Evan You",
-    num_comments: 2,
-    points: 3,
-    objectID: 2,
-  },
-];
+    {
+      title: "React",
+      url: "test.se",
+      author: "Jordan Walke",
+      num_comments: 3,
+      points: 4,
+      objectID: 0,
+    },
+    {
+      title: "Vue",
+      url: "123123.se",
+      author: "Evan You",
+      num_comments: 2,
+      points: 3,
+      objectID: 2,
+    },
+  ];
+
+  const handleSearch = (event) => { //callback handler som skickas in i Search komponenten och anropas där när input ändras
+    console.log(event.target.value);
+  };
 
   return (
     <div>
@@ -59,16 +61,17 @@ const TestApp = () => {
       </h1>
       <h1> Tjena {getKocka("XDKocka")}</h1>
 
-      <Search />
-      <TestList list={stories} />
+      <Search onSearch={handleSearch} /> 
 
+      <TestList list={stories} />
     </div>
   );
 };
 export default TestApp; //Expoertera för att göra tillgänglig i annan fil
 
 //Ny komponent som renderar en lista av objekt från simonList
-function TestList(props) { //<List>
+function TestList(props) {
+  //<List>
   //Standard function
   return (
     <ul>
@@ -88,32 +91,36 @@ const Item = (props) => (
     <span>{props.itemObjectSentIn.num_comments}</span>
     <span>{props.itemObjectSentIn.points}</span>
   </li>
-)
+);
 
-const Search = () => { //Arrow function //MEN BEHÖVER INGEN  MÅSVINGE ELLER RETURN PGA RETURNERAR INGET ANNAT ÄN JSX
+const Search = (props) => {
+  //Arrow function //MEN BEHÖVER INGEN  MÅSVINGE ELLER RETURN PGA RETURNERAR INGET ANNAT ÄN JSX
 
-const [searchTerm, setSearchTerm] = React.useState(""); //React. är behövd pga hur jag importar annars om man bara tar in stae kan man använda useState("") direkt 
+  const [searchTerm, setSearchTerm] = React.useState(""); //React. är behövd pga hur jag importar annars om man bara tar in stae kan man använda useState("") direkt
 
   const handleChange = (event) => {
     console.log(event);
-    console.log (event.target.value);
+    console.log(event.target.value);
 
     setSearchTerm(event.target.value);
-  };
 
+    props.onSearch(event);
+  };
 
   return (
     <div>
       <label htmlFor="search">Search</label>
-      <input 
+      <input
         id="search"
         type="text"
         className="border border-gray-300 rounded px-2 py-1"
         placeholder="Type something..."
         onChange={handleChange}
       />
-
-      <p>Searching for <strong>{searchTerm}</strong> </p>.
+      <p>
+        Searching for <strong>{searchTerm}</strong>{" "}
+      </p>
+      .
     </div>
   );
 };
