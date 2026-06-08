@@ -382,7 +382,7 @@ const BarChartComponent = ({
 
   return (
     <div className="mx-auto max-w-screen-none px-2 pt-5 sm:py-4 relative">
-      <p className="mx-auto mt-1 mb-4 flex w-fit max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-lg border border-slate-200 bg-white px-4 py-2 text-center text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-slate-900/5 sm:mt-2 sm:mb-5 sm:px-5 sm:py-2.5 sm:text-base">
+      <p className="mx-auto mt-1 mb-4 flex w-fit max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-lg border border-slate-200 bg-white px-4 py-2 text-center text-base font-semibold text-slate-900 shadow-sm ring-1 ring-slate-900/5 sm:mt-2 sm:mb-5 sm:px-5 sm:py-2.5 sm:text-lg">
         <span className="max-w-full break-words">{selectedDateLabel}</span>
         <span className="h-1.5 w-1.5 rounded-full bg-slate-300" aria-hidden="true" />
         <span className="text-emerald-700">{selectedTrackLabel}</span>
