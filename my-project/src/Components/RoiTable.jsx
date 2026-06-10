@@ -228,10 +228,12 @@ const RoiTable = ({
 
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
-      <p className="sm:text-xl text-lg font-semibold text-slate-800 mt-0 mb-4 sm:mt-0 sm:mb-5 px-4 py-1 flex flex-col justify-center items-center">
-        {selectedDateLabel}{" "}
-        {selectedTrackLabel ? `| ${selectedTrackLabel}` : ""}{" "}
-        {selectedCompetitionLabel ? `| ${selectedCompetitionLabel}` : ""}
+      <p className="mx-auto mt-1 mb-4 flex w-fit max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-lg border border-slate-200 bg-white px-4 py-2 text-center text-base font-semibold text-slate-900 shadow-sm ring-1 ring-slate-900/5 sm:mt-2 sm:mb-5 sm:px-5 sm:py-2.5 sm:text-lg">
+        <span className="max-w-full break-words">{selectedDateLabel}</span>
+        <span className="h-1.5 w-1.5 rounded-full bg-slate-300" aria-hidden="true" />
+        <span className="text-emerald-700">{selectedTrackLabel}</span>
+        <span className="h-1.5 w-1.5 rounded-full bg-slate-300" aria-hidden="true" />
+        <span className="text-indigo-700">{selectedCompetitionLabel}</span>
       </p>
 
       <div className="flex items-center justify-between sm:justify-self-center mb-4">
