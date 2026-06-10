@@ -236,7 +236,7 @@ const RoiTable = ({
         <span className="text-indigo-700">{selectedCompetitionLabel}</span>
       </p>
 
-      <div className="flex items-center justify-between sm:justify-self-center mb-4">
+      <div className="flex items-center justify-between sm:justify-self-center mb-4 mt-8">
         <button
           onClick={goPrev}
           disabled={idx <= 0 || loading}
