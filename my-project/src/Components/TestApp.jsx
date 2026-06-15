@@ -49,9 +49,15 @@ const TestApp = () => {
     },
   ];
 
-  const handleSearch = (event) => { //callback handler som skickas in i Search komponenten och anropas där när input ändras
-    console.log(event.target.value);
+    const [searchTerm, setSearchTerm] = React.useState(""); //State hook som skapar en state variabel searchTerm och en funktion setSearchTerm för att uppdatera den. Initialt är searchTerm en tom sträng.
+
+    const handleSearch = (event) => 
+      {setSearchTerm(event.target.value)  
   };
+
+   const searchedStories = stories.filter((story)  =>
+     story.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div>
@@ -63,10 +69,11 @@ const TestApp = () => {
 
       <Search onSearch={handleSearch} /> 
 
-      <TestList list={stories} />
+      <TestList list={searchedStories} />
     </div>
   );
 };
+
 export default TestApp; //Expoertera för att göra tillgänglig i annan fil
 
 //Ny komponent som renderar en lista av objekt från simonList
@@ -96,17 +103,6 @@ const Item = (props) => (
 const Search = (props) => {
   //Arrow function //MEN BEHÖVER INGEN  MÅSVINGE ELLER RETURN PGA RETURNERAR INGET ANNAT ÄN JSX
 
-  const [searchTerm, setSearchTerm] = React.useState(""); //React. är behövd pga hur jag importar annars om man bara tar in stae kan man använda useState("") direkt
-
-  const handleChange = (event) => {
-    console.log(event);
-    console.log(event.target.value);
-
-    setSearchTerm(event.target.value);
-
-    props.onSearch(event);
-  };
-
   return (
     <div>
       <label htmlFor="search">Search</label>
@@ -115,12 +111,8 @@ const Search = (props) => {
         type="text"
         className="border border-gray-300 rounded px-2 py-1"
         placeholder="Type something..."
-        onChange={handleChange}
+        onChange={props.onSearch}
       />
-      <p>
-        Searching for <strong>{searchTerm}</strong>{" "}
-      </p>
-      .
     </div>
   );
 };
