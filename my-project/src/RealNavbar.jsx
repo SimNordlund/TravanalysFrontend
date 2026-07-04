@@ -9,6 +9,7 @@ const navigation = [
   { name: "Analys", to: "/chart/analys" },
   { name: "Ranking", to: "/chart/tabell" },
   { name: "Spel & ROI", to: "/chart/speltips" },
+  { name: "Reducering", to: "/reducering" },
   { name: "Frågor & Svar", to: "/faq" },
 ];
 

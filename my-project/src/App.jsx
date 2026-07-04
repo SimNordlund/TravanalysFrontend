@@ -10,6 +10,7 @@ import Newsletter from './Newsletter';
 import ChatBox from './Components/TravChat';
 import ToggleComponent from './Components/ToggleComponent';
 import Reveal from './Components/Reveal';
+import TravReductionGui from './TravReductionGui';
 
 export default function App() {
   return (
@@ -50,6 +51,14 @@ export default function App() {
           }
         />
         <Route path="/Components/GitHubLoginButton" element={<Home/>} />
+        <Route
+          path="/reducering"
+          element={
+            <Reveal>
+              <TravReductionGui />
+            </Reveal>
+          }
+        />
         <Route
           path="/chart/:view"
           element={

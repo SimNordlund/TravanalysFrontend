@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 
-const DEFAULT_API_BASE_URL = import.meta.env.VITE_TRAV_API_BASE_URL || "http://localhost:63093";
+const DEFAULT_API_BASE_URL =
+  import.meta.env.VITE_REDUCTION_API_BASE_URL ||
+  import.meta.env.VITE_TRAV_API_BASE_URL ||
+  "";
 
 const BET_LEGS = {
   Tv: 2,
@@ -131,6 +134,11 @@ async function readApiError(response) {
   }
 }
 
+function buildApiUrl(apiBaseUrl, path) {
+  const baseUrl = apiBaseUrl.trim().replace(/\/$/, "");
+  return `${baseUrl}${path}`;
+}
+
 export default function TravReductionGui({ defaultApiBaseUrl = DEFAULT_API_BASE_URL }) {
   const [apiBaseUrl, setApiBaseUrl] = useState(defaultApiBaseUrl);
   const [options, setOptions] = useState(FALLBACK_OPTIONS);
@@ -149,7 +157,7 @@ export default function TravReductionGui({ defaultApiBaseUrl = DEFAULT_API_BASE_
   useEffect(() => {
     let ignore = false;
 
-    fetch(`${apiBaseUrl}/api/reducering/options`)
+    fetch(buildApiUrl(apiBaseUrl, "/api/reducering/options"))
       .then((response) => (response.ok ? response.json() : FALLBACK_OPTIONS))
       .then((data) => {
         if (!ignore) {
@@ -229,7 +237,7 @@ export default function TravReductionGui({ defaultApiBaseUrl = DEFAULT_API_BASE_
     setPreview(null);
     setXmlStats(null);
 
-    const response = await fetch(`${apiBaseUrl}/api/reducering/preview`, {
+    const response = await fetch(buildApiUrl(apiBaseUrl, "/api/reducering/preview"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(buildRequest()),
@@ -248,7 +256,7 @@ export default function TravReductionGui({ defaultApiBaseUrl = DEFAULT_API_BASE_
     setStatus({ type: "loading", message: "Creating XML" });
     setXmlStats(null);
 
-    const response = await fetch(`${apiBaseUrl}/api/reducering/xml`, {
+    const response = await fetch(buildApiUrl(apiBaseUrl, "/api/reducering/xml"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(buildRequest()),
