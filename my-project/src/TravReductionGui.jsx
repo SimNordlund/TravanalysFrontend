@@ -6,10 +6,6 @@ const DEFAULT_API_BASE_URL =
   "";
 
 const BET_LEGS = {
-  Tv: 2,
-  Trio: 3,
-  DD: 2,
-  LD: 2,
   V3: 3,
   V4: 4,
   V5: 5,
@@ -19,10 +15,8 @@ const BET_LEGS = {
   V86: 8,
 };
 
-const SINGLE_RACE_BETS = new Set(["Tv", "Trio"]);
-
 const FALLBACK_OPTIONS = {
-  spelformer: ["Tv", "Trio", "DD", "LD", "V3", "V4", "V5", "V64", "V65", "V75", "V86"],
+  spelformer: ["V3", "V4", "V5", "V64", "V65", "V75", "V86"],
   banor: ["S", "Å", "J", "Ax", "B", "Bo", "Bs", "D", "E", "F", "G", "H", "Hd", "Kr", "L", "Mp", "Ro", "Rä", "Sk", "Sä", "U", "Vi", "Åm", "År", "Ö", "Ös", "Ho", "Vg", "Ti"],
   trackCodes: [
     { code: "05", name: "S" },
@@ -99,7 +93,7 @@ function parseTextRows(value) {
 function toNumber(value, fallback) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
-}
+} 
 
 function formatDecimal(value) {
   if (value === null || value === undefined || Number.isNaN(Number(value))) {
@@ -148,7 +142,6 @@ export default function TravReductionGui({ defaultApiBaseUrl = DEFAULT_API_BASE_
   const [status, setStatus] = useState({ type: "idle", message: "" });
 
   const legCount = BET_LEGS[form.spelform] || 0;
-  const isSingleRaceBet = SINGLE_RACE_BETS.has(form.spelform);
   const activeSelections = useMemo(
     () => form.avdelningar.slice(0, legCount),
     [form.avdelningar, legCount],
@@ -204,11 +197,7 @@ export default function TravReductionGui({ defaultApiBaseUrl = DEFAULT_API_BASE_
   }
 
   function buildRequest() {
-    let avdelningar = activeSelections.map(parseHorseList);
-
-    if (isSingleRaceBet && avdelningar[0]?.length && avdelningar.slice(1).every((list) => list.length === 0)) {
-      avdelningar = [avdelningar[0]];
-    }
+    const avdelningar = activeSelections.map(parseHorseList);
 
     return {
       spelform: form.spelform,
@@ -404,7 +393,7 @@ export default function TravReductionGui({ defaultApiBaseUrl = DEFAULT_API_BASE_
               <div className="mt-3 grid gap-3 md:grid-cols-2">
                 {activeSelections.map((value, index) => (
                   <label key={index} className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
-                    {isSingleRaceBet ? `Position ${index + 1}` : `Avd ${index + 1}`}
+                    {`Avd ${index + 1}`}
                     <input
                       className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
                       placeholder="1, 4, 7"
