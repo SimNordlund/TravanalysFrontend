@@ -11,12 +11,13 @@ const BET_LEGS = {
   V5: 5,
   V64: 6,
   V65: 6,
-  V75: 7,
+  GS75: 7,
+  V85: 8,
   V86: 8,
 };
 
 const FALLBACK_OPTIONS = {
-  spelformer: ["V3", "V4", "V5", "V64", "V65", "V75", "V86"],
+  spelformer: ["V3", "V4", "V5", "V64", "V65", "GS75", "V85", "V86"],
   banor: ["S", "Å", "J", "Ax", "B", "Bo", "Bs", "D", "E", "F", "G", "H", "Hd", "Kr", "L", "Mp", "Ro", "Rä", "Sk", "Sä", "U", "Vi", "Åm", "År", "Ö", "Ös", "Ho", "Vg", "Ti"],
   trackCodes: [
     { code: "05", name: "S" },
@@ -64,7 +65,7 @@ const FALLBACK_OPTIONS = {
 const initialSelections = Array.from({ length: 8 }, () => "");
 
 const initialForm = {
-  spelform: "V75",
+  spelform: "GS75",
   startDatum: "",
   banKod: "S",
   trackCode: "05",
