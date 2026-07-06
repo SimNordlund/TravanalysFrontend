@@ -49,10 +49,10 @@ const TestApp = () => {
     },
   ];
 
-    const [searchTerm, setSearchTerm] = React.useState(""); //State hook som skapar en state variabel searchTerm och en funktion setSearchTerm för att uppdatera den. Initialt är searchTerm en tom sträng.
+    const [searchTerm, setSearchTerm] = React.useState('React'); //State hook som skapar en state variabel searchTerm och en funktion setSearchTerm för att uppdatera den. Initialt är searchTerm en tom sträng.
 
     const handleSearch = (event) => 
-      {setSearchTerm(event.target.value)  
+      {setSearchTerm(event.target.value)  //Current value inside the input box via event.target.value
   };
 
    const searchedStories = stories.filter((story)  =>
@@ -67,7 +67,7 @@ const TestApp = () => {
       </h1>
       <h1> Tjena {getKocka("XDKocka")}</h1>
 
-      <Search onSearch={handleSearch} /> 
+      <Search search={searchTerm} onSearch={handleSearch} />  
 
       <TestList list={searchedStories} />
     </div>
@@ -111,7 +111,9 @@ const Search = (props) => {
         type="text"
         className="border border-gray-300 rounded px-2 py-1"
         placeholder="Type something..."
-        onChange={props.onSearch}
+        value={props.search}
+        onChange={props.onSearch} //Varje gång fältet ändras så kallas på onSearch funktionen som skickas in som prop från TestApp komponenten. 
+        //Den uppdaterar searchTerm state variabeln med det nya värdet från inputfältet.
       />
     </div>
   );
