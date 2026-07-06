@@ -77,30 +77,30 @@ const TestApp = () => {
 export default TestApp; //Expoertera för att göra tillgänglig i annan fil
 
 //Ny komponent som renderar en lista av objekt från simonList
-function TestList(props) {
+function TestList({list}) {
   //<List>
   //Standard function
   return (
     <ul>
-      {props.list.map((item) => (
-        <Item key={item.objectID} itemObjectSentIn={item} />
+      {list.map((item) => (
+        <Item key={item.objectID} item={item} />
       ))}
     </ul>
   );
 }
 
-const Item = (props) => (
+const Item = ({item}) => (
   <li>
     <span>
-      <a href={props.itemObjectSentIn.url}>{props.itemObjectSentIn.title}</a>
+      <a href={item.url}>{item.title}</a>
     </span>
-    <span>{props.itemObjectSentIn.author}</span>
-    <span>{props.itemObjectSentIn.num_comments}</span>
-    <span>{props.itemObjectSentIn.points}</span>
+    <span>{item.author}</span>
+    <span>{item.num_comments}</span>
+    <span>{item.points}</span>
   </li>
 );
 
-const Search = (props) => {
+const Search = ({search, onSearch}) => {
   //Arrow function //MEN BEHÖVER INGEN  MÅSVINGE ELLER RETURN PGA RETURNERAR INGET ANNAT ÄN JSX
 
   return (
@@ -111,8 +111,8 @@ const Search = (props) => {
         type="text"
         className="border border-gray-300 rounded px-2 py-1"
         placeholder="Type something..."
-        value={props.search}
-        onChange={props.onSearch} //Varje gång fältet ändras så kallas på onSearch funktionen som skickas in som prop från TestApp komponenten. 
+        value={search}
+        onChange={onSearch} //Varje gång fältet ändras så kallas på onSearch funktionen som skickas in som prop från TestApp komponenten. 
         //Den uppdaterar searchTerm state variabeln med det nya värdet från inputfältet.
       />
     </div>
