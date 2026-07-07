@@ -7,6 +7,7 @@ const API_BASE_URL =
   import.meta.env.VITE_REDUCTION_API_BASE_URL ||
   import.meta.env.VITE_TRAV_API_BASE_URL ||
   (import.meta.env.DEV ? LOCAL_API_BASE_URL : PRODUCTION_API_BASE_URL);
+const SUPPORTED_SPELFORMER = ["V3", "V4", "V5", "V64", "V65", "GS75", "V85", "V86"];
 
 const BET_LEGS = {
   V3: 3,
@@ -20,7 +21,7 @@ const BET_LEGS = {
 };
 
 const FALLBACK_OPTIONS = {
-  spelformer: ["V3", "V4", "V5", "V64", "V65", "GS75", "V85", "V86"],
+  spelformer: SUPPORTED_SPELFORMER,
   banor: ["S", "Å", "J", "Ax", "B", "Bo", "Bs", "D", "E", "F", "G", "H", "Hd", "Kr", "L", "Mp", "Ro", "Rä", "Sk", "Sä", "U", "Vi", "Åm", "År", "Ö", "Ös", "Ho", "Vg", "Ti"],
   trackCodes: [
     { code: "05", name: "S" },
@@ -162,7 +163,11 @@ export default function TravReductionGui() {
       .then((response) => (response.ok ? response.json() : FALLBACK_OPTIONS))
       .then((data) => {
         if (!ignore) {
-          setOptions({ ...FALLBACK_OPTIONS, ...data });
+          setOptions({
+            ...FALLBACK_OPTIONS,
+            ...data,
+            spelformer: SUPPORTED_SPELFORMER,
+          });
         }
       })
       .catch(() => {
