@@ -3,9 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 const LOCAL_API_BASE_URL = "http://localhost:63093";
 const PRODUCTION_API_BASE_URL =
   "https://travanalys-reducering-backend-latest.onrender.com";
-const API_BASE_URL = import.meta.env.DEV
-  ? LOCAL_API_BASE_URL
-  : PRODUCTION_API_BASE_URL;
+const API_BASE_URL =
+  import.meta.env.VITE_REDUCTION_API_BASE_URL ||
+  import.meta.env.VITE_TRAV_API_BASE_URL ||
+  (import.meta.env.DEV ? LOCAL_API_BASE_URL : PRODUCTION_API_BASE_URL);
 
 const BET_LEGS = {
   V3: 3,
@@ -106,17 +107,6 @@ function formatDecimal(value) {
   return Number(value).toLocaleString("sv-SE", { maximumFractionDigits: 2 });
 }
 
-function getFilenameFromHeaders(headers, fallback) {
-  const disposition = headers.get("Content-Disposition") || "";
-  const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
-  if (utf8Match) {
-    return decodeURIComponent(utf8Match[1]);
-  }
-
-  const plainMatch = disposition.match(/filename="?([^";]+)"?/i);
-  return plainMatch?.[1] || fallback;
-}
-
 async function readApiError(response) {
   const text = await response.text();
   if (!text) {
@@ -136,6 +126,22 @@ function buildApiUrl(apiBaseUrl, path) {
   return `${baseUrl}${path}`;
 }
 
+async function copyTextToClipboard(value) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = value;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
+}
 export default function TravReductionGui() {
   const [options, setOptions] = useState(FALLBACK_OPTIONS);
   const [form, setForm] = useState(initialForm);
@@ -243,11 +249,11 @@ export default function TravReductionGui() {
     setStatus({ type: "success", message: "Preview ready" });
   }
 
-  async function downloadXml() {
-    setStatus({ type: "loading", message: "Creating XML" });
+  async function copyXmlUrl() {
+    setStatus({ type: "loading", message: "Creating XML link" });
     setXmlStats(null);
 
-    const response = await fetch(buildApiUrl(API_BASE_URL, "/api/reducering/xml"), {
+    const response = await fetch(buildApiUrl(API_BASE_URL, "/api/reducering/xml/temp"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(buildRequest()),
@@ -257,24 +263,18 @@ export default function TravReductionGui() {
       throw new Error(await readApiError(response));
     }
 
-    const blob = await response.blob();
-    const filename = getFilenameFromHeaders(response.headers, `${form.spelform}_${form.banKod}_${form.startDatum}.xml`);
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
+    const result = await response.json();
+    await copyTextToClipboard(result.url);
 
     setXmlStats({
-      generatedRows: response.headers.get("X-Generated-Rows"),
-      couponCount: response.headers.get("X-Coupon-Count"),
-      missingStreckHits: response.headers.get("X-Missing-Streck-Hits"),
-      filename,
+      generatedRows: result.generatedRows,
+      couponCount: result.couponCount,
+      missingStreckHits: result.missingStreckHits,
+      filename: result.fileName,
+      url: result.url,
+      expiresAt: result.expiresAt,
     });
-    setStatus({ type: "success", message: "XML downloaded" });
+    setStatus({ type: "success", message: "XML link copied" });
   }
 
   async function runAction(action) {
@@ -453,9 +453,9 @@ export default function TravReductionGui() {
                   type="button"
                   className="h-10 rounded-md bg-emerald-700 px-4 text-sm font-semibold text-white hover:bg-emerald-800 disabled:opacity-60"
                   disabled={status.type === "loading"}
-                  onClick={() => runAction(downloadXml)}
+                  onClick={() => runAction(copyXmlUrl)}
                 >
-                  XML
+                  Copy XML URL
                 </button>
               </div>
             </div>
@@ -468,9 +468,22 @@ export default function TravReductionGui() {
               <Metric label="Saknar streck" value={preview?.missingStreckHits ?? xmlStats?.missingStreckHits ?? "-"} />
             </div>
 
-            {xmlStats?.filename && (
+            {xmlStats?.url && (
               <div className="mt-3 rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
-                {xmlStats.filename}
+                <div className="font-medium">{xmlStats.filename}</div>
+                <a
+                  className="mt-1 block break-all underline decoration-emerald-700/40 underline-offset-2"
+                  href={xmlStats.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {xmlStats.url}
+                </a>
+                {xmlStats.expiresAt && (
+                  <div className="mt-1 text-xs text-emerald-700">
+                    Giltig till {new Date(xmlStats.expiresAt).toLocaleString("sv-SE")}
+                  </div>
+                )}
               </div>
             )}
 
@@ -536,5 +549,3 @@ function Metric({ label, value }) {
     </div>
   );
 }
-
-
