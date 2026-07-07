@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 
-const DEFAULT_API_BASE_URL =
-  import.meta.env.VITE_REDUCTION_API_BASE_URL ||
-  import.meta.env.VITE_TRAV_API_BASE_URL ||
-  "";
+const LOCAL_API_BASE_URL = "http://localhost:63093";
+const PRODUCTION_API_BASE_URL =
+  "https://travanalys-reducering-backend-latest.onrender.com";
+const API_BASE_URL = import.meta.env.DEV
+  ? LOCAL_API_BASE_URL
+  : PRODUCTION_API_BASE_URL;
 
 const BET_LEGS = {
   V3: 3,
@@ -134,8 +136,7 @@ function buildApiUrl(apiBaseUrl, path) {
   return `${baseUrl}${path}`;
 }
 
-export default function TravReductionGui({ defaultApiBaseUrl = DEFAULT_API_BASE_URL }) {
-  const [apiBaseUrl, setApiBaseUrl] = useState(defaultApiBaseUrl);
+export default function TravReductionGui() {
   const [options, setOptions] = useState(FALLBACK_OPTIONS);
   const [form, setForm] = useState(initialForm);
   const [preview, setPreview] = useState(null);
@@ -151,7 +152,7 @@ export default function TravReductionGui({ defaultApiBaseUrl = DEFAULT_API_BASE_
   useEffect(() => {
     let ignore = false;
 
-    fetch(buildApiUrl(apiBaseUrl, "/api/reducering/options"))
+    fetch(buildApiUrl(API_BASE_URL, "/api/reducering/options"))
       .then((response) => (response.ok ? response.json() : FALLBACK_OPTIONS))
       .then((data) => {
         if (!ignore) {
@@ -167,7 +168,7 @@ export default function TravReductionGui({ defaultApiBaseUrl = DEFAULT_API_BASE_
     return () => {
       ignore = true;
     };
-  }, [apiBaseUrl]);
+  }, []);
 
   function updateField(field, value) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -227,7 +228,7 @@ export default function TravReductionGui({ defaultApiBaseUrl = DEFAULT_API_BASE_
     setPreview(null);
     setXmlStats(null);
 
-    const response = await fetch(buildApiUrl(apiBaseUrl, "/api/reducering/preview"), {
+    const response = await fetch(buildApiUrl(API_BASE_URL, "/api/reducering/preview"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(buildRequest()),
@@ -246,7 +247,7 @@ export default function TravReductionGui({ defaultApiBaseUrl = DEFAULT_API_BASE_
     setStatus({ type: "loading", message: "Creating XML" });
     setXmlStats(null);
 
-    const response = await fetch(buildApiUrl(apiBaseUrl, "/api/reducering/xml"), {
+    const response = await fetch(buildApiUrl(API_BASE_URL, "/api/reducering/xml"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(buildRequest()),
@@ -287,21 +288,10 @@ export default function TravReductionGui({ defaultApiBaseUrl = DEFAULT_API_BASE_
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-950">
       <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
-        <header className="flex flex-col gap-3 border-b border-zinc-200 pb-4 lg:flex-row lg:items-end lg:justify-between">
+        <header className="border-b border-zinc-200 pb-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-normal text-zinc-950">Trav Reducering</h1>
             <p className="mt-1 text-sm text-zinc-600">{form.spelform} / {form.banKod || "Bana"} / {form.startDatum || "Datum"}</p>
-          </div>
-
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-            <label className="flex min-w-64 flex-col gap-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
-              API
-              <input
-                className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm font-normal normal-case text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                value={apiBaseUrl}
-                onChange={(event) => setApiBaseUrl(event.target.value)}
-              />
-            </label>
           </div>
         </header>
 
