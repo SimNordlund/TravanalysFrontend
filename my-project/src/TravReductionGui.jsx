@@ -529,29 +529,29 @@ export default function TravReductionGui() {
                 </div>
               )}
             </div>
-            <div className="mt-4 hidden overflow-x-auto rounded-md border border-zinc-200 md:block">
-              <table className="min-w-[760px] divide-y divide-zinc-200 text-sm">
+            <div className="mt-4 hidden overflow-hidden rounded-md border border-zinc-200 md:block">
+              <table className="w-full table-fixed divide-y divide-zinc-200 text-xs lg:text-sm">
                 <thead className="bg-zinc-100 text-left text-xs font-semibold uppercase tracking-wide text-zinc-500">
                   <tr>
-                    <th className="px-3 py-2">Textrad</th>
-                    <th className="px-3 py-2">Hästar</th>
-                    <th className="px-3 py-2">Rank</th>
-                    <th className="px-3 py-2 text-right">Sum rank</th>
-                    <th className="px-3 py-2 text-right">Sum streck</th>
-                    <th className="px-3 py-2 text-right">Min</th>
-                    <th className="px-3 py-2 text-right">Avg</th>
+                    <th className="w-[22%] px-2 py-2">Textrad</th>
+                    <th className="w-[19%] px-2 py-2">Hästar</th>
+                    <th className="w-[19%] px-2 py-2">Rank</th>
+                    <th className="w-[10%] px-2 py-2 text-right">Sum rank</th>
+                    <th className="w-[12%] px-2 py-2 text-right">Sum streck</th>
+                    <th className="w-[9%] px-2 py-2 text-right">Min</th>
+                    <th className="w-[9%] px-2 py-2 text-right">Avg</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-100 bg-white">
                   {previewRowsList.map((row, index) => (
                     <tr key={`${row.textRad}-${index}`} className="hover:bg-zinc-50">
-                      <td className="whitespace-nowrap px-3 py-2 font-mono text-xs text-zinc-800">{row.textRad}</td>
-                      <td className="whitespace-nowrap px-3 py-2">{row.numbers.join(", ")}</td>
-                      <td className="whitespace-nowrap px-3 py-2">{row.rankPositions.join(", ")}</td>
-                      <td className="whitespace-nowrap px-3 py-2 text-right">{row.sumRank}</td>
-                      <td className="whitespace-nowrap px-3 py-2 text-right">{formatDecimal(row.sumStreck)}</td>
-                      <td className="whitespace-nowrap px-3 py-2 text-right">{formatDecimal(row.minStreck)}</td>
-                      <td className="whitespace-nowrap px-3 py-2 text-right">{formatDecimal(row.averageStreck)}</td>
+                      <td className="break-all px-2 py-2 font-mono text-[11px] leading-4 text-zinc-800 lg:text-xs">{row.textRad}</td>
+                      <td className="break-words px-2 py-2 leading-5">{row.numbers.join(", ")}</td>
+                      <td className="break-words px-2 py-2 leading-5">{row.rankPositions.join(", ")}</td>
+                      <td className="px-2 py-2 text-right tabular-nums">{row.sumRank}</td>
+                      <td className="px-2 py-2 text-right tabular-nums">{formatDecimal(row.sumStreck)}</td>
+                      <td className="px-2 py-2 text-right tabular-nums">{formatDecimal(row.minStreck)}</td>
+                      <td className="px-2 py-2 text-right tabular-nums">{formatDecimal(row.averageStreck)}</td>
                     </tr>
                   ))}
                   {!previewRowsList.length && (
