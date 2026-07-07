@@ -22,7 +22,6 @@ const BET_LEGS = {
 
 const FALLBACK_OPTIONS = {
   spelformer: SUPPORTED_SPELFORMER,
-  banor: ["S", "Å", "J", "Ax", "B", "Bo", "Bs", "D", "E", "F", "G", "H", "Hd", "Kr", "L", "Mp", "Ro", "Rä", "Sk", "Sä", "U", "Vi", "Åm", "År", "Ö", "Ös", "Ho", "Vg", "Ti"],
   trackCodes: [
     { code: "05", name: "S" },
     { code: "06", name: "Å" },
@@ -326,7 +325,7 @@ export default function TravReductionGui() {
               </label>
 
               <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
-                ATG kod
+                Bana
                 <select
                   className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
                   value={form.trackCode}
@@ -336,21 +335,6 @@ export default function TravReductionGui() {
                     <option key={track.code} value={track.code}>{track.code} - {track.name}</option>
                   ))}
                 </select>
-              </label>
-
-              <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
-                Bankod
-                <input
-                  className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
-                  list="trav-banor"
-                  value={form.banKod}
-                  onChange={(event) => updateField("banKod", event.target.value)}
-                />
-                <datalist id="trav-banor">
-                  {options.banor.map((bana) => (
-                    <option key={bana} value={bana} />
-                  ))}
-                </datalist>
               </label>
 
               <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
