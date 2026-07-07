@@ -75,7 +75,6 @@ const initialForm = {
   trackCode: "05",
   lopp: "1",
   radpris: "1",
-  streckTyp: "",
   avdelningar: initialSelections,
   filter: FALLBACK_OPTIONS.defaultFilter,
   excludedTextRowsText: "",
@@ -219,7 +218,6 @@ export default function TravReductionGui() {
       trackCode: form.trackCode.trim(),
       lopp: toNumber(form.lopp, 1),
       radpris: toNumber(form.radpris, 1),
-      streckTyp: form.streckTyp.trim() || null,
       avdelningar,
       filter: {
         minRank: toNumber(form.filter.minRank, 0),
@@ -235,7 +233,7 @@ export default function TravReductionGui() {
   }
 
   async function previewRows() {
-    setStatus({ type: "loading", message: "Preview running" });
+    setStatus({ type: "loading", message: "Preview körs" });
     setPreview(null);
     setXmlStats(null);
 
@@ -251,11 +249,11 @@ export default function TravReductionGui() {
 
     const result = await response.json();
     setPreview(result);
-    setStatus({ type: "success", message: "Preview ready" });
+    setStatus({ type: "success", message: "Preview redo" });
   }
 
   async function copyXmlUrl() {
-    setStatus({ type: "loading", message: "Creating XML link" });
+    setStatus({ type: "loading", message: "Skapar XML länk" });
     setXmlStats(null);
 
     const response = await fetch(buildApiUrl(API_BASE_URL, "/api/reducering/xml/temp"), {
@@ -279,7 +277,7 @@ export default function TravReductionGui() {
       url: result.url,
       expiresAt: result.expiresAt,
     });
-    setStatus({ type: "success", message: "XML link copied" });
+    setStatus({ type: "success", message: "XML länk kopierad" });
   }
 
   async function runAction(action) {
@@ -373,15 +371,6 @@ export default function TravReductionGui() {
                   onChange={(event) => updateField("radpris", event.target.value)}
                 />
               </label>
-
-              <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700 md:col-span-2">
-                Strecktyp
-                <input
-                  className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
-                  value={form.streckTyp}
-                  onChange={(event) => updateField("streckTyp", event.target.value)}
-                />
-              </label>
             </div>
 
             <div className="mt-5 border-t border-zinc-200 pt-4">
@@ -442,7 +431,7 @@ export default function TravReductionGui() {
                 status.type === "loading" ? "bg-sky-50 text-sky-800" : "",
               ].join(" ")}
               >
-                {status.message || "Ready"}
+                {status.message || "Redo"}
               </div>
 
               <div className="flex gap-2">
