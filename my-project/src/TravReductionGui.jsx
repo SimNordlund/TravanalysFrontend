@@ -293,7 +293,7 @@ export default function TravReductionGui() {
       <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
         <header className="border-b border-zinc-200 pb-4">
           <div>
-            <h1 className="text-2xl font-semibold tracking-normal text-zinc-950">Trav Reducering</h1>
+            <h1 className="text-2xl font-semibold tracking-normal text-zinc-950">Travanalys.se Reducering</h1>
             <p className="mt-1 text-sm text-zinc-600">{form.spelform} / {form.banKod || "Bana"} / {form.startDatum || "Datum"}</p>
           </div>
         </header>
@@ -449,7 +449,7 @@ export default function TravReductionGui() {
                   disabled={status.type === "loading"}
                   onClick={() => runAction(copyXmlUrl)}
                 >
-                  Copy XML URL
+                  Kopiera XML-Länk
                 </button>
               </div>
             </div>
