@@ -154,6 +154,7 @@ export default function TravReductionGui() {
     () => form.avdelningar.slice(0, legCount),
     [form.avdelningar, legCount],
   );
+  const previewRowsList = preview?.rows || [];
 
   useEffect(() => {
     let ignore = false;
@@ -289,22 +290,22 @@ export default function TravReductionGui() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-950">
-      <div className="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
-        <header className="border-b border-zinc-200 pb-4">
+    <div className="min-h-screen overflow-x-hidden bg-zinc-50 text-zinc-950">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-3 py-4 sm:gap-5 sm:px-6 sm:py-5 lg:px-8">
+        <header className="border-b border-zinc-200 pb-4 text-center sm:text-left">
           <div>
-            <h1 className="text-2xl font-semibold tracking-normal text-zinc-950">Travanalys.se Reducering</h1>
-            <p className="mt-1 text-sm text-zinc-600">{form.spelform} / {form.banKod || "Bana"} / {form.startDatum || "Datum"}</p>
+            <h1 className="text-xl font-semibold tracking-normal text-zinc-950 sm:text-2xl">Travanalys.se Reducering</h1>
+            <p className="mx-auto mt-2 flex w-fit max-w-full flex-wrap items-center justify-center gap-1 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-zinc-600 ring-1 ring-zinc-200 sm:mx-0 sm:text-sm">{form.spelform} / {form.banKod || "Bana"} / {form.startDatum || "Datum"}</p>
           </div>
         </header>
 
-        <main className="grid gap-5 xl:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)]">
-          <section className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
-            <div className="grid gap-4 md:grid-cols-4">
+        <main className="grid min-w-0 gap-4 lg:gap-5 xl:grid-cols-[minmax(0,1.05fr)_minmax(380px,0.95fr)]">
+          <section className="min-w-0 rounded-lg border border-zinc-200 bg-white p-3 shadow-sm sm:p-4">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
                 Spelform
                 <select
-                  className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+                  className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
                   value={form.spelform}
                   onChange={(event) => updateField("spelform", event.target.value)}
                 >
@@ -317,7 +318,7 @@ export default function TravReductionGui() {
               <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
                 Datum
                 <input
-                  className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+                  className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
                   placeholder="yyyyMMdd"
                   value={form.startDatum}
                   onChange={(event) => updateField("startDatum", event.target.value)}
@@ -327,7 +328,7 @@ export default function TravReductionGui() {
               <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
                 ATG kod
                 <select
-                  className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+                  className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
                   value={form.trackCode}
                   onChange={(event) => handleTrackChange(event.target.value)}
                 >
@@ -340,7 +341,7 @@ export default function TravReductionGui() {
               <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
                 Bankod
                 <input
-                  className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+                  className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
                   list="trav-banor"
                   value={form.banKod}
                   onChange={(event) => updateField("banKod", event.target.value)}
@@ -355,7 +356,7 @@ export default function TravReductionGui() {
               <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
                 Lopp
                 <input
-                  className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+                  className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
                   inputMode="numeric"
                   value={form.lopp}
                   onChange={(event) => updateField("lopp", event.target.value)}
@@ -365,7 +366,7 @@ export default function TravReductionGui() {
               <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
                 Radpris
                 <input
-                  className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+                  className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
                   inputMode="decimal"
                   value={form.radpris}
                   onChange={(event) => updateField("radpris", event.target.value)}
@@ -375,12 +376,12 @@ export default function TravReductionGui() {
 
             <div className="mt-5 border-t border-zinc-200 pt-4">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Rankade val</h2>
-              <div className="mt-3 grid gap-3 md:grid-cols-2">
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {activeSelections.map((value, index) => (
                   <label key={index} className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
                     {`Avd ${index + 1}`}
                     <input
-                      className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+                      className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
                       placeholder="1, 4, 7"
                       value={value}
                       onChange={(event) => updateSelection(index, event.target.value)}
@@ -392,7 +393,7 @@ export default function TravReductionGui() {
 
             <div className="mt-5 border-t border-zinc-200 pt-4">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Reduceringsvillkor</h2>
-              <div className="mt-3 grid gap-3 md:grid-cols-3">
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 <NumberField label="Min rank" value={form.filter.minRank} onChange={(value) => updateFilter("minRank", value)} />
                 <NumberField label="Max rank" value={form.filter.maxRank} onChange={(value) => updateFilter("maxRank", value)} />
                 <NumberField label="Min streck" value={form.filter.minStreck} onChange={(value) => updateFilter("minStreck", value)} />
@@ -401,17 +402,17 @@ export default function TravReductionGui() {
                 <NumberField label="Max avg" value={form.filter.maxAverageStreck} onChange={(value) => updateFilter("maxAverageStreck", value)} />
               </div>
 
-              <div className="mt-3 grid gap-3 md:grid-cols-[minmax(0,1fr)_220px]">
+              <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
                 <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
                   Exkludera textrad
                   <textarea
-                    className="min-h-20 rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+                    className="min-h-24 rounded-md border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:min-h-20 sm:text-sm"
                     value={form.excludedTextRowsText}
                     onChange={(event) => updateField("excludedTextRowsText", event.target.value)}
                   />
                 </label>
 
-                <label className="flex h-10 items-center gap-2 self-end rounded-md border border-zinc-300 bg-white px-3 text-sm font-medium text-zinc-700">
+                <label className="flex min-h-11 items-center gap-2 self-stretch rounded-md border border-zinc-300 bg-white px-3 text-sm font-medium text-zinc-700 lg:self-end">
                   <input
                     type="checkbox"
                     className="h-4 w-4 rounded border-zinc-300 text-emerald-700 focus:ring-emerald-600"
@@ -423,9 +424,9 @@ export default function TravReductionGui() {
               </div>
             </div>
 
-            <div className="mt-5 flex flex-col gap-3 border-t border-zinc-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-5 flex flex-col gap-3 border-t border-zinc-200 pt-4 md:flex-row md:items-center md:justify-between">
               <div className={[
-                "min-h-10 rounded-md px-3 py-2 text-sm",
+                "min-h-10 w-full rounded-md px-3 py-2 text-sm md:w-auto",
                 status.type === "error" ? "bg-red-50 text-red-800" : "bg-zinc-100 text-zinc-700",
                 status.type === "success" ? "bg-emerald-50 text-emerald-800" : "",
                 status.type === "loading" ? "bg-sky-50 text-sky-800" : "",
@@ -434,10 +435,10 @@ export default function TravReductionGui() {
                 {status.message || "Redo"}
               </div>
 
-              <div className="flex gap-2">
+              <div className="grid gap-2 sm:grid-cols-2 md:flex md:shrink-0">
                 <button
                   type="button"
-                  className="h-10 rounded-md border border-zinc-300 bg-white px-4 text-sm font-semibold text-zinc-800 hover:bg-zinc-100 disabled:opacity-60"
+                  className="h-11 w-full rounded-md border border-zinc-300 bg-white px-4 text-sm font-semibold text-zinc-800 hover:bg-zinc-100 disabled:opacity-60 sm:h-10 md:w-auto"
                   disabled={status.type === "loading"}
                   onClick={() => runAction(previewRows)}
                 >
@@ -445,7 +446,7 @@ export default function TravReductionGui() {
                 </button>
                 <button
                   type="button"
-                  className="h-10 rounded-md bg-emerald-700 px-4 text-sm font-semibold text-white hover:bg-emerald-800 disabled:opacity-60"
+                  className="h-11 w-full rounded-md bg-emerald-700 px-4 text-sm font-semibold text-white hover:bg-emerald-800 disabled:opacity-60 sm:h-10 md:w-auto"
                   disabled={status.type === "loading"}
                   onClick={() => runAction(copyXmlUrl)}
                 >
@@ -455,7 +456,7 @@ export default function TravReductionGui() {
             </div>
           </section>
 
-          <section className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm">
+          <section className="min-w-0 rounded-lg border border-zinc-200 bg-white p-3 shadow-sm sm:p-4">
             <div className="grid gap-3 sm:grid-cols-3">
               <Metric label="Genererade" value={preview?.generatedRows ?? xmlStats?.generatedRows ?? "-"} />
               <Metric label="Efter filter" value={preview?.filteredRows ?? xmlStats?.couponCount ?? "-"} />
@@ -481,8 +482,55 @@ export default function TravReductionGui() {
               </div>
             )}
 
-            <div className="mt-4 overflow-auto rounded-md border border-zinc-200">
-              <table className="min-w-full divide-y divide-zinc-200 text-sm">
+            <div className="mt-4 space-y-3 md:hidden">
+              {previewRowsList.map((row, index) => (
+                <div
+                  key={`${row.textRad}-${index}-mobile`}
+                  className="rounded-md border border-zinc-200 bg-white p-3 text-sm shadow-sm"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Textrad</div>
+                      <div className="mt-1 font-mono text-sm font-semibold text-zinc-900">{row.textRad}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Sum rank</div>
+                      <div className="mt-1 font-semibold text-zinc-900">{row.sumRank}</div>
+                    </div>
+                  </div>
+
+                  <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-zinc-700">
+                    <div className="col-span-2">
+                      <dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Hästar</dt>
+                      <dd className="mt-0.5 break-words">{row.numbers.join(", ")}</dd>
+                    </div>
+                    <div className="col-span-2">
+                      <dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Rank</dt>
+                      <dd className="mt-0.5 break-words">{row.rankPositions.join(", ")}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Sum streck</dt>
+                      <dd className="mt-0.5 font-medium text-zinc-900">{formatDecimal(row.sumStreck)}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Min</dt>
+                      <dd className="mt-0.5 font-medium text-zinc-900">{formatDecimal(row.minStreck)}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Avg</dt>
+                      <dd className="mt-0.5 font-medium text-zinc-900">{formatDecimal(row.averageStreck)}</dd>
+                    </div>
+                  </dl>
+                </div>
+              ))}
+              {!previewRowsList.length && (
+                <div className="rounded-md border border-zinc-200 bg-white px-3 py-8 text-center text-sm text-zinc-500">
+                  Ingen preview
+                </div>
+              )}
+            </div>
+            <div className="mt-4 hidden overflow-x-auto rounded-md border border-zinc-200 md:block">
+              <table className="min-w-[760px] divide-y divide-zinc-200 text-sm">
                 <thead className="bg-zinc-100 text-left text-xs font-semibold uppercase tracking-wide text-zinc-500">
                   <tr>
                     <th className="px-3 py-2">Textrad</th>
@@ -495,7 +543,7 @@ export default function TravReductionGui() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-100 bg-white">
-                  {(preview?.rows || []).map((row, index) => (
+                  {previewRowsList.map((row, index) => (
                     <tr key={`${row.textRad}-${index}`} className="hover:bg-zinc-50">
                       <td className="whitespace-nowrap px-3 py-2 font-mono text-xs text-zinc-800">{row.textRad}</td>
                       <td className="whitespace-nowrap px-3 py-2">{row.numbers.join(", ")}</td>
@@ -506,7 +554,7 @@ export default function TravReductionGui() {
                       <td className="whitespace-nowrap px-3 py-2 text-right">{formatDecimal(row.averageStreck)}</td>
                     </tr>
                   ))}
-                  {!preview?.rows?.length && (
+                  {!previewRowsList.length && (
                     <tr>
                       <td className="px-3 py-8 text-center text-sm text-zinc-500" colSpan={7}>Ingen preview</td>
                     </tr>
@@ -526,7 +574,7 @@ function NumberField({ label, value, onChange }) {
     <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
       {label}
       <input
-        className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100"
+        className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
         inputMode="decimal"
         value={value}
         onChange={(event) => onChange(event.target.value)}
@@ -537,9 +585,9 @@ function NumberField({ label, value, onChange }) {
 
 function Metric({ label, value }) {
   return (
-    <div className="rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2">
+    <div className="rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-center sm:text-left">
       <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">{label}</div>
-      <div className="mt-1 text-2xl font-semibold text-zinc-950">{value}</div>
+      <div className="mt-1 text-xl font-semibold text-zinc-950 sm:text-2xl">{value}</div>
     </div>
   );
 }
