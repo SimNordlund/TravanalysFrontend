@@ -242,7 +242,7 @@ export default function TravReductionGui() {
       banKod: form.banKod.trim(),
       trackCode: form.trackCode.trim(),
       lopp: toNumber(form.lopp, 1),
-      radpris: toNumber(form.radpris, 1),
+      radpris: form.spelform === "Trio" ? 2 : 1,
       avdelningar,
       filter: {
         minRank: toNumber(form.filter.minRank, 0),
