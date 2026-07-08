@@ -486,13 +486,13 @@ export default function TravReductionGui() {
                 status.type === "loading" ? "bg-sky-50 text-sky-800" : "",
               ].join(" ")}
               >
-                {status.message || "Redo"}
+                {status.message || "Status: Redo"}
               </div>
 
-              <div className="grid gap-2 sm:grid-cols-3 md:flex md:shrink-0">
+              <div className="grid w-full gap-2 sm:grid-cols-3 md:w-auto md:shrink-0">
                 <button
                   type="button"
-                  className="h-11 w-full rounded-md border border-zinc-300 bg-white px-4 text-sm font-semibold text-zinc-800 hover:bg-zinc-100 disabled:opacity-60 sm:h-10 md:w-auto"
+                  className="inline-flex h-11 w-full items-center justify-center rounded-md border border-zinc-300 bg-white px-4 text-sm font-semibold text-zinc-800 shadow-sm transition hover:border-zinc-400 hover:bg-zinc-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-300 focus-visible:ring-offset-2 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 sm:h-10 md:w-auto"
                   disabled={status.type === "loading"}
                   onClick={() => runAction(previewRows)}
                 >
@@ -500,7 +500,7 @@ export default function TravReductionGui() {
                 </button>
                 <button
                   type="button"
-                  className="h-11 w-full rounded-md bg-emerald-700 px-4 text-sm font-semibold text-white hover:bg-emerald-800 disabled:opacity-60 sm:h-10 md:w-auto"
+                  className="inline-flex h-11 w-full items-center justify-center rounded-md bg-emerald-700 px-4 text-sm font-semibold text-white shadow-sm shadow-emerald-900/10 transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 sm:h-10 md:w-auto"
                   disabled={status.type === "loading"}
                   onClick={() => runAction(downloadXmlFile)}
                 >
@@ -508,11 +508,11 @@ export default function TravReductionGui() {
                 </button>
                 <button
                   type="button"
-                  className="h-11 w-full rounded-md border border-emerald-700 bg-white px-4 text-sm font-semibold text-emerald-800 hover:bg-emerald-50 disabled:opacity-60 sm:h-10 md:w-auto"
+                  className="inline-flex h-11 w-full items-center justify-center rounded-md border border-emerald-200 bg-emerald-50 px-4 text-sm font-semibold text-emerald-800 shadow-sm transition hover:border-emerald-300 hover:bg-emerald-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 sm:h-10 md:w-auto"
                   disabled={status.type === "loading"}
                   onClick={() => runAction(copyXmlUrl)}
                 >
-                  Kopiera länk till spelfil
+                  Kopiera länk
                 </button>
               </div>
             </div>
