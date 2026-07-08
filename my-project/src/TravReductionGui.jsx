@@ -148,6 +148,17 @@ function buildApiUrl(apiBaseUrl, path) {
   return `${baseUrl}${path}`;
 }
 
+function createXmlStats(result) {
+  return {
+    generatedRows: result.generatedRows,
+    couponCount: result.couponCount,
+    missingStreckHits: result.missingStreckHits,
+    filename: result.fileName,
+    url: result.url,
+    expiresAt: result.expiresAt,
+  };
+}
+
 async function copyTextToClipboard(value) {
   if (navigator.clipboard?.writeText) {
     await navigator.clipboard.writeText(value);
@@ -164,6 +175,35 @@ async function copyTextToClipboard(value) {
   document.execCommand("copy");
   textarea.remove();
 }
+function triggerDownload(url, filename) {
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename || "spelfil.xml";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+async function downloadFileFromUrl(url, filename) {
+  if (!url) {
+    throw new Error("Saknar XML länk från backend.");
+  }
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    triggerDownload(objectUrl, filename);
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+  } catch {
+    triggerDownload(url, filename);
+  }
+}
+
 export default function TravReductionGui() {
   const [options, setOptions] = useState(FALLBACK_OPTIONS);
   const [form, setForm] = useState(initialForm);
@@ -294,15 +334,29 @@ export default function TravReductionGui() {
     const result = await response.json();
     await copyTextToClipboard(result.url);
 
-    setXmlStats({
-      generatedRows: result.generatedRows,
-      couponCount: result.couponCount,
-      missingStreckHits: result.missingStreckHits,
-      filename: result.fileName,
-      url: result.url,
-      expiresAt: result.expiresAt,
-    });
+    setXmlStats(createXmlStats(result));
     setStatus({ type: "success", message: "XML länk kopierad" });
+  }
+
+  async function downloadXmlFile() {
+    setStatus({ type: "loading", message: "Skapar XML fil" });
+    setXmlStats(null);
+
+    const response = await fetch(buildApiUrl(API_BASE_URL, "/api/reducering/xml/temp"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(buildRequest()),
+    });
+
+    if (!response.ok) {
+      throw new Error(await readApiError(response));
+    }
+
+    const result = await response.json();
+    const nextXmlStats = createXmlStats(result);
+    setXmlStats(nextXmlStats);
+    await downloadFileFromUrl(nextXmlStats.url, nextXmlStats.filename);
+    setStatus({ type: "success", message: "XML fil laddas ner" });
   }
 
   async function runAction(action) {
@@ -435,7 +489,7 @@ export default function TravReductionGui() {
                 {status.message || "Redo"}
               </div>
 
-              <div className="grid gap-2 sm:grid-cols-2 md:flex md:shrink-0">
+              <div className="grid gap-2 sm:grid-cols-3 md:flex md:shrink-0">
                 <button
                   type="button"
                   className="h-11 w-full rounded-md border border-zinc-300 bg-white px-4 text-sm font-semibold text-zinc-800 hover:bg-zinc-100 disabled:opacity-60 sm:h-10 md:w-auto"
@@ -447,6 +501,14 @@ export default function TravReductionGui() {
                 <button
                   type="button"
                   className="h-11 w-full rounded-md bg-emerald-700 px-4 text-sm font-semibold text-white hover:bg-emerald-800 disabled:opacity-60 sm:h-10 md:w-auto"
+                  disabled={status.type === "loading"}
+                  onClick={() => runAction(downloadXmlFile)}
+                >
+                  Ladda ner spelfil
+                </button>
+                <button
+                  type="button"
+                  className="h-11 w-full rounded-md border border-emerald-700 bg-white px-4 text-sm font-semibold text-emerald-800 hover:bg-emerald-50 disabled:opacity-60 sm:h-10 md:w-auto"
                   disabled={status.type === "loading"}
                   onClick={() => runAction(copyXmlUrl)}
                 >
@@ -556,7 +618,7 @@ export default function TravReductionGui() {
                   ))}
                   {!previewRowsList.length && (
                     <tr>
-                      <td className="px-3 py-8 text-center text-sm text-zinc-500" colSpan={7}>Ingen preview</td>
+                      <td className="px-3 py-8 text-center text-sm text-zinc-500" colSpan={7}>Ingen reducering</td>
                     </tr>
                   )}
                 </tbody>
