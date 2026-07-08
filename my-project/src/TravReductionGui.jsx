@@ -107,6 +107,18 @@ function formatDecimal(value) {
   return Number(value).toLocaleString("sv-SE", { maximumFractionDigits: 2 });
 }
 
+function toDateInputValue(value) {
+  if (!/^\d{8}$/.test(value)) {
+    return "";
+  }
+
+  return `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6, 8)}`;
+}
+
+function fromDateInputValue(value) {
+  return value.replaceAll("-", "");
+}
+
 async function readApiError(response) {
   const text = await response.text();
   if (!text) {
@@ -236,7 +248,7 @@ export default function TravReductionGui() {
   }
 
   async function previewRows() {
-    setStatus({ type: "loading", message: "Preview körs" });
+    setStatus({ type: "loading", message: "Reducering körs" });
     setPreview(null);
     setXmlStats(null);
 
@@ -252,7 +264,7 @@ export default function TravReductionGui() {
 
     const result = await response.json();
     setPreview(result);
-    setStatus({ type: "success", message: "Preview redo" });
+    setStatus({ type: "success", message: "Reducering redo" });
   }
 
   async function copyXmlUrl() {
@@ -320,10 +332,10 @@ export default function TravReductionGui() {
               <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
                 Datum
                 <input
+                  type="date"
                   className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
-                  placeholder="yyyyMMdd"
-                  value={form.startDatum}
-                  onChange={(event) => updateField("startDatum", event.target.value)}
+                  value={toDateInputValue(form.startDatum)}
+                  onChange={(event) => updateField("startDatum", fromDateInputValue(event.target.value))}
                 />
               </label>
 
@@ -350,15 +362,6 @@ export default function TravReductionGui() {
                 />
               </label>
 
-              <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
-                Radpris
-                <input
-                  className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
-                  inputMode="decimal"
-                  value={form.radpris}
-                  onChange={(event) => updateField("radpris", event.target.value)}
-                />
-              </label>
             </div>
 
             <div className="mt-5 border-t border-zinc-200 pt-4">
@@ -429,7 +432,7 @@ export default function TravReductionGui() {
                   disabled={status.type === "loading"}
                   onClick={() => runAction(previewRows)}
                 >
-                  Preview
+                  Reducera
                 </button>
                 <button
                   type="button"
@@ -437,7 +440,7 @@ export default function TravReductionGui() {
                   disabled={status.type === "loading"}
                   onClick={() => runAction(copyXmlUrl)}
                 >
-                  Kopiera XML-Länk
+                  Kopiera länk till spelfil
                 </button>
               </div>
             </div>
@@ -512,7 +515,7 @@ export default function TravReductionGui() {
               ))}
               {!previewRowsList.length && (
                 <div className="rounded-md border border-zinc-200 bg-white px-3 py-8 text-center text-sm text-zinc-500">
-                  Ingen preview
+                  Ingen reducering
                 </div>
               )}
             </div>
