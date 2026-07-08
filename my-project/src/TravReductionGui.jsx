@@ -356,7 +356,7 @@ export default function TravReductionGui() {
     const nextXmlStats = createXmlStats(result);
     setXmlStats(nextXmlStats);
     await downloadFileFromUrl(nextXmlStats.url, nextXmlStats.filename);
-    setStatus({ type: "success", message: "XML fil laddas ner" });
+    setStatus({ type: "success", message: "XML fil nedladdad" });
   }
 
   async function runAction(action) {
