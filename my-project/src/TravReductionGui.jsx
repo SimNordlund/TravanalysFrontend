@@ -66,11 +66,21 @@ const FALLBACK_OPTIONS = {
   },
 };
 
+
+function getTodayCompactDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+
+  return `${year}${month}${day}`;
+}
+
 const initialSelections = Array.from({ length: 8 }, () => "");
 
 const initialForm = {
   spelform: "GS75",
-  startDatum: "",
+  startDatum: getTodayCompactDate(),
   banKod: "S",
   trackCode: "05",
   lopp: "1",
