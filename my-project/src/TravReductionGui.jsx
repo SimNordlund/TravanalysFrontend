@@ -7,9 +7,10 @@ const API_BASE_URL =
   import.meta.env.VITE_REDUCTION_API_BASE_URL ||
   import.meta.env.VITE_TRAV_API_BASE_URL ||
   (import.meta.env.DEV ? LOCAL_API_BASE_URL : PRODUCTION_API_BASE_URL);
-const SUPPORTED_SPELFORMER = ["V3", "V4", "V5", "V64", "V65", "GS75", "V85", "V86"];
+const SUPPORTED_SPELFORMER = ["Trio", "V3", "V4", "V5", "V64", "V65", "GS75", "V85", "V86"];
 
 const BET_LEGS = {
+  Trio: 3,
   V3: 3,
   V4: 4,
   V5: 5,
@@ -149,6 +150,8 @@ export default function TravReductionGui() {
   const [status, setStatus] = useState({ type: "idle", message: "" });
 
   const legCount = BET_LEGS[form.spelform] || 0;
+  const isTrio = form.spelform === "Trio";
+  const selectionLabel = isTrio ? "Placering" : "Avd";
   const activeSelections = useMemo(
     () => form.avdelningar.slice(0, legCount),
     [form.avdelningar, legCount],
@@ -359,11 +362,11 @@ export default function TravReductionGui() {
             </div>
 
             <div className="mt-5 border-t border-zinc-200 pt-4">
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Rankade val</h2>
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">{isTrio ? "Placeringar" : "Rankade val"}</h2>
               <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {activeSelections.map((value, index) => (
                   <label key={index} className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
-                    {`Avd ${index + 1}`}
+                    {`${selectionLabel} ${index + 1}`}
                     <input
                       className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
                       placeholder="1, 4, 7"
