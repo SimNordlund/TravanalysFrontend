@@ -16,6 +16,14 @@ const faqsList = [
     a: "Börja i Analys för den samlade bilden, gå vidare till Ranking när du vill jämföra fältet och använd Spel & ROI när du vill titta närmare på spelvärde och historik.",
   },
   {
+    q: "Vad är Travanalys Reducering?",
+    a: "Travanalys Reducering hjälper dig att bygga reducerade system utifrån dina egna val och villkor. Du väljer spelform, datum, bana och lopp, fyller i hästar per avdelning och sätter regler för exempelvis rank, streck och totalstreck. Verktyget ersätter inte din spelidé, utan hjälper dig att göra systemet mer hanterbart.",
+  },
+  {
+    q: "Kan jag skapa en reducerad spelfil?",
+    a: "Ja, helt gratis. När reduceringen är klar kan du förhandsgranska raderna och sedan ladda ner en XML-spelfil eller kopiera länken till filen. Filen skapas utifrån samma reduceringsvillkor som du har valt i formuläret. Observera att det är en beta-version så var noga med att granska filen innan du skickar in den till ATG. Vi tar inget ansvar för eventuella fel i filen.",
+  },
+  {
     q: "Kostar det något?",
     a: "Nej, travanalys.se är gratis att använda. Tjänsten är fortfarande under utveckling och fler funktioner kommer att fyllas på efter hand.",
   },
