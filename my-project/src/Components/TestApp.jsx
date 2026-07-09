@@ -115,7 +115,7 @@ const Search = ({ search, onSearch }) => {
   //Arrow function //MEN BEHÖVER INGEN  MÅSVINGE ELLER RETURN PGA RETURNERAR INGET ANNAT ÄN JSX
 
   return (
-    <div>
+    <>
       <label htmlFor="search">Search</label>
       <input
         id="search"
@@ -126,6 +126,6 @@ const Search = ({ search, onSearch }) => {
         onChange={onSearch} //Varje gång fältet ändras så kallas på onSearch funktionen som skickas in som prop från TestApp komponenten.
         //Den uppdaterar searchTerm state variabeln med det nya värdet från inputfältet.
       />
-    </div>
+    </>
   );
 };
