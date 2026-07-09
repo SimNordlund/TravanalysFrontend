@@ -24,12 +24,12 @@ const faqsList = [
     a: "Ja, helt gratis. När reduceringen är klar kan du förhandsgranska raderna och sedan ladda ner en XML-spelfil eller kopiera länken till filen. Filen skapas utifrån samma reduceringsvillkor som du har valt i formuläret. Observera att det är en beta-version så var noga med att granska filen innan du skickar in den till ATG. Vi tar inget ansvar för eventuella fel i filen.",
   },
   {
-    q: "Kostar det något?",
-    a: "Nej, travanalys.se är gratis att använda. Tjänsten är fortfarande under utveckling och fler funktioner kommer att fyllas på efter hand.",
-  },
-  {
     q: "Vilka ligger bakom travanalys.se?",
     a: "Vi är ett gäng travnördar som vill göra det enklare att hitta intressanta hästar, ifrågasätta magkänslan och fatta bättre beslut inför loppen.",
+  },
+  {
+    q: "Kostar det något?",
+    a: "Nej, travanalys.se är gratis att använda. Tjänsten är fortfarande under utveckling och fler funktioner kommer att fyllas på efter hand.",
   },
   {
     q: "Vem är Trav-olta?",
