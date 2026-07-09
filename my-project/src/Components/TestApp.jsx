@@ -49,14 +49,20 @@ const TestApp = () => {
     },
   ];
 
-    const [searchTerm, setSearchTerm] = React.useState('React'); //State hook som skapar en state variabel searchTerm och en funktion setSearchTerm för att uppdatera den. Initialt är searchTerm en tom sträng.
+  const [searchTerm, setSearchTerm] = React.useState(
+    localStorage.getItem("search") || "React",
+  );
 
-    const handleSearch = (event) => 
-      {setSearchTerm(event.target.value)  //Current value inside the input box via event.target.value
+  React.useEffect(() => {
+    localStorage.setItem("search", searchTerm);
+  }, [searchTerm]);
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
   };
 
-   const searchedStories = stories.filter((story)  =>
-     story.title.toLowerCase().includes(searchTerm.toLowerCase())
+  const searchedStories = stories.filter((story) =>
+    story.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
@@ -67,7 +73,7 @@ const TestApp = () => {
       </h1>
       <h1> Tjena {getKocka("XDKocka")}</h1>
 
-      <Search search={searchTerm} onSearch={handleSearch} />  
+      <Search search={searchTerm} onSearch={handleSearch} />
 
       <TestList list={searchedStories} />
     </div>
@@ -77,36 +83,28 @@ const TestApp = () => {
 export default TestApp; //Expoertera för att göra tillgänglig i annan fil
 
 //Ny komponent som renderar en lista av objekt från simonList
-const TestList = ({list}) => (
+const TestList = ({ list }) => (
   //<List>
   //Standard function
-    <ul>
-      {list.map((item) => (
-        <Item 
-        key={item.objectID} 
-        title={item.title}
-        url={item.url}
-        author={item.author}
-        num_comments={item.num_comments}
-        points={item.points}
-        />
-      ))}
-    </ul>
-    ); 
+  <ul>
+    {list.map((item) => (
+      <Item key={item.objectID} item={item} />
+    ))}
+  </ul>
+);
 
-
-const Item = ({title, url, author, num_comments, points}) => (
+const Item = ({ item }) => (
   <li>
     <span>
-      <a href={url}>{title}</a>
+      <a href={item.url}>{item.title}</a>
     </span>
-    <span>{author}</span>
-    <span>{num_comments}</span>
-    <span>{points}</span>
+    <span>{item.author}</span>
+    <span>{item.num_comments}</span>
+    <span>{item.points}</span>
   </li>
 );
 
-const Search = ({search, onSearch}) => {
+const Search = ({ search, onSearch }) => {
   //Arrow function //MEN BEHÖVER INGEN  MÅSVINGE ELLER RETURN PGA RETURNERAR INGET ANNAT ÄN JSX
 
   return (
@@ -118,7 +116,7 @@ const Search = ({search, onSearch}) => {
         className="border border-gray-300 rounded px-2 py-1"
         placeholder="Type something..."
         value={search}
-        onChange={onSearch} //Varje gång fältet ändras så kallas på onSearch funktionen som skickas in som prop från TestApp komponenten. 
+        onChange={onSearch} //Varje gång fältet ändras så kallas på onSearch funktionen som skickas in som prop från TestApp komponenten.
         //Den uppdaterar searchTerm state variabeln med det nya värdet från inputfältet.
       />
     </div>
