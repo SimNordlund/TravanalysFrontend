@@ -80,7 +80,12 @@ const TestApp = () => {
       </h1>
       <h1> Tjena {getKocka("XDKocka")}</h1>
 
-      <Search search={searchTerm} onSearch={handleSearch} />
+      <InputWithLabel
+        id="search"
+        label="Search"
+        value={searchTerm}
+        onInputChange={handleSearch}
+      />
 
       <TestList list={searchedStories} />
     </div>
@@ -111,20 +116,24 @@ const Item = ({ item }) => (
   </li>
 );
 
-const Search = ({ search, onSearch }) => {
-  //Arrow function //MEN BEHÖVER INGEN  MÅSVINGE ELLER RETURN PGA RETURNERAR INGET ANNAT ÄN JSX
+const InputWithLabel = ({
+  id, 
+  label, 
+  value, 
+  type = 'text',
+  onInputChange 
+}) => {
 
   return (
     <>
-      <label htmlFor="search">Search</label>
+      <label htmlFor={id}>{label}</label>
       <input
-        id="search"
-        type="text"
+        id={id}
+        type={type}
         className="border border-gray-300 rounded px-2 py-1"
         placeholder="Type something..."
-        value={search}
-        onChange={onSearch} //Varje gång fältet ändras så kallas på onSearch funktionen som skickas in som prop från TestApp komponenten.
-        //Den uppdaterar searchTerm state variabeln med det nya värdet från inputfältet.
+        value={value}
+        onChange={onInputChange}
       />
     </>
   );
