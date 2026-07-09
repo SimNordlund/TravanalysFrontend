@@ -31,9 +31,8 @@ const simonList = [
 
 const useStorageState = (key, initialState) => {
   const [value, setValue] = React.useState(
-      localStorage.getItem(key) || initialState
-    );
-  
+    localStorage.getItem(key) || initialState,
+  );
 
   React.useEffect(() => {
     localStorage.setItem(key, value);
@@ -85,7 +84,9 @@ const TestApp = () => {
         label="Search"
         value={searchTerm}
         onInputChange={handleSearch}
-      />
+      >
+        <strong>Search: </strong>
+      </InputWithLabel>
 
       <TestList list={searchedStories} />
     </div>
@@ -116,17 +117,10 @@ const Item = ({ item }) => (
   </li>
 );
 
-const InputWithLabel = ({
-  id, 
-  label, 
-  value, 
-  type = 'text',
-  onInputChange 
-}) => {
-
+const InputWithLabel = ({ id, value, type = "text", onInputChange, children, }) => {
   return (
     <>
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id}>{children}</label>
       <input
         id={id}
         type={type}
