@@ -53,6 +53,11 @@ const supportItems = [
     icon: ChatBubbleOvalLeftEllipsisIcon,
   },
   {
+    title: "Reducering",
+    text: "Skapa reducerade system utifrån dina egna val och granska alltid XML-filen innan du spelar.",
+    icon: SparklesIcon,
+  },
+  {
     title: "Saknar du något?",
     text: "Skicka din feedback. Bra frågor blir ofta bättre funktioner.",
     icon: EnvelopeIcon,
