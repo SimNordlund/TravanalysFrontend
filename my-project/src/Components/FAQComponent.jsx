@@ -54,7 +54,7 @@ const supportItems = [
   },
   {
     title: "Reducering",
-    text: "Skapa reducerade system utifrån dina egna val och granska alltid XML-filen innan du spelar.",
+    text: "Skapa reducerade system utifrån dina egna val. Spelform, villkor och regler kan du själv bestämma.",
     icon: SparklesIcon,
   },
   {
