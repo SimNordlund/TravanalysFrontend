@@ -5,7 +5,7 @@ import { useNavigate, NavLink } from "react-router-dom";
 import barbild from "./Bilder/travhorsi.png";
 
 const navigation = [
-  { name: "Om travanalys.se", to: "/" },
+  { name: "Så fungerar det", to: "/" },
   { name: "Analys", to: "/chart/analys" },
   { name: "Ranking", to: "/chart/tabell" },
   { name: "Spel & ROI", to: "/chart/speltips" },
