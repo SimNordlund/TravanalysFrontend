@@ -31,9 +31,7 @@ export default function Example() {
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-1">
             <div className="relative flex h-16 items-center justify-between">
-              {/* Vänster: mobilknapp */}
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                {/* Mobil */}
                 <Disclosure.Button
                   aria-label="Meny"
                   aria-expanded={open}
@@ -177,7 +175,6 @@ export default function Example() {
             </div>
           </div>
 
-          {/* Mobilmeny */}
           <Disclosure.Panel id="mobile-menu" className="sm:hidden">
             <div className="space-y-1 px-2 pb-3 pt-2">
               {navigation.map((item) => (
