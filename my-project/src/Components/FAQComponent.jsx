@@ -75,13 +75,9 @@ const Faqs = () => {
           <h1 className="mt-2 text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
             Vad vill du veta?
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-base/7 text-gray-600 sm:text-lg/8">
-            Här hittar du de vanligaste frågorna om travanalys.se,
-            analysvyerna och Trav-olta.
-          </p>
         </div>
 
-        <div className="mx-auto mt-10 grid max-w-5xl gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start">
+        <div className="mx-auto mt-14 grid max-w-5xl gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start">
           <aside className="rounded-xl bg-gray-900 p-6 text-white shadow-xl ring-1 ring-gray-900/10">
             <h2 className="text-2xl font-semibold tracking-tight">
               Snabb hjälp
