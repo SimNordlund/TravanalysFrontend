@@ -12,9 +12,8 @@ export default function Newsletter() {
   const [isError, setIsError] = useState(false);
   const hideTimer = useRef();
 
-  const [kopandelUrl, setKopandelUrl] = useState("");
-  const [kopandelDate, setKopandelDate] = useState("");
-  const [countdownText, setCountdownText] = useState("");
+  const [kopandelButtons, setKopandelButtons] = useState([]);
+  const [countdownNow, setCountdownNow] = useState(() => Date.now());
 
   useEffect(() => {
     if (!message) return;
@@ -97,20 +96,68 @@ export default function Newsletter() {
     }
   };
 
+  const normalizeAppUrlButtons = (data) => {
+    const rawButtons = Array.isArray(data)
+      ? data
+      : Array.isArray(data?.buttons)
+      ? data.buttons
+      : Array.isArray(data?.appUrls)
+      ? data.appUrls
+      : data?.url
+      ? [data]
+      : [];
+
+    return rawButtons
+      .map((button, index) => {
+        const id = button.id ?? button.appUrlId ?? button.buttonId ?? index;
+        const numericId = Number(id);
+        const fallbackLabel =
+          numericId === 1 ? "V85" : numericId === 2 ? "V86" : "Köpandel.se";
+
+        return {
+          id,
+          url: button.url || button.href || "",
+          date: button.date || button.spelstopp || button.startTime || "",
+          label:
+            button.label ||
+            button.buttonText ||
+            button.title ||
+            button.name ||
+            button.spelform ||
+            button.gameType ||
+            fallbackLabel,
+        };
+      })
+      .filter((button) => button.url);
+  };
+
   const parseCompactDate = (value) => {
     const s = String(value || "").trim();
-    if (!/^\d{12}$/.test(s)) return null;
-    const year = Number(s.slice(0, 4));
-    const month = Number(s.slice(4, 6)) - 1;
-    const day = Number(s.slice(6, 8));
-    const hour = Number(s.slice(8, 10));
-    const minute = Number(s.slice(10, 12));
-    const d = new Date(year, month, day, hour, minute, 0);
+
+    if (/^\d{12}$/.test(s)) {
+      const year = Number(s.slice(0, 4));
+      const month = Number(s.slice(4, 6)) - 1;
+      const day = Number(s.slice(6, 8));
+      const hour = Number(s.slice(8, 10));
+      const minute = Number(s.slice(10, 12));
+      const d = new Date(year, month, day, hour, minute, 0);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    if (/^\d{8}$/.test(s)) {
+      const year = Number(s.slice(0, 4));
+      const month = Number(s.slice(4, 6)) - 1;
+      const day = Number(s.slice(6, 8));
+      const d = new Date(year, month, day, 0, 0, 0);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    const d = new Date(s);
     return Number.isNaN(d.getTime()) ? null : d;
   };
 
-  const formatCountdown = (targetDate) => {
-    const diffMs = targetDate.getTime() - Date.now();
+  const formatCountdown = (targetDate, nowMs = Date.now()) => {
+    const diffMs = targetDate.getTime() - nowMs;
     if (diffMs <= 0) return "Spelstopp passerad";
 
     const totalSeconds = Math.floor(diffMs / 1000);
@@ -125,48 +172,24 @@ export default function Newsletter() {
     return `${hours}h ${minutes}m ${seconds}s`;
   };
 
-  const getAppUrlIdForToday = () => {
-    const weekday = new Intl.DateTimeFormat("en-US", {
-      weekday: "short",
-      timeZone: "Europe/Stockholm",
-    }).format(new Date());
-
-    const dayMap = {
-      Sun: 0,
-      Mon: 1,
-      Tue: 2,
-      Wed: 3,
-      Thu: 4,
-      Fri: 5,
-      Sat: 6,
-    };
-
-    const dayNumber = dayMap[weekday];
-
-    if (dayNumber >= 0 && dayNumber <= 3) return 2;
-    return 1;
-  };
-
   useEffect(() => {
     let isMounted = true;
 
-    const loadAppUrlByDay = async () => {
+    const loadAppUrlButtons = async () => {
       try {
-        const selectedId = getAppUrlIdForToday();
-        const response = await fetch(`${API_BASE_URL}/app_url/${selectedId}`);
+        const response = await fetch(`${API_BASE_URL}/app_url/buttons`);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
 
         if (!isMounted) return;
-        setKopandelUrl(data?.url || "");
-        setKopandelDate(data?.date || "");
+        setKopandelButtons(normalizeAppUrlButtons(data));
       } catch (err) {
-        console.error("Kunde inte hämta app_url för dagens id", err);
+        console.error("Kunde inte hämta app_url buttons", err);
       }
     };
 
     if (API_BASE_URL) {
-      loadAppUrlByDay();
+      loadAppUrlButtons();
     }
 
     return () => {
@@ -175,19 +198,18 @@ export default function Newsletter() {
   }, [API_BASE_URL]);
 
   useEffect(() => {
-    const target = parseCompactDate(kopandelDate);
-    if (!target) {
-      setCountdownText("");
-      return;
-    }
+    const hasCountdown = kopandelButtons.some((button) =>
+      parseCompactDate(button.date)
+    );
 
-    const tick = () => setCountdownText(formatCountdown(target));
+    if (!hasCountdown) return;
+
+    const tick = () => setCountdownNow(Date.now());
     tick();
 
     const intervalId = setInterval(tick, 1000);
     return () => clearInterval(intervalId);
-  }, [kopandelDate]);
-
+  }, [kopandelButtons]);
   return (
     <div className="relative isolate overflow-hidden bg-gray-900 py-14 sm:py-16">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -278,36 +300,61 @@ export default function Newsletter() {
 
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:gap-y-2 sm:grid-cols-2 sm:mt-6">
             <div className="flex flex-col items-center">
-              <a
-                href={kopandelUrl || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-xl bg-white/10 p-3 ring-1 ring-white/20 shadow-sm hover:ring-indigo-400/60 hover:shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-0.5"
-                onClick={(e) => {
-                  if (!kopandelUrl) e.preventDefault();
-                }}
-              >
-                <DocumentTextIcon
-                  className="h-8 w-8 text-white"
-                  aria-hidden="true"
-                />
-              </a>
+              <div className="flex flex-wrap justify-center gap-3">
+                {kopandelButtons.length ? (
+                  kopandelButtons.map((button, index) => {
+                    const target = parseCompactDate(button.date);
+                    const countdown = target
+                      ? formatCountdown(target, countdownNow)
+                      : "Spelstopp saknas";
+
+                    return (
+                      <a
+                        key={`${button.id}-${button.url}-${index}`}
+                        href={button.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex min-w-[7rem] flex-col items-center rounded-xl bg-white/10 p-3 ring-1 ring-white/20 shadow-sm hover:ring-indigo-400/60 hover:shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-0.5"
+                      >
+                        <DocumentTextIcon
+                          className="h-8 w-8 text-white"
+                          aria-hidden="true"
+                        />
+                        <span className="mt-2 text-xs font-semibold text-white">
+                          {button.label}
+                        </span>
+                        <span className="mt-1 text-center text-[11px] font-bold text-indigo-300">
+                          {countdown}
+                        </span>
+                      </a>
+                    );
+                  })
+                ) : (
+                  <div className="rounded-xl bg-white/10 p-3 ring-1 ring-white/20 shadow-sm">
+                    <DocumentTextIcon
+                      className="h-8 w-8 text-white"
+                      aria-hidden="true"
+                    />
+                  </div>
+                )}
+              </div>
               <dt className="mt-4 font-semibold text-white">Köpandel.se</dt>
-              <dd className="mt-2 leading-7 text-gray-300">
-                <a
-                  href={kopandelUrl || "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-300 hover:text-white"
-                  onClick={(e) => {
-                    if (!kopandelUrl) e.preventDefault();
-                  }}
-                >
-                  travanalys.se
-                </a>
-              </dd>
-              <dd className="mt-1 text-sm font-bold text-indigo-300">
-                {countdownText || "Laddar nedräkning..."}
+              <dd className="mt-2 flex flex-wrap justify-center gap-x-3 gap-y-1 leading-7 text-gray-300">
+                {kopandelButtons.length ? (
+                  kopandelButtons.map((button, index) => (
+                    <a
+                      key={`link-${button.id}-${button.url}-${index}`}
+                      href={button.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-300 hover:text-white"
+                    >
+                      {button.label}
+                    </a>
+                  ))
+                ) : (
+                  <span>Laddar länkar...</span>
+                )}
               </dd>
             </div>
 

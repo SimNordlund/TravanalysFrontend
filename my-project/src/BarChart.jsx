@@ -92,6 +92,108 @@ const HorseRunLoader = () => (
   </div>
 );
 
+
+const placementHighlightStyles = {
+  1: {
+    backgroundColor: "rgba(245, 158, 11, 0.82)",
+    hoverBackgroundColor: "rgba(245, 158, 11, 0.95)",
+    borderColor: "#b45309",
+    badgeColor: "#92400e",
+  },
+  2: {
+    backgroundColor: "rgba(148, 163, 184, 0.82)",
+    hoverBackgroundColor: "rgba(148, 163, 184, 0.95)",
+    borderColor: "#475569",
+    badgeColor: "#334155",
+  },
+  3: {
+    backgroundColor: "rgba(217, 119, 6, 0.8)",
+    hoverBackgroundColor: "rgba(217, 119, 6, 0.95)",
+    borderColor: "#9a3412",
+    badgeColor: "#7c2d12",
+  },
+  default: {
+    backgroundColor: "rgba(99, 102, 241, 0.78)",
+    hoverBackgroundColor: "rgba(99, 102, 241, 0.95)",
+    borderColor: "#4338ca",
+    badgeColor: "#3730a3",
+  },
+};
+
+const getHorsePlacement = (name) => {
+  const match = String(name ?? "").match(/\((\d+)\)\s*$/);
+  return match ? Number(match[1]) : null;
+};
+
+const removeHorsePlacementMarker = (name) =>
+  String(name ?? "").replace(/\s*\(\d+\)\s*$/, "").trim();
+
+const getPlacementLabel = (placement) => {
+  if (!placement) return "";
+  return `${placement}:${placement <= 2 ? "a" : "e"}`;
+};
+
+const getPlacementStyle = (placement) =>
+  placementHighlightStyles[placement] || placementHighlightStyles.default;
+
+function drawRoundedRect(ctx, x, y, width, height, radius) {
+  const r = Math.min(radius, width / 2, height / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + width - r, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + r);
+  ctx.lineTo(x + width, y + height - r);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
+  ctx.lineTo(x + r, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+const horsePlacementBadgePlugin = {
+  id: "horsePlacementBadge",
+  afterDatasetsDraw(chart) {
+    const { ctx, chartArea } = chart;
+
+    ctx.save();
+    chart.data.datasets.forEach((dataset, datasetIndex) => {
+      if (!dataset.horsePlacement || !chart.isDatasetVisible(datasetIndex)) {
+        return;
+      }
+
+      const meta = chart.getDatasetMeta(datasetIndex);
+      const text = dataset.horsePlacementLabel || String(dataset.horsePlacement);
+
+      meta.data.forEach((element, dataIndex) => {
+        if (dataset.data?.[dataIndex] === null || dataset.data?.[dataIndex] === undefined) {
+          return;
+        }
+
+        const position = element.tooltipPosition();
+        ctx.font = `700 11px ${Chart.defaults.font.family}`;
+        const width = Math.max(ctx.measureText(text).width + 14, 30);
+        const height = 20;
+        const x = position.x - width / 2;
+        const y = Math.max(chartArea.top + 2, position.y - height - 8);
+
+        ctx.fillStyle = dataset.horsePlacementBadgeColor || "#111827";
+        drawRoundedRect(ctx, x, y, width, height, 6);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255,255,255,0.9)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        ctx.fillStyle = "#fff";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(text, position.x, y + height / 2 + 0.5);
+      });
+    });
+    ctx.restore();
+  },
+};
+
 const BarChartComponent = ({
   selectedDate,
   setSelectedDate,
@@ -229,13 +331,31 @@ const BarChartComponent = ({
             );
             if (!rs.ok) throw new Error(rs.statusText);
             const fs = await rs.json();
-            const col = horseColors[idx % horseColors.length];
+            const horsePlacement = getHorsePlacement(horse.nameOfCompleteHorse);
+            const cleanHorseName = removeHorsePlacementMarker(horse.nameOfCompleteHorse);
+            const placementStyle = getPlacementStyle(horsePlacement);
+            const placementLabel = getPlacementLabel(horsePlacement);
+            const col = horsePlacement
+              ? placementStyle.backgroundColor
+              : horseColors[idx % horseColors.length];
+
             return {
-              label: `${horse.numberOfCompleteHorse}. ${horse.nameOfCompleteHorse}`,
+              label: `${horse.numberOfCompleteHorse}. ${cleanHorseName}`,
+              cleanHorseName,
+              horsePlacement,
+              horsePlacementLabel: placementLabel,
+              horsePlacementBadgeColor: placementStyle.badgeColor,
               data: labels.map((_, i) => (i === idx ? fs?.analys ?? 0 : null)),
               backgroundColor: col,
-              borderColor: "rgba(0,0,0,1)",
-              borderWidth: 0.5,
+              hoverBackgroundColor: horsePlacement
+                ? placementStyle.hoverBackgroundColor
+                : col,
+              borderColor: horsePlacement
+                ? placementStyle.borderColor
+                : "rgba(0,0,0,1)",
+              borderWidth: horsePlacement ? 2 : 0.5,
+              borderRadius: horsePlacement ? 7 : 2,
+              borderSkipped: false,
             };
           })
         );
@@ -328,10 +448,22 @@ const BarChartComponent = ({
           font: { family: Chart.defaults.font.family, weight: 370, size: 12 },
         },
       },
-      tooltip: { enabled: true, callbacks: { title: () => "Analys" } },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          title: (items) => items[0]?.dataset?.cleanHorseName || "Analys",
+          label: (context) => `Analys: ${context.parsed.y ?? 0}`,
+          afterLabel: (context) =>
+            context.dataset.horsePlacement
+              ? `Placering: ${context.dataset.horsePlacementLabel}`
+              : null,
+        },
+      },
     },
   };
 
+
+  const hasPlacedHorses = data.datasets.some((dataset) => dataset.horsePlacement);
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
   const yesterdayStr = new Date(today - 864e5).toISOString().split("T")[0];
@@ -507,6 +639,14 @@ const BarChartComponent = ({
         </p>
       </div>
 
+      {hasPlacedHorses && (
+        <div className="mb-2 flex justify-center px-2">
+          <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-900 shadow-sm">
+            <span>Markerade staplar visar placering i loppet</span>
+          </div>
+        </div>
+      )}
+
       <div className="w-full flex justify-center">
         <div className="w-full h-[240px] sm:h-[340px] relative flex items-center justify-center">
           {data.datasets.length > 0 && !loading && (
@@ -514,7 +654,7 @@ const BarChartComponent = ({
               ref={chartRef}
               data={data}
               options={options}
-              plugins={isSmallScreen ? [htmlLegendPlugin] : []}
+              plugins={isSmallScreen ? [htmlLegendPlugin, horsePlacementBadgePlugin] : [horsePlacementBadgePlugin]}
               onClick={handleBarClick}
             />
           )}
