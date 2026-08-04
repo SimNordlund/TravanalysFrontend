@@ -93,33 +93,6 @@ const HorseRunLoader = () => (
 );
 
 
-const placementHighlightStyles = {
-  1: {
-    backgroundColor: "rgba(245, 158, 11, 0.82)",
-    hoverBackgroundColor: "rgba(245, 158, 11, 0.95)",
-    borderColor: "#b45309",
-    badgeColor: "#92400e",
-  },
-  2: {
-    backgroundColor: "rgba(148, 163, 184, 0.82)",
-    hoverBackgroundColor: "rgba(148, 163, 184, 0.95)",
-    borderColor: "#475569",
-    badgeColor: "#334155",
-  },
-  3: {
-    backgroundColor: "rgba(217, 119, 6, 0.8)",
-    hoverBackgroundColor: "rgba(217, 119, 6, 0.95)",
-    borderColor: "#9a3412",
-    badgeColor: "#7c2d12",
-  },
-  default: {
-    backgroundColor: "rgba(99, 102, 241, 0.78)",
-    hoverBackgroundColor: "rgba(99, 102, 241, 0.95)",
-    borderColor: "#4338ca",
-    badgeColor: "#3730a3",
-  },
-};
-
 const getHorsePlacement = (name) => {
   const match = String(name ?? "").match(/\((\d+)\)\s*$/);
   return match ? Number(match[1]) : null;
@@ -133,8 +106,20 @@ const getPlacementLabel = (placement) => {
   return `${placement}:${placement <= 2 ? "a" : "e"}`;
 };
 
-const getPlacementStyle = (placement) =>
-  placementHighlightStyles[placement] || placementHighlightStyles.default;
+const getReadableTextColor = (color) => {
+  const match = String(color ?? "").match(/rgba?\(([^)]+)\)/i);
+  if (!match) return "#fff";
+
+  const parts = match[1].split(",").map((part) => Number(part.trim()));
+  const [r, g, b] = parts;
+  const alpha = Number.isFinite(parts[3]) ? parts[3] : 1;
+  const blendedR = r * alpha + 255 * (1 - alpha);
+  const blendedG = g * alpha + 255 * (1 - alpha);
+  const blendedB = b * alpha + 255 * (1 - alpha);
+  const luminance = (0.2126 * blendedR + 0.7152 * blendedG + 0.0722 * blendedB) / 255;
+
+  return luminance > 0.58 ? "#111827" : "#fff";
+};
 
 function drawRoundedRect(ctx, x, y, width, height, radius) {
   const r = Math.min(radius, width / 2, height / 2);
@@ -180,14 +165,14 @@ const horsePlacementBadgePlugin = {
         const x = position.x - width / 2;
         const y = Math.max(chartArea.top + 4, position.y - height - 10);
 
-        ctx.fillStyle = dataset.horsePlacementBadgeColor || "#111827";
+        ctx.fillStyle = dataset.horsePlacementBadgeColor || dataset.backgroundColor || "#111827";
         drawRoundedRect(ctx, x, y, width, height, 6);
         ctx.fill();
-        ctx.strokeStyle = "rgba(255,255,255,0.9)";
+        ctx.strokeStyle = dataset.borderColor || "rgba(255,255,255,0.9)";
         ctx.lineWidth = 1;
         ctx.stroke();
 
-        ctx.fillStyle = "#fff";
+        ctx.fillStyle = dataset.horsePlacementBadgeTextColor || "#fff";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(text, position.x, y + height / 2 + 0.5);
@@ -336,16 +321,17 @@ const BarChartComponent = ({
             const fs = await rs.json();
             const horsePlacement = getHorsePlacement(horse.nameOfCompleteHorse);
             const cleanHorseName = removeHorsePlacementMarker(horse.nameOfCompleteHorse);
-            const placementStyle = getPlacementStyle(horsePlacement);
             const placementLabel = getPlacementLabel(horsePlacement);
             const col = horseColors[idx % horseColors.length];
+            const badgeTextColor = getReadableTextColor(col);
 
             return {
               label: `${horse.numberOfCompleteHorse}. ${cleanHorseName}`,
               cleanHorseName,
               horsePlacement,
               horsePlacementLabel: placementLabel,
-              horsePlacementBadgeColor: placementStyle.badgeColor,
+              horsePlacementBadgeColor: col,
+              horsePlacementBadgeTextColor: badgeTextColor,
               data: labels.map((_, i) => (i === idx ? fs?.analys ?? 0 : null)),
               backgroundColor: col,
               borderColor: "rgba(0,0,0,1)",
