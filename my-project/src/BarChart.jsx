@@ -163,7 +163,10 @@ const horsePlacementBadgePlugin = {
       }
 
       const meta = chart.getDatasetMeta(datasetIndex);
-      const text = dataset.horsePlacementLabel || String(dataset.horsePlacement);
+      const compactLabel = chart.options.plugins?.horsePlacementBadge?.compactLabel;
+      const text = compactLabel
+        ? String(dataset.horsePlacement)
+        : dataset.horsePlacementLabel || String(dataset.horsePlacement);
 
       meta.data.forEach((element, dataIndex) => {
         if (dataset.data?.[dataIndex] === null || dataset.data?.[dataIndex] === undefined) {
@@ -175,7 +178,7 @@ const horsePlacementBadgePlugin = {
         const width = Math.max(ctx.measureText(text).width + 14, 30);
         const height = 20;
         const x = position.x - width / 2;
-        const y = Math.max(chartArea.top + 2, position.y - height - 8);
+        const y = Math.max(chartArea.top + 4, position.y - height - 10);
 
         ctx.fillStyle = dataset.horsePlacementBadgeColor || "#111827";
         drawRoundedRect(ctx, x, y, width, height, 6);
@@ -335,9 +338,7 @@ const BarChartComponent = ({
             const cleanHorseName = removeHorsePlacementMarker(horse.nameOfCompleteHorse);
             const placementStyle = getPlacementStyle(horsePlacement);
             const placementLabel = getPlacementLabel(horsePlacement);
-            const col = horsePlacement
-              ? placementStyle.backgroundColor
-              : horseColors[idx % horseColors.length];
+            const col = horseColors[idx % horseColors.length];
 
             return {
               label: `${horse.numberOfCompleteHorse}. ${cleanHorseName}`,
@@ -347,15 +348,8 @@ const BarChartComponent = ({
               horsePlacementBadgeColor: placementStyle.badgeColor,
               data: labels.map((_, i) => (i === idx ? fs?.analys ?? 0 : null)),
               backgroundColor: col,
-              hoverBackgroundColor: horsePlacement
-                ? placementStyle.hoverBackgroundColor
-                : col,
-              borderColor: horsePlacement
-                ? placementStyle.borderColor
-                : "rgba(0,0,0,1)",
-              borderWidth: horsePlacement ? 2 : 0.5,
-              borderRadius: horsePlacement ? 7 : 2,
-              borderSkipped: false,
+              borderColor: "rgba(0,0,0,1)",
+              borderWidth: 0.5,
             };
           })
         );
@@ -431,7 +425,7 @@ const BarChartComponent = ({
     responsive: true,
     maintainAspectRatio: false,
     scales: {
-      y: { beginAtZero: true, minBarLength: 10 },
+      y: { beginAtZero: true, minBarLength: 10, grace: "16%" },
       x: {
         stacked: true,
         ticks: { autoSkip: false, maxRotation: 0, padding: 2 },
@@ -448,6 +442,7 @@ const BarChartComponent = ({
           font: { family: Chart.defaults.font.family, weight: 370, size: 12 },
         },
       },
+      horsePlacementBadge: { compactLabel: isSmallScreen },
       tooltip: {
         enabled: true,
         callbacks: {
