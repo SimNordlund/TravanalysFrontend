@@ -153,14 +153,14 @@ const horsePlacementBadgePlugin = {
         const width = Math.max(ctx.measureText(text).width + horizontalPadding, minWidth);
         const x = position.x - width / 2;
         const y = Math.max(chartArea.top + 4, position.y - height - 10);
-        ctx.fillStyle = dataset.horsePlacementBadgeColor || dataset.backgroundColor || "#111827";
+        ctx.fillStyle = dataset.horsePlacementBadgeColor || dataset.backgroundColor || "#000";
         drawRoundedRect(ctx, x, y, width, height, radius);
         ctx.fill();
         ctx.strokeStyle = dataset.borderColor || "rgba(255,255,255,0.9)";
         ctx.lineWidth = 1;
         ctx.stroke();
 
-        ctx.fillStyle = "#fff";
+        ctx.fillStyle = "#000";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(text, position.x, y + height / 2 + 0.5);
