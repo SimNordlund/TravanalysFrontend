@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 import DatePicker from "./Components/DatePicker";
 import Chart from "chart.js/auto";
-import { ChevronLeft, ChevronRight } from "lucide-react"; 
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 Chart.defaults.font.family =
   "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'";
@@ -14,11 +14,9 @@ const horseTrackLineClassName =
 const horseLegBaseClassName =
   "fill-none [stroke-linecap:round] [stroke-linejoin:round] [transform-box:fill-box] [transform-origin:50%_0] motion-reduce:animate-none";
 
-const nearHorseLegClassName =
-  `${horseLegBaseClassName} stroke-indigo-900 [stroke-width:7]`;
+const nearHorseLegClassName = `${horseLegBaseClassName} stroke-indigo-900 [stroke-width:7]`;
 
-const farHorseLegClassName =
-  `${horseLegBaseClassName} stroke-indigo-500 opacity-70 [stroke-width:6]`;
+const farHorseLegClassName = `${horseLegBaseClassName} stroke-indigo-500 opacity-70 [stroke-width:6]`;
 
 const HorseRunLoader = () => (
   <div
@@ -33,10 +31,7 @@ const HorseRunLoader = () => (
       focusable="false"
     >
       <g>
-        <path
-          className={horseTrackLineClassName}
-          d="M10 96 H54"
-        />
+        <path className={horseTrackLineClassName} d="M10 96 H54" />
         <path
           className={`${horseTrackLineClassName} [animation-delay:-240ms]`}
           d="M68 100 H116"
@@ -92,14 +87,15 @@ const HorseRunLoader = () => (
   </div>
 );
 
-
 const getHorsePlacement = (name) => {
   const match = String(name ?? "").match(/\((\d+)\)\s*$/);
   return match ? Number(match[1]) : null;
 };
 
 const removeHorsePlacementMarker = (name) =>
-  String(name ?? "").replace(/\s*\(\d+\)\s*$/, "").trim();
+  String(name ?? "")
+    .replace(/\s*\(\d+\)\s*$/, "")
+    .trim();
 
 const getPlacementLabel = (placement) => {
   if (!placement) return "";
@@ -128,18 +124,26 @@ const horsePlacementBadgePlugin = {
 
     ctx.save();
     chart.data.datasets.forEach((dataset, datasetIndex) => {
-      if (!dataset.horsePlacement || !chart.isDatasetVisible(datasetIndex)) {
+      if ( 
+        !dataset.horsePlacement ||
+        dataset.horsePlacement > 3 || //Uppdatera denna för att justera hur många placeringar som ska visas. Just nu visas endast 1:a, 2:a och 3:e plats och stöd finns för tot 6.
+        !chart.isDatasetVisible(datasetIndex)
+      ) {
         return;
       }
 
       const meta = chart.getDatasetMeta(datasetIndex);
-      const compactLabel = chart.options.plugins?.horsePlacementBadge?.compactLabel;
+      const compactLabel =
+        chart.options.plugins?.horsePlacementBadge?.compactLabel;
       const text = compactLabel
         ? String(dataset.horsePlacement)
         : dataset.horsePlacementLabel || String(dataset.horsePlacement);
 
       meta.data.forEach((element, dataIndex) => {
-        if (dataset.data?.[dataIndex] === null || dataset.data?.[dataIndex] === undefined) {
+        if (
+          dataset.data?.[dataIndex] === null ||
+          dataset.data?.[dataIndex] === undefined
+        ) {
           return;
         }
 
@@ -150,10 +154,14 @@ const horsePlacementBadgePlugin = {
         const minWidth = compactLabel ? 22 : 30;
         const radius = compactLabel ? 5 : 6;
         ctx.font = `700 ${fontSize}px ${Chart.defaults.font.family}`;
-        const width = Math.max(ctx.measureText(text).width + horizontalPadding, minWidth);
+        const width = Math.max(
+          ctx.measureText(text).width + horizontalPadding,
+          minWidth,
+        );
         const x = position.x - width / 2;
         const y = Math.max(chartArea.top + 4, position.y - height - 10);
-        ctx.fillStyle = dataset.horsePlacementBadgeColor || dataset.backgroundColor || "#000";
+        ctx.fillStyle =
+          dataset.horsePlacementBadgeColor || dataset.backgroundColor || "#000";
         drawRoundedRect(ctx, x, y, width, height, radius);
         ctx.fill();
         ctx.strokeStyle = dataset.borderColor || "rgba(255,255,255,0.9)";
@@ -201,13 +209,12 @@ const BarChartComponent = ({
   const [availableCounts, setAvailableCounts] = useState([]);
   const [availLoading, setAvailLoading] = useState(false);
 
-  const normalizeStarter = (v) => String(v ?? "").trim() || "0"; 
+  const normalizeStarter = (v) => String(v ?? "").trim() || "0";
 
   const starterLabel = (starter) => {
-    
-    const s = normalizeStarter(starter); 
-    if (s === "0") return "Analys"; 
-    return s; 
+    const s = normalizeStarter(starter);
+    if (s === "0") return "Analys";
+    return s;
   };
 
   const idx = dates.findIndex((d) => d.date === selectedDate);
@@ -246,7 +253,7 @@ const BarChartComponent = ({
     if (!API_BASE_URL) {
       setError("VITE_API_BASE_URL saknas. Lägg till den i .env och starta om.");
     }
-  }, [API_BASE_URL]); 
+  }, [API_BASE_URL]);
 
   useEffect(() => {
     if (!selectedLap || !API_BASE_URL) return;
@@ -257,20 +264,20 @@ const BarChartComponent = ({
       try {
         const r = await fetch(
           `${API_BASE_URL}/starts/available?lapId=${selectedLap}`,
-          { signal: ac.signal }
+          { signal: ac.signal },
         );
         if (!r.ok) throw new Error(r.statusText);
 
-        const countsRaw = await r.json(); 
-        const counts = (Array.isArray(countsRaw) ? countsRaw : []) 
-          .map((c) => normalizeStarter(c)); 
+        const countsRaw = await r.json();
+        const counts = (Array.isArray(countsRaw) ? countsRaw : []).map((c) =>
+          normalizeStarter(c),
+        );
 
-        setAvailableCounts(counts); 
+        setAvailableCounts(counts);
 
-        const current = normalizeStarter(startsCount); 
+        const current = normalizeStarter(startsCount);
         if (counts.length && !counts.includes(current)) {
-          
-          setStartsCount(counts[0]); 
+          setStartsCount(counts[0]);
         }
       } catch {
       } finally {
@@ -279,11 +286,11 @@ const BarChartComponent = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, API_BASE_URL, startsCount, setStartsCount]); 
+  }, [selectedLap, API_BASE_URL, startsCount, setStartsCount]);
 
   // HÄMTA ENDAST BAR-DATA
   useEffect(() => {
-    if (!selectedLap || !API_BASE_URL) return; 
+    if (!selectedLap || !API_BASE_URL) return;
     const ac = new AbortController();
     setLoading(true);
 
@@ -291,24 +298,26 @@ const BarChartComponent = ({
       try {
         const r = await fetch(
           `${API_BASE_URL}/completeHorse/findByLap?lapId=${selectedLap}`,
-          { signal: ac.signal }
+          { signal: ac.signal },
         );
         if (!r.ok) throw new Error(r.statusText);
         const completeHorses = await r.json();
         const labels = completeHorses.map((h) => `${h.numberOfCompleteHorse}.`);
 
-        const starterParam = encodeURIComponent(normalizeStarter(startsCount)); 
+        const starterParam = encodeURIComponent(normalizeStarter(startsCount));
 
         const datasets = await Promise.all(
           completeHorses.map(async (horse, idx) => {
             const rs = await fetch(
-              `${API_BASE_URL}/starts/findData?completeHorseId=${horse.id}&starter=${starterParam}`, 
-              { signal: ac.signal }
+              `${API_BASE_URL}/starts/findData?completeHorseId=${horse.id}&starter=${starterParam}`,
+              { signal: ac.signal },
             );
             if (!rs.ok) throw new Error(rs.statusText);
             const fs = await rs.json();
             const horsePlacement = getHorsePlacement(horse.nameOfCompleteHorse);
-            const cleanHorseName = removeHorsePlacementMarker(horse.nameOfCompleteHorse);
+            const cleanHorseName = removeHorsePlacementMarker(
+              horse.nameOfCompleteHorse,
+            );
             const placementLabel = getPlacementLabel(horsePlacement);
             const col = horseColors[idx % horseColors.length];
 
@@ -318,12 +327,14 @@ const BarChartComponent = ({
               horsePlacement,
               horsePlacementLabel: placementLabel,
               horsePlacementBadgeColor: col,
-              data: labels.map((_, i) => (i === idx ? fs?.analys ?? 0 : null)),
+              data: labels.map((_, i) =>
+                i === idx ? (fs?.analys ?? 0) : null,
+              ),
               backgroundColor: col,
               borderColor: "rgba(0,0,0,1)",
               borderWidth: 0.5,
             };
-          })
+          }),
         );
 
         if (!ac.signal.aborted) {
@@ -339,7 +350,7 @@ const BarChartComponent = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, startsCount, API_BASE_URL]); 
+  }, [selectedLap, startsCount, API_BASE_URL]);
 
   useEffect(() => {
     let t;
@@ -429,8 +440,9 @@ const BarChartComponent = ({
     },
   };
 
-
-  const hasPlacedHorses = data.datasets.some((dataset) => dataset.horsePlacement);
+  const hasPlacedHorses = data.datasets.some(
+    (dataset) => dataset.horsePlacement,
+  );
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
   const yesterdayStr = new Date(today - 864e5).toISOString().split("T")[0];
@@ -453,12 +465,12 @@ const BarChartComponent = ({
   const selectedDateLabel = !selectedDate
     ? "Laddar datum…"
     : selectedDate === todayStr
-    ? `Idag, ${fmt(selectedDate)}`
-    : selectedDate === yesterdayStr
-    ? `Igår, ${fmt(selectedDate)}`
-    : selectedDate === tomorrowStr
-    ? `Imorgon, ${fmt(selectedDate)}`
-    : fmt(selectedDate);
+      ? `Idag, ${fmt(selectedDate)}`
+      : selectedDate === yesterdayStr
+        ? `Igår, ${fmt(selectedDate)}`
+        : selectedDate === tomorrowStr
+          ? `Imorgon, ${fmt(selectedDate)}`
+          : fmt(selectedDate);
 
   const selectedTrackLabel =
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "Färjestad";
@@ -474,8 +486,8 @@ const BarChartComponent = ({
   const lapPrefix = /proposition/i.test(compName)
     ? "Prop"
     : /^(vinnare|plats)$/i.test(compName.trim())
-    ? "Lopp"
-    : "Avd";
+      ? "Lopp"
+      : "Avd";
 
   if (error) return <div className="text-red-600">Error: {error}</div>;
 
@@ -483,9 +495,15 @@ const BarChartComponent = ({
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
       <p className="mx-auto mt-1 mb-4 flex w-fit max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-lg border border-slate-200 bg-white px-4 py-2 text-center text-base font-semibold text-slate-900 shadow-sm ring-1 ring-slate-900/5 sm:mt-2 sm:mb-5 sm:px-5 sm:py-2.5 sm:text-lg">
         <span className="max-w-full break-words">{selectedDateLabel}</span>
-        <span className="h-1.5 w-1.5 rounded-full bg-slate-300" aria-hidden="true" />
+        <span
+          className="h-1.5 w-1.5 rounded-full bg-slate-300"
+          aria-hidden="true"
+        />
         <span className="text-emerald-700">{selectedTrackLabel}</span>
-        <span className="h-1.5 w-1.5 rounded-full bg-slate-300" aria-hidden="true" />
+        <span
+          className="h-1.5 w-1.5 rounded-full bg-slate-300"
+          aria-hidden="true"
+        />
         <span className="text-indigo-700">{selectedCompetitionLabel}</span>
       </p>
 
@@ -552,11 +570,10 @@ const BarChartComponent = ({
       <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4 sm:mb-4">
         {laps.length > 0 ? (
           laps.map((lap) => {
-            
-            const lapNo = String(lap.nameOfLap).trim(); 
+            const lapNo = String(lap.nameOfLap).trim();
             const lapText = isSmallScreen
-              ? `${lapPrefix}${lapNo}` 
-              : `${lapPrefix} ${lapNo}`; 
+              ? `${lapPrefix}${lapNo}`
+              : `${lapPrefix} ${lapNo}`;
 
             return (
               <button
@@ -569,10 +586,10 @@ const BarChartComponent = ({
                     : "bg-gray-200 text-gray-700 hover:bg-blue-200"
                 } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
               >
-                {lapText} 
+                {lapText}
               </button>
-            ); 
-          }) 
+            );
+          })
         ) : (
           <div className="flex gap-2">
             {[...Array(3)].map((_, i) => (
@@ -621,7 +638,11 @@ const BarChartComponent = ({
               ref={chartRef}
               data={data}
               options={options}
-              plugins={isSmallScreen ? [htmlLegendPlugin, horsePlacementBadgePlugin] : [horsePlacementBadgePlugin]}
+              plugins={
+                isSmallScreen
+                  ? [htmlLegendPlugin, horsePlacementBadgePlugin]
+                  : [horsePlacementBadgePlugin]
+              }
               onClick={handleBarClick}
             />
           )}
@@ -630,9 +651,7 @@ const BarChartComponent = ({
             <div className="text-sm text-slate-500">Finns ingen data.</div>
           )}
 
-          {showSpinner && loading && (
-            <HorseRunLoader />
-          )}
+          {showSpinner && loading && <HorseRunLoader />}
         </div>
       </div>
 
@@ -640,11 +659,11 @@ const BarChartComponent = ({
         {!availLoading &&
           availableCounts.map((n) => (
             <button
-              key={String(n)} 
-              onClick={() => setStartsCount(String(n))} 
+              key={String(n)}
+              onClick={() => setStartsCount(String(n))}
               disabled={loading}
               className={`mt-0.5 sm:mb:0 px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                normalizeStarter(startsCount) === normalizeStarter(n) 
+                normalizeStarter(startsCount) === normalizeStarter(n)
                   ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
                   : "bg-gray-200 text-gray-700 hover:bg-blue-200"
               } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
