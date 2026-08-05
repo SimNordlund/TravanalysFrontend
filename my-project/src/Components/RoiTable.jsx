@@ -320,7 +320,7 @@ const RoiTable = ({
               : "bg-gray-200 text-gray-700 hover:bg-blue-200"
           }`}
         >
-          ROI DD
+          ROI Tvilling
         </button>
         <button
           onClick={() => setTipsFilter(3)}
@@ -331,7 +331,7 @@ const RoiTable = ({
               : "bg-gray-200 text-gray-700 hover:bg-blue-200"
           }`}
         >
-          ROI TRIO
+          ROI Trio
         </button>
       </div>
 
