@@ -26,7 +26,10 @@ const RoiTable = ({
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [sortConfig, setSortConfig] = useState({ key: "analys", direction: "desc" });
+  const [sortConfig, setSortConfig] = useState({
+    key: "analys",
+    direction: "desc",
+  });
 
   const [localStartsCount, setLocalStartsCount] = useState(4);
   const activeStartsCount = startsCount ?? localStartsCount;
@@ -45,7 +48,7 @@ const RoiTable = ({
       try {
         const r = await fetch(
           `${API_BASE_URL}/starts/available?lapId=${selectedLap}`,
-          { signal: ac.signal }
+          { signal: ac.signal },
         );
         if (!r.ok) throw new Error(r.statusText);
         const counts = await r.json();
@@ -70,7 +73,7 @@ const RoiTable = ({
       try {
         const res = await fetch(
           `${API_BASE_URL}/completeHorse/getSkrallar?date=${selectedDate}`,
-          { signal: ac.signal }
+          { signal: ac.signal },
         );
         const data = await res.json();
 
@@ -92,25 +95,29 @@ const RoiTable = ({
   const selectedTrackLabel =
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "";
   const selectedCompetitionLabel =
-    competitions.find((c) => c.id === +selectedCompetition)?.nameOfCompetition ?? "";
+    competitions.find((c) => c.id === +selectedCompetition)
+      ?.nameOfCompetition ?? "";
   const selectedLapName =
     laps.find((l) => l.id === +selectedLap)?.nameOfLap ?? "";
 
   const lapPrefix = /proposition/i.test(selectedCompetitionLabel)
     ? "Prop"
     : /^(vinnare|plats)$/i.test(selectedCompetitionLabel.trim())
-    ? "Lopp"
-    : "Avd";
+      ? "Lopp"
+      : "Avd";
 
   const matchesTrack = (r) => {
     if (!selectedTrack) return true;
     if (r.trackId && +r.trackId === +selectedTrack) return true;
-    return (r.nameOfTrack || "").toLowerCase() === selectedTrackLabel.toLowerCase();
+    return (
+      (r.nameOfTrack || "").toLowerCase() === selectedTrackLabel.toLowerCase()
+    );
   };
 
   const matchesCompetition = (r) => {
     if (!selectedCompetition) return true;
-    if (r.competitionId && +r.competitionId === +selectedCompetition) return true;
+    if (r.competitionId && +r.competitionId === +selectedCompetition)
+      return true;
     return (
       (r.nameOfCompetition || "").toLowerCase() ===
       selectedCompetitionLabel.toLowerCase()
@@ -127,10 +134,12 @@ const RoiTable = ({
     () =>
       rows.filter(
         (r) =>
-          Number(r.tips) === Number(tipsFilter) &&
+          (Array.isArray(r.tipCategories)
+            ? r.tipCategories.includes(Number(tipsFilter))
+            : String(r.tips ?? "").includes(String(tipsFilter))) &&
           matchesTrack(r) &&
           matchesCompetition(r) &&
-          matchesLap(r)
+          matchesLap(r),
       ),
     [
       rows,
@@ -141,13 +150,14 @@ const RoiTable = ({
       tracks,
       competitions,
       laps,
-    ]
+    ],
   );
 
   // Sortering
   const requestSort = (key) => {
     let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") direction = "desc";
+    if (sortConfig.key === key && sortConfig.direction === "asc")
+      direction = "desc";
     setSortConfig({ key, direction });
   };
 
@@ -173,13 +183,13 @@ const RoiTable = ({
       const av = numericKeys.has(sortConfig.key)
         ? toNum(aVal)
         : typeof aVal === "string"
-        ? aVal.toLowerCase()
-        : aVal;
+          ? aVal.toLowerCase()
+          : aVal;
       const bv = numericKeys.has(sortConfig.key)
         ? toNum(bVal)
         : typeof bVal === "string"
-        ? bVal.toLowerCase()
-        : bVal;
+          ? bVal.toLowerCase()
+          : bVal;
       if (av < bv) return sortConfig.direction === "asc" ? -1 : 1;
       if (av > bv) return sortConfig.direction === "asc" ? 1 : -1;
       return 0;
@@ -190,14 +200,15 @@ const RoiTable = ({
     () =>
       sortedRows.reduce(
         (sum, r) => sum + (Number(String(r.roiTotalt).replace(",", ".")) || 0),
-        0
+        0,
       ),
-    [sortedRows]
+    [sortedRows],
   );
 
   const idx = dates.findIndex((d) => d.date === selectedDate);
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
-  const goNext = () => idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
+  const goNext = () =>
+    idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
 
   const today = new Date().toISOString().split("T")[0];
   const yesterday = new Date(Date.now() - 864e5).toISOString().split("T")[0];
@@ -206,7 +217,8 @@ const RoiTable = ({
   const sv = (d) => {
     const date = new Date(d);
     const weekday = date.toLocaleDateString("sv-SE", { weekday: "long" });
-    const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    const capitalizedWeekday =
+      weekday.charAt(0).toUpperCase() + weekday.slice(1);
     const rest = date.toLocaleDateString("sv-SE", {
       day: "numeric",
       month: "long",
@@ -218,10 +230,10 @@ const RoiTable = ({
     selectedDate === today
       ? `Idag, ${sv(selectedDate)}`
       : selectedDate === yesterday
-      ? `Igår, ${sv(selectedDate)}`
-      : selectedDate === tomorrow
-      ? `Imorgon, ${sv(selectedDate)}`
-      : sv(selectedDate);
+        ? `Igår, ${sv(selectedDate)}`
+        : selectedDate === tomorrow
+          ? `Imorgon, ${sv(selectedDate)}`
+          : sv(selectedDate);
 
   const isSystemMode = tipsFilter === 2 || tipsFilter === 3;
   const horseColTitle = isSystemMode ? "System" : "Häst";
@@ -230,9 +242,15 @@ const RoiTable = ({
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
       <p className="mx-auto mt-1 mb-4 flex w-fit max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-lg border border-slate-200 bg-white px-4 py-2 text-center text-base font-semibold text-slate-900 shadow-sm ring-1 ring-slate-900/5 sm:mt-2 sm:mb-5 sm:px-5 sm:py-2.5 sm:text-lg">
         <span className="max-w-full break-words">{selectedDateLabel}</span>
-        <span className="h-1.5 w-1.5 rounded-full bg-slate-300" aria-hidden="true" />
+        <span
+          className="h-1.5 w-1.5 rounded-full bg-slate-300"
+          aria-hidden="true"
+        />
         <span className="text-emerald-700">{selectedTrackLabel}</span>
-        <span className="h-1.5 w-1.5 rounded-full bg-slate-300" aria-hidden="true" />
+        <span
+          className="h-1.5 w-1.5 rounded-full bg-slate-300"
+          aria-hidden="true"
+        />
         <span className="text-indigo-700">{selectedCompetitionLabel}</span>
       </p>
 
@@ -283,7 +301,7 @@ const RoiTable = ({
       {/* ROI-lägen (påverkar INTE selectedCompetition längre) */}
       <div className="flex flex-wrap gap-1 mb-2">
         <button
-          onClick={() => setTipsFilter(1)} 
+          onClick={() => setTipsFilter(1)}
           disabled={loading}
           className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
             tipsFilter === 1
@@ -294,7 +312,7 @@ const RoiTable = ({
           ROI V&P
         </button>
         <button
-          onClick={() => setTipsFilter(2)} 
+          onClick={() => setTipsFilter(2)}
           disabled={loading}
           className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
             tipsFilter === 2
@@ -305,7 +323,7 @@ const RoiTable = ({
           ROI DD
         </button>
         <button
-          onClick={() => setTipsFilter(3)} 
+          onClick={() => setTipsFilter(3)}
           disabled={loading}
           className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
             tipsFilter === 3
@@ -345,18 +363,30 @@ const RoiTable = ({
         <table className="w-full min-w-max border-collapse text-sm">
           <thead className="bg-gray-100 border-b border-gray-200">
             <tr>
-              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">#</th>
+              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
+                #
+              </th>
               <th className="py-2 px-2 font-semibold text-left border-r last:border-r-0 border-gray-300">
                 {horseColTitle}
               </th>
               <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300 bg-orange-100">
                 Analys
               </th>
-              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">Placering</th>
-              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">ROI Lopp</th>
-              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">Odds Vinnare</th>
-              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">Odds Plats</th>
-              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">ROI Totalt</th>
+              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
+                Placering
+              </th>
+              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
+                ROI Lopp
+              </th>
+              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
+                Odds Vinnare
+              </th>
+              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
+                Odds Plats
+              </th>
+              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
+                ROI Totalt
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -378,17 +408,36 @@ const RoiTable = ({
                 <td className="py-2 px-2 text-left border-r border-gray-200">
                   {row.nameOfHorse}
                 </td>
-                <td className="py-2 px-2 border-r border-gray-200 bg-orange-50">{row.analys}</td>
-                <td className="py-2 px-2 border-r border-gray-200">{row.resultat}</td>
-                <td className="py-2 px-2 border-r border-gray-200">{row.roiTotalt}</td>
-                <td className="py-2 px-2 border-r border-gray-200">{formatSE(row.roiVinnare)}</td>
-                <td className="py-2 px-2 border-r border-gray-200">{formatSE(row.roiPlats)}</td>
-                <td className="py-2 px-2 border-r border-gray-200">{row.roiSinceDayOne}</td>
+                <td className="py-2 px-2 border-r border-gray-200 bg-orange-50">
+                  {row.analys}
+                </td>
+                <td className="py-2 px-2 border-r border-gray-200">
+                  {row.resultat}
+                </td>
+                <td className="py-2 px-2 border-r border-gray-200">
+                  {row.roiTotalt}
+                </td>
+                <td className="py-2 px-2 border-r border-gray-200">
+                  {formatSE(row.roiVinnare)}
+                </td>
+                <td className="py-2 px-2 border-r border-gray-200">
+                  {formatSE(row.roiPlats)}
+                </td>
+                <td className="py-2 px-2 border-r border-gray-200">
+                  {row.roiSinceDayOne}
+                </td>
               </tr>
             ))}
             <tr className="font-semibold bg-gray-50">
-              <td colSpan={4} className="py-2 px-2 text-right border-r border-gray-200">Summa:</td>
-              <td className="py-2 px-2 border-r border-gray-200">{totalRoiTotalt}</td>
+              <td
+                colSpan={4}
+                className="py-2 px-2 text-right border-r border-gray-200"
+              >
+                Summa:
+              </td>
+              <td className="py-2 px-2 border-r border-gray-200">
+                {totalRoiTotalt}
+              </td>
               <td className="py-2 px-2 border-r border-gray-200"></td>
               <td className="py-2 px-2 border-r border-gray-200"></td>
               <td className="py-2 px-2 border-r border-gray-200"></td>
@@ -419,10 +468,11 @@ const RoiTable = ({
 
       if (!trackId) {
         const list = await fetch(
-          `${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`
+          `${API_BASE_URL}/track/locations/byDate?date=${selectedDate}`,
         ).then((r) => r.json());
         trackId =
-          list.find((t) => t.nameOfTrack === row.nameOfTrack)?.id || list[0]?.id;
+          list.find((t) => t.nameOfTrack === row.nameOfTrack)?.id ||
+          list[0]?.id;
       }
       if (!trackId) return;
       setSelectedTrack && setSelectedTrack(trackId);
@@ -431,24 +481,24 @@ const RoiTable = ({
       let competitionId = row.competitionId ?? null;
       if (!competitionId) {
         const comps = await fetch(
-          `${API_BASE_URL}/competition/findByTrack?trackId=${trackId}`
+          `${API_BASE_URL}/competition/findByTrack?trackId=${trackId}`,
         ).then((r) => r.json());
 
         if (row.nameOfCompetition) {
           competitionId =
-            comps.find((c) => c.nameOfCompetition === row.nameOfCompetition)?.id ??
-            null;
+            comps.find((c) => c.nameOfCompetition === row.nameOfCompetition)
+              ?.id ?? null;
         }
         if (!competitionId && comps.length === 1) competitionId = comps[0].id;
 
         if (!competitionId && row.lap != null) {
           for (const c of comps) {
             const lapsJSON = await fetch(
-              `${API_BASE_URL}/lap/findByCompetition?competitionId=${c.id}`
+              `${API_BASE_URL}/lap/findByCompetition?competitionId=${c.id}`,
             ).then((r) => r.json());
             const found = lapsJSON.find(
               (l) =>
-                String(l.nameOfLap) === String(row.lap) || l.id === row.lapId
+                String(l.nameOfLap) === String(row.lap) || l.id === row.lapId,
             );
             if (found) {
               competitionId = c.id;
@@ -465,10 +515,10 @@ const RoiTable = ({
       let lapId = row.lapId ?? row._resolvedLapId ?? null;
       if (!lapId) {
         const lapsJSON = await fetch(
-          `${API_BASE_URL}/lap/findByCompetition?competitionId=${competitionId}`
+          `${API_BASE_URL}/lap/findByCompetition?competitionId=${competitionId}`,
         ).then((r) => r.json());
         const match = lapsJSON.find(
-          (l) => String(l.nameOfLap) === String(row.lap)
+          (l) => String(l.nameOfLap) === String(row.lap),
         );
         lapId = match?.id ?? null;
       }
@@ -481,7 +531,7 @@ const RoiTable = ({
       let horseIndex = 0;
       try {
         const horsesInLap = await fetch(
-          `${API_BASE_URL}/completeHorse/findByLap?lapId=${lapId}`
+          `${API_BASE_URL}/completeHorse/findByLap?lapId=${lapId}`,
         ).then((r) => r.json());
         const idx = horsesInLap.findIndex(
           (h) =>
@@ -489,7 +539,7 @@ const RoiTable = ({
             (row.horseId && h.id === row.horseId) ||
             (String(h.numberOfCompleteHorse) === String(row.numberOfHorse) &&
               (h.nameOfCompleteHorse || "").toLowerCase() ===
-                (row.nameOfHorse || "").toLowerCase())
+                (row.nameOfHorse || "").toLowerCase()),
         );
         if (idx >= 0) horseIndex = idx;
       } catch {}
