@@ -13,6 +13,7 @@ export default function Newsletter() {
   const hideTimer = useRef();
 
   const [kopandelButtons, setKopandelButtons] = useState([]);
+  const [kopandelLoaded, setKopandelLoaded] = useState(false);
   const [countdownNow, setCountdownNow] = useState(() => Date.now());
 
   useEffect(() => {
@@ -103,11 +104,16 @@ export default function Newsletter() {
       ? data.buttons
       : Array.isArray(data?.appUrls)
       ? data.appUrls
+      : data?.v85 || data?.v86
+      ? [data?.v85, data?.v86].filter(Boolean)
       : data?.url
       ? [data]
+      : data && typeof data === "object"
+      ? Object.values(data)
       : [];
 
     return rawButtons
+      .filter((button) => button && typeof button === "object")
       .map((button, index) => {
         const id = button.id ?? button.appUrlId ?? button.buttonId ?? index;
         const numericId = Number(id);
@@ -116,13 +122,20 @@ export default function Newsletter() {
 
         return {
           id,
-          url: button.url || button.href || "",
-          date: button.date || button.spelstopp || button.startTime || "",
+          url: button.url || button.href || button.link || button.appUrl || "",
+          date:
+            button.date ||
+            button.spelstopp ||
+            button.startTime ||
+            button.startDate ||
+            button.deadline ||
+            "",
           label:
             button.label ||
             button.buttonText ||
             button.title ||
             button.name ||
+            button.raceType ||
             button.spelform ||
             button.gameType ||
             fallbackLabel,
@@ -172,24 +185,61 @@ export default function Newsletter() {
     return `${hours}h ${minutes}m ${seconds}s`;
   };
 
+  const getAppUrlIdForToday = () => {
+    const weekday = new Intl.DateTimeFormat("en-US", {
+      weekday: "short",
+      timeZone: "Europe/Stockholm",
+    }).format(new Date());
+
+    const dayMap = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    const dayNumber = dayMap[weekday];
+
+    if (dayNumber >= 0 && dayNumber <= 3) return 2;
+    return 1;
+  };
+
+  const loadAppUrlById = async (id) => {
+    const response = await fetch(`${API_BASE_URL}/app_url/${id}`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return normalizeAppUrlButtons(await response.json());
+  };
+
   useEffect(() => {
     let isMounted = true;
 
     const loadAppUrlButtons = async () => {
+      setKopandelLoaded(false);
+
       try {
         const response = await fetch(`${API_BASE_URL}/app_url/buttons`);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
+        const buttons = normalizeAppUrlButtons(await response.json());
 
-        if (!isMounted) return;
-        setKopandelButtons(normalizeAppUrlButtons(data));
+        if (buttons.length) {
+          if (isMounted) setKopandelButtons(buttons);
+          return;
+        }
+
+        throw new Error("No app_url buttons in response");
       } catch (err) {
         console.error("Kunde inte hämta app_url buttons", err);
+
+        try {
+          const fallbackButtons = await loadAppUrlById(getAppUrlIdForToday());
+          if (isMounted) setKopandelButtons(fallbackButtons);
+        } catch (fallbackErr) {
+          console.error("Kunde inte hämta app_url fallback", fallbackErr);
+          if (isMounted) setKopandelButtons([]);
+        }
+      } finally {
+        if (isMounted) setKopandelLoaded(true);
       }
     };
 
     if (API_BASE_URL) {
       loadAppUrlButtons();
+    } else {
+      setKopandelLoaded(true);
     }
 
     return () => {
@@ -349,11 +399,10 @@ export default function Newsletter() {
                       rel="noopener noreferrer"
                       className="text-gray-300 hover:text-white"
                     >
-                      {button.label}
                     </a>
                   ))
                 ) : (
-                  <span>Laddar länkar...</span>
+                  <span>{kopandelLoaded ? "Kunde inte hämta länk" : "Laddar länkar..."}</span>
                 )}
               </dd>
             </div>
