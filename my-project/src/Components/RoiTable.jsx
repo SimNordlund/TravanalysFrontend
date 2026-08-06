@@ -297,8 +297,6 @@ const RoiTable = ({
           </button>
         ))}
       </div>
-
-      {/* ROI-lägen (påverkar INTE selectedCompetition längre) */}
       <div className="flex flex-wrap gap-1 mb-2">
         <button
           onClick={() => setTipsFilter(1)}
@@ -311,6 +309,7 @@ const RoiTable = ({
         >
           ROI V&P
         </button>
+        {/* 
         <button
           onClick={() => setTipsFilter(2)}
           disabled={loading}
@@ -321,7 +320,7 @@ const RoiTable = ({
           }`}
         >
           ROI Tvilling
-        </button>
+        </button> */}
         <button
           onClick={() => setTipsFilter(3)}
           disabled={loading}
@@ -330,7 +329,7 @@ const RoiTable = ({
               ? "bg-green-600 text-white font-semibold shadow"
               : "bg-gray-200 text-gray-700 hover:bg-blue-200"
           }`}
-        >
+        > 
           ROI Trio
         </button>
       </div>
