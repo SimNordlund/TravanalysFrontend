@@ -89,7 +89,7 @@ export default function IntroComponent() {
         <div className="mx-auto grid max-w-2xl grid-cols-1 items-start gap-x-8 gap-y-16 sm:gap-y-20 xl:mx-0 xl:max-w-none xl:grid-cols-2">
           <div className="lg:mt-6 lg:pr-8">
             <div className="lg:max-w-lg">
-              <div className="mb-4 h-[44px] sm:h-[52px]"> 
+              {/*<div className="mb-4 h-[44px] sm:h-[52px]"> 
                 {banner && (
                   <a
                     href={banner.url}
@@ -113,7 +113,7 @@ export default function IntroComponent() {
                     </span>
                   </a>
                 )}
-              </div>
+              </div> */}
               <h3 className="text-base/7 font-semibold text-orange-600">
                 BETA-version!
               </h3>
