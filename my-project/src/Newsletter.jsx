@@ -1,4 +1,4 @@
-import { DocumentTextIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
+import { DocumentTextIcon, EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { FaFacebook } from "react-icons/fa";
 //import { FaInstagram } from "react-icons/fa";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
@@ -469,6 +469,29 @@ export default function Newsletter() {
                   className="text-gray-300 hover:text-white"
                 >
                   Endast för Android
+                </a>
+              </dd>
+            </div>
+            <div className="flex flex-col items-center sm:mt-4">
+              <a
+                href="https://trav-analys-t3.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-xl bg-white/10 p-3 ring-1 ring-white/20 shadow-sm hover:ring-indigo-400/60 hover:shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-0.5"
+              >
+                <LockClosedIcon
+                  className="h-8 w-8 text-white"
+                  aria-hidden="true"
+                />
+              </a>
+              <dt className="mt-4 font-semibold text-white">Admin</dt>
+              <dd className="mt-2 leading-7 text-gray-300">
+                <a
+                  href="https://trav-analys-t3.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-300 hover:text-white"
+                >
                 </a>
               </dd>
             </div>
