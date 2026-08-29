@@ -124,7 +124,7 @@ const horsePlacementBadgePlugin = {
 
     ctx.save();
     chart.data.datasets.forEach((dataset, datasetIndex) => {
-      if ( 
+      if (
         !dataset.horsePlacement ||
         dataset.horsePlacement > 3 || //Uppdatera denna för att justera hur många placeringar som ska visas. Just nu visas endast 1:a, 2:a och 3:e plats och stöd finns för tot 6.
         !chart.isDatasetVisible(datasetIndex)
@@ -327,6 +327,7 @@ const BarChartComponent = ({
               horsePlacement,
               horsePlacementLabel: placementLabel,
               horsePlacementBadgeColor: col,
+              vOdds: horse.vOdds ?? null,
               data: labels.map((_, i) =>
                 i === idx ? (fs?.analys ?? 0) : null,
               ),
@@ -440,9 +441,13 @@ const BarChartComponent = ({
     },
   };
 
-  const hasPlacedHorses = data.datasets.some(
-    (dataset) => dataset.horsePlacement,
+  const winnerHorse = data.datasets.find(
+    (dataset) => dataset.horsePlacement === 1,
   );
+  const hasWinnerOdds =
+    winnerHorse?.vOdds !== null &&
+    winnerHorse?.vOdds !== undefined &&
+    String(winnerHorse.vOdds).trim() !== "";
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
   const yesterdayStr = new Date(today - 864e5).toISOString().split("T")[0];
@@ -623,10 +628,16 @@ const BarChartComponent = ({
         </p>
       </div>
 
-      {hasPlacedHorses && (
+      {!loading && winnerHorse && (
         <div className="mb-2 flex justify-center px-2">
           <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-900 shadow-sm">
-            <span>Markerade staplar visar placering i loppet</span>
+            <span>Vinnare: {winnerHorse.label}</span>
+            {hasWinnerOdds && (
+              <>
+                <span aria-hidden="true">•</span>
+                <span>V-odds: {winnerHorse.vOdds}</span>
+              </>
+            )}
           </div>
         </div>
       )}
