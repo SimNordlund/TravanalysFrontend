@@ -24,6 +24,14 @@ const MOBILE_DEFAULT_COLUMN_KEYS = [
 const getDefaultVisibleColumns = (smallScreen) =>
   smallScreen ? MOBILE_DEFAULT_COLUMN_KEYS : ALL_COLUMN_KEYS;
 
+const getHorsePlacement = (name) => {
+  const match = String(name ?? "").match(/\((\d+)\)\s*$/);
+  return match ? Number(match[1]) : null;
+};
+
+const removeHorsePlacementMarker = (name) =>
+  String(name ?? "").replace(/\s*\(\d+\)\s*$/, "").trim();
+
 const PaginatedLapTable = ({
   selectedDate,
   setSelectedDate,
@@ -470,6 +478,19 @@ const PaginatedLapTable = ({
     visibleColumnSet.has(column.key)
   );
 
+  const winnerHorse = lapData.find(
+    (row) => getHorsePlacement(row.nameOfCompleteHorse) === 1
+  );
+  const winnerHorseLabel = winnerHorse
+    ? `${winnerHorse.numberOfCompleteHorse}. ${removeHorsePlacementMarker(
+        winnerHorse.nameOfCompleteHorse
+      )}`
+    : "";
+  const hasWinnerOdds =
+    winnerHorse?.vOdds !== null &&
+    winnerHorse?.vOdds !== undefined &&
+    String(winnerHorse.vOdds).trim() !== "";
+
   return (
     <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
       <p className="mx-auto mt-1 mb-4 flex w-fit max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-lg border border-slate-200 bg-white px-4 py-2 text-center text-base font-semibold text-slate-900 shadow-sm ring-1 ring-slate-900/5 sm:mt-2 sm:mb-5 sm:px-5 sm:py-2.5 sm:text-lg">
@@ -634,6 +655,20 @@ const PaginatedLapTable = ({
           })}
         </div>
       </div>
+
+      {!loading && winnerHorse && (
+        <div className="mb-6 flex justify-center px-2">
+          <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-900 shadow-sm">
+            <span>Vinnare: {winnerHorseLabel}</span>
+            {hasWinnerOdds && (
+              <>
+                <span aria-hidden="true">•</span>
+                <span>V-odds: {winnerHorse.vOdds}</span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="overflow-x-auto border border-gray-200 rounded relative">
         {loading && (
