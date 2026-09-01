@@ -372,7 +372,7 @@ export default function TravReductionGui() {
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-3 py-4 sm:gap-5 sm:px-6 sm:py-5 lg:px-8">
         <header className="border-b border-zinc-200 pb-4 text-center sm:text-left">
           <div>
-            <h1 className="text-xl font-semibold tracking-normal text-zinc-950 sm:text-2xl">Travanalys.se Reducering</h1>
+            <h1 className="text-xl font-semibold tracking-normal text-zinc-950 sm:text-2xl">Reducering</h1>
             <p className="mx-auto mt-2 flex w-fit max-w-full flex-wrap items-center justify-center gap-1 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-zinc-600 ring-1 ring-zinc-200 sm:mx-0 sm:text-sm">{form.spelform} / {form.banKod || "Bana"} / {form.startDatum || "Datum"}</p>
           </div>
         </header>
