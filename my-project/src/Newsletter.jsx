@@ -388,7 +388,7 @@ export default function Newsletter() {
                   </div>
                 )}
               </div>
-              <dt className="mt-4 font-semibold text-white">Köpandel.se</dt>
+              <dt className="mt-4 font-semibold text-white">Andelsspel</dt>
               <dd className="mt-2 flex flex-wrap justify-center gap-x-3 gap-y-1 leading-7 text-gray-300">
                 {kopandelButtons.length ? (
                   kopandelButtons.map((button, index) => (
