@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Radar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
 
@@ -37,10 +37,11 @@ const SpiderChart = ({
   const normalizeStarter = (v) => String(v ?? "").trim() || "0"; 
 
   const [rawDatasets, setRawDatasets] = useState([]);
-  const [data, setData] = useState({
+  const chartRef = useRef(null);
+  const data = useMemo(() => ({
     labels: ["Prestation", "Placering", "Skrik", "Motstånd", "Klass", "Form", "Fart"],
-    datasets: [],
-  });
+    datasets: rawDatasets,
+  }), [rawDatasets]);
   const [loading, setLoading] = useState(true);
   const [showSpinner, setShowSpinner] = useState(false);
   const [error, setError] = useState(null);
@@ -133,14 +134,27 @@ const SpiderChart = ({
   }, [selectedLap, selectedHorse, startsCount, API_BASE_URL]); 
 
   useEffect(() => {
-    if (!rawDatasets.length) {
-      setData((p) => ({ ...p, datasets: [] }));
-      return;
-    }
+    const chart = chartRef.current;
+    if (!chart || loading) return;
+
     const vis = new Set(visibleHorseIdxes ?? []);
-    const ds = rawDatasets.map((d, i) => ({ ...d, hidden: !vis.has(i) }));
-    setData((p) => ({ ...p, datasets: ds }));
-  }, [rawDatasets, visibleHorseIdxes]);
+    const transitions = new Map();
+    chart.data.datasets.forEach((_, i) => {
+      const visible = vis.has(i);
+      if (chart.isDatasetVisible(i) === visible) return;
+      transitions.set(i, visible ? "show" : "hide");
+    });
+
+    transitions.forEach((mode, i) => {
+      if (mode === "show") chart.show(i);
+      else chart.hide(i);
+    });
+
+    // Keep every changed dataset in its fade transition during a group update.
+    if (transitions.size > 1) {
+      chart.update((ctx) => transitions.get(ctx.datasetIndex));
+    }
+  }, [data, visibleHorseIdxes, loading]);
 
   useEffect(() => {
     let t;
@@ -149,9 +163,14 @@ const SpiderChart = ({
     return () => clearTimeout(t);
   }, [loading]);
 
-  const options = {
+  const options = useMemo(() => ({
     responsive: true,
     maintainAspectRatio: false,
+    animation: { duration: 450, easing: "easeInOutQuart" },
+    transitions: {
+      show: { animation: { duration: 450, easing: "easeInOutQuart" } },
+      hide: { animation: { duration: 450, easing: "easeInOutQuart" } },
+    },
     plugins: { legend: { display: false } },
     scales: {
       r: {
@@ -172,7 +191,7 @@ const SpiderChart = ({
       },
     },
     elements: { line: { borderWidth: 2 } },
-  };
+  }), []);
 
   return (
     <div className="flex flex-col mt-0 px-2 pb-2 mb-2 sm:mb-0">
@@ -185,7 +204,7 @@ const SpiderChart = ({
       <div className="w-full max-w-[490px] mx-auto">
         <div className="relative w-full aspect-square">
           {data.datasets.length > 0 && !loading && (
-            <Radar data={data} options={options} />
+            <Radar ref={chartRef} data={data} options={options} />
           )}
 
           {!loading && data.datasets.length === 0 && (
