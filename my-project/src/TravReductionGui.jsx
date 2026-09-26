@@ -57,10 +57,6 @@ const FALLBACK_OPTIONS = {
   defaultFilter: {
     minRank: 0,
     maxRank: 13,
-    minTotalStreck: 0,
-    maxTotalStreck: 999,
-    minStreck: 0,
-    maxAverageStreck: 90,
     requireAtLeastTwoFirstRanked: false,
     excludedTextRows: [],
   },
@@ -287,10 +283,6 @@ export default function TravReductionGui() {
       filter: {
         minRank: toNumber(form.filter.minRank, 0),
         maxRank: toNumber(form.filter.maxRank, 999),
-        minTotalStreck: toNumber(form.filter.minTotalStreck, 0),
-        maxTotalStreck: toNumber(form.filter.maxTotalStreck, 999),
-        minStreck: toNumber(form.filter.minStreck, 0),
-        maxAverageStreck: toNumber(form.filter.maxAverageStreck, 999),
         requireAtLeastTwoFirstRanked: Boolean(form.filter.requireAtLeastTwoFirstRanked),
         excludedTextRows: parseTextRows(form.excludedTextRowsText),
       },
@@ -447,13 +439,9 @@ export default function TravReductionGui() {
 
             <div className="mt-5 border-t border-zinc-200 pt-4">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Reduceringsvillkor</h2>
-              <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
                 <NumberField label="Min rank" value={form.filter.minRank} onChange={(value) => updateFilter("minRank", value)} />
                 <NumberField label="Max rank" value={form.filter.maxRank} onChange={(value) => updateFilter("maxRank", value)} />
-                <NumberField label="Min streck" value={form.filter.minStreck} onChange={(value) => updateFilter("minStreck", value)} />
-                <NumberField label="Min total" value={form.filter.minTotalStreck} onChange={(value) => updateFilter("minTotalStreck", value)} />
-                <NumberField label="Max total" value={form.filter.maxTotalStreck} onChange={(value) => updateFilter("maxTotalStreck", value)} />
-                <NumberField label="Max avg" value={form.filter.maxAverageStreck} onChange={(value) => updateFilter("maxAverageStreck", value)} />
               </div>
 
               <div className="mt-3 grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">

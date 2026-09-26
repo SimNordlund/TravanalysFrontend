@@ -17,7 +17,7 @@ const faqsList = [
   },
   {
     q: "Vad är Travanalys Reducering?",
-    a: "Travanalys Reducering hjälper dig att bygga reducerade system utifrån dina egna val och villkor. Du väljer spelform, datum, bana och lopp, fyller i hästar per avdelning och sätter regler för exempelvis rank, streck och totalstreck. Verktyget ersätter inte din spelidé, utan hjälper dig att göra systemet mer hanterbart.",
+    a: "Travanalys Reducering hjälper dig att bygga reducerade system utifrån dina egna val och villkor. Du väljer spelform, datum, bana och lopp, fyller i hästar per avdelning och sätter regler för exempelvis rank och exkluderade textrader. Verktyget ersätter inte din spelidé, utan hjälper dig att göra systemet mer hanterbart.",
   },
   {
     q: "Kan jag skapa en reducerad spelfil?",
