@@ -11,6 +11,7 @@ import PaginatedLapTable from "./PaginatedLapTable";
 import AnalysChart from "./AnalysChart";
 import SharedHorseLegend from "./SharedHorseLegend";
 import RoiTable from "./RoiTable";
+import { BarChart3, ListOrdered, Wallet } from "lucide-react";
 
 const FALLBACK_BANNER = {
   mening: "Kolla in skrällen enligt analysen",
@@ -581,25 +582,28 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     {
       id: 2,
       name: "Analys",
-      bgColor: "bg-gradient-to-r from-indigo-400 via-indigo-500 to-indigo-600",
+      description: "Profiler & jämförelser",
+      icon: BarChart3,
       view: "spider",
     },
     {
       id: 3,
       name: "Ranking",
-      bgColor: "bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600",
+      description: "Hästar & nyckeltal",
+      icon: ListOrdered,
       view: "table",
     },
     {
       id: 4,
       name: "Spel & ROI",
-      bgColor: "bg-gradient-to-r from-gray-400 via-gray-500 to-gray-600",
+      description: "Resultat & uppföljning",
+      icon: Wallet,
       view: "skrallar",
     },
   ];
 
   return (
-    <div className="text-center pt-12 pb-12 sm:pt-16 sm:pb-14 bg-slate-100">
+    <div className="analytics-workspace px-3 pb-12 pt-8 sm:px-6 sm:pb-16 sm:pt-12">
       {/*<div className="mb-4 min-h-[44px]">
         {banner && (
           <div className="flex justify-center">
@@ -628,34 +632,47 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         )}
       </div> */}
 
-      <div className="flex justify-center gap-x-4 sm:gap-x-10 flex-nowrap overflow-auto mb-4 sm:mb-8 pt-2 pb-3">
-        {callouts.map((c) => (
-          <div
-            key={c.id}
-            className="group relative cursor-pointer"
-            onClick={() => switchView(c.view)}
-          >
-            <div
-              className={`${
-                c.bgColor
-              } relative h-14 w-24 lg:w-72 lg:h-18 md:w-52 md:h-18 mb-1 sm:mb-0 overflow-hidden rounded-md flex items-center justify-center transition-all duration-300 ${
-                selectedView === c.view
-                  ? "ring-2 ring-slate-800 scale-110 opacity-100 cursor-default"
-                  : "hover:opacity-70"
+      <div className="mx-auto mb-6 w-full max-w-6xl sm:mb-8">
+        <header className="mb-6 px-1 sm:mb-8">
+          <p className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600">
+            <span className="h-1 w-6 rounded-full bg-indigo-500" aria-hidden="true" />
+            Travanalys
+          </p>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            Loppet i fokus<span className="text-indigo-500">.</span>
+          </h1>
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-500">
+            Jämför analyser, utforska rankingen och följ resultaten.
+          </p>
+        </header>
+
+        <nav className="analytics-view-nav" aria-label="Välj analysvy">
+          {callouts.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              className={`analytics-view-button ${
+                selectedView === c.view ? "analytics-view-button-active" : ""
               }`}
+              onClick={() => switchView(c.view)}
+              aria-pressed={selectedView === c.view}
             >
-              <h3 className="sm:text-2xl font-semibold text-white text-center">
-                {c.name}
-              </h3>
-            </div>
-          </div>
-        ))}
+              <span className="analytics-view-icon" aria-hidden="true">
+                <c.icon className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-xs font-semibold sm:text-sm">{c.name}</span>
+                <span className="analytics-view-description hidden sm:block">{c.description}</span>
+              </span>
+            </button>
+          ))}
+        </nav>
       </div>
 
-      <div className="sm:max-w-5xl sm:mx-auto bg-white ml-3 mr-3 sm:pl-8 sm:pr-8 sm:pb-2 rounded-xl shadow-lg min-h-[70vh]">
+      <div className="mx-auto min-h-[70vh] w-full min-w-0 max-w-6xl">
         {(selectedView === "bar" || selectedView === "spider") && (
-          <div className="grid grid-cols-1 gap-4">
-            <div className="min-h-[400px]">
+          <div className="chart-dashboard mx-auto grid w-full min-w-0 grid-cols-1 gap-5 sm:gap-6">
+            <div className="min-h-[400px] min-w-0">
               <BarChart
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDateUser}
@@ -678,7 +695,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
               />
             </div>
 
-            <div className="min-h-[400px] sm:grid sm:grid-cols-[minmax(0,1fr)_16rem] sm:gap-6">
+            <div className="grid min-w-0 grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
               <div className="min-w-0">
                 <SpiderChart
                   selectedDate={selectedDate}
@@ -696,7 +713,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 />
               </div>
 
-              <div className="mt-0 ml-4 sm:mt-28 sm:justify-self-end sm:w-64 shrink-0">
+              <div className="min-w-0 w-full">
                 <SharedHorseLegend
                   items={horseLegendItems}
                   visibleIdxes={visibleHorseIdxes}
@@ -722,7 +739,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             </div>
 
             {normalizeStarter(startsCount) !== "0" && (
-              <div className="min-h-[200px]">
+              <div className="min-h-[200px] min-w-0">
                 <AnalysChart
                   selectedLap={selectedLap}
                   selectedHorse={selectedHorse}
@@ -737,7 +754,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         <div
           className={`${
             selectedView === "table" ? "" : "hidden"
-          } min-h-[600px]`}
+          } min-h-[600px] min-w-0`}
         >
           <PaginatedLapTable
             selectedDate={selectedDate}
@@ -760,7 +777,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
         <div
           className={`${
             selectedView === "skrallar" ? "" : "hidden"
-          } min-h-[600px]`}
+          } min-h-[600px] min-w-0`}
         >
           <RoiTable
             selectedDate={selectedDate}

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import DatePicker from "./DatePicker";
-import { Weight, ChevronLeft, ChevronRight } from "lucide-react";
+import { TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
 
 const RoiTable = ({
   selectedDate,
@@ -239,28 +239,50 @@ const RoiTable = ({
   const horseColTitle = isSystemMode ? "System" : "Häst";
 
   return (
-    <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
-      <p className="mx-auto mt-1 mb-4 flex w-fit max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-lg border border-slate-200 bg-white px-4 py-2 text-center text-base font-semibold text-slate-900 shadow-sm ring-1 ring-slate-900/5 sm:mt-2 sm:mb-5 sm:px-5 sm:py-2.5 sm:text-lg">
-        <span className="max-w-full break-words">{selectedDateLabel}</span>
+    <div className="analytics-section relative mx-auto w-full max-w-screen-xl">
+      <div className="chart-panel-heading">
+        <div className="flex min-w-0 items-start gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-white text-indigo-600 shadow-sm">
+            <TrendingUp className="h-5 w-5" aria-hidden="true" />
+          </span>
+          <div className="min-w-0">
+            <p className="chart-kicker">Resultatöversikt</p>
+            <h2 className="chart-title">Spel &amp; ROI</h2>
+            <p className="chart-description">
+              Analys, placering och ROI per lopp.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <p className="analytics-context">
+        <span className="max-w-full break-words font-semibold text-slate-700">
+          {selectedDateLabel}
+        </span>
         <span
-          className="h-1.5 w-1.5 rounded-full bg-slate-300"
+          className="h-1 w-1 shrink-0 rounded-full bg-slate-300"
           aria-hidden="true"
         />
-        <span className="text-emerald-700">{selectedTrackLabel}</span>
+        <span className="max-w-full break-words text-slate-600">
+          {selectedTrackLabel}
+        </span>
         <span
-          className="h-1.5 w-1.5 rounded-full bg-slate-300"
+          className="h-1 w-1 shrink-0 rounded-full bg-slate-300"
           aria-hidden="true"
         />
-        <span className="text-indigo-700">{selectedCompetitionLabel}</span>
+        <span className="max-w-full break-words font-semibold text-indigo-600">
+          {selectedCompetitionLabel}
+        </span>
       </p>
 
-      <div className="flex items-center justify-between sm:justify-self-center mb-4 mt-8">
+      <div className="analytics-date-nav chart-date-controls">
         <button
           onClick={goPrev}
           disabled={idx <= 0 || loading}
-          className="mb-1 mr-6 sm:mr-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          aria-label="Föregående datum"
+          className="analytics-arrow"
         >
-          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 [stroke-width:3]" />
+          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
         </button>
 
         <DatePicker
@@ -274,37 +296,36 @@ const RoiTable = ({
         <button
           onClick={goNext}
           disabled={idx >= dates.length - 1 || loading}
-          className="mb-1 ml-6 sm:ml-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          aria-label="Nästa datum"
+          className="analytics-arrow"
         >
-          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 [stroke-width:3]" />
+          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
         </button>
       </div>
 
       {/* Banor */}
-      <div className="flex flex-wrap gap-1 mb-2">
+      <div className="analytics-filter-row">
         {tracks.map((t) => (
           <button
             key={t.id}
             onClick={() => setSelectedTrack && setSelectedTrack(t.id)}
             disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              t.id === +selectedTrack
-                ? "bg-emerald-500 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+            aria-pressed={t.id === +selectedTrack}
+            className={`chart-filter ${
+              t.id === +selectedTrack ? "chart-filter-active" : ""
             }`}
           >
             {t.nameOfTrack}
           </button>
         ))}
       </div>
-      <div className="flex flex-wrap gap-1 mb-2">
+      <div className="analytics-filter-row">
         <button
           onClick={() => setTipsFilter(1)}
           disabled={loading}
-          className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-            tipsFilter === 1
-              ? "bg-orange-600 text-white font-semibold shadow"
-              : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+          aria-pressed={tipsFilter === 1}
+          className={`chart-filter ${
+            tipsFilter === 1 ? "chart-filter-active" : ""
           }`}
         >
           ROI V&P
@@ -324,10 +345,9 @@ const RoiTable = ({
         <button
           onClick={() => setTipsFilter(3)}
           disabled={loading}
-          className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-            tipsFilter === 3
-              ? "bg-green-600 text-white font-semibold shadow"
-              : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+          aria-pressed={tipsFilter === 3}
+          className={`chart-filter ${
+            tipsFilter === 3 ? "chart-filter-active" : ""
           }`}
         > 
           ROI Trio
@@ -335,16 +355,15 @@ const RoiTable = ({
       </div>
 
       {/* Avdelningar */}
-      <div className="flex flex-wrap gap-1 mb-2">
+      <div className="analytics-filter-row">
         {laps.map((lap) => (
           <button
             key={lap.id}
             onClick={() => setSelectedLap && setSelectedLap(lap.id)}
             disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-              lap.id === +selectedLap
-                ? "bg-indigo-500 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+            aria-pressed={lap.id === +selectedLap}
+            className={`chart-filter ${
+              lap.id === +selectedLap ? "chart-filter-active" : ""
             }`}
           >
             {`${lapPrefix} ${lap.nameOfLap}`}
@@ -353,37 +372,47 @@ const RoiTable = ({
       </div>
 
       {/* Tabellen */}
-      <div className="overflow-x-auto border border-gray-200 rounded relative">
+      <div
+        className="analytics-table-wrap relative mt-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-400"
+        tabIndex={0}
+        role="region"
+        aria-label="ROI-tabell"
+        aria-busy={loading}
+      >
         {loading && (
-          <div className="absolute inset-0 flex justify-center items-center bg-white/70">
-            <div className="animate-spin h-10 w-10 border-4 border-gray-200 border-t-indigo-500 rounded-full" />
+          <div
+            className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 backdrop-blur-[2px]"
+            role="status"
+          >
+            <div className="h-9 w-9 animate-spin rounded-full border-[3px] border-indigo-100 border-t-indigo-500 motion-reduce:animate-none" />
+            <span className="sr-only">Laddar ROI-data.</span>
           </div>
         )}
-        <table className="w-full min-w-max border-collapse text-sm">
-          <thead className="bg-gray-100 border-b border-gray-200">
+        <table className="analytics-table min-w-[720px] text-center">
+          <thead>
             <tr>
-              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
+              <th scope="col" className="w-14 text-center">
                 #
               </th>
-              <th className="py-2 px-2 font-semibold text-left border-r last:border-r-0 border-gray-300">
+              <th scope="col" className="min-w-[160px] text-left">
                 {horseColTitle}
               </th>
-              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300 bg-orange-100">
+              <th scope="col" className="!bg-indigo-50 !text-indigo-700">
                 Analys
               </th>
-              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
+              <th scope="col">
                 Placering
               </th>
-              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
+              <th scope="col">
                 ROI Lopp
               </th>
-              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
+              <th scope="col">
                 Odds Vinnare
               </th>
-              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
+              <th scope="col">
                 Odds Plats
               </th>
-              <th className="py-2 px-2 font-semibold border-r last:border-r-0 border-gray-300">
+              <th scope="col">
                 ROI Totalt
               </th>
             </tr>
@@ -397,55 +426,59 @@ const RoiTable = ({
                   `${row.nameOfHorse}-${row.lap}-${row.nameOfTrack}`
                 }
                 onClick={() => handleRowClick(row)}
-                className="border-b last:border-b-0 border-gray-200 hover:bg-blue-50 cursor-pointer even:bg-gray-50"
+                className="group cursor-pointer"
               >
-                <td className="py-1 px-2 border-r border-gray-200 align-middle">
-                  <span className="inline-block border border-orange-700 px-2 py-0.5 rounded-md text-sm font-medium bg-orange-100 shadow-sm">
+                <td className="align-middle">
+                  <span className="analytics-number">
                     {row.numberOfHorse}
                   </span>
                 </td>
-                <td className="py-2 px-2 text-left border-r border-gray-200">
-                  {row.nameOfHorse}
+                <td className="text-left font-semibold text-slate-800">
+                  <span className="block min-w-[136px] max-w-[19rem] whitespace-normal break-words group-hover:text-indigo-700">
+                    {row.nameOfHorse}
+                  </span>
                 </td>
-                <td className="py-2 px-2 border-r border-gray-200 bg-orange-50">
+                <td className="!bg-indigo-50/60 font-bold text-indigo-700">
                   {row.analys}
                 </td>
-                <td className="py-2 px-2 border-r border-gray-200">
+                <td className="font-medium">
                   {row.resultat}
                 </td>
-                <td className="py-2 px-2 border-r border-gray-200">
+                <td className="font-semibold text-slate-700">
                   {row.roiTotalt}
                 </td>
-                <td className="py-2 px-2 border-r border-gray-200">
+                <td>
                   {formatSE(row.roiVinnare)}
                 </td>
-                <td className="py-2 px-2 border-r border-gray-200">
+                <td>
                   {formatSE(row.roiPlats)}
                 </td>
-                <td className="py-2 px-2 border-r border-gray-200">
+                <td className="font-semibold text-slate-700">
                   {row.roiSinceDayOne}
                 </td>
               </tr>
             ))}
-            <tr className="font-semibold bg-gray-50">
+            <tr className="!bg-indigo-50/60 font-semibold text-indigo-900">
               <td
                 colSpan={4}
-                className="py-2 px-2 text-right border-r border-gray-200"
+                className="!border-t !border-indigo-100 !py-4 text-right"
               >
                 Summa:
               </td>
-              <td className="py-2 px-2 border-r border-gray-200">
-                {totalRoiTotalt}
+              <td className="!border-t !border-indigo-100 !py-4">
+                <span className="inline-flex min-w-[3rem] items-center justify-center rounded-lg border border-indigo-200/70 bg-white px-2.5 py-1 font-bold text-indigo-700 shadow-sm">
+                  {totalRoiTotalt}
+                </span>
               </td>
-              <td className="py-2 px-2 border-r border-gray-200"></td>
-              <td className="py-2 px-2 border-r border-gray-200"></td>
-              <td className="py-2 px-2 border-r border-gray-200"></td>
+              <td className="!border-t !border-indigo-100 !py-4"></td>
+              <td className="!border-t !border-indigo-100 !py-4"></td>
+              <td className="!border-t !border-indigo-100 !py-4"></td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      {error && <div className="text-red-600 mt-4">{error}</div>}
+      {error && <div className="analytics-error mt-4">{error}</div>}
     </div>
   );
 

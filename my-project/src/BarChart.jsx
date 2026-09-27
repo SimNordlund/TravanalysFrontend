@@ -2,7 +2,16 @@ import React, { useEffect, useState, useRef } from "react";
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 import DatePicker from "./Components/DatePicker";
 import Chart from "chart.js/auto";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { BarChart3, ChevronLeft, ChevronRight, Trophy } from "lucide-react";
+import {
+  barFill,
+  cartesianGrid,
+  chartFont,
+  chartTick,
+  chartTooltip,
+  horseColors,
+  withAlpha,
+} from "./chartTheme";
 
 Chart.defaults.font.family =
   "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'";
@@ -152,7 +161,7 @@ const horsePlacementBadgePlugin = {
         const horizontalPadding = compactLabel ? 8 : 14;
         const height = compactLabel ? 17 : 20;
         const minWidth = compactLabel ? 22 : 30;
-        const radius = compactLabel ? 5 : 6;
+        const radius = compactLabel ? 6 : 7;
         ctx.font = `700 ${fontSize}px ${Chart.defaults.font.family}`;
         const width = Math.max(
           ctx.measureText(text).width + horizontalPadding,
@@ -160,15 +169,15 @@ const horsePlacementBadgePlugin = {
         );
         const x = position.x - width / 2;
         const y = Math.max(chartArea.top + 4, position.y - height - 10);
-        ctx.fillStyle =
-          dataset.horsePlacementBadgeColor || dataset.backgroundColor || "#000";
+        const badgeColor = dataset.horsePlacementBadgeColor || horseColors[0];
+        ctx.fillStyle = withAlpha(badgeColor, 0.12);
         drawRoundedRect(ctx, x, y, width, height, radius);
         ctx.fill();
-        ctx.strokeStyle = dataset.borderColor || "rgba(255,255,255,0.9)";
+        ctx.strokeStyle = withAlpha(badgeColor, 0.3);
         ctx.lineWidth = 1;
         ctx.stroke();
 
-        ctx.fillStyle = "#000";
+        ctx.fillStyle = "#334155";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText(text, position.x, y + height / 2 + 0.5);
@@ -221,24 +230,6 @@ const BarChartComponent = ({
   const goPrev = () => idx > 0 && setSelectedDate(dates[idx - 1].date);
   const goNext = () =>
     idx < dates.length - 1 && setSelectedDate(dates[idx + 1].date);
-
-  const horseColors = [
-    "rgba(0, 0, 255, 0.5)",
-    "rgba(255, 165, 0, 0.5)",
-    "rgba(255, 0, 0, 0.5)",
-    "rgba(0, 100, 0, 0.5)",
-    "rgba(211, 211, 211, 0.5)",
-    "rgba(0, 0, 0, 0.5)",
-    "rgba(255, 255, 0, 0.5)",
-    "rgba(173, 216, 230, 0.5)",
-    "rgba(165, 42, 42, 0.5)",
-    "rgba(0, 0, 139, 0.5)",
-    "rgba(204, 204, 0, 0.5)",
-    "rgba(105, 105, 105, 0.5)",
-    "rgba(255, 192, 203, 0.5)",
-    "rgba(255, 140, 0, 0.5)",
-    "rgba(128, 0, 128, 0.5)",
-  ];
 
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640);
   useEffect(() => {
@@ -331,9 +322,13 @@ const BarChartComponent = ({
               data: labels.map((_, i) =>
                 i === idx ? (fs?.analys ?? 0) : null,
               ),
-              backgroundColor: col,
-              borderColor: "rgba(0,0,0,1)",
-              borderWidth: 0.5,
+              backgroundColor: barFill,
+              borderColor: col,
+              borderWidth: 1,
+              borderRadius: { topLeft: 7, topRight: 7 },
+              hoverBackgroundColor: col,
+              hoverBorderColor: col,
+              maxBarThickness: 44,
             };
           }),
         );
@@ -381,9 +376,9 @@ const BarChartComponent = ({
 
       chart.legend.legendItems.forEach((item) => {
         const li = document.createElement("li");
-        li.className = "flex items-center cursor-pointer";
+        li.className = "chart-mobile-legend-item";
         const visible = chart.isDatasetVisible(item.datasetIndex);
-        li.style.opacity = visible ? 1 : 0.35;
+        li.style.opacity = visible ? 1 : 0.45;
 
         li.onclick = () => {
           if (chart.isDatasetVisible(item.datasetIndex))
@@ -393,11 +388,13 @@ const BarChartComponent = ({
 
         const box = document.createElement("span");
         box.className =
-          "inline-block w-20 h-3 mr-2 rounded border border-slate-500";
-        box.style.background = item.fillStyle;
+          "inline-block h-2.5 w-2.5 shrink-0 rounded-full";
+        box.style.background = item.strokeStyle;
 
         const text = document.createElement("span");
         text.textContent = item.text;
+        text.className = "min-w-0 break-words leading-relaxed";
+        text.style.textDecoration = visible ? "none" : "line-through";
         li.appendChild(box);
         li.appendChild(text);
         ul.appendChild(li);
@@ -408,11 +405,21 @@ const BarChartComponent = ({
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: { padding: { top: 12, right: 6 } },
     scales: {
-      y: { beginAtZero: true, minBarLength: 10, grace: "16%" },
+      y: {
+        beginAtZero: true,
+        minBarLength: 10,
+        grace: "16%",
+        border: { display: false, dash: [4, 5] },
+        grid: cartesianGrid,
+        ticks: chartTick,
+      },
       x: {
         stacked: true,
-        ticks: { autoSkip: false, maxRotation: 0, padding: 2 },
+        border: { display: false },
+        grid: { display: false },
+        ticks: { ...chartTick, autoSkip: false, maxRotation: 0, padding: 8 },
       },
     },
     plugins: {
@@ -421,13 +428,18 @@ const BarChartComponent = ({
         position: isSmallScreen ? "top" : "right",
         align: "start",
         labels: {
-          boxWidth: 42,
-          color: "#000",
-          font: { family: Chart.defaults.font.family, weight: 370, size: 12 },
+          boxWidth: 9,
+          boxHeight: 9,
+          usePointStyle: true,
+          pointStyle: "circle",
+          padding: 9,
+          color: "#475569",
+          font: { family: chartFont, weight: 500, size: 11 },
         },
       },
       horsePlacementBadge: { compactLabel: isSmallScreen },
       tooltip: {
+        ...chartTooltip,
         enabled: true,
         callbacks: {
           title: (items) => items[0]?.dataset?.cleanHorseName || "Analys",
@@ -495,31 +507,44 @@ const BarChartComponent = ({
       ? "Lopp"
       : "Avd";
 
-  if (error) return <div className="text-red-600">Error: {error}</div>;
+  if (error) return <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">Error: {error}</div>;
 
   return (
-    <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
-      <p className="mx-auto mt-1 mb-4 flex w-fit max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-lg border border-slate-200 bg-white px-4 py-2 text-center text-base font-semibold text-slate-900 shadow-sm ring-1 ring-slate-900/5 sm:mt-2 sm:mb-5 sm:px-5 sm:py-2.5 sm:text-lg">
+    <div className="analytics-section relative mx-auto w-full">
+      <div className="chart-panel-heading">
+        <div className="flex min-w-0 items-start gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-white text-indigo-600 shadow-sm" aria-hidden="true">
+            <BarChart3 className="h-5 w-5" />
+          </span>
+          <div className="min-w-0">
+            <p className="chart-kicker">Loppöversikt</p>
+            <h2 className="chart-title">Analys</h2>
+            <p className="chart-description">
+              Utforska loppets analys och jämför hästarnas profiler.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <p className="analytics-context">
         <span className="max-w-full break-words">{selectedDateLabel}</span>
         <span
-          className="h-1.5 w-1.5 rounded-full bg-slate-300"
+          className="h-1 w-1 shrink-0 rounded-full bg-slate-300"
           aria-hidden="true"
         />
-        <span className="text-emerald-700">{selectedTrackLabel}</span>
-        <span
-          className="h-1.5 w-1.5 rounded-full bg-slate-300"
-          aria-hidden="true"
-        />
-        <span className="text-indigo-700">{selectedCompetitionLabel}</span>
+        <span className="break-words text-slate-600">{selectedTrackLabel}</span>
+        <span className="rounded-md bg-indigo-50 px-2 py-1 text-xs font-bold text-indigo-600">{selectedCompetitionLabel}</span>
       </p>
 
-      <div className="flex items-center justify-between sm:justify-self-center mb-4 mt-8">
+      <div className="analytics-date-nav chart-date-controls">
         <button
+          type="button"
           onClick={goPrev}
           disabled={idx <= 0 || loading}
-          className="mb-1 mr-6 sm:mr-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="analytics-arrow"
+          aria-label="Föregående datum"
         >
-          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 [stroke-width:3]" />
+          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
         </button>
 
         <DatePicker
@@ -531,24 +556,27 @@ const BarChartComponent = ({
         />
 
         <button
+          type="button"
           onClick={goNext}
           disabled={idx >= dates.length - 1 || loading}
-          className="mb-1 ml-6 sm:ml-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="analytics-arrow"
+          aria-label="Nästa datum"
         >
-          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 [stroke-width:3]" />
+          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
         </button>
       </div>
 
-      <div className="self-start flex flex-wrap gap-1 mb-2">
+      <div className="analytics-filter-row">
         {tracks.map((t) => (
           <button
             key={t.id}
             onClick={() => setSelectedTrack(t.id)}
             disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+            aria-pressed={t.id === +selectedTrack}
+            className={`chart-filter ${
               t.id === +selectedTrack
-                ? "bg-emerald-500 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+                ? "chart-filter-active"
+                : ""
             }`}
           >
             {t.nameOfTrack}
@@ -556,16 +584,17 @@ const BarChartComponent = ({
         ))}
       </div>
 
-      <div className="self-start flex flex-wrap gap-1 mb-2">
+      <div className="analytics-filter-row">
         {competitions.map((c) => (
           <button
             key={c.id}
             onClick={() => setSelectedCompetition(c.id)}
             disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+            aria-pressed={c.id === +selectedCompetition}
+            className={`chart-filter ${
               c.id === +selectedCompetition
-                ? "bg-teal-600 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+                ? "chart-filter-active"
+                : ""
             }`}
           >
             {c.nameOfCompetition}
@@ -573,7 +602,7 @@ const BarChartComponent = ({
         ))}
       </div>
 
-      <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-4 sm:mb-4">
+      <div className="analytics-filter-row">
         {laps.length > 0 ? (
           laps.map((lap) => {
             const lapNo = String(lap.nameOfLap).trim();
@@ -586,10 +615,11 @@ const BarChartComponent = ({
                 key={lap.id}
                 onClick={() => setSelectedLap(lap.id)}
                 disabled={loading}
-                className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded mb-1 sm:mb-0 ${
+                aria-pressed={lap.id === +selectedLap}
+                className={`chart-filter ${
                   lap.id === +selectedLap
-                    ? "bg-indigo-500 hover:bg-indigo-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                    : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+                    ? "chart-filter-active"
+                    : ""
                 } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 {lapText}
@@ -601,38 +631,57 @@ const BarChartComponent = ({
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="bg-gray-300 rounded w-16 h-6 sm:w-20 sm:h-8 animate-pulse"
+                className="h-8 w-16 animate-pulse rounded-lg bg-slate-100 sm:w-20"
               />
             ))}
           </div>
         )}
       </div>
 
-      <div className="w-full text-center mb-1 hidden sm:block">
-        <p className="text-sm sm:text-base text-slate-700 font-bold">
-          Total analys och övergripande beslutsunderlag
-        </p>
+      <div className="analytics-filter-row min-h-[40px]">
+        {!availLoading &&
+          availableCounts.map((n) => (
+            <button
+              key={String(n)}
+              onClick={() => setStartsCount(String(n))}
+              disabled={loading}
+              aria-pressed={normalizeStarter(startsCount) === normalizeStarter(n)}
+              className={`chart-filter ${
+                normalizeStarter(startsCount) === normalizeStarter(n)
+                  ? "chart-filter-active"
+                  : ""
+              } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+            >
+              {starterLabel(n)}
+            </button>
+          ))}
       </div>
 
-      <div className="self-start flex flex-wrap">
+      <div className="chart-panel-heading mt-5 border-t border-slate-100 pt-5">
+        <div>
+          <h3 className="chart-title">Total analys</h3>
+          <p className="chart-description">
+            Total analys och övergripande beslutsunderlag
+          </p>
+        </div>
+      </div>
+
+      <div className="w-full">
         <ul
           ref={legendRef}
           className={
-            isSmallScreen ? "grid grid-cols-1 gap-2 mb-2 text-xs" : "hidden"
+            isSmallScreen ? "mb-4 grid grid-cols-2 gap-1.5 text-[11px]" : "hidden"
           }
         />
       </div>
 
-      <div className="w-full text-center mb-1 sm:hidden">
-        <p className="text-sm sm:text-base text-slate-700 font-bold">
-          Total analys och övergripande beslutsunderlag
-        </p>
-      </div>
-
       {!loading && winnerHorse && (
-        <div className="mb-2 flex justify-center px-2">
-          <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-900 shadow-sm">
-            <span>
+        <div className="mb-4 flex">
+          <div className="analytics-winner">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600" aria-hidden="true">
+              <Trophy className="h-4 w-4" />
+            </span>
+            <span className="min-w-0 break-words leading-relaxed">
               Vinnare: {winnerHorseName}
               {hasWinnerOdds ? `, Odds: ${winnerHorse.vOdds}` : ""}
             </span>
@@ -640,8 +689,8 @@ const BarChartComponent = ({
         </div>
       )}
 
-      <div className="w-full flex justify-center">
-        <div className="w-full h-[240px] sm:h-[340px] relative flex items-center justify-center">
+      <div className="chart-plot w-full">
+        <div className="relative flex h-[280px] w-full items-center justify-center sm:h-[370px]">
           {data.datasets.length > 0 && !loading && (
             <Bar
               ref={chartRef}
@@ -657,30 +706,13 @@ const BarChartComponent = ({
           )}
 
           {!loading && data.datasets.length === 0 && (
-            <div className="text-sm text-slate-500">Finns ingen data.</div>
+            <div className="chart-empty-state absolute inset-0">Finns ingen data.</div>
           )}
 
           {showSpinner && loading && <HorseRunLoader />}
         </div>
       </div>
 
-      <div className="self-start flex flex-wrap justify-start items-center gap-1 mb-0 mt-3 sm:mt-4 min-h-[40px]">
-        {!availLoading &&
-          availableCounts.map((n) => (
-            <button
-              key={String(n)}
-              onClick={() => setStartsCount(String(n))}
-              disabled={loading}
-              className={`mt-0.5 sm:mb:0 px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
-                normalizeStarter(startsCount) === normalizeStarter(n)
-                  ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                  : "bg-gray-200 text-gray-700 hover:bg-blue-200"
-              } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              {starterLabel(n)}
-            </button>
-          ))}
-      </div>
     </div>
   );
 };

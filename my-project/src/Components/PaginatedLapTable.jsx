@@ -1,6 +1,15 @@
 import React, { useEffect, useMemo, useState } from "react";
 import DatePicker from "./DatePicker";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsUpDown,
+  Columns3,
+  Trophy,
+} from "lucide-react";
 
 const ALL_COLUMN_KEYS = [
   "numberOfCompleteHorse",
@@ -381,9 +390,9 @@ const PaginatedLapTable = ({
       label: "#",
       sortKey: "numberOfCompleteHorse",
       thClassName: "text-center",
-      tdClassName: "px-1 text-center",
+      tdClassName: "text-center",
       render: (row) => (
-        <span className="inline-block rounded-md border border-indigo-700 bg-indigo-100 px-2 py-0.5 text-sm font-medium shadow-sm">
+        <span className="analytics-number">
           {row.numberOfCompleteHorse}
         </span>
       ),
@@ -395,13 +404,15 @@ const PaginatedLapTable = ({
       thClassName: "text-left",
       tdClassName: "text-left",
       render: (row) => (
-        <div className="flex min-w-[10rem] items-center gap-2">
+        <div className="flex min-w-[7rem] items-center gap-2.5 sm:min-w-[10rem]">
           {!visibleColumnSet.has("numberOfCompleteHorse") && (
-            <span className="inline-block rounded-md border border-indigo-700 bg-indigo-100 px-2 py-0.5 text-sm font-medium shadow-sm">
+            <span className="analytics-number shrink-0">
               {row.numberOfCompleteHorse}
             </span>
           )}
-          <span>{row.nameOfCompleteHorse}</span>
+          <span className="min-w-0 whitespace-normal font-semibold leading-relaxed text-slate-700 [overflow-wrap:anywhere]">
+            {row.nameOfCompleteHorse}
+          </span>
         </div>
       ),
     },
@@ -409,11 +420,11 @@ const PaginatedLapTable = ({
       key: "analys",
       label: competitionName,
       sortKey: "analys",
-      thClassName: "bg-orange-100 text-center",
+      thClassName: "!bg-indigo-50 text-center !text-indigo-700",
       tdClassName: (row) =>
         Number(row.analys) === maxAnalysValue
-          ? "bg-orange-300 font-bold underline text-center"
-          : "bg-orange-50 text-center",
+          ? "bg-indigo-100/80 font-bold text-center !text-indigo-700 shadow-[inset_0_0_0_1px_rgba(99,102,241,0.12)]"
+          : "bg-indigo-50/50 text-center !text-indigo-600",
       render: (row) => row.analys,
     },
     {
@@ -490,22 +501,41 @@ const PaginatedLapTable = ({
     String(winnerHorse.vOdds).trim() !== "";
 
   return (
-    <div className="mx-auto max-w-screen-lg px-2 py-6 relative">
-      <p className="mx-auto mt-1 mb-4 flex w-fit max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-lg border border-slate-200 bg-white px-4 py-2 text-center text-base font-semibold text-slate-900 shadow-sm ring-1 ring-slate-900/5 sm:mt-2 sm:mb-5 sm:px-5 sm:py-2.5 sm:text-lg">
+    <div className="analytics-section relative mx-auto w-full">
+      <div className="chart-panel-heading">
+        <div>
+          <p className="chart-kicker">Hästar & prestation</p>
+          <h2 className="chart-title">Ranking</h2>
+          <p className="chart-description">
+            Jämför hästarna, välj dina kolumner och sortera efter det som är viktigt för dig.
+          </p>
+        </div>
+        <span
+          className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-indigo-100 bg-indigo-50 text-indigo-500 sm:flex"
+          aria-hidden="true"
+        >
+          <Columns3 className="h-5 w-5" />
+        </span>
+      </div>
+
+      <p className="analytics-context">
         <span className="max-w-full break-words">{selectedDateLabel}</span>
-        <span className="h-1.5 w-1.5 rounded-full bg-slate-300" aria-hidden="true" />
-        <span className="text-emerald-700">{selectedTrackLabel}</span>
-        <span className="h-1.5 w-1.5 rounded-full bg-slate-300" aria-hidden="true" />
-        <span className="text-indigo-700">{selectedCompetitionLabel}</span>
+        <span className="h-1 w-1 shrink-0 rounded-full bg-slate-300" aria-hidden="true" />
+        <span className="break-words text-slate-600">{selectedTrackLabel}</span>
+        <span className="rounded-md bg-indigo-50 px-2 py-1 text-xs font-bold text-indigo-600">
+          {selectedCompetitionLabel}
+        </span>
       </p>
 
-      <div className="flex items-center justify-between sm:justify-self-center mb-4 mt-8">
+      <div className="analytics-date-nav chart-date-controls">
         <button
+          type="button"
           onClick={goPrev}
           disabled={idx <= 0 || loading}
-          className="mb-1 mr-6 sm:mr-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="analytics-arrow"
+          aria-label="Föregående datum"
         >
-          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 [stroke-width:3]" />
+          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
         </button>
 
         <DatePicker
@@ -517,25 +547,29 @@ const PaginatedLapTable = ({
         />
 
         <button
+          type="button"
           onClick={goNext}
           disabled={idx >= dates.length - 1 || loading}
-          className="mb-1 ml-6 sm:ml-8 inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-slate-300 bg-white text-slate-600 shadow-sm hover:bg-slate-50 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="analytics-arrow"
+          aria-label="Nästa datum"
         >
-          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 [stroke-width:3]" />
+          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
         </button>
       </div>
 
       {/* Track buttons */}
-      <div className="flex flex-wrap gap-1 mb-2">
+      <div className="analytics-filter-row">
         {tracks.map((t) => (
           <button
             key={t.id}
+            type="button"
             onClick={() => setSelectedTrack(t.id)}
             disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+            aria-pressed={t.id === +selectedTrack}
+            className={`chart-filter ${
               t.id === +selectedTrack
-                ? "bg-emerald-500 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+                ? "chart-filter-active"
+                : ""
             }`}
           >
             {t.nameOfTrack}
@@ -544,16 +578,18 @@ const PaginatedLapTable = ({
       </div>
 
       {/* Competition buttons */}
-      <div className="flex flex-wrap gap-1 mb-2">
+      <div className="analytics-filter-row">
         {competitions.map((c) => (
           <button
             key={c.id}
+            type="button"
             onClick={() => setSelectedCompetition(c.id)}
             disabled={loading}
-            className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+            aria-pressed={c.id === +selectedCompetition}
+            className={`chart-filter ${
               c.id === +selectedCompetition
-                ? "bg-teal-600 text-white font-semibold shadow"
-                : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+                ? "chart-filter-active"
+                : ""
             }`}
           >
             {c.nameOfCompetition}
@@ -561,7 +597,7 @@ const PaginatedLapTable = ({
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-1 mb-2">
+      <div className="analytics-filter-row">
         {laps.map((lap) => {
           
           const lapNo = String(lap.nameOfLap ?? "").trim(); 
@@ -572,12 +608,14 @@ const PaginatedLapTable = ({
           return (
             <button
               key={lap.id}
+              type="button"
               onClick={() => setSelectedLap(lap.id)}
               disabled={loading}
-              className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+              aria-pressed={lap.id === +selectedLap}
+              className={`chart-filter ${
                 lap.id === +selectedLap
-                  ? "bg-indigo-500 text-white font-semibold shadow"
-                  : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+                  ? "chart-filter-active"
+                  : ""
               }`}
             >
               {lapText} {/*Changed!*/}
@@ -586,17 +624,21 @@ const PaginatedLapTable = ({
         })}
       </div>
 
-      <div className="self-start flex gap-1 mb-4 items-start min-h-[40px] flex-wrap">
+      <div className="mb-5 flex min-h-[40px] flex-wrap items-start gap-1.5 border-b border-slate-100 pb-4">
         {!availLoading &&
           availableCounts.map((n) => (
             <button
               key={String(n)}
+              type="button"
               onClick={() => setActiveStartsCount(normalizeStarter(n))}
               disabled={loading}
-              className={`px-2 py-1 text-xs sm:px-3 sm:py-2 sm:text-sm rounded ${
+              aria-pressed={
                 normalizeStarter(activeStartsCount) === normalizeStarter(n)
-                  ? "bg-blue-500 hover:bg-blue-700 text-white font-semibold shadow focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                  : "bg-gray-200 text-gray-700 hover:bg-blue-200"
+              }
+              className={`chart-filter ${
+                normalizeStarter(activeStartsCount) === normalizeStarter(n)
+                  ? "chart-filter-active"
+                  : ""
               } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               {starterLabel(n)}
@@ -604,35 +646,38 @@ const PaginatedLapTable = ({
           ))}
       </div>
 
-      <div className="mb-4 rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm font-semibold text-slate-700">
+      <div className="mb-5 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-3.5 sm:p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <span className="flex items-center gap-2 text-xs font-bold text-slate-700">
+            <Columns3 className="h-4 w-4 text-indigo-500" aria-hidden="true" />
             Visa kolumner
           </span>
-          <button
-            type="button"
-            onClick={() => applyColumnPreset(ALL_COLUMN_KEYS)}
-            className="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200"
-          >
-            Alla
-          </button>
-          <button
-            type="button"
-            onClick={() => applyColumnPreset(MOBILE_DEFAULT_COLUMN_KEYS)}
-            className="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200"
-          >
-            Mobil
-          </button>
-          <button
-            type="button"
-            onClick={resetVisibleColumns}
-            className="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200"
-          >
-            Nollställ
-          </button>
+          <div className="flex flex-wrap gap-1.5">
+            <button
+              type="button"
+              onClick={() => applyColumnPreset(ALL_COLUMN_KEYS)}
+              className="chart-filter"
+            >
+              Alla
+            </button>
+            <button
+              type="button"
+              onClick={() => applyColumnPreset(MOBILE_DEFAULT_COLUMN_KEYS)}
+              className="chart-filter"
+            >
+              Mobil
+            </button>
+            <button
+              type="button"
+              onClick={resetVisibleColumns}
+              className="chart-filter"
+            >
+              Nollställ
+            </button>
+          </div>
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-1.5">
+        <div className="mt-3 flex flex-wrap gap-1.5 border-t border-slate-200/70 pt-3">
           {columns.map((column) => {
             const active = visibleColumnSet.has(column.key);
 
@@ -641,12 +686,21 @@ const PaginatedLapTable = ({
                 key={column.key}
                 type="button"
                 onClick={() => toggleColumn(column.key)}
-                className={`rounded px-2 py-1 text-xs font-medium transition ${
+                aria-pressed={active}
+                className={`chart-filter gap-1.5 ${
                   active
-                    ? "bg-indigo-500 text-white shadow"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    ? "chart-filter-active"
+                    : ""
                 }`}
               >
+                <span
+                  className={`flex h-3.5 w-3.5 items-center justify-center rounded border ${
+                    active ? "border-white/40 bg-white/15" : "border-slate-300 bg-white"
+                  }`}
+                  aria-hidden="true"
+                >
+                  {active && <Check className="h-2.5 w-2.5" strokeWidth={3} />}
+                </span>
                 {column.label}
               </button>
             );
@@ -655,39 +709,73 @@ const PaginatedLapTable = ({
       </div>
 
       {!loading && winnerHorse && (
-        <div className="mb-6 flex justify-center px-2">
-          <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-900 shadow-sm">
-            <span>
-              Vinnare: {winnerHorseName}
-              {hasWinnerOdds ? `, Odds: ${winnerHorse.vOdds}` : ""}
-            </span>
-          </div>
+        <div className="analytics-winner mb-4">
+          <span
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600"
+            aria-hidden="true"
+          >
+            <Trophy className="h-4 w-4" />
+          </span>
+          <span className="min-w-0 break-words">
+            Vinnare: {winnerHorseName}
+            {hasWinnerOdds ? `, Odds: ${winnerHorse.vOdds}` : ""}
+          </span>
         </div>
       )}
 
-      <div className="overflow-x-auto border border-gray-200 rounded relative">
+      <div
+        className="analytics-table-wrap relative"
+        tabIndex={0}
+        role="region"
+        aria-label="Rankingtabell"
+        aria-busy={loading}
+      >
         {loading && (
-          <div className="absolute inset-0 flex justify-center items-center bg-white/70">
-            <div className="animate-spin h-10 w-10 border-4 border-gray-200 border-t-indigo-500 rounded-full" />
+          <div
+            className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 backdrop-blur-[2px]"
+            role="status"
+            aria-label="Laddar ranking"
+          >
+            <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-indigo-100 border-t-indigo-500 motion-reduce:animate-none" />
           </div>
         )}
 
-        <table className="w-full min-w-full border-collapse text-sm">
-          <thead className="bg-gray-100 border-b border-gray-200">
+        <table className="analytics-table">
+          <thead>
             <tr>
               {visibleTableColumns.map((column, columnIndex) => (
                 <th
                   key={column.key}
-                  onClick={() => requestSort(column.sortKey)}
-                  className={`cursor-pointer py-2 px-2 font-semibold ${
+                  scope="col"
+                  aria-sort={
+                    sortConfig.key === column.sortKey
+                      ? sortConfig.direction === "asc" ? "ascending" : "descending"
+                      : "none"
+                  }
+                  className={`whitespace-nowrap ${
                     column.thClassName
                   } ${
                     columnIndex < visibleTableColumns.length - 1
-                      ? "border-r border-gray-300"
+                      ? "border-r border-slate-200/70"
                       : ""
                   }`}
                 >
-                  {column.label}
+                  <button
+                    type="button"
+                    onClick={() => requestSort(column.sortKey)}
+                    className={`inline-flex min-h-8 items-center gap-1 rounded-md font-semibold transition-colors hover:text-indigo-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 ${sortConfig.key === column.sortKey ? "text-indigo-600" : ""}`}
+                  >
+                    {column.label}
+                    {sortConfig.key === column.sortKey ? (
+                      sortConfig.direction === "asc" ? (
+                        <ArrowUp className="h-3 w-3 shrink-0" aria-hidden="true" />
+                      ) : (
+                        <ArrowDown className="h-3 w-3 shrink-0" aria-hidden="true" />
+                      )
+                    ) : (
+                      <ChevronsUpDown className="h-3 w-3 shrink-0 text-slate-300" aria-hidden="true" />
+                    )}
+                  </button>
                 </th>
               ))}
             </tr>
@@ -696,10 +784,7 @@ const PaginatedLapTable = ({
           <tbody>
             {sortedLapData.map((row) => {
               return (
-                <tr
-                  key={row.id}
-                  className="border-b last:border-b-0 border-gray-200 hover:bg-blue-50 even:bg-gray-50"
-                >
+                <tr key={row.id}>
                   {visibleTableColumns.map((column, columnIndex) => {
                     const tdClassName =
                       typeof column.tdClassName === "function"
@@ -709,9 +794,9 @@ const PaginatedLapTable = ({
                     return (
                       <td
                         key={column.key}
-                        className={`py-2 px-2 align-middle ${tdClassName} ${
+                        className={`align-middle ${tdClassName} ${
                           columnIndex < visibleTableColumns.length - 1
-                            ? "border-r border-gray-200"
+                            ? "border-r border-slate-100"
                             : ""
                         }`}
                       >
@@ -726,7 +811,7 @@ const PaginatedLapTable = ({
         </table>
       </div>
 
-      {error && <div className="text-red-600 mt-4">{error}</div>}
+      {error && <div className="analytics-error mt-4">{error}</div>}
     </div>
   );
 };

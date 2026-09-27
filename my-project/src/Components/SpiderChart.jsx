@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Radar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
+import { chartFont, chartTooltip, horseColors, withAlpha } from "../chartTheme";
 
 const SpiderChart = ({
   selectedDate,
@@ -16,24 +17,6 @@ const SpiderChart = ({
   onMetaChange,
   startsCount,
 }) => {
-  const horseColors = [
-    "rgba(0, 0, 255, 0.5)",
-    "rgba(255, 165, 0, 0.5)",
-    "rgba(255, 0, 0, 0.5)",
-    "rgba(0, 100, 0, 0.5)",
-    "rgba(211, 211, 211, 0.5)",
-    "rgba(0, 0, 0, 0.5)",
-    "rgba(255, 255, 0, 0.5)",
-    "rgba(173, 216, 230, 0.5)",
-    "rgba(165, 42, 42, 0.5)",
-    "rgba(0, 0, 139, 0.5)",
-    "rgba(204, 204, 0, 0.5)",
-    "rgba(105, 105, 105, 0.5)",
-    "rgba(255, 192, 203, 0.5)",
-    "rgba(255, 140, 0, 0.5)",
-    "rgba(128, 0, 128, 0.5)",
-  ];
-
   const normalizeStarter = (v) => String(v ?? "").trim() || "0"; 
 
   const [rawDatasets, setRawDatasets] = useState([]);
@@ -87,10 +70,17 @@ const SpiderChart = ({
             fs.form,
             fs.fart,
           ],
-          backgroundColor: horseColors[idx % horseColors.length],
-          borderColor: horseColors[idx % horseColors.length].replace("0.5", "1"),
-          borderWidth: 2,
-          pointRadius: 2,
+          backgroundColor: withAlpha(horseColors[idx % horseColors.length], 0.12),
+          borderColor: horseColors[idx % horseColors.length],
+          borderWidth: 2.5,
+          pointBackgroundColor: "#ffffff",
+          pointBorderColor: horseColors[idx % horseColors.length],
+          pointBorderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: horseColors[idx % horseColors.length],
+          pointHoverBorderColor: "#ffffff",
+          pointHoverBorderWidth: 2,
         }));
 
         const top3Idx = arr
@@ -115,7 +105,7 @@ const SpiderChart = ({
             items: raw.map((ds, i) => ({
               idx: i,
               label: ds.label,
-              color: ds.backgroundColor,
+              color: ds.borderColor,
             })),
             suggestedVisibleIdxes,
             top5Idx,
@@ -171,58 +161,66 @@ const SpiderChart = ({
       show: { animation: { duration: 450, easing: "easeInOutQuart" } },
       hide: { animation: { duration: 450, easing: "easeInOutQuart" } },
     },
-    plugins: { legend: { display: false } },
+    plugins: {
+      legend: { display: false },
+      tooltip: chartTooltip,
+    },
     scales: {
       r: {
-        angleLines: { display: false },
+        angleLines: { display: true, color: "rgba(148, 163, 184, 0.16)" },
+        grid: { color: "rgba(148, 163, 184, 0.22)", circular: false },
+        border: { display: false },
         suggestedMin: 0,
         suggestedMax: 100,
         pointLabels: {
-          padding: 5,
+          padding: 10,
           font: (ctx) => ({
-            size: ctx.chart.width < 640 ? 13 : 15,
-            weight: 500,
-            family:
-              "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto",
+            size: ctx.chart.width < 400 ? 11 : 13,
+            weight: 600,
+            family: chartFont,
           }),
           color: "#334155",
         },
         ticks: { display: false },
       },
     },
-    elements: { line: { borderWidth: 2 } },
+    elements: { line: { borderWidth: 2.5 } },
   }), []);
 
   return (
-    <div className="flex flex-col mt-0 px-2 pb-2 mb-2 sm:mb-0">
-      <div className="w-full text-center mb-0">
-        <p className="text-sm sm:text-base text-slate-700 font-bold">
-          Analysperspektiven till en total analys
-        </p>
+    <div className="chart-panel flex h-full min-w-0 flex-col">
+      <div className="chart-panel-heading">
+        <div>
+          <p className="chart-kicker">Sju perspektiv</p>
+          <h3 className="chart-title">Hästprofil</h3>
+          <p className="chart-description">
+            Analysperspektiven till en total analys
+          </p>
+        </div>
       </div>
 
-      <div className="w-full max-w-[490px] mx-auto">
-        <div className="relative w-full aspect-square">
+      <div className="chart-plot flex flex-1 items-center justify-center">
+        <div className="relative mx-auto aspect-square w-full max-w-[490px]">
           {data.datasets.length > 0 && !loading && (
             <Radar ref={chartRef} data={data} options={options} />
           )}
 
           {!loading && data.datasets.length === 0 && (
-            <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-500">
+            <div className="chart-empty-state absolute inset-0">
               No data found for this lap.
             </div>
           )}
 
           {showSpinner && loading && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="animate-spin h-10 w-10 border-4 border-indigo-400 border-t-transparent rounded-full" />
+              <div className="h-9 w-9 animate-spin rounded-full border-[3px] border-indigo-100 border-t-indigo-500" />
             </div>
           )}
         </div>
       </div>
 
       {error && (
-        <div className="text-red-600 mt-4 text-center">Error: {error}</div>
+        <div className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-center text-sm text-red-600">Error: {error}</div>
       )}
     </div>
   );

@@ -1,24 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
-
-const horseColors = [
-  "rgba(0, 0, 255, 0.5)",
-  "rgba(255, 165, 0, 0.5)",
-  "rgba(255, 0, 0, 0.5)",
-  "rgba(0, 100, 0, 0.5)",
-  "rgba(211, 211, 211, 0.5)",
-  "rgba(0, 0, 0, 0.5)",
-  "rgba(255, 255, 0, 0.5)",
-  "rgba(173, 216, 230, 0.5)",
-  "rgba(165, 42, 42, 0.5)",
-  "rgba(0, 0, 139, 0.5)",
-  "rgba(204, 204, 0, 0.5)",
-  "rgba(105, 105, 105, 0.5)",
-  "rgba(255, 192, 203, 0.5)",
-  "rgba(255, 140, 0, 0.5)",
-  "rgba(128, 0, 128, 0.5)",
-];
+import {
+  barFill,
+  cartesianGrid,
+  chartTick,
+  chartTooltip,
+  horseColors,
+} from "../chartTheme";
 
 const AnalysChart = ({
   selectedLap,
@@ -110,9 +99,14 @@ const AnalysChart = ({
             return {
               label: `${x.horse.numberOfCompleteHorse}. ${x.horse.nameOfCompleteHorse}`,
               data: [x.fs.a1 ?? 0, x.fs.a2 ?? 0, x.fs.a3 ?? 0],
-              backgroundColor: color,
-              borderColor: "rgba(0,0,0,1)",
-              borderWidth: 0.5,
+              backgroundColor: barFill,
+              borderColor: color,
+              borderWidth: 1,
+              borderRadius: 6,
+              borderSkipped: "bottom",
+              maxBarThickness: 30,
+              hoverBackgroundColor: color,
+              hoverBorderColor: color,
             };
           });
 
@@ -141,12 +135,24 @@ const AnalysChart = ({
     responsive: true,
     maintainAspectRatio: false,
     scales: {
-      y: { beginAtZero: true, suggestedMax: 100, ticks: { stepSize: 20 } },
-      x: { ticks: { padding: 4 }, stacked: false },
+      y: {
+        beginAtZero: true,
+        suggestedMax: 100,
+        ticks: { ...chartTick, stepSize: 20 },
+        grid: cartesianGrid,
+        border: { display: false },
+      },
+      x: {
+        ticks: { ...chartTick, padding: 10 },
+        grid: { display: false },
+        border: { display: false },
+        stacked: false,
+      },
     },
     plugins: {
       legend: { display: false },
       tooltip: {
+        ...chartTooltip,
         enabled: true,
         callbacks: {
           title: (items) => items?.[0]?.label ?? "Delanalys",
@@ -161,30 +167,34 @@ const AnalysChart = ({
   };
 
   return (
-    <div className="flex flex-col justify-center items-center mt-1 sm:mt-0 px-2 pb-5">
-      <div className="w-full text-center mb-1">
-        <p className="text-sm sm:text-base text-slate-700 font-bold">
-          Delanalyser för de antal starter man valt
-        </p>
+    <div className="chart-panel min-w-0">
+      <div className="chart-panel-heading">
+        <div>
+          <p className="chart-kicker">Analysöversikt</p>
+          <h3 className="chart-title">Delanalyser</h3>
+          <p className="chart-description">
+            Delanalyser för de antal starter man valt
+          </p>
+        </div>
       </div>
 
-      <div className="w-full max-w-[950px] mx-auto">
-        <div className="relative w-full h-[220px] sm:h-[300px]">
+      <div className="chart-plot">
+        <div className="relative h-[250px] w-full sm:h-[320px]">
           {data?.datasets?.length > 0 && !loading && !error && (
             <Bar data={data} options={options} />
           )}
           {!loading && !error && data?.datasets?.length === 0 && (
-            <div className="absolute inset-0 flex items-center justify-center text-sm text-slate-500">
+            <div className="chart-empty-state absolute inset-0">
               Ingen data.
             </div>
           )}
           {showSpinner && loading && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="animate-spin h-10 w-10 border-4 border-indigo-400 border-t-transparent rounded-full" />
+              <div className="h-9 w-9 animate-spin rounded-full border-[3px] border-indigo-100 border-t-indigo-500" />
             </div>
           )}
           {error && (
-            <div className="absolute inset-0 flex items-center justify-center text-red-600 text-sm">
+            <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-red-50 px-4 text-sm text-red-600">
               Error: {error}
             </div>
           )}
