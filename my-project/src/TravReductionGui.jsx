@@ -21,6 +21,38 @@ const BET_LEGS = {
   V86: 8,
 };
 
+const TRACK_DISPLAY_NAMES = {
+  "05": "Solvalla",
+  "06": "Åby",
+  "07": "Jägersro",
+  "08": "Axevalla",
+  "09": "Bergsåker",
+  "11": "Boden",
+  "12": "Bollnäs",
+  "13": "Dannero",
+  "14": "Eskilstuna",
+  "15": "Färjestad",
+  "16": "Gävle",
+  "17": "Hagmyren",
+  "18": "Halmstad",
+  "19": "Kalmar",
+  "21": "Lindesberg",
+  "22": "Mantorp",
+  "23": "Romme",
+  "24": "Rättvik",
+  "25": "Skellefteå",
+  "26": "Solänget",
+  "27": "Umåker",
+  "28": "Visby",
+  "29": "Åmål",
+  "31": "Årjäng",
+  "32": "Örebro",
+  "33": "Östersund",
+  "37": "Hoting",
+  "43": "Vaggeryd",
+  "46": "Tingsryd",
+};
+
 const FALLBACK_OPTIONS = {
   spelformer: SUPPORTED_SPELFORMER,
   trackCodes: [
@@ -210,6 +242,8 @@ export default function TravReductionGui() {
   const legCount = BET_LEGS[form.spelform] || 0;
   const isTrio = form.spelform === "Trio";
   const selectionLabel = isTrio ? "Placering" : "Avd";
+  const selectedTrack = options.trackCodes.find((track) => track.code === form.trackCode);
+  const selectedTrackDisplayName = TRACK_DISPLAY_NAMES[form.trackCode] || selectedTrack?.name || "Bana";
   const activeSelections = useMemo(
     () => form.avdelningar.slice(0, legCount),
     [form.avdelningar, legCount],
@@ -365,7 +399,7 @@ export default function TravReductionGui() {
         <header className="border-b border-zinc-200 pb-4 text-center sm:text-left">
           <div>
             <h1 className="text-xl font-semibold tracking-normal text-zinc-950 sm:text-2xl">Reducering</h1>
-            <p className="mx-auto mt-2 flex w-fit max-w-full flex-wrap items-center justify-center gap-1 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-zinc-600 ring-1 ring-zinc-200 sm:mx-0 sm:text-sm">{form.spelform} / {form.banKod || "Bana"} / {form.startDatum || "Datum"}</p>
+            <p className="mx-auto mt-2 flex w-fit max-w-full flex-wrap items-center justify-center gap-1 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-zinc-600 ring-1 ring-zinc-200 sm:mx-0 sm:text-sm">{form.spelform} / {selectedTrackDisplayName} / {form.startDatum || "Datum"}</p>
           </div>
         </header>
 
@@ -403,7 +437,7 @@ export default function TravReductionGui() {
                   onChange={(event) => handleTrackChange(event.target.value)}
                 >
                   {options.trackCodes.map((track) => (
-                    <option key={track.code} value={track.code}>{track.code} - {track.name}</option>
+                    <option key={track.code} value={track.code}>{TRACK_DISPLAY_NAMES[track.code] || track.name}</option>
                   ))}
                 </select>
               </label>
