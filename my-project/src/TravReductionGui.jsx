@@ -409,7 +409,7 @@ export default function TravReductionGui() {
               </label>
 
               <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
-                Lopp
+                {isTrio ? "Lopp" : "Startlopp"}
                 <input
                   className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
                   inputMode="numeric"
