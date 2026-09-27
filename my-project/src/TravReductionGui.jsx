@@ -3,6 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 const LOCAL_API_BASE_URL = "http://localhost:63093";
 const PRODUCTION_API_BASE_URL =
   "https://travanalys-reducering-backend-latest.onrender.com";
+const ANALYSIS_API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://travanalyserver-latest.onrender.com";
 const API_BASE_URL =
   import.meta.env.VITE_REDUCTION_API_BASE_URL ||
   import.meta.env.VITE_TRAV_API_BASE_URL ||
@@ -157,6 +160,45 @@ function fromDateInputValue(value) {
   return value.replaceAll("-", "");
 }
 
+function toAnalysisDate(value) {
+  if (!/^\d{8}$/.test(value)) {
+    return value;
+  }
+
+  return `${value.slice(0, 4)}-${value.slice(4, 6)}-${value.slice(6, 8)}`;
+}
+
+function normalizeName(value) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .trim()
+    .toLowerCase();
+}
+
+function getFirstNumber(value) {
+  const match = String(value ?? "").match(/\d+/);
+  return match ? Number.parseInt(match[0], 10) : null;
+}
+
+function getCompetitionPriority(competition) {
+  const name = normalizeName(competition?.nameOfCompetition);
+
+  if (name.includes("trio")) return 0;
+  if (/vinnare|plats/.test(name)) return 1;
+  if (name.includes("proposition")) return 2;
+  return 3;
+}
+
+async function fetchJson(url, errorMessage) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`${errorMessage} (${response.status})`);
+  }
+
+  return response.json();
+}
+
 async function readApiError(response) {
   const text = await response.text();
   if (!text) {
@@ -238,6 +280,10 @@ export default function TravReductionGui() {
   const [preview, setPreview] = useState(null);
   const [xmlStats, setXmlStats] = useState(null);
   const [status, setStatus] = useState({ type: "idle", message: "" });
+  const [autoFillEnabled, setAutoFillEnabled] = useState(false);
+  const [autoFillCounts, setAutoFillCounts] = useState([5, 5, 5]);
+  const [autoFillLoading, setAutoFillLoading] = useState(false);
+  const [autoFillSummary, setAutoFillSummary] = useState("");
 
   const legCount = BET_LEGS[form.spelform] || 0;
   const isTrio = form.spelform === "Trio";
@@ -294,6 +340,14 @@ export default function TravReductionGui() {
     });
   }
 
+  function updateAutoFillCount(index, value) {
+    setAutoFillCounts((current) => {
+      const nextCounts = [...current];
+      nextCounts[index] = value;
+      return nextCounts;
+    });
+  }
+
   function handleTrackChange(value) {
     const selectedTrack = options.trackCodes.find((track) => track.code === value);
     setForm((current) => ({
@@ -301,6 +355,134 @@ export default function TravReductionGui() {
       trackCode: value,
       banKod: selectedTrack?.name || current.banKod,
     }));
+  }
+
+  async function autoFillTrioSelections() {
+    if (!isTrio) return;
+
+    const requestedCounts = autoFillCounts.map((value) => Number.parseInt(value, 10));
+    if (requestedCounts.some((value) => !Number.isInteger(value) || value < 1)) {
+      throw new Error("Ange minst 1 häst för varje placering.");
+    }
+
+    const raceNumber = Number.parseInt(form.lopp, 10);
+    if (!Number.isInteger(raceNumber) || raceNumber < 1) {
+      throw new Error("Ange ett giltigt lopp innan du autofyller.");
+    }
+
+    setAutoFillLoading(true);
+    setAutoFillSummary("");
+    setStatus({ type: "loading", message: "Hämtar rankade hästar" });
+
+    try {
+      const analysisDate = toAnalysisDate(form.startDatum.trim());
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(analysisDate)) {
+        throw new Error("Ange ett giltigt datum innan du autofyller.");
+      }
+
+      const tracks = await fetchJson(
+        `${ANALYSIS_API_BASE_URL}/track/locations/byDate?date=${encodeURIComponent(analysisDate)}`,
+        "Kunde inte hämta banor för valt datum",
+      );
+      const trackNames = [
+        TRACK_DISPLAY_NAMES[form.trackCode],
+        selectedTrack?.name,
+        form.banKod,
+      ]
+        .map(normalizeName)
+        .filter(Boolean);
+      const analysisTrack = (Array.isArray(tracks) ? tracks : []).find((track) =>
+        trackNames.includes(normalizeName(track?.nameOfTrack)),
+      );
+
+      if (!analysisTrack) {
+        throw new Error(`Kunde inte hitta ${selectedTrackDisplayName} på valt datum.`);
+      }
+
+      const competitions = await fetchJson(
+        `${ANALYSIS_API_BASE_URL}/competition/findByTrack?trackId=${encodeURIComponent(analysisTrack.id)}`,
+        "Kunde inte hämta tävlingar för vald bana",
+      );
+      const lapsByCompetition = await Promise.all(
+        (Array.isArray(competitions) ? competitions : []).map(async (competition) => ({
+          competition,
+          laps: await fetchJson(
+            `${ANALYSIS_API_BASE_URL}/lap/findByCompetition?competitionId=${encodeURIComponent(competition.id)}`,
+            "Kunde inte hämta lopp",
+          ),
+        })),
+      );
+      const matchingLaps = lapsByCompetition
+        .flatMap(({ competition, laps }) =>
+          (Array.isArray(laps) ? laps : []).map((lap) => ({ competition, lap })),
+        )
+        .filter(({ lap }) => getFirstNumber(lap?.nameOfLap) === raceNumber)
+        .sort(
+          (a, b) =>
+            getCompetitionPriority(a.competition) - getCompetitionPriority(b.competition),
+        );
+      const selectedLap = matchingLaps[0]?.lap;
+
+      if (!selectedLap) {
+        throw new Error(`Kunde inte hitta lopp ${raceNumber} på ${selectedTrackDisplayName}.`);
+      }
+
+      const [horses, availableStarts] = await Promise.all([
+        fetchJson(
+          `${ANALYSIS_API_BASE_URL}/completeHorse/findByLap?lapId=${encodeURIComponent(selectedLap.id)}`,
+          "Kunde inte hämta hästar för loppet",
+        ),
+        fetchJson(
+          `${ANALYSIS_API_BASE_URL}/starts/available?lapId=${encodeURIComponent(selectedLap.id)}`,
+          "Kunde inte hämta tillgänglig ranking",
+        ).catch(() => []),
+      ]);
+      const normalizedStarts = (Array.isArray(availableStarts) ? availableStarts : []).map((value) =>
+        String(value ?? "").trim(),
+      );
+      const starter = normalizedStarts.includes("0") ? "0" : normalizedStarts[0] || "0";
+      const rankedHorses = await Promise.all(
+        (Array.isArray(horses) ? horses : []).map(async (horse) => {
+          const starts = await fetchJson(
+            `${ANALYSIS_API_BASE_URL}/starts/findData?completeHorseId=${encodeURIComponent(horse.id)}&starter=${encodeURIComponent(starter)}`,
+            `Kunde inte hämta ranking för häst ${horse.numberOfCompleteHorse}`,
+          ).catch(() => ({}));
+
+          return {
+            number: Number.parseInt(horse.numberOfCompleteHorse, 10),
+            score: Number(starts?.analys ?? 0),
+          };
+        }),
+      );
+      const validRankedHorses = rankedHorses
+        .filter((horse) => Number.isInteger(horse.number) && horse.number > 0)
+        .sort((a, b) => b.score - a.score || a.number - b.number);
+
+      if (!validRankedHorses.length) {
+        throw new Error("Det finns inga rankade hästar för valt lopp.");
+      }
+
+      setForm((current) => {
+        const nextSelections = [...current.avdelningar];
+        requestedCounts.forEach((count, index) => {
+          nextSelections[index] = validRankedHorses
+            .slice(0, count)
+            .map((horse) => horse.number)
+            .join(", ");
+        });
+        return { ...current, avdelningar: nextSelections };
+      });
+
+      const appliedCounts = requestedCounts.map((count) =>
+        Math.min(count, validRankedHorses.length),
+      );
+      setAutoFillSummary(
+        `${validRankedHorses.length} hästar hittades. Placering 1–3 fylldes med ${appliedCounts.join(", ")} hästar.`,
+      );
+      setStatus({ type: "success", message: "Placeringarna är autofyllda" });
+    } finally {
+      setAutoFillLoading(false);
+    }
   }
 
   function buildRequest() {
@@ -456,6 +638,56 @@ export default function TravReductionGui() {
 
             <div className="mt-5 border-t border-zinc-200 pt-4">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">{isTrio ? "Placeringar" : "Rankade val"}</h2>
+              {isTrio && (
+                <div className="mt-3 rounded-lg border border-emerald-200 bg-emerald-50/60 p-3">
+                  <label className="flex cursor-pointer items-start gap-2 text-sm font-medium text-zinc-800">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 h-4 w-4 rounded border-zinc-300 text-emerald-700 focus:ring-emerald-600"
+                      checked={autoFillEnabled}
+                      onChange={(event) => {
+                        setAutoFillEnabled(event.target.checked);
+                        setAutoFillSummary("");
+                      }}
+                    />
+                    <span>
+                      Autofyll från analysrankingen
+                      <span className="mt-0.5 block text-xs font-normal text-zinc-600">
+                        Hämtar loppet för valt datum och bana och väljer de högst rankade hästarna.
+                      </span>
+                    </span>
+                  </label>
+
+                  {autoFillEnabled && (
+                    <div className="mt-3 border-t border-emerald-200 pt-3">
+                      <div className="grid gap-3 sm:grid-cols-3">
+                        {autoFillCounts.map((value, index) => (
+                          <NumberField
+                            key={index}
+                            label={`Antal för placering ${index + 1}`}
+                            value={value}
+                            min="1"
+                            onChange={(nextValue) => updateAutoFillCount(index, nextValue)}
+                          />
+                        ))}
+                      </div>
+                      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+                        <button
+                          type="button"
+                          className="inline-flex h-11 items-center justify-center rounded-md bg-emerald-700 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 sm:h-10"
+                          disabled={autoFillLoading || status.type === "loading"}
+                          onClick={() => runAction(autoFillTrioSelections)}
+                        >
+                          {autoFillLoading ? "Hämtar hästar…" : "Autofyll placeringar"}
+                        </button>
+                        {autoFillSummary && (
+                          <p className="text-xs text-emerald-800">{autoFillSummary}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {activeSelections.map((value, index) => (
                   <label key={index} className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
@@ -653,13 +885,15 @@ export default function TravReductionGui() {
   );
 }
 
-function NumberField({ label, value, onChange }) {
+function NumberField({ label, value, min, onChange }) {
   return (
     <label className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
       {label}
       <input
+        type={min === undefined ? "text" : "number"}
         className="h-11 rounded-md border border-zinc-300 bg-white px-3 text-base text-zinc-950 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 sm:h-10 sm:text-sm"
         inputMode="decimal"
+        min={min}
         value={value}
         onChange={(event) => onChange(event.target.value)}
       />
