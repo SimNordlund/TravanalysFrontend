@@ -3,6 +3,7 @@ import { FaFacebook } from "react-icons/fa";
 //import { FaInstagram } from "react-icons/fa";
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
@@ -497,6 +498,15 @@ export default function Newsletter() {
             </div>
           </dl>
         </div>
+      </div>
+      <div className="mx-auto mt-12 max-w-7xl border-t border-white/10 px-6 pt-8 text-center text-sm text-gray-400 lg:px-8">
+        <p>Travanalys.se drivs av NICNOR AB, org.nr 556990-1837.</p>
+        <Link
+          to="/about"
+          className="mt-2 inline-block font-semibold text-gray-200 hover:text-white"
+        >
+          Om oss, företagsuppgifter och villkor
+        </Link>
       </div>
       <div
         className="absolute left-1/2 top-0 -z-10 -translate-x-1/2 blur-3xl xl:-top-6"

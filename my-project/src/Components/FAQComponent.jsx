@@ -25,11 +25,11 @@ const faqsList = [
   },
   {
     q: "Vilka ligger bakom travanalys.se?",
-    a: "Vi är ett gäng travnördar som vill göra det enklare att hitta intressanta hästar, ifrågasätta magkänslan och fatta bättre beslut inför loppen.",
+    a: "Travanalys.se utvecklas och drivs av NICNOR AB (org.nr 556990-1837). Vi vill göra det enklare att hitta intressanta hästar, ifrågasätta magkänslan och fatta bättre beslut inför loppen.",
   },
   {
     q: "Kostar det något?",
-    a: "Nej, travanalys.se är gratis att använda. Tjänsten är fortfarande under utveckling och fler funktioner kommer att fyllas på efter hand.",
+    a: "Grundfunktionerna på travanalys.se är för närvarande gratis. Om vi inför betalfunktioner eller abonnemang kommer pris, innehåll, betalningsintervall och villkor alltid att visas tydligt innan köp.",
   },
   {
     q: "Vem är Trav-olta?",
@@ -37,7 +37,7 @@ const faqsList = [
   },
   {
     q: "Hur kontaktar jag er?",
-    a: "Kontaktuppgifter finns längst ner på sidan. Hör gärna av dig med frågor, felrapporter eller idéer på sådant som skulle göra analysen ännu vassare.",
+    a: "Mejla travanalys@gmail.com med frågor, felrapporter eller idéer. Företagsuppgifter och fullständiga kundvillkor finns på sidan Om oss.",
   },
 ];
 
