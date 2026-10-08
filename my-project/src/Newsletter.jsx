@@ -11,60 +11,88 @@ export default function Newsletter() {
   const [consent, setConsent] = useState(false);
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
-  const hideTimer = useRef();
+  const [touched, setTouched] = useState({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const formRef = useRef(null);
+  const requestInFlight = useRef(false);
 
   const [kopandelButtons, setKopandelButtons] = useState([]);
   const [kopandelLoaded, setKopandelLoaded] = useState(false);
   const [countdownNow, setCountdownNow] = useState(() => Date.now());
 
-  useEffect(() => {
-    if (!message) return;
-    clearTimeout(hideTimer.current);
-    hideTimer.current = setTimeout(() => setMessage(""), 15000);
-    return () => clearTimeout(hideTimer.current);
-  }, [message]);
-
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+  const normalizePhone = (raw) => raw.trim().replace(/[\s()-]/g, "");
+
   const isPhoneValid = (raw) => {
-    if (!raw) return true;
-    const digits = raw.replace(/\D/g, "");
-    return digits.length >= 7 && digits.length <= 15;
+    return /^[+\d\s()-]+$/.test(raw) && /^\+?\d{7,15}$/.test(normalizePhone(raw));
   };
 
-  const safeParseJson = async (response) => {
-    try {
-      const ct = response.headers.get("content-type") || "";
-      if (ct.includes("application/json")) return await response.json();
-      const text = await response.text();
-      return text ? { message: text } : null;
-    } catch {
-      return null;
+  const getErrors = () => {
+    const errors = {};
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
+
+    if (!trimmedEmail && !trimmedPhone) {
+      errors.contact = "Fyll i en e-postadress eller ett telefonnummer. Ett av fälten räcker.";
     }
+    if (trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      if (/\s/.test(trimmedEmail)) {
+        errors.email = "Ta bort mellanslagen i e-postadressen, till exempel namn@exempel.se.";
+      } else if (!trimmedEmail.includes("@")) {
+        errors.email = "E-postadressen saknar @. Skriv hela adressen, till exempel namn@exempel.se.";
+      } else {
+        errors.email = "Kontrollera att det finns text före @ och en fullständig domän efter, till exempel namn@exempel.se.";
+      }
+    }
+    if (trimmedPhone && !isPhoneValid(trimmedPhone)) {
+      errors.phone = "Ange ett telefonnummer med 7–15 siffror, till exempel 070 123 45 67 eller +46 70 123 45 67.";
+    }
+    if (!consent) {
+      errors.consent = "Kryssa i rutan för att godkänna att dina uppgifter lagras innan du prenumererar.";
+    }
+    return errors;
   };
+
+  const errors = getErrors();
+  const contactError = submitAttempted || (touched.email && touched.phone) ? errors.contact : "";
+  const emailError = touched.email || submitAttempted ? errors.email : "";
+  const phoneError = touched.phone || submitAttempted ? errors.phone : "";
+  const consentError = touched.consent || submitAttempted ? errors.consent : "";
+
+  const markTouched = (field) => setTouched((previous) => ({ ...previous, [field]: true }));
+  const clearFeedback = () => setMessage("");
+
+  const inputClassName = (hasError) =>
+    `block w-full min-w-0 rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${
+      hasError ? "ring-red-400 focus:ring-red-400" : "ring-white/20 focus:ring-indigo-400"
+    }`;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (requestInFlight.current) return;
 
-    if (!consent) {
-      alert("Du måste godkänna lagring av uppgifter.");
+    setSubmitAttempted(true);
+    clearFeedback();
+    if (Object.keys(errors).length) {
+      const firstInvalidField = errors.contact || errors.email ? "email" : errors.phone ? "phone" : "consent";
+      formRef.current?.elements.namedItem(firstInvalidField)?.focus();
       return;
     }
-    if (!email && !phone) {
-      alert("Fyll i e-post, telefonnummer eller båda.");
-      return;
-    }
 
-    if (phone && !isPhoneValid(phone)) {
+    if (!API_BASE_URL) {
       setIsError(true);
-      setMessage("Felaktigt format, kunde inte spara");
+      setMessage("Prenumerationen är tillfälligt otillgänglig. Försök igen senare.");
       return;
     }
 
+    requestInFlight.current = true;
+    setIsSubmitting(true);
     try {
       const payload = {};
-      if (email) payload.email = email;
-      if (phone) payload.phone = phone;
+      if (email.trim()) payload.email = email.trim();
+      if (phone.trim()) payload.phone = normalizePhone(phone);
 
       const response = await fetch(`${API_BASE_URL}/contact/storeInfo`, {
         method: "POST",
@@ -75,26 +103,29 @@ export default function Newsletter() {
       if (!response.ok) {
         setIsError(true);
         if (response.status === 400) {
-          setMessage("Felaktigt format, kunde inte spara");
+          setMessage("Uppgifterna kunde inte godkännas. Kontrollera e-postadressen och telefonnumret och försök igen. Om du fyllt i båda kan du prova med bara ett av fälten.");
+        } else if (response.status === 429) {
+          setMessage("För många försök på kort tid. Vänta en stund och försök igen.");
         } else {
-          const data = await safeParseJson(response);
-          const serverMsg =
-            (data && (data.message || data.error)) ||
-            "Misslyckades att spara uppgifter";
-          setMessage(serverMsg);
+          setMessage("Prenumerationen kunde inte sparas just nu. Dina uppgifter finns kvar i formuläret. Försök igen om en stund.");
         }
         return;
       }
 
       setIsError(false);
-      setMessage("Tack! Du får nu uppdateringar när något häftigt sker.");
+      setMessage("Tack! Din prenumeration är registrerad. Du behöver inte göra något mer.");
       setEmail("");
       setPhone("");
       setConsent(false);
+      setTouched({});
+      setSubmitAttempted(false);
     } catch (err) {
       console.error(err);
       setIsError(true);
-      setMessage("Något gick fel, försök igen senare.");
+      setMessage("Vi kunde inte nå servern. Kontrollera din internetanslutning och försök igen. Dina uppgifter finns kvar i formuläret.");
+    } finally {
+      requestInFlight.current = false;
+      setIsSubmitting(false);
     }
   };
 
@@ -269,84 +300,145 @@ export default function Newsletter() {
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Prenumerera
             </h2>
-            <h3 className="text-1xl font-bold tracking-tight text-white sm:text-1xl mt-2 sm:mt-2">
-              Ange e-post och/eller telefonnummer
-            </h3>
+            <p id="newsletter-contact-help" className="mt-3 text-sm leading-6 text-gray-300">
+              Få uppdateringar via e-post eller telefon. Fyll i minst ett av
+              fälten nedan. Du kan också fylla i båda.
+            </p>
             <form
+              ref={formRef}
               onSubmit={handleSubmit}
+              noValidate
+              aria-describedby="newsletter-contact-help"
+              aria-busy={isSubmitting}
               className="mt-4 flex flex-col gap-y-4"
             >
-              <label htmlFor="email-address" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email-address"
-                name="email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                placeholder="Skriv in din e-post"
-              />
+              <div aria-live="polite" aria-atomic="true" className={contactError ? "" : "sr-only"}>
+                {contactError && (
+                  <p id="newsletter-contact-error" className="rounded-md bg-red-600/20 p-3 text-sm text-red-200">
+                    {contactError}
+                  </p>
+                )}
+              </div>
 
-              <label htmlFor="phone-number" className="sr-only">
-                Phone number
-              </label>
-              <input
-                id="phone-number"
-                name="phone"
-                type="tel"
-                autoComplete="tel"
-                inputMode="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="min-w-0 flex-auto rounded-md border-0 bg-white/5 px-3.5 py-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                placeholder="Skriv in ditt telefonnummer"
-                pattern="[\d\s()+-]{7,}"
-              />
-
-              <div className="flex items-center">
-                <input
-                  id="consent"
-                  name="consent"
-                  type="checkbox"
-                  checked={consent}
-                  onChange={(e) => setConsent(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                  required
-                />
+              <div>
                 <label
-                  htmlFor="consent"
-                  className="ml-2 block text-sm text-white"
+                  htmlFor="email-address"
+                  className="block text-sm font-semibold text-white"
                 >
-                  Jag godkänner att mina uppgifter lagras
+                  E-postadress
                 </label>
+                <p id="newsletter-email-help" className="mt-1 text-sm text-gray-300">
+                  Till exempel namn@exempel.se. Kan lämnas tomt om du anger telefonnummer.
+                </p>
+                <input
+                  id="email-address"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  value={email}
+                  disabled={isSubmitting}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    clearFeedback();
+                  }}
+                  onBlur={() => markTouched("email")}
+                  aria-invalid={Boolean(emailError || contactError)}
+                  aria-describedby={`newsletter-email-help newsletter-email-feedback${contactError ? " newsletter-contact-error" : ""}`}
+                  className={`mt-2 ${inputClassName(emailError || contactError)}`}
+                  placeholder="namn@exempel.se"
+                />
+                <p id="newsletter-email-feedback" aria-live="polite" aria-atomic="true" className={`mt-1 text-sm ${emailError ? "text-red-200" : "text-green-300"}`}>
+                  {emailError || ((touched.email || submitAttempted) && email.trim() && !errors.email ? "✓ E-postadressens format ser korrekt ut." : "")}
+                </p>
+              </div>
+
+              <div>
+                <label htmlFor="phone-number" className="block text-sm font-semibold text-white">
+                  Telefonnummer
+                </label>
+                <p id="newsletter-phone-help" className="mt-1 text-sm text-gray-300">
+                  Till exempel 070 123 45 67. Kan lämnas tomt om du anger e-postadress.
+                </p>
+                <input
+                  id="phone-number"
+                  name="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  inputMode="tel"
+                  value={phone}
+                  disabled={isSubmitting}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    clearFeedback();
+                  }}
+                  onBlur={() => markTouched("phone")}
+                  aria-invalid={Boolean(phoneError || contactError)}
+                  aria-describedby={`newsletter-phone-help newsletter-phone-feedback${contactError ? " newsletter-contact-error" : ""}`}
+                  className={`mt-2 ${inputClassName(phoneError || contactError)}`}
+                  placeholder="070 123 45 67"
+                />
+                <p id="newsletter-phone-feedback" aria-live="polite" aria-atomic="true" className={`mt-1 text-sm ${phoneError ? "text-red-200" : "text-green-300"}`}>
+                  {phoneError || ((touched.phone || submitAttempted) && phone.trim() && !errors.phone ? "✓ Telefonnumrets format ser korrekt ut." : "")}
+                </p>
+              </div>
+
+              <div>
+                <div className="flex items-start">
+                  <input
+                    id="consent"
+                    name="consent"
+                    type="checkbox"
+                    checked={consent}
+                    disabled={isSubmitting}
+                    onChange={(e) => {
+                      setConsent(e.target.checked);
+                      clearFeedback();
+                    }}
+                    onBlur={() => markTouched("consent")}
+                    aria-invalid={Boolean(consentError)}
+                    aria-describedby="newsletter-consent-help newsletter-consent-feedback"
+                    className={`mt-1 h-4 w-4 shrink-0 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 ${consentError ? "outline outline-2 outline-red-400" : ""}`}
+                    required
+                  />
+                  <label htmlFor="consent" className="ml-2 block text-sm leading-6 text-white">
+                    Jag godkänner att mina uppgifter lagras <span className="text-gray-300">(obligatoriskt)</span>
+                  </label>
+                </div>
+                <p id="newsletter-consent-help" className="ml-6 mt-1 text-sm text-gray-300">
+                  Läs om hur vi hanterar uppgifterna i <Link to="/about" className="underline underline-offset-2 hover:text-white">våra villkor</Link>.
+                </p>
+                <p id="newsletter-consent-feedback" aria-live="polite" aria-atomic="true" className="mt-1 text-sm text-red-200">
+                  {consentError}
+                </p>
               </div>
               <button
                 type="submit"
                 className="self-start rounded-md bg-indigo-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:opacity-50"
-                disabled={!consent || (!email && !phone)}
+                disabled={isSubmitting}
               >
-                Prenumerera
+                {isSubmitting ? "Sparar prenumerationen…" : "Prenumerera"}
               </button>
             </form>
 
-            {message && (
-              <div
-                className={`rounded-md p-3 mt-3 ${
-                  isError ? "bg-red-600/20" : "bg-green-600/20"
-                }`}
-              >
-                <p
-                  className={`text-sm ${
-                    isError ? "text-red-300" : "text-green-300"
+            <div role={isError ? "alert" : "status"} aria-atomic="true">
+              {message && (
+                <div
+                  className={`rounded-md p-3 mt-3 ${
+                    isError ? "bg-red-600/20" : "bg-green-600/20"
                   }`}
                 >
-                  {message}
-                </p>
-              </div>
-            )}
+                  <p
+                    className={`text-sm ${
+                      isError ? "text-red-300" : "text-green-300"
+                    }`}
+                  >
+                    {message}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
           <dl className="grid grid-cols-1 gap-x-8 gap-y-10 sm:gap-y-2 sm:grid-cols-2 sm:mt-6">
