@@ -9,7 +9,6 @@ const companyDetails = [
   ["Juridiskt företagsnamn", "NICNOR AB"],
   ["Varumärke och tjänst", "Travanalys.se"],
   ["Organisationsnummer", "556990-1837"],
-  ["Postadress", "Lillsängen 1, 712 93 Hällefors, Sverige"],
   ["Säte", "Hällefors kommun, Örebro län"],
 ];
 

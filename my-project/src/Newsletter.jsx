@@ -302,7 +302,7 @@ export default function Newsletter() {
             </h2>
             <p id="newsletter-contact-help" className="mt-3 text-sm leading-6 text-gray-300">
               Få uppdateringar via e-post eller telefon. Fyll i minst ett av
-              fälten nedan. Du kan också fylla i båda.
+              fälten nedan.
             </p>
             <form
               ref={formRef}
@@ -327,9 +327,6 @@ export default function Newsletter() {
                 >
                   E-postadress
                 </label>
-                <p id="newsletter-email-help" className="mt-1 text-sm text-gray-300">
-                  Till exempel namn@exempel.se. Kan lämnas tomt om du anger telefonnummer.
-                </p>
                 <input
                   id="email-address"
                   name="email"
@@ -358,9 +355,6 @@ export default function Newsletter() {
                 <label htmlFor="phone-number" className="block text-sm font-semibold text-white">
                   Telefonnummer
                 </label>
-                <p id="newsletter-phone-help" className="mt-1 text-sm text-gray-300">
-                  Till exempel 070 123 45 67. Kan lämnas tomt om du anger e-postadress.
-                </p>
                 <input
                   id="phone-number"
                   name="phone"
@@ -403,7 +397,7 @@ export default function Newsletter() {
                     required
                   />
                   <label htmlFor="consent" className="ml-2 block text-sm leading-6 text-white">
-                    Jag godkänner att mina uppgifter lagras <span className="text-gray-300">(obligatoriskt)</span>
+                    Jag godkänner att mina uppgifter lagras
                   </label>
                 </div>
                 <p id="newsletter-consent-help" className="ml-6 mt-1 text-sm text-gray-300">
