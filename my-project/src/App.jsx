@@ -11,6 +11,7 @@ import ChatBox from './Components/TravChat';
 import ToggleComponent from './Components/ToggleComponent';
 import Reveal from './Components/Reveal';
 import TravReductionGui from './TravReductionGui';
+import About from './About';
 
 export default function App() {
   return (
@@ -39,6 +40,14 @@ export default function App() {
           element={
             <Reveal>
               <FAQComponent />
+            </Reveal>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <Reveal>
+              <About />
             </Reveal>
           }
         />

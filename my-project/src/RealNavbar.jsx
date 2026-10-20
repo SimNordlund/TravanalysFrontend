@@ -11,6 +11,7 @@ const navigation = [
   { name: "Spel & ROI", to: "/chart/speltips" },
   { name: "Reducering", to: "/reducering" },
   { name: "Frågor & Svar", to: "/faq" },
+  { name: "Om oss", to: "/about" },
 ];
 
 function classNames(...classes) {
