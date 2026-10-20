@@ -519,6 +519,9 @@ const BarChartComponent = ({
           <div className="min-w-0">
             <p className="chart-kicker">Loppöversikt</p>
             <h2 className="chart-title">Analys</h2>
+            <p className="chart-description">
+              Utforska loppets analys och jämför hästarnas profiler.
+            </p>
           </div>
         </div>
       </div>
