@@ -147,7 +147,6 @@ export default function ToolWalkthrough() {
           </details>
 
           <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-5">
-            <p className="text-xs leading-6 text-slate-500">Redo att prova med ett eget lopp?</p>
             <Link to="/chart/analys" className="chart-filter chart-filter-analysis gap-2">
               Öppna analysen
               <ArrowRight className="h-4 w-4" aria-hidden="true" />

@@ -70,7 +70,6 @@ function LikeButton() {
       </button>
       <p role="status" className={`mt-2 flex min-h-5 items-start justify-center gap-1.5 text-center text-[11px] leading-5 ${error ? "text-rose-600" : hasLiked ? "text-teal-700" : "text-slate-500"}`}>
         {hasLiked && !error && <Check aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />}
-        <span>{error || (hasLiked ? "Tack för ditt gillande!" : "En liten tumme upp betyder mycket.")}</span>
       </p>
     </div>
   );
