@@ -49,8 +49,22 @@
   }
 
   .analytics-view-button:focus-visible {
-    outline: 2px solid #818cf8;
+    outline: 2px solid var(--view-focus, #818cf8);
     outline-offset: 3px;
+  }
+
+  .analytics-view-button[data-view="table"] {
+    --view-accent: #0369a1;
+    --view-accent-end: #075985;
+    --view-shadow: rgba(3, 105, 161, 0.55);
+    --view-focus: #38bdf8;
+  }
+
+  .analytics-view-button[data-view="skrallar"] {
+    --view-accent: #0f766e;
+    --view-accent-end: #115e59;
+    --view-shadow: rgba(15, 118, 110, 0.55);
+    --view-focus: #2dd4bf;
   }
 
   .analytics-view-icon {
@@ -74,10 +88,10 @@
 
   .analytics-view-button-active,
   .analytics-view-button-active:hover {
-    border-color: #4f46e5;
-    background: linear-gradient(120deg, #4f46e5, #4338ca);
+    border-color: var(--view-accent, #4f46e5);
+    background: linear-gradient(120deg, var(--view-accent, #4f46e5), var(--view-accent-end, #4338ca));
     color: #ffffff;
-    box-shadow: 0 5px 14px -7px rgba(67, 56, 202, 0.55);
+    box-shadow: 0 5px 14px -7px var(--view-shadow, rgba(67, 56, 202, 0.55));
   }
 
   .analytics-view-button-active .analytics-view-icon {
@@ -86,7 +100,7 @@
   }
 
   .analytics-view-button-active .analytics-view-description {
-    color: #e0e7ff;
+    color: rgba(255, 255, 255, 0.85);
   }
 
   .analytics-section {

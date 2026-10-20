@@ -675,6 +675,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             <button
               key={c.id}
               type="button"
+              data-view={c.view}
               className={`analytics-view-button ${
                 selectedView === c.view ? "analytics-view-button-active" : ""
               }`}
