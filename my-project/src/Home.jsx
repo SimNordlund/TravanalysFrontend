@@ -11,7 +11,7 @@ import Reveal from './Components/Reveal';
 export default function Home() {
 
   return (
-    <div>
+    <div className="home-page bg-slate-50">
       {/*<PreviewFrontPage/>*/}
       <Reveal>
         <IntroComponent></IntroComponent>

@@ -12,6 +12,10 @@
     text-align: left;
   }
 
+  .home-page .analytics-workspace {
+    background: transparent;
+  }
+
   .analytics-view-nav {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));

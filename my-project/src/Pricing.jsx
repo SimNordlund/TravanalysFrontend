@@ -5,7 +5,7 @@ export default function Pricing() {
   return (
     <section
       aria-labelledby="like-travanalys-title"
-      className="bg-slate-100 px-3 pb-12 pt-2 text-left sm:px-6 sm:pb-16 sm:pt-4"
+      className="px-3 pb-12 pt-2 text-left sm:px-6 sm:pb-16 sm:pt-4"
     >
       <div className="mx-auto w-full max-w-6xl">
         <header className="mb-6 px-1 sm:mb-8">
@@ -16,9 +16,6 @@ export default function Pricing() {
           <h2 id="like-travanalys-title" className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
             Gilla travanalys.se<span className="text-indigo-500">.</span>
           </h2>
-          <p className="mt-3 max-w-xl text-sm leading-7 text-slate-500">
-            Har du nytta av verktyget? Visa din uppskattning med en tumme upp.
-          </p>
         </header>
 
         <div className="analytics-section">

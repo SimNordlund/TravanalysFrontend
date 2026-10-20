@@ -40,7 +40,7 @@ export default function IntroWithCarousel() {
     <section
       id="analysperspektiv"
       aria-labelledby="perspectives-title"
-      className="scroll-mt-24 bg-gradient-to-b from-slate-50 to-[#f8faff] px-3 py-8 text-left sm:px-6 sm:py-12"
+      className="scroll-mt-24 px-3 py-8 text-left sm:px-6 sm:py-12"
     >
       <div className="mx-auto w-full max-w-6xl">
         <header className="mb-6 px-1 sm:mb-8">
