@@ -27,7 +27,7 @@ export default function Example() {
   };
 
   return (
-    <Disclosure as="nav" className="bg-gray-800 sticky top-0 z-50">
+    <Disclosure as="nav" data-site-navbar className="bg-gray-800 sticky top-0 z-50">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-1">
@@ -71,6 +71,7 @@ export default function Example() {
                       <NavLink
                         key={item.name}
                         to={item.to}
+                        state={{ scrollTarget: "top" }}
                         className={({ isActive }) =>
                           classNames(
                             isActive
@@ -92,6 +93,7 @@ export default function Example() {
                 <div>
                   <NavLink
                     to="/"
+                    state={{ scrollTarget: "top" }}
                     className="mt-0 font-semibold text-lg sm:text-xl text-white"
                   >
                     <span className="inline-flex items-center">
@@ -183,6 +185,7 @@ export default function Example() {
                   key={item.name}
                   as={NavLink}
                   to={item.to}
+                  state={{ scrollTarget: "top" }}
                   className={({ isActive }) =>
                     classNames(
                       isActive

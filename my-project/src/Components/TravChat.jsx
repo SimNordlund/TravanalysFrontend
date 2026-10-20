@@ -41,7 +41,7 @@ export default function TravChat() {
   const [streaming, setStreaming] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
-  const tailRef = useRef(null);
+  const messagesRef = useRef(null);
 
   const CHATBOT_URL = import.meta.env.VITE_API_CHATBOT_URL;
   const VOICE_URL = `${CHATBOT_URL}/voice/chat`;
@@ -110,8 +110,10 @@ export default function TravChat() {
   }, []);
 
   useEffect(() => {
-    tailRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (!isOpen) return;
+    const container = messagesRef.current;
+    container?.scrollTo({ top: container.scrollHeight, behavior: "instant" });
+  }, [messages, isOpen, isMaximized]);
 
   const [recording, setRecording] = useState(false);
   const mediaRecorderRef = useRef(null);
@@ -349,7 +351,7 @@ export default function TravChat() {
             </div>
           </div>
 
-          <div className="flex-1 space-y-4 overflow-y-auto bg-slate-50/80 px-3 py-4 dark:bg-gray-900/40 sm:px-4">
+          <div ref={messagesRef} className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain bg-slate-50/80 px-3 py-4 dark:bg-gray-900/40 sm:px-4">
             {messages.map((m, i) => {
               const isUser = m.role === "user";
               const isActiveAssistant =
@@ -377,7 +379,6 @@ export default function TravChat() {
                 </div>
               );
             })}
-            <div ref={tailRef} />
           </div>
 
           <div className="flex flex-col gap-3 border-t border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800 sm:p-4">

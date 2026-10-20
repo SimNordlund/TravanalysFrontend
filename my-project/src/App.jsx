@@ -12,10 +12,12 @@ import ToggleComponent from './Components/ToggleComponent';
 import Reveal from './Components/Reveal';
 import TravReductionGui from './TravReductionGui';
 import About from './About';
+import NavigationScroll from './Components/NavigationScroll';
 
 export default function App() {
   return (
     <>
+      <NavigationScroll />
       <RealNavbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -76,7 +78,7 @@ export default function App() {
             </Reveal>
           }
         />
-        <Route path="/chart" element={<Navigate to="/ChartPage/analys" replace />} />
+        <Route path="/chart" element={<Navigate to="/chart/analys" replace />} />
       </Routes>
       <ChatBox />
       <Newsletter />

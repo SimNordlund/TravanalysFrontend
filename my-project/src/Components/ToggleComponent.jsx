@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
 import {
   useParams,
   useNavigate,
@@ -12,6 +12,7 @@ import AnalysChart from "./AnalysChart";
 import SharedHorseLegend from "./SharedHorseLegend";
 import RoiTable from "./RoiTable";
 import { BarChart3, ListOrdered, Wallet } from "lucide-react";
+import { scrollToPageTarget } from "../utils/scroll";
 
 const FALLBACK_BANNER = {
   mening: "Kolla in skrällen enligt analysen",
@@ -47,6 +48,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   const [selectedCompetition, setSelectedCompetition] = useState("");
   const [selectedLap, setSelectedLap] = useState("");
   const [selectedView, setSelectedView] = useState(initialSelectedView);
+  const [viewScrollRequest, setViewScrollRequest] = useState(null);
   const [selectedHorse, setSelectedHorse] = useState(null);
   const [startsCount, setStartsCount] = useState("0");
   const [visibleHorseIdxes, setVisibleHorseIdxes] = useState([]);
@@ -229,18 +231,22 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   }, [syncWithRoute, viewParam]);
 
   const setViewAndMaybeNavigate = useCallback(
-    (viewKey) => {
+    (viewKey, scrollTarget = "analytics-view-nav") => {
+      setViewScrollRequest({ target: scrollTarget });
       setSelectedView(viewKey);
       if (viewKey !== "spider") setSelectedHorse(null);
       if (syncWithRoute) {
         const target = `/chart/${viewToRoute[viewKey]}`;
         if (location.pathname !== target) {
-          navigate({
-            pathname: target,
-            search: shouldSyncQueryRef.current
-              ? `?${searchParams.toString()}`
-              : "",
-          });
+          navigate(
+            {
+              pathname: target,
+              search: shouldSyncQueryRef.current
+                ? `?${searchParams.toString()}`
+                : "",
+            },
+            { state: { scrollTarget } },
+          );
         }
       }
     },
@@ -251,6 +257,17 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     (viewKey) => setViewAndMaybeNavigate(viewKey),
     [setViewAndMaybeNavigate],
   );
+
+  const showHorseProfile = useCallback(
+    (viewKey) => setViewAndMaybeNavigate(viewKey, "horse-profile"),
+    [setViewAndMaybeNavigate],
+  );
+
+  useLayoutEffect(() => {
+    if (viewScrollRequest && scrollToPageTarget(viewScrollRequest.target)) {
+      setViewScrollRequest(null);
+    }
+  }, [viewScrollRequest, selectedView]);
 
   const pickClosestDate = (arr) => {
     if (!arr?.length) return "";
@@ -646,7 +663,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
           </p>
         </header>
 
-        <nav className="analytics-view-nav" aria-label="Välj analysvy">
+        <nav id="analytics-view-nav" className="analytics-view-nav" aria-label="Välj analysvy">
           {callouts.map((c) => (
             <button
               key={c.id}
@@ -686,7 +703,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 tracks={tracks}
                 competitions={competitions}
                 laps={laps}
-                setSelectedView={setViewAndMaybeNavigate}
+                setSelectedView={showHorseProfile}
                 setSelectedHorse={setSelectedHorse}
                 setVisibleHorseIdxes={setVisibleHorseIdxes}
                 startsCount={startsCount}
@@ -695,7 +712,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
               />
             </div>
 
-            <div className="grid min-w-0 grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
+            <div id="horse-profile" className="grid min-w-0 grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
               <div className="min-w-0">
                 <SpiderChart
                   selectedDate={selectedDate}
@@ -794,7 +811,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
             laps={laps}
             startsCount={startsCount}
             setStartsCount={setStartsCountUser}
-            setSelectedView={setViewAndMaybeNavigate}
+            setSelectedView={showHorseProfile}
             setSelectedHorse={setSelectedHorse}
             setPendingLapId={setPendingLapId}
           />

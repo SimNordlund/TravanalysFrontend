@@ -1,0 +1,76 @@
+{
+  "duration": 80,
+  "mediaVersion": "sv-voice-2",
+  "chapters": [
+    {
+      "id": "overview",
+      "title": "Överblick",
+      "start": 0,
+      "end": 8,
+      "heading": "Lär känna Travanalys",
+      "description": "Från loppval till analys, jämförelse och uppföljning.",
+      "instruction": "Börja i Analys, jämför hästarna i Ranking och följ resultaten i Spel & ROI.",
+      "narration": "Välkommen till Travanalys. Nu går vi igenom hur du använder verktyget."
+    },
+    {
+      "id": "race",
+      "title": "Välj lopp",
+      "start": 8,
+      "end": 20,
+      "heading": "Börja med rätt lopp",
+      "description": "Välj datum, bana, spelform och lopp i filtren.",
+      "instruction": "Använd datumväljaren och välj därefter bana, spelform och lopp. Valen följer med när du växlar mellan vyerna.",
+      "narration": "Välj först datum, sedan bana, spelform och lopp. Dina val följer med när du växlar mellan vyerna."
+    },
+    {
+      "id": "analysis",
+      "title": "Analys",
+      "start": 20,
+      "end": 33,
+      "heading": "Se loppets samlade analys",
+      "description": "Staplarna ger en överblick av hästarnas analysvärden.",
+      "instruction": "Jämför staplarna i Total analys. Klicka på en hästs stapel för att välja hästen och utforska dess profil längre ner på sidan.",
+      "narration": "Staplarna visar hästarnas samlade analysvärden. Klicka på en stapel för att välja häst. Då kommer du till hästprofilen längre ner på sidan."
+    },
+    {
+      "id": "profile",
+      "title": "Hästprofil",
+      "start": 33,
+      "end": 47,
+      "heading": "Jämför hästarnas profiler",
+      "description": "Spindeldiagrammet visar sju olika analysperspektiv.",
+      "instruction": "Jämför Prestation, Placering, Skrik, Motstånd, Klass, Form och Fart. Välj hästar i listan eller använd Visa topp 3, Visa topp 5 och Visa alla.",
+      "narration": "I spindeldiagrammet jämför du hästarnas styrkor ur sju perspektiv. Välj hästar i listan, eller visa de tre eller fem högst rankade."
+    },
+    {
+      "id": "ranking",
+      "title": "Ranking",
+      "start": 47,
+      "end": 62,
+      "heading": "Utforska rankingen i tabellen",
+      "description": "Sortera värdena och välj vilka kolumner du vill se.",
+      "instruction": "Klicka på en kolumnrubrik för att sortera. Visa eller dölj kolumner med kolumnväljaren. Alla hästar som delar det högsta positiva analysvärdet markeras med orange.",
+      "narration": "I rankingen kan du sortera tabellen genom att klicka på rubrikerna. Välj själv vilka kolumner som visas. Orange markerar alla hästar som delar det högsta analysvärdet."
+    },
+    {
+      "id": "roi",
+      "title": "Spel & ROI",
+      "start": 62,
+      "end": 74,
+      "heading": "Följ resultat och ROI",
+      "description": "Se analys, placering, odds och ROI i samma tabell.",
+      "instruction": "Välj datum och bana i Spel & ROI och läs tabellens resultat. Klicka på en hästrad för att öppna loppets analys och titta närmare på hästen.",
+      "narration": "I fliken för spel och resultat ser du placeringar, odds och avkastning. Klicka på en hästrad för att öppna hästens analys."
+    },
+    {
+      "id": "finish",
+      "title": "Prova själv",
+      "start": 74,
+      "end": 80,
+      "heading": "Nu är det din tur",
+      "description": "Välj ett lopp och utforska verktyget i din egen takt.",
+      "instruction": "Börja med ett lopp. Jämför analysen och hästprofilerna, utforska rankingen och följ upp resultaten.",
+      "narration": "Välj ett lopp och prova själv."
+    }
+  ]
+}
