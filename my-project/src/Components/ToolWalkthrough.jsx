@@ -62,10 +62,6 @@ export default function ToolWalkthrough() {
           <h2 id="walkthrough-title" className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
             Så använder du Travanalys<span className="text-indigo-500">.</span>
           </h2>
-          <p id="walkthrough-description" className="mt-3 max-w-2xl text-sm leading-7 text-slate-500">
-            Följ med från loppval till analys, spindeldiagram, ranking och ROI.
-            En illustrerad genomgång med exempeldata, svensk berättarröst och undertexter.
-          </p>
         </header>
 
         <div className="analytics-section">

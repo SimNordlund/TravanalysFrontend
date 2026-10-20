@@ -254,7 +254,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   );
 
   const switchView = useCallback(
-    (viewKey) => setViewAndMaybeNavigate(viewKey),
+    (viewKey) => setViewAndMaybeNavigate(viewKey, "analytics-view-nav", "smooth"),
     [setViewAndMaybeNavigate],
   );
 
