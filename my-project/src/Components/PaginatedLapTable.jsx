@@ -8,6 +8,7 @@ import {
   ChevronRight,
   ChevronsUpDown,
   Columns3,
+  ListOrdered,
   Trophy,
 } from "lucide-react";
 
@@ -146,9 +147,15 @@ const PaginatedLapTable = ({
       ?.nameOfCompetition ?? "Analys";
 
   const maxAnalysValue = useMemo(
-    () => Math.max(...lapData.map((r) => Number(r.analys) || -Infinity)),
+    () => lapData.reduce((highest, row) => {
+      const value = Number(row.analys);
+      return Number.isFinite(value) ? Math.max(highest, value) : highest;
+    }, 0),
     [lapData]
   );
+
+  const isTopRankedHorse = (row) =>
+    maxAnalysValue > 0 && Number(row.analys) === maxAnalysValue;
 
   // Hämta tillgängliga starters (som strings)
   useEffect(() => {
@@ -392,7 +399,7 @@ const PaginatedLapTable = ({
       thClassName: "text-center",
       tdClassName: "text-center",
       render: (row) => (
-        <span className="analytics-number">
+        <span className={`analytics-number ${isTopRankedHorse(row) ? "!border-orange-200 !bg-orange-100 !text-orange-800" : ""}`}>
           {row.numberOfCompleteHorse}
         </span>
       ),
@@ -406,11 +413,11 @@ const PaginatedLapTable = ({
       render: (row) => (
         <div className="flex min-w-[7rem] items-center gap-2.5 sm:min-w-[10rem]">
           {!visibleColumnSet.has("numberOfCompleteHorse") && (
-            <span className="analytics-number shrink-0">
+            <span className={`analytics-number shrink-0 ${isTopRankedHorse(row) ? "!border-orange-200 !bg-orange-100 !text-orange-800" : ""}`}>
               {row.numberOfCompleteHorse}
             </span>
           )}
-          <span className="min-w-0 whitespace-normal font-semibold leading-relaxed text-slate-700 [overflow-wrap:anywhere]">
+          <span className={`min-w-0 whitespace-normal font-semibold leading-relaxed [overflow-wrap:anywhere] ${isTopRankedHorse(row) ? "text-orange-800" : "text-slate-700"}`}>
             {row.nameOfCompleteHorse}
           </span>
         </div>
@@ -422,8 +429,8 @@ const PaginatedLapTable = ({
       sortKey: "analys",
       thClassName: "!bg-indigo-50 text-center !text-indigo-700",
       tdClassName: (row) =>
-        Number(row.analys) === maxAnalysValue
-          ? "bg-indigo-100/80 font-bold text-center !text-indigo-700 shadow-[inset_0_0_0_1px_rgba(99,102,241,0.12)]"
+        isTopRankedHorse(row)
+          ? "bg-orange-100/80 font-bold text-center !text-orange-800 shadow-[inset_0_0_0_1px_rgba(249,115,22,0.2)]"
           : "bg-indigo-50/50 text-center !text-indigo-600",
       render: (row) => row.analys,
     },
@@ -503,19 +510,21 @@ const PaginatedLapTable = ({
   return (
     <div className="analytics-section relative mx-auto w-full">
       <div className="chart-panel-heading">
-        <div>
-          <p className="chart-kicker">Hästar & prestation</p>
-          <h2 className="chart-title">Ranking</h2>
-          <p className="chart-description">
-            Jämför hästarna, välj dina kolumner och sortera efter det som är viktigt för dig.
-          </p>
+        <div className="flex min-w-0 items-start gap-3">
+          <span
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-white text-indigo-600 shadow-sm"
+            aria-hidden="true"
+          >
+            <ListOrdered className="h-5 w-5" />
+          </span>
+          <div className="min-w-0">
+            <p className="chart-kicker">Hästar & prestation</p>
+            <h2 className="chart-title">Ranking</h2>
+            <p className="chart-description">
+              Jämför hästarna, välj dina kolumner och sortera efter det som är viktigt för dig.
+            </p>
+          </div>
         </div>
-        <span
-          className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-indigo-100 bg-indigo-50 text-indigo-500 sm:flex"
-          aria-hidden="true"
-        >
-          <Columns3 className="h-5 w-5" />
-        </span>
       </div>
 
       <p className="analytics-context">
@@ -566,7 +575,7 @@ const PaginatedLapTable = ({
             onClick={() => setSelectedTrack(t.id)}
             disabled={loading}
             aria-pressed={t.id === +selectedTrack}
-            className={`chart-filter ${
+            className={`chart-filter chart-filter-track ${
               t.id === +selectedTrack
                 ? "chart-filter-active"
                 : ""
@@ -586,7 +595,7 @@ const PaginatedLapTable = ({
             onClick={() => setSelectedCompetition(c.id)}
             disabled={loading}
             aria-pressed={c.id === +selectedCompetition}
-            className={`chart-filter ${
+            className={`chart-filter chart-filter-competition ${
               c.id === +selectedCompetition
                 ? "chart-filter-active"
                 : ""
@@ -612,7 +621,7 @@ const PaginatedLapTable = ({
               onClick={() => setSelectedLap(lap.id)}
               disabled={loading}
               aria-pressed={lap.id === +selectedLap}
-              className={`chart-filter ${
+              className={`chart-filter chart-filter-lap ${
                 lap.id === +selectedLap
                   ? "chart-filter-active"
                   : ""
@@ -635,7 +644,7 @@ const PaginatedLapTable = ({
               aria-pressed={
                 normalizeStarter(activeStartsCount) === normalizeStarter(n)
               }
-              className={`chart-filter ${
+              className={`chart-filter chart-filter-analysis ${
                 normalizeStarter(activeStartsCount) === normalizeStarter(n)
                   ? "chart-filter-active"
                   : ""
@@ -784,7 +793,11 @@ const PaginatedLapTable = ({
           <tbody>
             {sortedLapData.map((row) => {
               return (
-                <tr key={row.id}>
+                <tr
+                  key={row.id}
+                  className={isTopRankedHorse(row) ? "!bg-orange-50 hover:!bg-orange-100" : ""}
+                  title={isTopRankedHorse(row) ? "Högst analysvärde" : undefined}
+                >
                   {visibleTableColumns.map((column, columnIndex) => {
                     const tdClassName =
                       typeof column.tdClassName === "function"

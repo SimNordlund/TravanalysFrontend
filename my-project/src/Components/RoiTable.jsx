@@ -311,7 +311,7 @@ const RoiTable = ({
             onClick={() => setSelectedTrack && setSelectedTrack(t.id)}
             disabled={loading}
             aria-pressed={t.id === +selectedTrack}
-            className={`chart-filter ${
+            className={`chart-filter chart-filter-track ${
               t.id === +selectedTrack ? "chart-filter-active" : ""
             }`}
           >
@@ -324,7 +324,7 @@ const RoiTable = ({
           onClick={() => setTipsFilter(1)}
           disabled={loading}
           aria-pressed={tipsFilter === 1}
-          className={`chart-filter ${
+          className={`chart-filter chart-filter-competition ${
             tipsFilter === 1 ? "chart-filter-active" : ""
           }`}
         >
@@ -346,7 +346,7 @@ const RoiTable = ({
           onClick={() => setTipsFilter(3)}
           disabled={loading}
           aria-pressed={tipsFilter === 3}
-          className={`chart-filter ${
+          className={`chart-filter chart-filter-competition ${
             tipsFilter === 3 ? "chart-filter-active" : ""
           }`}
         > 
@@ -362,7 +362,7 @@ const RoiTable = ({
             onClick={() => setSelectedLap && setSelectedLap(lap.id)}
             disabled={loading}
             aria-pressed={lap.id === +selectedLap}
-            className={`chart-filter ${
+            className={`chart-filter chart-filter-lap ${
               lap.id === +selectedLap ? "chart-filter-active" : ""
             }`}
           >

@@ -573,7 +573,7 @@ const BarChartComponent = ({
             onClick={() => setSelectedTrack(t.id)}
             disabled={loading}
             aria-pressed={t.id === +selectedTrack}
-            className={`chart-filter ${
+            className={`chart-filter chart-filter-track ${
               t.id === +selectedTrack
                 ? "chart-filter-active"
                 : ""
@@ -591,7 +591,7 @@ const BarChartComponent = ({
             onClick={() => setSelectedCompetition(c.id)}
             disabled={loading}
             aria-pressed={c.id === +selectedCompetition}
-            className={`chart-filter ${
+            className={`chart-filter chart-filter-competition ${
               c.id === +selectedCompetition
                 ? "chart-filter-active"
                 : ""
@@ -616,7 +616,7 @@ const BarChartComponent = ({
                 onClick={() => setSelectedLap(lap.id)}
                 disabled={loading}
                 aria-pressed={lap.id === +selectedLap}
-                className={`chart-filter ${
+                className={`chart-filter chart-filter-lap ${
                   lap.id === +selectedLap
                     ? "chart-filter-active"
                     : ""
@@ -646,7 +646,7 @@ const BarChartComponent = ({
               onClick={() => setStartsCount(String(n))}
               disabled={loading}
               aria-pressed={normalizeStarter(startsCount) === normalizeStarter(n)}
-              className={`chart-filter ${
+              className={`chart-filter chart-filter-analysis ${
                 normalizeStarter(startsCount) === normalizeStarter(n)
                   ? "chart-filter-active"
                   : ""
