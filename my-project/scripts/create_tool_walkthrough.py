@@ -24,6 +24,7 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parents[1]
 GUIDE = json.loads((ROOT / "src/data/toolWalkthrough.json").read_text(encoding="utf-8"))
 OUTPUT = ROOT / "public/videos"
+MEDIA_NAME = "travanalys-guide"
 WIDTH, HEIGHT, FPS = 1280, 720, 20
 INDIGO, NAVY, INK, MUTED = "#4f46e5", "#17233b", "#334155", "#64748b"
 WHITE, LINE, PALE = "#ffffff", "#e2e8f0", "#eef2ff"
@@ -373,7 +374,7 @@ def timestamp(seconds):
 
 def write_assets(preview_dir=None, narration_dir=None):
     OUTPUT.mkdir(parents=True, exist_ok=True)
-    render_frame(5).save(OUTPUT / "travanalys-guide-poster.jpg", quality=93, optimize=True)
+    render_frame(5).save(OUTPUT / f"{MEDIA_NAME}-poster.jpg", quality=93, optimize=True)
     cues = ["WEBVTT", ""]
     for chapter in GUIDE["chapters"]:
         boundaries = narration_dir / f"{chapter['id']}.boundaries.jsonl" if narration_dir else None
@@ -389,7 +390,7 @@ def write_assets(preview_dir=None, narration_dir=None):
             continue
         spoken_text = chapter.get("narration", chapter["instruction"])
         cues.extend([f"{timestamp(chapter['start'])} --> {timestamp(chapter['end'])}", escape(spoken_text), ""])
-    (OUTPUT / "travanalys-guide.sv.vtt").write_text("\n".join(cues) + "\n", encoding="utf-8")
+    (OUTPUT / f"{MEDIA_NAME}.sv.vtt").write_text("\n".join(cues) + "\n", encoding="utf-8")
     if preview_dir:
         preview_dir.mkdir(parents=True, exist_ok=True)
         sheet = Image.new("RGB", (1280, 1440), "#e2e8f0")
@@ -440,8 +441,8 @@ def audio_options():
 
 
 def add_narration(ffmpeg, narration):
-    destination = OUTPUT / "travanalys-guide.webm"
-    temporary = OUTPUT / "travanalys-guide-with-voice.webm"
+    destination = OUTPUT / f"{MEDIA_NAME}.webm"
+    temporary = OUTPUT / f"{MEDIA_NAME}-with-voice.webm"
     if not destination.is_file():
         raise FileNotFoundError("Skapa videon innan du använder --add-narration-only")
     subprocess.run([
@@ -454,7 +455,7 @@ def add_narration(ffmpeg, narration):
 
 
 def encode(ffmpeg, narration=None):
-    destination = OUTPUT / "travanalys-guide.webm"
+    destination = OUTPUT / f"{MEDIA_NAME}.webm"
     command = [ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-f", "image2pipe", "-framerate", str(FPS), "-c:v", "mjpeg", "-i", "pipe:0"]
     if narration:
         command += ["-i", str(narration), "-map", "0:v:0", "-map", "1:a:0", *audio_options()]

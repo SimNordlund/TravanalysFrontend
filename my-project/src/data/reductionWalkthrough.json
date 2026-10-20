@@ -1,0 +1,55 @@
+{
+  "duration": 145,
+  "mediaVersion": "sv-reduction-1",
+  "chapters": [
+    {
+      "id": "overview", "title": "Överblick", "start": 0, "end": 11,
+      "heading": "Så fungerar reducering",
+      "description": "Från dina rankade hästval till ett reducerat system.",
+      "instruction": "Välj omgång, rangordna hästarna, sätt villkor och granska raderna innan du laddar ner en spelfil.",
+      "narration": "Med reducering skapar du rader från dina hästval och behåller de rader som uppfyller dina villkor. Vi går igenom stegen."
+    },
+    {
+      "id": "setup", "title": "Välj omgång", "start": 11, "end": 27,
+      "heading": "Börja med rätt omgång",
+      "description": "Välj spelform, datum, bana och startlopp.",
+      "instruction": "Antalet avdelningar följer spelformen. Startlopp är loppnumret för den första avdelningen. För Trio väljer du ett lopp och tre placeringar.",
+      "narration": "Välj spelform, datum och bana. Ange sedan startloppet, alltså loppnumret för den första avdelningen. För Trio väljer du i stället ett lopp och hästar till tre placeringar."
+    },
+    {
+      "id": "selections", "title": "Ranka hästar", "start": 27, "end": 47,
+      "heading": "Ordningen i listan är din ranking",
+      "description": "Skriv hästnumren med den högst rankade först.",
+      "instruction": "Exempel: 4, 7, 1 ger häst 4 rank 1, häst 7 rank 2 och häst 1 rank 3. Fyll varje avdelning. I Trio får samma häst inte ta flera placeringar i en rad.",
+      "narration": "Skriv hästnumren i varje avdelning, med din favorit först. Skriver du fyra, sju, ett, får häst fyra rank ett, häst sju rank två och häst ett rank tre. Ordningen styr sedan reduceringen."
+    },
+    {
+      "id": "autofill", "title": "Autofyll", "start": 47, "end": 67,
+      "heading": "Ta hjälp av analysrankingen",
+      "description": "Välj antal hästar per avdelning och autofyll listorna.",
+      "instruction": "Aktivera Autofyll från analysrankingen. Ange antal för varje avdelning och klicka på Autofyll avdelningar. Granska och justera hästvalen efteråt. Analysdata behöver finnas för omgången.",
+      "narration": "Du kan också autofylla från analysrankingen. Aktivera rutan, välj antal hästar per avdelning och tryck på Autofyll avdelningar. Kontrollera sedan listorna och ändra dem om du vill. Det behövs analysdata för omgången."
+    },
+    {
+      "id": "filters", "title": "Sätt villkor", "start": 67, "end": 97,
+      "heading": "Välj vilka rader som får vara kvar",
+      "description": "Min och Max rank avser radens sammanlagda rankpositioner.",
+      "instruction": "Rank 1 + 2 + 1 ger Sum rank 4. Min och Max rank är inklusive gränserna. Två förstarankade kräver minst två rank 1 i raden. Exkludera textrad tar bort exakt den textrad du anger från resultatet.",
+      "narration": "Min och Max rank gäller summan av rankpositionerna i en rad. Ett plus två plus ett blir fyra. Raden behålls om summan ligger inom dina gränser. Två förstarankade kräver minst två förstaval i raden. Vill du utesluta en viss kombination kopierar du dess textrad från resultatet till Exkludera textrad."
+    },
+    {
+      "id": "preview", "title": "Granska rader", "start": 97, "end": 122,
+      "heading": "Reducera och granska resultatet",
+      "description": "Se antalet rader före och efter filtreringen.",
+      "instruction": "Tryck på Reducera. Genererade visar alla kombinationer, Efter filter visar antalet som behålls. Tabellen är ett urval av resultatet. Saknar streck anger saknade streckuppgifter, inte strukna hästar. Ändra villkoren och reducera igen vid behov.",
+      "narration": "Tryck på Reducera. Jämför Genererade med Efter filter och granska radernas hästar och rankpositioner. Tabellen visar ett urval av resultatet. Saknar streck betyder att streckuppgifter saknas, inte att hästar är strukna. Ändrar du villkoren trycker du på Reducera igen."
+    },
+    {
+      "id": "export", "title": "Spara spelfil", "start": 122, "end": 145,
+      "heading": "Ladda ner ditt reducerade system",
+      "description": "Spara en XML-fil eller kopiera en tillfällig länk.",
+      "instruction": "Ladda ner spelfil skapar en XML-fil med de aktuella valen och villkoren. Kopiera länk ger en tillfällig nedladdningslänk; giltighetstiden visas på sidan. Exporten lämnar inte in något spel.",
+      "narration": "När du är nöjd väljer du Ladda ner spelfil. Du kan också kopiera en tillfällig nedladdningslänk. Giltighetstiden visas på sidan. Filen skapas från dina aktuella val och villkor. Att spara filen lämnar inte in något spel."
+    }
+  ]
+}

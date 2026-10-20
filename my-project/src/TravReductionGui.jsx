@@ -1,4 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
+import { Play } from "lucide-react";
+import ToolWalkthrough from "./Components/ToolWalkthrough";
+import reductionWalkthrough from "./data/reductionWalkthrough.json";
+import { scrollToPageTarget } from "./utils/scroll";
 
 const LOCAL_API_BASE_URL = "http://localhost:63093";
 const PRODUCTION_API_BASE_URL =
@@ -641,6 +645,18 @@ export default function TravReductionGui() {
           <div>
             <h1 className="text-xl font-semibold tracking-normal text-zinc-950 sm:text-2xl">Reducering</h1>
             <p className="mx-auto mt-2 flex w-fit max-w-full flex-wrap items-center justify-center gap-1 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-zinc-600 ring-1 ring-zinc-200 sm:mx-0 sm:text-sm">{form.spelform} / {selectedTrackDisplayName} / {form.startDatum || "Datum"}</p>
+            <a
+              href="#reducering-videoguide"
+              onClick={(event) => {
+                if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                event.preventDefault();
+                scrollToPageTarget("reducering-videoguide", { behavior: "smooth" });
+              }}
+              className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-800 transition-colors hover:border-emerald-300 hover:bg-emerald-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 motion-reduce:transition-none"
+            >
+              <Play className="h-4 w-4" aria-hidden="true" />
+              Se videoguiden
+            </a>
           </div>
         </header>
 
@@ -942,6 +958,13 @@ export default function TravReductionGui() {
           </section>
         </main>
       </div>
+      <ToolWalkthrough
+        walkthrough={reductionWalkthrough}
+        mediaName="travanalys-reduction-guide"
+        id="reducering-videoguide"
+        title="Så använder du reducering"
+        actionTo={null}
+      />
     </div>
   );
 }

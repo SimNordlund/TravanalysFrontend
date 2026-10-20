@@ -24,7 +24,7 @@ async def generate(args):
         sys.path.insert(0, str(args.runtime_dir))
     import edge_tts
 
-    guide = json.loads((ROOT / "src/data/toolWalkthrough.json").read_text(encoding="utf-8"))
+    guide = json.loads(args.guide.read_text(encoding="utf-8"))
     if args.chapter and not any(chapter["id"] == args.chapter for chapter in guide["chapters"]):
         raise ValueError(f"Kapitlet finns inte: {args.chapter}")
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -76,6 +76,7 @@ async def generate(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--guide", type=Path, default=ROOT / "src/data/toolWalkthrough.json")
     parser.add_argument("--ffmpeg", required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--runtime-dir", type=Path)

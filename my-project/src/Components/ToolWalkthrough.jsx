@@ -1,14 +1,23 @@
 import { useRef, useState } from "react";
 import { ArrowRight, ChevronDown, Film, Play } from "lucide-react";
 import { Link } from "react-router-dom";
-import walkthrough from "../data/toolWalkthrough.json";
+import defaultWalkthrough from "../data/toolWalkthrough.json";
 
-const mediaPath = `${import.meta.env.BASE_URL}videos/travanalys-guide`;
-const videoUrl = `${mediaPath}.webm?v=${walkthrough.mediaVersion}`;
 const formatTime = (seconds) =>
   `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
 
-export default function ToolWalkthrough() {
+export default function ToolWalkthrough({
+  walkthrough = defaultWalkthrough,
+  mediaName = "travanalys-guide",
+  id = "videoguide",
+  title = "Så använder du Travanalys",
+  actionTo = "/chart/analys",
+  actionLabel = "Öppna analysen",
+}) {
+  const mediaPath = `${import.meta.env.BASE_URL}videos/${mediaName}`;
+  const videoUrl = `${mediaPath}.webm?v=${walkthrough.mediaVersion}`;
+  const titleId = `${id}-title`;
+  const videoId = `${id}-video`;
   const videoRef = useRef(null);
   const pendingSeek = useRef(null);
   const [activeChapter, setActiveChapter] = useState(0);
@@ -49,8 +58,8 @@ export default function ToolWalkthrough() {
 
   return (
     <section
-      id="videoguide"
-      aria-labelledby="walkthrough-title"
+      id={id}
+      aria-labelledby={titleId}
       className="scroll-mt-24 px-3 py-8 text-left sm:px-6 sm:py-12"
     >
       <div className="mx-auto w-full max-w-6xl">
@@ -59,8 +68,8 @@ export default function ToolWalkthrough() {
             <span className="h-1 w-6 rounded-full bg-indigo-500" aria-hidden="true" />
             Kom igång
           </p>
-          <h2 id="walkthrough-title" className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            Så använder du Travanalys<span className="text-indigo-500">.</span>
+          <h2 id={titleId} className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            {title}<span className="text-indigo-500">.</span>
           </h2>
         </header>
 
@@ -78,14 +87,13 @@ export default function ToolWalkthrough() {
           <div className="grid min-w-0 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_15rem]">
             <div className="min-w-0">
               <video
-                id="travanalys-guide-video"
+                id={videoId}
                 ref={videoRef}
                 controls
                 playsInline
                 preload="none"
                 poster={`${mediaPath}-poster.jpg`}
-                aria-label="Videoguide med svensk berättarröst: så använder du Travanalys"
-                aria-describedby="walkthrough-description"
+                aria-label={`Videoguide med svensk berättarröst: ${title}`}
                 onLoadedMetadata={handleLoadedMetadata}
                 onTimeUpdate={handleTimeUpdate}
                 onError={() => setPlaybackMessage("Videon kunde inte spelas upp. Du kan ladda ner den eller läsa genomgången i textform nedan.")}
@@ -113,7 +121,7 @@ export default function ToolWalkthrough() {
                       type="button"
                       onClick={() => seekToChapter(index)}
                       aria-current={activeChapter === index ? "step" : undefined}
-                      aria-controls="travanalys-guide-video"
+                      aria-controls={videoId}
                       aria-label={`${chapter.title}, ${formatTime(chapter.start)}`}
                       className={`flex min-h-11 w-full items-center gap-2 rounded-xl border px-3 py-2.5 text-left text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 motion-reduce:transition-none ${activeChapter === index ? "border-indigo-200 bg-indigo-50 text-indigo-800" : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:bg-indigo-50"}`}
                     >
@@ -142,12 +150,14 @@ export default function ToolWalkthrough() {
             </ol>
           </details>
 
-          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-5">
-            <Link to="/chart/analys" className="chart-filter chart-filter-analysis gap-2">
-              Öppna analysen
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </div>
+          {actionTo && (
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-5">
+              <Link to={actionTo} className="chart-filter chart-filter-analysis gap-2">
+                {actionLabel}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </section>
