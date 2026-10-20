@@ -1,150 +1,107 @@
-import { useEffect, useState } from "react";
-import {
-  CloudArrowUpIcon,
-  UserGroupIcon,
-  ChatBubbleOvalLeftEllipsisIcon,
-} from "@heroicons/react/20/solid";
+import { ArrowRight, BarChart3, MessageCircle, Users } from "lucide-react";
+import { Link } from "react-router-dom";
 import vinst1 from "../Bilder/Vinst2.jpg";
-import skräll1 from "../Bilder/skräll1.png";
-import skräll2 from "../Bilder/skräll2.png";
-import skräll3 from "../Bilder/skräll3.png";
-import skräll4 from "../Bilder/skräll4.png";
 
 const features = [
   {
     name: "Grafiskt beslutsunderlag",
     description:
       "Konsumera det grafiska beslutsunderlaget från den övergripande summeringen till olika djupdykningar i detaljer. Summeringen och analysperspektiven bryts ner i olika delanalyser som ofta skvallrar om en kommande bra prestation.",
-    icon: CloudArrowUpIcon,
+    icon: BarChart3,
+    iconClassName: "border-indigo-100 bg-indigo-50 text-indigo-600",
   },
   {
     name: "För spelare, kusk, tränare och ägare",
     description:
-      "Analysverktyget kan användas av travsportens alla intressenter och roller. Fungerar som spelarens stöd för att lägga till eller ta bort en häst - eller bekräfta sin spelidé. Tränarnas och ägarnas stöd i anmälningsprocessen då analyser för propositioner även kommer presenteras.",
-    icon: UserGroupIcon,
+      "Analysverktyget kan användas av travsportens alla intressenter och roller. Fungerar som spelarens stöd för att lägga till eller ta bort en häst – eller bekräfta sin spelidé. Tränarnas och ägarnas stöd i anmälningsprocessen då analyser för propositioner även kommer presenteras.",
+    icon: Users,
+    iconClassName: "border-sky-100 bg-sky-50 text-sky-700",
   },
   {
     name: "Ta hjälp av Trav-olta",
     description:
       "Vi har även en travkunnig och finurlig AI-kompis kallad Trav-olta som gärna hjälper till med analysen.",
-    icon: ChatBubbleOvalLeftEllipsisIcon,
+    icon: MessageCircle,
+    iconClassName: "border-teal-100 bg-teal-50 text-teal-700",
   },
 ];
 
-const slides = [skräll1, skräll2, skräll3, skräll4];
-//Behöver uppdatera med .env urler sen
-const FALLBACK_BANNER = {
-  mening: "Kolla in skrällen enligt analysen",
-  url: "https://travanalys.se",
-};
-
 export default function IntroComponent() {
-  const [banners, setBanners] = useState([FALLBACK_BANNER]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL ||
-    "https://travanalyserver-latest.onrender.com"; //Uppdatera med url för prod och dev sen
-
-  useEffect(() => {
-    const fetchBanner = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/banner`);
-
-        if (!res.ok) {
-          setBanners([FALLBACK_BANNER]);
-          return;
-        }
-
-        const data = await res.json();
-
-        if (Array.isArray(data) && data.length > 0) {
-          setBanners(data);
-        } else {
-          setBanners([FALLBACK_BANNER]);
-        }
-      } catch (error) {
-        console.error("Kunde inte hämta banner", error);
-        setBanners([FALLBACK_BANNER]);
-      }
-    };
-
-    fetchBanner();
-  }, [API_BASE_URL]);
-
-  // Auto-rotate banner
-  useEffect(() => {
-    if (banners.length <= 1) return;
-    const intervalId = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % banners.length);
-    }, 4000); // 4 sek mellan byten
-    return () => clearInterval(intervalId);
-  }, [banners]);
-
-  const banner = banners[currentIndex];
-
   return (
-    <div className="overflow-hidden bg-white pt-6 pb-0 sm:pt-10 sm:pb-10">
-      <div className="mx-auto max-w-7xl px-6 lg:px-0">
-        <div className="mx-auto grid max-w-2xl grid-cols-1 items-start gap-x-8 gap-y-16 sm:gap-y-20 xl:mx-0 xl:max-w-none xl:grid-cols-2">
-          <div className="lg:mt-6 lg:pr-8">
-            <div className="lg:max-w-lg">
-              {/*<div className="mb-4 h-[44px] sm:h-[52px]"> 
-                {banner && (
-                  <a
-                    href={banner.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex max-w-full items-center gap-x-3 rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-gray-500 pl-5 pr-3 py-1 mb-4 text-xs font-semibold text-white shadow-lg ring-1 ring-black/5 hover:scale-[1.02] hover:shadow-xl hover:ring-black/10 transition"
-                  >
-                    <span className="flex min-w-0 text-left">
-                      <span
-                        className="block truncate text-xs sm:text-base max-w-[80vw] sm:max-w-[26rem] md:max-w-[32rem]"
-                        title={banner.mening}
-                      >
-                        {banner.mening}
-                      </span>
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className="ml-0 mr-0 text-2xl flex-shrink-0 sm:mb-1"
-                    >
-                      →
-                    </span>
-                  </a>
-                )}
-              </div> */}
-              <h3 className="text-base/7 font-semibold text-orange-600">
-                BETA-version!
-              </h3>
-              <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
-                Travsportens beslutsunderlag
+    <section
+      aria-labelledby="intro-title"
+      className="analytics-workspace px-3 pb-8 pt-8 sm:px-6 sm:pb-10 sm:pt-12"
+    >
+      <div className="mx-auto w-full max-w-6xl">
+        <div className="grid min-w-0 items-center gap-8 lg:grid-cols-2 lg:gap-10">
+          <div className="min-w-0 px-1">
+            <div className="mb-5 flex flex-wrap items-center gap-3">
+              <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600">
+                <span className="h-1 w-6 rounded-full bg-indigo-500" aria-hidden="true" />
+                Travanalys
               </p>
-              <dl className="mt-6 max-w-xl space-y-6 text-base/7 text-gray-600 lg:max-w-none">
-                {features.map((feature) => (
-                  <div key={feature.name} className="relative pl-9">
-                    <dt className="block font-semibold text-gray-900">
-                      <feature.icon
-                        aria-hidden="true"
-                        className="absolute top-1 left-1 size-5 text-indigo-600"
-                      />
-                      {feature.name}
-                    </dt>
-                    <dd className="block">{feature.description}</dd>
-                  </div>
-                ))}
-              </dl>
+              <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-semibold text-amber-800">
+                Beta-version
+              </span>
+            </div>
+            <h1 id="intro-title" className="max-w-xl text-4xl font-bold leading-tight tracking-tight text-slate-900 sm:text-5xl">
+              Travsportens beslutsunderlag<span className="text-indigo-500">.</span>
+            </h1>
+            <p className="mt-5 max-w-lg text-sm leading-7 text-slate-500 sm:text-base sm:leading-7">
+              Jämför hästarnas profiler, utforska rankingen och följ resultaten.
+              Från en samlad överblick till detaljerna som hjälper dig inför loppet.
+            </p>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <Link
+                to="/chart/analys"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-indigo-600 bg-gradient-to-r from-indigo-600 to-indigo-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:from-indigo-700 hover:to-indigo-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 motion-reduce:transition-none"
+              >
+                Utforska analysen
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+              <a
+                href="#analysperspektiv"
+                className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-600 shadow-sm transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 motion-reduce:transition-none"
+              >
+                Så fungerar det
+              </a>
             </div>
           </div>
-          <img
-            alt="Product screenshot"
-            src={vinst1}
-            width={2432}
-            height={1442}
-            className="hidden self-start md:block w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 md:w-[50rem] md:-ml-24 xl:-ml-24 mt-20" 
-          />
+
+          <figure className="analytics-section overflow-hidden !p-2 sm:!p-3">
+            <img
+              alt="Travhästar i lopp framför staplar som illustrerar Travanalys"
+              src={vinst1}
+              width={1536}
+              height={1024}
+              className="aspect-[3/2] w-full rounded-2xl object-cover"
+            />
+            <figcaption className="flex items-center gap-3 px-2 py-3 sm:px-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-indigo-100 bg-indigo-50 text-indigo-600" aria-hidden="true">
+                <BarChart3 className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-slate-700">Statistik möter travsport</p>
+                <p className="mt-0.5 text-xs leading-relaxed text-slate-500">Sju perspektiv till en samlad analys.</p>
+              </div>
+            </figcaption>
+          </figure>
         </div>
+
+        <dl className="mt-8 grid min-w-0 gap-4 sm:mt-10 sm:gap-5 lg:grid-cols-3">
+          {features.map((feature) => (
+            <div key={feature.name} className="analytics-section h-full">
+              <dt>
+                <span className={`mb-4 flex h-10 w-10 items-center justify-center rounded-xl border ${feature.iconClassName}`} aria-hidden="true">
+                  <feature.icon className="h-5 w-5" />
+                </span>
+                <span className="block text-sm font-bold leading-6 text-slate-800">{feature.name}</span>
+              </dt>
+              <dd className="mt-2 text-sm leading-7 text-slate-500">{feature.description}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
-    </div>
+    </section>
   );
 }
