@@ -21,13 +21,24 @@ export default function Pricing() {
   };
 
   return (
-    <div className="bg-white py-6 sm:py-0 sm:mt-2 sm:mb-10 mb-0 mt-2 sm:pt-8">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8 mt">
-        <div className="flex flex-col items-center justify-center gap-y-2 sm:flex-row sm:gap-x-4">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Gilla travanalys.se
-          </h2>
-          <div className="flex gap-x-2">
+    <section aria-labelledby="like-travanalys-title" className="bg-white px-3 py-10 sm:px-6 sm:py-14">
+      <div className="mx-auto max-w-6xl">
+        <div className="relative isolate overflow-hidden rounded-3xl border border-indigo-100 bg-gradient-to-br from-slate-50 via-white to-indigo-50 px-6 py-8 shadow-[0_12px_36px_-24px_rgba(30,41,59,0.26)] sm:px-10 sm:py-10">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-16 -top-24 -z-10 h-64 w-64 rounded-full bg-indigo-100/50 blur-3xl" />
+          <div className="flex flex-col items-start gap-7 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
+            <div className="max-w-xl text-left">
+              <p className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600">
+                <span aria-hidden="true" className="h-1 w-6 rounded-full bg-indigo-500" />
+                Ditt stöd gör skillnad
+              </p>
+              <h2 id="like-travanalys-title" className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                Gilla travanalys.se<span className="text-indigo-500">.</span>
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-slate-500">
+                Har du nytta av våra analyser? Ge oss en tumme upp och lite extra
+                energi att fortsätta utveckla Travanalys.
+              </p>
+            </div>
             <LikeButton />
           </div>
         </div>
@@ -89,6 +100,6 @@ export default function Pricing() {
         </div> */}
 
       </div>
-    </div>
+    </section>
   );
 }
