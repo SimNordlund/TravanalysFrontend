@@ -80,9 +80,6 @@ export default function IntroWithCarousel() {
               imgClassName="p-3 pb-10 sm:p-4 sm:pb-10"
               letterboxBg="bg-slate-50"
             />
-            <figcaption className="mt-4 text-xs leading-6 text-slate-500">
-              Bläddra bland tidigare resultat med pilarna eller bildväljaren.
-            </figcaption>
           </figure>
 
           <div className="analytics-section">
