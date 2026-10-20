@@ -519,9 +519,6 @@ const PaginatedLapTable = ({
           </span>
           <div className="min-w-0">
             <h2 className="chart-title">Ranking</h2>
-            <p className="chart-description">
-              Jämför hästarna, välj dina kolumner och sortera efter det som är viktigt för dig.
-            </p>
           </div>
         </div>
       </div>
