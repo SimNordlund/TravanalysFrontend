@@ -231,8 +231,8 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
   }, [syncWithRoute, viewParam]);
 
   const setViewAndMaybeNavigate = useCallback(
-    (viewKey, scrollTarget = "analytics-view-nav") => {
-      setViewScrollRequest({ target: scrollTarget });
+    (viewKey, scrollTarget = "analytics-view-nav", scrollBehavior = "instant") => {
+      setViewScrollRequest({ target: scrollTarget, behavior: scrollBehavior });
       setSelectedView(viewKey);
       if (viewKey !== "spider") setSelectedHorse(null);
       if (syncWithRoute) {
@@ -245,7 +245,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 ? `?${searchParams.toString()}`
                 : "",
             },
-            { state: { scrollTarget } },
+            { state: { scrollTarget, scrollBehavior } },
           );
         }
       }
@@ -263,8 +263,15 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
     [setViewAndMaybeNavigate],
   );
 
+  const showHorseProfileSmooth = useCallback(
+    (viewKey) => setViewAndMaybeNavigate(viewKey, "horse-profile", "smooth"),
+    [setViewAndMaybeNavigate],
+  );
+
   useLayoutEffect(() => {
-    if (viewScrollRequest && scrollToPageTarget(viewScrollRequest.target)) {
+    if (viewScrollRequest && scrollToPageTarget(viewScrollRequest.target, {
+      behavior: viewScrollRequest.behavior,
+    })) {
       setViewScrollRequest(null);
     }
   }, [viewScrollRequest, selectedView]);
@@ -703,7 +710,7 @@ const ToggleComponent = ({ syncWithRoute = false }) => {
                 tracks={tracks}
                 competitions={competitions}
                 laps={laps}
-                setSelectedView={showHorseProfile}
+                setSelectedView={showHorseProfileSmooth}
                 setSelectedHorse={setSelectedHorse}
                 setVisibleHorseIdxes={setVisibleHorseIdxes}
                 startsCount={startsCount}

@@ -518,7 +518,6 @@ const PaginatedLapTable = ({
             <ListOrdered className="h-5 w-5" />
           </span>
           <div className="min-w-0">
-            <p className="chart-kicker">Hästar & prestation</p>
             <h2 className="chart-title">Ranking</h2>
             <p className="chart-description">
               Jämför hästarna, välj dina kolumner och sortera efter det som är viktigt för dig.

@@ -20,11 +20,22 @@ const SpiderChart = ({
   const normalizeStarter = (v) => String(v ?? "").trim() || "0"; 
 
   const [rawDatasets, setRawDatasets] = useState([]);
-  const chartRef = useRef(null);
-  const data = useMemo(() => ({
-    labels: ["Prestation", "Placering", "Skrik", "Motstånd", "Klass", "Form", "Fart"],
-    datasets: rawDatasets,
-  }), [rawDatasets]);
+  const onMetaChangeRef = useRef(onMetaChange);
+  const selectedHorseRef = useRef(selectedHorse);
+  const data = useMemo(() => {
+    const visible = Array.isArray(visibleHorseIdxes)
+      ? new Set(visibleHorseIdxes)
+      : selectedHorse != null
+        ? new Set([selectedHorse])
+        : null;
+
+    return {
+      labels: ["Prestation", "Placering", "Skrik", "Motstånd", "Klass", "Form", "Fart"],
+      datasets: visible
+        ? rawDatasets.filter((_, index) => visible.has(index))
+        : rawDatasets,
+    };
+  }, [rawDatasets, visibleHorseIdxes, selectedHorse]);
   const [loading, setLoading] = useState(true);
   const [showSpinner, setShowSpinner] = useState(false);
   const [error, setError] = useState(null);
@@ -32,9 +43,15 @@ const SpiderChart = ({
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
+    onMetaChangeRef.current = onMetaChange;
+    selectedHorseRef.current = selectedHorse;
+  }, [onMetaChange, selectedHorse]);
+
+  useEffect(() => {
     if (!selectedLap || !API_BASE_URL) return; 
     const ac = new AbortController();
     setLoading(true);
+    setError(null);
 
     (async () => {
       try {
@@ -60,6 +77,7 @@ const SpiderChart = ({
         );
 
         const raw = arr.map(({ idx, horse, fs }) => ({
+          horseId: horse.id,
           label: `${horse.numberOfCompleteHorse}. ${horse.nameOfCompleteHorse}`,
           data: [
             fs.styrka,
@@ -96,12 +114,14 @@ const SpiderChart = ({
           .map((x) => x.i);
 
         const suggestedVisibleIdxes =
-          selectedHorse !== null ? [selectedHorse] : raw.map((_, i) => i);
+          selectedHorseRef.current != null
+            ? [selectedHorseRef.current]
+            : raw.map((_, i) => i);
 
         if (!ac.signal.aborted) {
           setRawDatasets(raw);
           setLoading(false);
-          onMetaChange?.({
+          onMetaChangeRef.current?.({
             items: raw.map((ds, i) => ({
               idx: i,
               label: ds.label,
@@ -121,30 +141,7 @@ const SpiderChart = ({
     })();
 
     return () => ac.abort();
-  }, [selectedLap, selectedHorse, startsCount, API_BASE_URL]); 
-
-  useEffect(() => {
-    const chart = chartRef.current;
-    if (!chart || loading) return;
-
-    const vis = new Set(visibleHorseIdxes ?? []);
-    const transitions = new Map();
-    chart.data.datasets.forEach((_, i) => {
-      const visible = vis.has(i);
-      if (chart.isDatasetVisible(i) === visible) return;
-      transitions.set(i, visible ? "show" : "hide");
-    });
-
-    transitions.forEach((mode, i) => {
-      if (mode === "show") chart.show(i);
-      else chart.hide(i);
-    });
-
-    // Keep every changed dataset in its fade transition during a group update.
-    if (transitions.size > 1) {
-      chart.update((ctx) => transitions.get(ctx.datasetIndex));
-    }
-  }, [data, visibleHorseIdxes, loading]);
+  }, [selectedLap, startsCount, API_BASE_URL]);
 
   useEffect(() => {
     let t;
@@ -157,10 +154,6 @@ const SpiderChart = ({
     responsive: true,
     maintainAspectRatio: false,
     animation: { duration: 450, easing: "easeInOutQuart" },
-    transitions: {
-      show: { animation: { duration: 450, easing: "easeInOutQuart" } },
-      hide: { animation: { duration: 450, easing: "easeInOutQuart" } },
-    },
     plugins: {
       legend: { display: false },
       tooltip: chartTooltip,
@@ -202,12 +195,14 @@ const SpiderChart = ({
       <div className="chart-plot flex flex-1 items-center justify-center">
         <div className="relative mx-auto aspect-square w-full max-w-[490px]">
           {data.datasets.length > 0 && !loading && (
-            <Radar ref={chartRef} data={data} options={options} />
+            <Radar data={data} datasetIdKey="horseId" options={options} />
           )}
 
           {!loading && data.datasets.length === 0 && (
             <div className="chart-empty-state absolute inset-0">
-              No data found for this lap.
+              {rawDatasets.length > 0
+                ? "Välj minst en häst i listan för att visa hästprofilen."
+                : "Det finns ingen data för det här loppet."}
             </div>
           )}
 

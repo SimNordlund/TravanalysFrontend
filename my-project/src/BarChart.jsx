@@ -4,7 +4,6 @@ import DatePicker from "./Components/DatePicker";
 import Chart from "chart.js/auto";
 import { BarChart3, ChevronLeft, ChevronRight, Trophy } from "lucide-react";
 import {
-  barFill,
   cartesianGrid,
   chartFont,
   chartTick,
@@ -322,11 +321,12 @@ const BarChartComponent = ({
               data: labels.map((_, i) =>
                 i === idx ? (fs?.analys ?? 0) : null,
               ),
-              backgroundColor: barFill,
+              backgroundColor: withAlpha(col, 0.55),
               borderColor: col,
-              borderWidth: 1,
+              borderWidth: 2,
+              borderSkipped: false,
               borderRadius: { topLeft: 7, topRight: 7 },
-              hoverBackgroundColor: col,
+              hoverBackgroundColor: withAlpha(col, 0.65),
               hoverBorderColor: col,
               maxBarThickness: 44,
             };
@@ -362,7 +362,7 @@ const BarChartComponent = ({
     const { datasetIndex } = els[0];
     setSelectedHorse(datasetIndex);
     setVisibleHorseIdxes?.([datasetIndex]);
-    setLegendMode?.("all");
+    setLegendMode?.("custom");
     setSelectedView("spider");
   };
 
@@ -517,7 +517,6 @@ const BarChartComponent = ({
             <BarChart3 className="h-5 w-5" />
           </span>
           <div className="min-w-0">
-            <p className="chart-kicker">Loppöversikt</p>
             <h2 className="chart-title">Analys</h2>
             <p className="chart-description">
               Utforska loppets analys och jämför hästarnas profiler.

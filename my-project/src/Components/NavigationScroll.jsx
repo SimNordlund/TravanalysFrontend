@@ -35,7 +35,8 @@ export default function NavigationScroll() {
     }
 
     const target = hashTarget || requestedTarget || "top";
-    if (!scrollToPageTarget(target) && pageChanged) {
+    const behavior = requestedTarget ? location.state?.scrollBehavior : "instant";
+    if (!scrollToPageTarget(target, { behavior }) && pageChanged) {
       scrollToPageTarget("top");
     }
   }, [location]);

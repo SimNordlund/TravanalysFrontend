@@ -1,6 +1,7 @@
 import { ArrowRight, BarChart3, MessageCircle, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import vinst1 from "../Bilder/Vinst2.jpg";
+import { scrollToPageTarget } from "../utils/scroll";
 
 const features = [
   {
@@ -61,6 +62,11 @@ export default function IntroComponent() {
               </Link>
               <a
                 href="#videoguide"
+                onClick={(event) => {
+                  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                  event.preventDefault();
+                  scrollToPageTarget("videoguide", { behavior: "smooth" });
+                }}
                 className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-600 shadow-sm transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 motion-reduce:transition-none"
               >
                 Se videoguiden

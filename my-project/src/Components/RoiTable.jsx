@@ -246,11 +246,7 @@ const RoiTable = ({
             <TrendingUp className="h-5 w-5" aria-hidden="true" />
           </span>
           <div className="min-w-0">
-            <p className="chart-kicker">Resultatöversikt</p>
             <h2 className="chart-title">Spel &amp; ROI</h2>
-            <p className="chart-description">
-              Analys, placering och ROI per lopp.
-            </p>
           </div>
         </div>
       </div>
