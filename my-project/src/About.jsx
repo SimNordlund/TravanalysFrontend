@@ -1,9 +1,4 @@
-import {
-  BuildingOffice2Icon,
-  CheckBadgeIcon,
-  EnvelopeIcon,
-  ShieldCheckIcon,
-} from "@heroicons/react/24/outline";
+import { BadgeCheck, Building2, Mail, ShieldCheck } from "lucide-react";
 
 const companyDetails = [
   ["Juridiskt företagsnamn", "NICNOR AB"],
@@ -21,17 +16,18 @@ const serviceFeatures = [
 
 const About = () => {
   return (
-    <main className="bg-white text-gray-900">
-      <section className="border-b border-gray-200 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-6 py-14 lg:px-8 lg:py-20">
+    <main className="min-w-0 bg-slate-50 px-3 text-left text-slate-700 sm:px-6">
+      <section className="pb-2 pt-8 sm:pt-12">
+        <div className="mx-auto w-full max-w-6xl px-1">
           <div className="max-w-3xl">
-            <p className="text-base/7 font-semibold text-orange-600">
+            <p className="mb-5 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600">
+              <span className="h-1 w-6 rounded-full bg-indigo-500" aria-hidden="true" />
               Om Travanalys
             </p>
-            <h1 className="mt-2 text-4xl font-semibold tracking-tight sm:text-5xl">
-              Tydligare beslutsunderlag för svensk travsport
+            <h1 className="text-4xl font-bold leading-tight tracking-tight text-slate-900 sm:text-5xl">
+              Tydligare beslutsunderlag för svensk travsport<span className="text-indigo-500">.</span>
             </h1>
-            <p className="mt-6 text-lg/8 text-gray-600">
+            <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-500 sm:text-base">
               Travanalys.se utvecklas och drivs av NICNOR AB. Tjänsten samlar,
               analyserar och visualiserar travdata för att göra det enklare att
               jämföra hästar och skapa ett eget, välgrundat beslutsunderlag.
@@ -40,32 +36,31 @@ const About = () => {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-16">
-        <div className="grid gap-8 lg:grid-cols-2">
-          <article className="rounded-2xl border border-gray-200 p-6 shadow-sm sm:p-8">
-            <div className="flex items-center gap-3">
-              <BuildingOffice2Icon
-                className="size-7 text-indigo-600"
-                aria-hidden="true"
-              />
-              <h2 className="text-2xl font-semibold">Företagsuppgifter</h2>
+      <section className="mx-auto w-full max-w-6xl py-8 sm:py-12">
+        <div className="grid min-w-0 gap-5 sm:gap-6 lg:grid-cols-2">
+          <article className="analytics-section">
+            <div className="flex items-start gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-indigo-100 bg-indigo-50 text-indigo-600" aria-hidden="true">
+                <Building2 className="h-5 w-5" />
+              </span>
+              <h2 className="min-w-0 pt-1.5 text-lg font-bold tracking-tight text-slate-900 sm:text-xl">Företagsuppgifter</h2>
             </div>
-            <dl className="mt-6 divide-y divide-gray-100">
+            <dl className="mt-5 divide-y divide-slate-100 text-sm">
               {companyDetails.map(([label, value]) => (
                 <div
                   key={label}
-                  className="grid gap-1 py-3 sm:grid-cols-[12rem_1fr] sm:gap-4"
+                  className="grid min-w-0 gap-1 py-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:gap-4"
                 >
-                  <dt className="font-medium text-gray-900">{label}</dt>
-                  <dd className="text-gray-600">{value}</dd>
+                  <dt className="font-semibold text-slate-700">{label}</dt>
+                  <dd className="text-slate-500">{value}</dd>
                 </div>
               ))}
-              <div className="grid gap-1 py-3 sm:grid-cols-[12rem_1fr] sm:gap-4">
-                <dt className="font-medium text-gray-900">Kundservice</dt>
+              <div className="grid min-w-0 gap-1 py-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] sm:gap-4">
+                <dt className="font-semibold text-slate-700">Kundservice</dt>
                 <dd>
                   <a
                     href="mailto:travanalys@gmail.com"
-                    className="font-medium text-indigo-600 hover:text-indigo-500"
+                    className="break-words rounded-sm font-semibold text-indigo-600 transition-colors hover:text-indigo-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 motion-reduce:transition-none"
                   >
                     travanalys@gmail.com
                   </a>
@@ -74,24 +69,23 @@ const About = () => {
             </dl>
           </article>
 
-          <article className="rounded-2xl bg-gray-900 p-6 text-white shadow-sm sm:p-8">
-            <div className="flex items-center gap-3">
-              <CheckBadgeIcon
-                className="size-7 text-indigo-300"
-                aria-hidden="true"
-              />
-              <h2 className="text-2xl font-semibold">Det här erbjuder vi</h2>
+          <article className="analytics-section">
+            <div className="flex items-start gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-teal-100 bg-teal-50 text-teal-700" aria-hidden="true">
+                <BadgeCheck className="h-5 w-5" />
+              </span>
+              <h2 className="min-w-0 pt-1.5 text-lg font-bold tracking-tight text-slate-900 sm:text-xl">Det här erbjuder vi</h2>
             </div>
-            <p className="mt-5 text-gray-300">
+            <p className="mt-4 text-sm leading-7 text-slate-500">
               Travanalys är en digital informations- och analystjänst. Tjänsten
               kan innehålla både kostnadsfria funktioner och funktioner som
               kräver betalning.
             </p>
-            <ul className="mt-6 space-y-4">
+            <ul className="mt-5 space-y-3">
               {serviceFeatures.map((feature) => (
-                <li key={feature} className="flex gap-3 text-gray-200">
-                  <CheckBadgeIcon
-                    className="mt-0.5 size-5 flex-none text-indigo-300"
+                <li key={feature} className="flex gap-3 rounded-xl border border-slate-100 bg-slate-50/70 p-3 text-sm leading-6 text-slate-600">
+                  <BadgeCheck
+                    className="mt-0.5 h-5 w-5 shrink-0 text-teal-600"
                     aria-hidden="true"
                   />
                   <span>{feature}</span>
@@ -102,26 +96,27 @@ const About = () => {
         </div>
       </section>
 
-      <section className="border-y border-gray-200 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-16">
+      <section className="min-w-0">
+        <div className="mx-auto w-full max-w-6xl py-8 sm:py-12">
           <div className="max-w-3xl">
-            <p className="text-base/7 font-semibold text-orange-600">
+            <p className="mb-5 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600">
+              <span className="h-1 w-6 rounded-full bg-indigo-500" aria-hidden="true" />
               Kundvillkor
             </p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight">
-              Köp, leverans och återbetalning
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              Köp, leverans och återbetalning<span className="text-indigo-500">.</span>
             </h2>
-            <p className="mt-4 text-gray-600">
+            <p className="mt-4 text-sm leading-7 text-slate-500">
               Villkoren nedan gäller när NICNOR AB erbjuder en betald digital
               tjänst på Travanalys.se. Pris, eventuell abonnemangsperiod och vad
               som ingår visas alltid innan ett köp slutförs.
             </p>
           </div>
 
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
-            <article className="rounded-2xl bg-white p-6 ring-1 ring-gray-200">
-              <h3 className="text-xl font-semibold">Beställning och betalning</h3>
-              <p className="mt-3 text-sm/6 text-gray-600">
+          <div className="mt-6 grid min-w-0 gap-5 sm:gap-6 md:grid-cols-2">
+            <article className="analytics-section">
+              <h3 className="text-base font-bold tracking-tight text-slate-800 sm:text-lg">Beställning och betalning</h3>
+              <p className="mt-3 text-sm leading-7 text-slate-500">
                 Kunden får möjlighet att kontrollera tjänst, totalpris,
                 betalningsintervall och eventuella skatter innan beställningen
                 bekräftas. Betalning sker med den betalmetod som anges i kassan.
@@ -129,9 +124,9 @@ const About = () => {
               </p>
             </article>
 
-            <article className="rounded-2xl bg-white p-6 ring-1 ring-gray-200">
-              <h3 className="text-xl font-semibold">Digital leverans</h3>
-              <p className="mt-3 text-sm/6 text-gray-600">
+            <article className="analytics-section">
+              <h3 className="text-base font-bold tracking-tight text-slate-800 sm:text-lg">Digital leverans</h3>
+              <p className="mt-3 text-sm leading-7 text-slate-500">
                 Åtkomst till en köpt digital tjänst ges normalt direkt efter
                 bekräftad betalning. Eventuella särskilda tekniska krav eller
                 avvikelser i leveranstid visas före köpet. Kontakta kundservice
@@ -139,9 +134,9 @@ const About = () => {
               </p>
             </article>
 
-            <article className="rounded-2xl bg-white p-6 ring-1 ring-gray-200">
-              <h3 className="text-xl font-semibold">Abonnemang och uppsägning</h3>
-              <p className="mt-3 text-sm/6 text-gray-600">
+            <article className="analytics-section">
+              <h3 className="text-base font-bold tracking-tight text-slate-800 sm:text-lg">Abonnemang och uppsägning</h3>
+              <p className="mt-3 text-sm leading-7 text-slate-500">
                 Ett löpande abonnemang förnyas med den period som visas vid
                 köpet tills det sägs upp. Uppsägning kan göras genom att mejla
                 kundservice och gäller senast från slutet av den redan betalda
@@ -150,9 +145,9 @@ const About = () => {
               </p>
             </article>
 
-            <article className="rounded-2xl bg-white p-6 ring-1 ring-gray-200">
-              <h3 className="text-xl font-semibold">Ångerrätt</h3>
-              <p className="mt-3 text-sm/6 text-gray-600">
+            <article className="analytics-section">
+              <h3 className="text-base font-bold tracking-tight text-slate-800 sm:text-lg">Ångerrätt</h3>
+              <p className="mt-3 text-sm leading-7 text-slate-500">
                 En konsument har som huvudregel 14 dagars ångerrätt från den dag
                 avtalet ingås på distans. Meddela kundservice skriftligen och
                 ange vilken tjänst köpet gäller. Om kunden uttryckligen begär
@@ -163,11 +158,11 @@ const About = () => {
               </p>
             </article>
 
-            <article className="rounded-2xl bg-white p-6 ring-1 ring-gray-200">
-              <h3 className="text-xl font-semibold">
+            <article className="analytics-section">
+              <h3 className="text-base font-bold tracking-tight text-slate-800 sm:text-lg">
                 Återbetalning och reklamation
               </h3>
-              <p className="mt-3 text-sm/6 text-gray-600">
+              <p className="mt-3 text-sm leading-7 text-slate-500">
                 Vid godkänd ånger, felaktig debitering eller en tjänst som inte
                 levererats enligt avtalet görs återbetalning till samma
                 betalningsmetod utan onödigt dröjsmål och, när lagens tidsfrist
@@ -177,9 +172,9 @@ const About = () => {
               </p>
             </article>
 
-            <article className="rounded-2xl bg-white p-6 ring-1 ring-gray-200">
-              <h3 className="text-xl font-semibold">Tvister och kampanjer</h3>
-              <p className="mt-3 text-sm/6 text-gray-600">
+            <article className="analytics-section">
+              <h3 className="text-base font-bold tracking-tight text-slate-800 sm:text-lg">Tvister och kampanjer</h3>
+              <p className="mt-3 text-sm leading-7 text-slate-500">
                 Kontakta oss först så försöker vi lösa ärendet. En konsument kan
                 även vända sig till Allmänna reklamationsnämnden på arn.se.
                 Svensk lag tillämpas, med förbehåll för tvingande
@@ -191,19 +186,18 @@ const About = () => {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-12 lg:px-8 lg:py-16">
-        <div className="grid gap-8 lg:grid-cols-2">
-          <article className="rounded-2xl border border-gray-200 p-6 sm:p-8">
-            <div className="flex items-center gap-3">
-              <ShieldCheckIcon
-                className="size-7 text-indigo-600"
-                aria-hidden="true"
-              />
-              <h2 className="text-2xl font-semibold">
+      <section className="mx-auto w-full max-w-6xl py-8 sm:py-12">
+        <div className="grid min-w-0 gap-5 sm:gap-6 lg:grid-cols-2">
+          <article className="analytics-section">
+            <div className="flex items-start gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-amber-100 bg-amber-50 text-amber-700" aria-hidden="true">
+                <ShieldCheck className="h-5 w-5" />
+              </span>
+              <h2 className="min-w-0 pt-1.5 text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
                 Ansvarsfull användning och begränsningar
               </h2>
             </div>
-            <div className="mt-5 space-y-4 text-sm/6 text-gray-600">
+            <div className="mt-5 space-y-4 text-sm leading-7 text-slate-500">
               <p>
                 Travanalys tillhandahåller information, statistik och tekniska
                 analysverktyg. NICNOR AB tar inte emot insatser, förmedlar inte
@@ -227,15 +221,14 @@ const About = () => {
             </div>
           </article>
 
-          <article className="rounded-2xl border border-gray-200 p-6 sm:p-8">
-            <div className="flex items-center gap-3">
-              <ShieldCheckIcon
-                className="size-7 text-indigo-600"
-                aria-hidden="true"
-              />
-              <h2 className="text-2xl font-semibold">Integritet</h2>
+          <article className="analytics-section">
+            <div className="flex items-start gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-sky-100 bg-sky-50 text-sky-700" aria-hidden="true">
+                <ShieldCheck className="h-5 w-5" />
+              </span>
+              <h2 className="min-w-0 pt-1.5 text-lg font-bold tracking-tight text-slate-900 sm:text-xl">Integritet</h2>
             </div>
-            <div className="mt-5 space-y-4 text-sm/6 text-gray-600">
+            <div className="mt-5 space-y-4 text-sm leading-7 text-slate-500">
               <p>
                 NICNOR AB är personuppgiftsansvarig. Vi kan behandla
                 kontaktuppgifter, konto- och profiluppgifter, köp- och
@@ -267,26 +260,26 @@ const About = () => {
           </article>
         </div>
 
-        <div className="mt-10 rounded-2xl bg-indigo-50 p-6 sm:flex sm:items-center sm:justify-between sm:gap-8 sm:p-8">
+        <div className="mt-6 flex min-w-0 flex-col items-start gap-5 rounded-3xl border border-indigo-100 bg-indigo-50/70 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">
+            <h2 className="text-base font-bold tracking-tight text-slate-800 sm:text-lg">
               Frågor, uppsägning, ånger eller reklamation
             </h2>
-            <p className="mt-2 text-sm/6 text-gray-600">
+            <p className="mt-2 text-sm leading-7 text-slate-500">
               Mejla NICNOR AB och beskriv vad ärendet gäller. Vi återkommer så
               snart vi kan.
             </p>
           </div>
           <a
             href="mailto:travanalys@gmail.com"
-            className="mt-5 inline-flex items-center gap-2 rounded-md bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 sm:mt-0"
+            className="inline-flex min-h-11 max-w-full shrink-0 items-center justify-center gap-2 rounded-xl border border-indigo-600 bg-gradient-to-r from-indigo-600 to-indigo-700 px-4 py-3 text-xs font-semibold text-white shadow-sm transition-colors hover:from-indigo-700 hover:to-indigo-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 motion-reduce:transition-none sm:text-sm"
           >
-            <EnvelopeIcon className="size-5" aria-hidden="true" />
+            <Mail className="h-4 w-4 shrink-0" aria-hidden="true" />
             travanalys@gmail.com
           </a>
         </div>
 
-        <p className="mt-8 text-center text-xs text-gray-500">
+        <p className="mt-6 text-xs text-slate-500">
           Senast uppdaterad: 28 september 2026
         </p>
       </section>
