@@ -10,9 +10,14 @@ const navigation = [
   { name: "Ranking", to: "/chart/tabell" },
   { name: "Spel & ROI", to: "/chart/speltips" },
   { name: "Reducering", to: "/reducering" },
+];
+
+const informationNavigation = [
   { name: "Frågor & Svar", to: "/faq" },
   { name: "Om oss", to: "/about" },
 ];
+
+const mobileNavigation = [...navigation, ...informationNavigation];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -32,7 +37,7 @@ export default function Example() {
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-1">
             <div className="relative flex h-16 items-center justify-between">
-              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+              <div className="absolute inset-y-0 left-0 flex items-center lg:hidden">
                 <Disclosure.Button
                   aria-label="Meny"
                   aria-expanded={open}
@@ -51,8 +56,8 @@ export default function Example() {
                 </Disclosure.Button>
               </div>
 
-              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="hidden sm:flex flex-shrink-0 items-center text-indigo-600">
+              <div className="flex flex-1 items-center justify-center lg:items-stretch lg:justify-start">
+                <div className="hidden lg:flex flex-shrink-0 items-center text-indigo-600">
                   {" "}
                   <div
                     className="h-10 w-10"
@@ -65,7 +70,7 @@ export default function Example() {
                     title="Travanalys"
                   />
                 </div>
-                <div className="hidden sm:ml-6 sm:block">
+                <div className="hidden lg:ml-6 lg:block">
                   <div className="flex space-x-1">
                     {navigation.map((item) => (
                       <NavLink
@@ -77,7 +82,7 @@ export default function Example() {
                             isActive
                               ? "bg-gray-900 text-white"
                               : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                            "rounded-md px-3 py-2 text-sm font-medium"
+                            "whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium"
                           )
                         }
                         end={item.to === "/"}
@@ -89,7 +94,26 @@ export default function Example() {
                 </div>
               </div>
 
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2 lg:static lg:inset-auto lg:ml-6 lg:pr-0">
+                <div className="mr-4 hidden items-center gap-1 lg:flex">
+                  {informationNavigation.map((item) => (
+                    <NavLink
+                      key={item.name}
+                      to={item.to}
+                      state={{ scrollTarget: "top" }}
+                      className={({ isActive }) =>
+                        classNames(
+                          isActive
+                            ? "bg-gray-900 text-white"
+                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                          "whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium"
+                        )
+                      }
+                    >
+                      {item.name}
+                    </NavLink>
+                  ))}
+                </div>
                 <div>
                   <NavLink
                     to="/"
@@ -178,9 +202,9 @@ export default function Example() {
             </div>
           </div>
 
-          <Disclosure.Panel id="mobile-menu" className="sm:hidden">
+          <Disclosure.Panel id="mobile-menu" className="lg:hidden">
             <div className="space-y-1 px-2 pb-3 pt-2">
-              {navigation.map((item) => (
+              {mobileNavigation.map((item) => (
                 <Disclosure.Button
                   key={item.name}
                   as={NavLink}
