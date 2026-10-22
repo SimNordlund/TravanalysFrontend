@@ -15,7 +15,7 @@ const features = [
   {
     name: "För spelare, kusk, tränare och ägare",
     description:
-      "Analysverktyget kan användas av travsportens alla intressenter och roller. Fungerar som spelarens stöd för att lägga till eller ta bort en häst – eller bekräfta sin spelidé. Tränarnas och ägarnas stöd i anmälningsprocessen då analyser för propositioner även kommer presenteras.",
+      "Analysverktyget kan användas av travsportens alla intressenter och roller. Fungerar som spelarens stöd för att lägga till/ta bort en häst eller bekräfta sin spelidé. Tränarnas och ägarnas stöd i anmälningsprocessen då analyser för propositioner även kommer presenteras.",
     icon: Users,
     iconClassName: "border-sky-100 bg-sky-50 text-sky-700",
   },
