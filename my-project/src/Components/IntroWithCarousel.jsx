@@ -3,6 +3,7 @@ import { BarChart3, ChevronDown, GraduationCap, MousePointer2, Radar, Trophy } f
 import HeroCarousel from "./HeroCarousel";
 import skräll3 from "../Bilder/skräll3.png";
 import skräll4 from "../Bilder/skräll4.png";
+import v85Aby from "../Bilder/v85-aby-2026-09-26.png";
 
 const perspectives = [
   { name: "Form", description: "Hästens prestationer ur olika perspektiv i en närtid." },
@@ -31,7 +32,7 @@ const guides = [
   },
 ];
 
-const slides = [skräll3, skräll4];
+const slides = [skräll3, skräll4, v85Aby];
 
 export default function IntroWithCarousel() {
   const [isOpen, setIsOpen] = useState(false);
