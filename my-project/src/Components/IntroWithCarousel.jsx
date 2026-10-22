@@ -57,7 +57,7 @@ export default function IntroWithCarousel() {
         </header>
 
         <div className="grid min-w-0 items-start gap-5 sm:gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <figure className="chart-panel min-w-0">
+          <figure className="chart-panel order-2 min-w-0 lg:order-1">
             <div className="chart-panel-heading">
               <div className="flex min-w-0 items-start gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-amber-100 bg-amber-50 text-amber-700" aria-hidden="true">
@@ -82,7 +82,7 @@ export default function IntroWithCarousel() {
             />
           </figure>
 
-          <div className="analytics-section">
+          <div className="analytics-section order-1 lg:order-2">
             <div className="chart-panel-heading">
               <div className="flex min-w-0 items-start gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-white text-indigo-600 shadow-sm" aria-hidden="true">
