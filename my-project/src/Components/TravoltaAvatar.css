@@ -1,0 +1,109 @@
+.travolta-avatar {
+  --travolta-accent: #8b7cdb;
+  display: inline-flex;
+  position: relative;
+  isolation: isolate;
+  flex: 0 0 auto;
+  width: 2.75rem;
+  height: 2.75rem;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #d6ddf2;
+  color: var(--travolta-accent);
+  box-shadow: 0 3px 10px #070b1438, 0 0 0 1px #7863c636;
+}
+
+.travolta-avatar[data-size="sm"] { width: 2.25rem; height: 2.25rem; }
+.travolta-avatar[data-size="lg"] { width: 3.5rem; height: 3.5rem; }
+.travolta-avatar > svg { display: block; width: 100%; height: 100%; }
+.travolta-avatar svg * { transform-box: view-box; }
+
+.travolta-avatar__portrait {
+  transform-origin: 45px 69px;
+  animation: travolta-breathe 5.4s ease-in-out infinite;
+}
+.travolta-avatar__ear {
+  transform-origin: 48px 29px;
+  animation: travolta-ear 11s ease-in-out infinite;
+}
+.travolta-avatar__eye {
+  transform-origin: 60px 39px;
+  animation: travolta-blink 7.6s ease-in-out infinite;
+}
+.travolta-avatar__mane {
+  transform-origin: 35px 35px;
+  animation: travolta-mane 4.8s ease-in-out infinite;
+}
+.travolta-avatar__orbit { transform-origin: 48px 48px; opacity: 0.55; }
+.travolta-avatar__listening-ring { transform-origin: 48px 48px; opacity: 0; }
+.travolta-avatar__jaw { transform-origin: 58px 50px; }
+.travolta-avatar__wave { opacity: 0; }
+.travolta-avatar__wave path { transform-origin: 68px 73px; }
+
+.travolta-avatar[data-activity="responding"] .travolta-avatar__orbit {
+  opacity: 0.9;
+  animation: travolta-orbit 4s linear infinite;
+}
+.travolta-avatar[data-activity="responding"] .travolta-avatar__portrait { animation-duration: 2.8s; }
+.travolta-avatar[data-activity="responding"] .travolta-avatar__jaw { animation: travolta-jaw 900ms ease-in-out infinite; }
+.travolta-avatar[data-activity="responding"] .travolta-avatar__wave,
+.travolta-avatar[data-activity="listening"] .travolta-avatar__wave { opacity: 0.85; }
+.travolta-avatar[data-activity="responding"] .travolta-avatar__wave path,
+.travolta-avatar[data-activity="listening"] .travolta-avatar__wave path {
+  animation: travolta-wave 1100ms ease-in-out infinite;
+  animation-delay: var(--travolta-wave-delay, 0ms);
+}
+.travolta-avatar__wave path:nth-child(2) { --travolta-wave-delay: -430ms; }
+.travolta-avatar__wave path:nth-child(3) { --travolta-wave-delay: -710ms; }
+.travolta-avatar__wave path:nth-child(4) { --travolta-wave-delay: -220ms; }
+
+.travolta-avatar[data-activity="listening"] { --travolta-accent: #5da8b0; }
+.travolta-avatar[data-activity="listening"] .travolta-avatar__ear { animation: none; transform: rotate(-8deg); }
+.travolta-avatar[data-activity="listening"] .travolta-avatar__orbit { opacity: 0.9; }
+.travolta-avatar[data-activity="listening"] .travolta-avatar__listening-ring { animation: travolta-listen 2.2s ease-out infinite; }
+.travolta-avatar[data-activity="unread"] .travolta-avatar__orbit { animation: travolta-attention 3.8s ease-in-out infinite; }
+
+.travolta-avatar[data-animated="false"] * { animation: none !important; }
+
+@keyframes travolta-breathe {
+  0%, 100% { transform: translateY(0) rotate(-0.8deg); }
+  50% { transform: translateY(-1.3px) rotate(0.8deg); }
+}
+@keyframes travolta-mane {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(2deg); }
+}
+@keyframes travolta-ear {
+  0%, 68%, 78%, 100% { transform: rotate(0); }
+  72% { transform: rotate(-6deg); }
+  75% { transform: rotate(2deg); }
+}
+@keyframes travolta-blink {
+  0%, 44%, 48%, 88%, 92%, 100% { transform: scaleY(1); }
+  46%, 90% { transform: scaleY(0.1); }
+}
+@keyframes travolta-orbit { to { transform: rotate(360deg); } }
+@keyframes travolta-jaw {
+  0%, 100% { transform: rotate(0); }
+  35% { transform: rotate(2deg) translateY(0.3px); }
+  65% { transform: rotate(0.5deg); }
+}
+@keyframes travolta-wave {
+  0%, 100% { transform: scaleY(0.4); }
+  45% { transform: scaleY(1); }
+  70% { transform: scaleY(0.65); }
+}
+@keyframes travolta-listen {
+  0% { transform: scale(0.93); opacity: 0; }
+  25% { opacity: 0.35; }
+  100% { transform: scale(1.08); opacity: 0; }
+}
+@keyframes travolta-attention {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.95; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .travolta-avatar * { animation: none !important; }
+  .travolta-avatar[data-activity="listening"] .travolta-avatar__listening-ring { opacity: 0.25; }
+}

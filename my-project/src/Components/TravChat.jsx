@@ -283,7 +283,10 @@ export default function TravChat() {
             className="relative flex items-center gap-3 rounded-lg bg-gray-800 px-3 py-2 text-white shadow-xl ring-1 ring-black/10 transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:px-4 sm:py-3"
             aria-label="Öppna Trav-olta chatten"
           >
-            <TravoltaAvatar size="sm" speaking={hasUnread} />
+            <TravoltaAvatar
+              size="md"
+              activity={recording ? "listening" : streaming ? "responding" : hasUnread ? "unread" : "idle"}
+            />
             <span className="hidden text-sm font-semibold sm:inline">
               Fråga Trav-olta
             </span>
@@ -311,12 +314,12 @@ export default function TravChat() {
               : "h-[min(82dvh,42rem)] sm:h-[min(78dvh,38rem)] sm:w-96 md:w-[26rem] lg:w-[28rem]"
           }`}
         >
-          <div className="flex items-center justify-between gap-3 bg-gray-900 p-3 text-white sm:p-4">
+          <div className="flex items-center justify-between gap-3 border-b border-indigo-100 bg-gradient-to-r from-indigo-50 to-slate-50 p-3 text-slate-900 sm:p-4">
             <div className="flex min-w-0 items-center gap-3">
-              <TravoltaAvatar size="md" speaking={streaming || recording} />
+              <TravoltaAvatar size="lg" activity={recording ? "listening" : streaming ? "responding" : "idle"} />
               <div className="min-w-0">
                 <div className="truncate font-semibold">Trav-olta</div>
-                <p className="truncate text-xs text-gray-300">
+                <p className="truncate text-xs text-slate-600">
                   {recording
                     ? "Lyssnar..."
                     : streaming
@@ -328,7 +331,7 @@ export default function TravChat() {
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setIsMaximized((m) => !m)}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-gray-200 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 aria-label={
                   isMaximized ? "Förminska chatten" : "Maximera chatten"
                 }
@@ -343,7 +346,7 @@ export default function TravChat() {
                 onClick={() => {
                   setIsOpen(false);
                 }}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-gray-200 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 transition hover:bg-indigo-100 hover:text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 aria-label="Stäng chatten"
               >
                 <X className="h-5 w-5" />
@@ -365,7 +368,11 @@ export default function TravChat() {
                   }`}
                 >
                   {!isUser && (
-                    <TravoltaAvatar size="sm" speaking={isActiveAssistant} />
+                    <TravoltaAvatar
+                      size="sm"
+                      activity={isActiveAssistant ? "responding" : "idle"}
+                      animated={isActiveAssistant}
+                    />
                   )}
                   <div
                     className={`max-w-[82%] whitespace-pre-wrap rounded-lg px-3.5 py-2.5 text-sm/6 shadow-sm [overflow-wrap:anywhere] sm:max-w-[78%] sm:text-base/7 lg:max-w-[70%] ${
