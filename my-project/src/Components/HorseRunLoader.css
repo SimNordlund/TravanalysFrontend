@@ -1,0 +1,40 @@
+.analysis-horse-loader {
+  --stride: 680ms;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12rem;
+  max-width: 100%;
+  height: 7rem;
+}
+
+.analysis-horse-loader > svg { width: 100%; height: 100%; }
+/* Keep the joints in SVG coordinates when the illustration scales. */
+.analysis-horse-loader svg * { transform-box: view-box; }
+.analysis-horse-loader__track { animation: analysis-horse-track var(--stride) linear infinite; }
+.analysis-horse-loader__horse { animation: analysis-horse-bob calc(var(--stride) / 2) ease-in-out infinite; }
+.analysis-horse-loader__driver { animation: analysis-horse-driver var(--stride) ease-in-out infinite; }
+.analysis-horse-loader__shadow { transform-origin: 350px 272px; opacity: 0.1; animation: analysis-horse-shadow calc(var(--stride) / 2) ease-in-out infinite; }
+.analysis-horse-loader__neck { transform-origin: 416px 172px; animation: analysis-horse-neck var(--stride) ease-in-out infinite; }
+.analysis-horse-loader__tail { transform-origin: 292px 161px; animation: analysis-horse-tail var(--stride) ease-in-out infinite; }
+.analysis-horse-loader__leg { animation: analysis-horse-stride var(--stride) ease-in-out infinite; }
+.analysis-horse-loader__leg--hind-far { transform-origin: 308px 181px; }
+.analysis-horse-loader__leg--front-far { transform-origin: 414px 181px; animation-delay: calc(var(--stride) / -2); }
+.analysis-horse-loader__leg--hind-near { transform-origin: 300px 181px; animation-delay: calc(var(--stride) / -2); }
+.analysis-horse-loader__leg--front-near { transform-origin: 417px 183px; }
+.analysis-horse-loader__wheel { transform-origin: 179px 244px; animation: analysis-horse-wheel calc(var(--stride) * 2) linear infinite; }
+.analysis-horse-loader__dust { animation: analysis-horse-dust var(--stride) ease-out infinite; }
+
+@keyframes analysis-horse-track { to { stroke-dashoffset: 133; } }
+@keyframes analysis-horse-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes analysis-horse-driver { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+@keyframes analysis-horse-shadow { 0%, 100% { transform: scaleX(1); opacity: 0.1; } 50% { transform: scaleX(0.92); opacity: 0.06; } }
+@keyframes analysis-horse-neck { 0%, 100% { transform: rotate(-1deg); } 50% { transform: rotate(2deg); } }
+@keyframes analysis-horse-tail { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(7deg); } }
+@keyframes analysis-horse-stride { 0%, 100% { transform: rotate(-23deg); } 50% { transform: rotate(24deg); } }
+@keyframes analysis-horse-wheel { to { transform: rotate(360deg); } }
+@keyframes analysis-horse-dust { from { transform: translate(14px, -1px); opacity: 0; } 25% { opacity: 0.65; } to { transform: translate(-30px, -8px); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .analysis-horse-loader * { animation: none !important; }
+}

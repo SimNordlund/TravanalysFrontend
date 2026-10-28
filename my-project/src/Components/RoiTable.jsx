@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import DatePicker from "./DatePicker";
+import HorseRunLoader from "./HorseRunLoader";
 import { TrendingUp, ChevronLeft, ChevronRight } from "lucide-react";
 
 const RoiTable = ({
@@ -24,7 +25,8 @@ const RoiTable = ({
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [showSpinner, setShowSpinner] = useState(false);
   const [error, setError] = useState(null);
   const [sortConfig, setSortConfig] = useState({
     key: "analys",
@@ -91,6 +93,13 @@ const RoiTable = ({
     })();
     return () => ac.abort();
   }, [selectedDate, API_BASE_URL]);
+
+  useEffect(() => {
+    let timer;
+    if (loading) timer = setTimeout(() => setShowSpinner(true), 3000);
+    else setShowSpinner(false);
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   const selectedTrackLabel =
     tracks.find((t) => t.id === +selectedTrack)?.nameOfTrack ?? "";
@@ -376,15 +385,11 @@ const RoiTable = ({
         aria-busy={loading}
       >
         {loading && (
-          <div
-            className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 backdrop-blur-[2px]"
-            role="status"
-          >
-            <div className="h-9 w-9 animate-spin rounded-full border-[3px] border-indigo-100 border-t-indigo-500 motion-reduce:animate-none" />
-            <span className="sr-only">Laddar ROI-data.</span>
+          <div className="flex min-h-[280px] items-center justify-center">
+            {showSpinner && <HorseRunLoader label="Laddar spel och ROI" />}
           </div>
         )}
-        <table className="analytics-table min-w-[720px] text-center">
+        <table className="analytics-table min-w-[720px] text-center" hidden={loading}>
           <thead>
             <tr>
               <th scope="col" className="w-14 text-center">

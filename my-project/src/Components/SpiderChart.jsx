@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Radar } from "react-chartjs-2";
 import Chart from "chart.js/auto";
+import HorseRunLoader from "./HorseRunLoader";
 import { chartFont, chartTooltip, horseColors, withAlpha } from "../chartTheme";
 
 const SpiderChart = ({
@@ -208,7 +209,7 @@ const SpiderChart = ({
 
           {showSpinner && loading && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="h-9 w-9 animate-spin rounded-full border-[3px] border-indigo-100 border-t-indigo-500" />
+              <HorseRunLoader label="Laddar hästprofil" />
             </div>
           )}
         </div>

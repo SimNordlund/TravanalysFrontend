@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import DatePicker from "./DatePicker";
+import HorseRunLoader from "./HorseRunLoader";
 import {
   ArrowDown,
   ArrowUp,
@@ -68,7 +69,8 @@ const PaginatedLapTable = ({
   const setActiveStartsCount = setStartsCount ?? setLocalStartsCount;
 
   const [lapData, setLapData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [showSpinner, setShowSpinner] = useState(false);
   const [error, setError] = useState(null);
   const [sortConfig, setSortConfig] = useState({
     key: "analys",
@@ -264,6 +266,13 @@ const PaginatedLapTable = ({
 
     return () => ac.abort();
   }, [selectedLap, activeStartsCount, API_BASE_URL]);
+
+  useEffect(() => {
+    let timer;
+    if (loading) timer = setTimeout(() => setShowSpinner(true), 3000);
+    else setShowSpinner(false);
+    return () => clearTimeout(timer);
+  }, [loading]);
 
   // Sortering på tabeller.
   const firstDirForKey = (key) => {
@@ -736,16 +745,12 @@ const PaginatedLapTable = ({
         aria-busy={loading}
       >
         {loading && (
-          <div
-            className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 backdrop-blur-[2px]"
-            role="status"
-            aria-label="Laddar ranking"
-          >
-            <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-indigo-100 border-t-indigo-500 motion-reduce:animate-none" />
+          <div className="flex min-h-[280px] items-center justify-center">
+            {showSpinner && <HorseRunLoader label="Laddar ranking" />}
           </div>
         )}
 
-        <table className="analytics-table">
+        <table className="analytics-table" hidden={loading}>
           <thead>
             <tr>
               {visibleTableColumns.map((column, columnIndex) => (

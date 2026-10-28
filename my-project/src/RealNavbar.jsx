@@ -2,7 +2,6 @@ import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useNavigate, NavLink } from "react-router-dom";
-import barbild from "./Bilder/travhorsi.png";
 
 const navigation = [
   { name: "Så fungerar det", to: "/" },
@@ -57,20 +56,7 @@ export default function Example() {
               </div>
 
               <div className="flex flex-1 items-center justify-center lg:items-stretch lg:justify-start">
-                <div className="hidden lg:flex flex-shrink-0 items-center text-indigo-600">
-                  {" "}
-                  <div
-                    className="h-10 w-10"
-                    style={{
-                      WebkitMask: `url(${barbild}) center / contain no-repeat`,
-                      mask: `url(${barbild}) center / contain no-repeat`,
-                      backgroundColor: "currentColor",
-                    }}
-                    aria-label="Travanalys"
-                    title="Travanalys"
-                  />
-                </div>
-                <div className="hidden lg:ml-6 lg:block">
+                <div className="hidden lg:block">
                   <div className="flex space-x-1">
                     {navigation.map((item) => (
                       <NavLink

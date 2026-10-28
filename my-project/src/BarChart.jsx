@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Bar, getElementAtEvent } from "react-chartjs-2";
 import DatePicker from "./Components/DatePicker";
+import HorseRunLoader from "./Components/HorseRunLoader";
 import Chart from "chart.js/auto";
 import { BarChart3, ChevronLeft, ChevronRight, Trophy } from "lucide-react";
 import {
@@ -15,85 +16,6 @@ import {
 Chart.defaults.font.family =
   "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'";
 Chart.defaults.font.weight = 400;
-
-const horseTrackLineClassName =
-  "animate-horse-loader-ground stroke-slate-400 [stroke-linecap:round] [stroke-width:3] motion-reduce:animate-none";
-
-const horseLegBaseClassName =
-  "fill-none [stroke-linecap:round] [stroke-linejoin:round] [transform-box:fill-box] [transform-origin:50%_0] motion-reduce:animate-none";
-
-const nearHorseLegClassName = `${horseLegBaseClassName} stroke-indigo-900 [stroke-width:7]`;
-
-const farHorseLegClassName = `${horseLegBaseClassName} stroke-indigo-500 opacity-70 [stroke-width:6]`;
-
-const HorseRunLoader = () => (
-  <div
-    className="inline-flex h-28 w-40 items-center justify-center"
-    role="status"
-    aria-label="Laddar diagram"
-  >
-    <svg
-      className="h-auto w-full overflow-visible"
-      viewBox="0 0 160 110"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <g>
-        <path className={horseTrackLineClassName} d="M10 96 H54" />
-        <path
-          className={`${horseTrackLineClassName} [animation-delay:-240ms]`}
-          d="M68 100 H116"
-        />
-        <path
-          className={`${horseTrackLineClassName} [animation-delay:-480ms]`}
-          d="M28 103 H74"
-        />
-      </g>
-      <ellipse
-        className="animate-horse-loader-shadow fill-slate-900 opacity-10 [transform-origin:80px_96px] motion-reduce:animate-none"
-        cx="80"
-        cy="96"
-        rx="48"
-        ry="7"
-      />
-      <g className="animate-horse-loader-body [transform-origin:80px_58px] motion-reduce:animate-none">
-        <path
-          className="animate-horse-loader-tail fill-indigo-600 [transform-box:fill-box] [transform-origin:90%_45%] motion-reduce:animate-none"
-          d="M38 48 C23 39 13 48 5 48 C15 60 28 62 42 54 Z"
-        />
-        <path
-          className="fill-indigo-600"
-          d="M38 49 C45 38 60 36 74 40 C86 44 99 39 111 48 C118 54 116 64 107 68 C88 73 61 72 43 65 C35 62 32 55 38 49 Z"
-        />
-        <g className="animate-horse-loader-head fill-indigo-600 [transform-box:fill-box] [transform-origin:20%_70%] motion-reduce:animate-none">
-          <path d="M104 48 C109 34 120 24 132 23 C141 22 150 29 151 36 C141 37 133 34 126 39 C121 43 118 50 113 56 Z" />
-          <path
-            className="fill-none stroke-indigo-900 [stroke-linecap:round] [stroke-linejoin:round] [stroke-width:4]"
-            d="M114 43 C118 35 124 28 132 24"
-          />
-          <circle className="fill-indigo-50" cx="139" cy="31" r="1.8" />
-        </g>
-        <path
-          className={`${farHorseLegClassName} animate-horse-loader-back-b`}
-          d="M65 64 C72 71 78 79 82 89 M82 89 L92 90"
-        />
-        <path
-          className={`${farHorseLegClassName} animate-horse-loader-front-b`}
-          d="M91 65 C86 73 80 81 72 90 M72 90 L62 91"
-        />
-        <path
-          className={`${nearHorseLegClassName} animate-horse-loader-back-a`}
-          d="M52 63 C47 72 40 80 34 90 M34 90 L23 90"
-        />
-        <path
-          className={`${nearHorseLegClassName} animate-horse-loader-front-a`}
-          d="M104 64 C109 73 116 81 126 90 M126 90 L138 90"
-        />
-      </g>
-    </svg>
-    <span className="sr-only">Laddar diagram</span>
-  </div>
-);
 
 const getHorsePlacement = (name) => {
   const match = String(name ?? "").match(/\((\d+)\)\s*$/);

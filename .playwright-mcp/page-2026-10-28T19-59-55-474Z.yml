@@ -1,0 +1,312 @@
+- generic [ref=e2]:
+  - navigation [ref=e3]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic "Travanalys" [ref=e8]
+        - generic [ref=e10]:
+          - link "Så fungerar det" [ref=e11] [cursor=pointer]:
+            - /url: /
+          - link "Analys" [ref=e12] [cursor=pointer]:
+            - /url: /chart/analys
+          - link "Ranking" [ref=e13] [cursor=pointer]:
+            - /url: /chart/tabell
+          - link "Spel & ROI" [ref=e14] [cursor=pointer]:
+            - /url: /chart/speltips
+          - link "Reducering" [ref=e15] [cursor=pointer]:
+            - /url: /reducering
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - link "Frågor & Svar" [ref=e18] [cursor=pointer]:
+            - /url: /faq
+          - link "Om oss" [ref=e19] [cursor=pointer]:
+            - /url: /about
+        - link "travanalys.se" [ref=e21] [cursor=pointer]:
+          - /url: /
+  - generic [ref=e25]:
+    - region [ref=e27]:
+      - generic [ref=e28]:
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - generic [ref=e31]:
+              - paragraph [ref=e32]: Travanalys
+              - generic [ref=e34]: Beta-version
+            - heading "Travsportens beslutsunderlag." [level=1] [ref=e35]
+            - paragraph [ref=e36]: Jämför hästarnas profiler, utforska rankingen och följ resultaten. Från en samlad överblick till detaljerna som hjälper dig inför loppet.
+            - generic [ref=e37]:
+              - link "Utforska analysen" [ref=e38] [cursor=pointer]:
+                - /url: /chart/analys
+              - link "Se videoguiden" [ref=e41] [cursor=pointer]:
+                - /url: "#videoguide"
+            - generic [ref=e42]:
+              - paragraph [ref=e43]: Våra andelsspel
+              - status [ref=e46]: Laddar andelsspel…
+          - figure [ref=e47]:
+            - img "Travhästar i lopp framför staplar som illustrerar Travanalys" [ref=e48]
+            - generic [ref=e53]:
+              - paragraph [ref=e54]: Statistik möter travsport
+              - paragraph [ref=e55]: Sju perspektiv till en samlad analys.
+        - generic [ref=e56]:
+          - generic [ref=e57]:
+            - term [ref=e58]:
+              - generic [ref=e62]: Grafiskt beslutsunderlag
+            - definition [ref=e63]: Konsumera det grafiska beslutsunderlaget från den övergripande summeringen till olika djupdykningar i detaljer. Summeringen och analysperspektiven bryts ner i olika delanalyser som ofta skvallrar om en kommande bra prestation.
+          - generic [ref=e64]:
+            - term [ref=e65]:
+              - generic [ref=e72]: För spelare, kusk, tränare och ägare
+            - definition [ref=e73]: Analysverktyget kan användas av travsportens alla intressenter och roller. Fungerar som spelarens stöd för att lägga till/ta bort en häst eller bekräfta sin spelidé. Tränarnas och ägarnas stöd i anmälningsprocessen då analyser för propositioner även kommer presenteras.
+          - generic [ref=e74]:
+            - term [ref=e75]:
+              - generic [ref=e79]: Ta hjälp av Trav-olta
+            - definition [ref=e80]: Vi har även en travkunnig och finurlig AI-kompis kallad Trav-olta som gärna hjälper till med analysen.
+    - region [ref=e82]:
+      - generic [ref=e83]:
+        - generic [ref=e84]:
+          - paragraph [ref=e85]: Kom igång
+          - heading "Så använder du Travanalys." [level=2] [ref=e87]
+        - generic [ref=e88]:
+          - generic [ref=e89]:
+            - generic [ref=e90]: Videoguide
+            - generic [ref=e93]: 1 min 20 sek · Svenska
+          - generic [ref=e94]:
+            - generic [ref=e95]:
+              - 'generic "Videoguide med svensk berättarröst: Så använder du Travanalys" [ref=e96]': Din webbläsare kan inte spela upp videon. Använd länken nedan eller läs guiden i textform.
+              - status
+            - navigation "Kapitel i videoguiden" [ref=e97]:
+              - paragraph [ref=e98]: Hoppa till ett kapitel
+              - list [ref=e99]:
+                - listitem [ref=e100]:
+                  - button "Överblick, 0:00" [ref=e101] [cursor=pointer]:
+                    - generic [ref=e104]: Överblick
+                    - generic [ref=e105]: 0:00
+                - listitem [ref=e106]:
+                  - button "Välj lopp, 0:08" [ref=e107] [cursor=pointer]:
+                    - generic [ref=e110]: Välj lopp
+                    - generic [ref=e111]: 0:08
+                - listitem [ref=e112]:
+                  - button "Analys, 0:20" [ref=e113] [cursor=pointer]:
+                    - generic [ref=e116]: Analys
+                    - generic [ref=e117]: 0:20
+                - listitem [ref=e118]:
+                  - button "Hästprofil, 0:33" [ref=e119] [cursor=pointer]:
+                    - generic [ref=e122]: Hästprofil
+                    - generic [ref=e123]: 0:33
+                - listitem [ref=e124]:
+                  - button "Ranking, 0:47" [ref=e125] [cursor=pointer]:
+                    - generic [ref=e128]: Ranking
+                    - generic [ref=e129]: 0:47
+                - listitem [ref=e130]:
+                  - button "Spel & ROI, 1:02" [ref=e131] [cursor=pointer]:
+                    - generic [ref=e134]: Spel & ROI
+                    - generic [ref=e135]: 1:02
+                - listitem [ref=e136]:
+                  - button "Prova själv, 1:14" [ref=e137] [cursor=pointer]:
+                    - generic [ref=e140]: Prova själv
+                    - generic [ref=e141]: 1:14
+          - group [ref=e142]:
+            - generic "Läs genomgången i textform" [ref=e143] [cursor=pointer]
+          - link "Öppna analysen" [ref=e147] [cursor=pointer]:
+            - /url: /chart/analys
+    - region [ref=e151]:
+      - generic [ref=e152]:
+        - generic [ref=e153]:
+          - paragraph [ref=e154]: Bakom analysen
+          - heading "Analysperspektiven." [level=2] [ref=e156]
+          - paragraph [ref=e157]: Lär känna de sju perspektiven och hur de tillsammans bildar hästens profil.
+        - generic [ref=e158]:
+          - figure [ref=e159]:
+            - generic [ref=e169]:
+              - paragraph [ref=e170]: Från loppen
+              - heading "Exempel på resultat" [level=3] [ref=e171]
+            - region "Analysexempel" [ref=e172]:
+              - generic [ref=e175]:
+                - button "Visa bild 1" [ref=e176] [cursor=pointer]
+                - button "Visa bild 2" [ref=e177] [cursor=pointer]
+                - button "Visa bild 3" [ref=e178] [cursor=pointer]
+              - button "Föregående bild" [ref=e179] [cursor=pointer]
+              - button "Nästa bild" [ref=e182] [cursor=pointer]
+          - generic [ref=e185]:
+            - generic [ref=e192]:
+              - paragraph [ref=e193]: Sju perspektiv
+              - heading "Vår analysmodell" [level=3] [ref=e194]
+            - generic [ref=e195]:
+              - generic [ref=e196]:
+                - term [ref=e197]:
+                  - generic [aria-hidden] [ref=e198]: "01"
+                  - text: Form
+                - definition [ref=e199]: Hästens prestationer ur olika perspektiv i en närtid.
+              - generic [ref=e200]:
+                - term [ref=e201]:
+                  - generic [aria-hidden] [ref=e202]: "02"
+                  - text: Fart
+                - definition [ref=e203]: Hästens presterade tider över olika distanser med hänsyn till banunderlag, startspår och kusk.
+              - generic [ref=e204]:
+                - term [ref=e205]:
+                  - generic [aria-hidden] [ref=e206]: "03"
+                  - text: Placering
+                - definition [ref=e207]: Hästens placeringar från det valda analysunderlaget.
+              - generic [ref=e208]:
+                - term [ref=e209]:
+                  - generic [aria-hidden] [ref=e210]: "04"
+                  - text: Prestation
+                - definition [ref=e211]: En analys och översättning till en moralisk placering.
+              - generic [ref=e212]:
+                - term [ref=e213]:
+                  - generic [aria-hidden] [ref=e214]: "05"
+                  - text: Motstånd
+                - definition [ref=e215]: Alltid svårare och meriterande att tävla mot hårt motstånd.
+              - generic [ref=e216]:
+                - term [ref=e217]:
+                  - generic [aria-hidden] [ref=e218]: "06"
+                  - text: Klass
+                - definition [ref=e219]: Oftast mer utmanande att tävla i höga prisklasser.
+              - generic [ref=e220]:
+                - term [ref=e221]:
+                  - generic [aria-hidden] [ref=e222]: "07"
+                  - text: Skrik
+                - definition [ref=e223]: Trender i analysunderlag och spekulationer som skvallrar om dold form.
+            - generic [ref=e227]:
+              - paragraph [ref=e228]: Analys – den samlade bilden
+              - paragraph [ref=e229]: Den sammansatta vinstchansen visualiserad i ett stapeldiagram.
+        - generic [ref=e230]:
+          - generic [ref=e231]:
+            - term [ref=e232]:
+              - generic [ref=e241]: Konsumtion av beslutsunderlaget
+            - definition [ref=e242]: De sju olika analysperspektiven visualiseras i ett spindeldiagram som tillsammans bildar ett totalt analysutfall i ett stapeldiagram. Högst stapel har högst vinstchans. Uppstickare hittas i spindeldiagrammets sju analysperspektiv som tillsammans kanske inte alltid innebär högst total.
+          - generic [ref=e243]:
+            - term [ref=e244]:
+              - generic [ref=e248]: Navigering
+            - definition [ref=e249]: Klicka på en häst i stapeldiagrammet för att utforska de sju olika analysperspektiven. Markera en eller flera hästar inför beslut om att lägga till eller ta bort en häst.
+    - generic [ref=e251]:
+      - generic [ref=e252]:
+        - banner [ref=e253]:
+          - paragraph [ref=e254]: Travanalys
+          - heading "Loppet i fokus." [level=1] [ref=e256]
+          - paragraph [ref=e257]: Jämför analyser, utforska rankingen och följ resultaten.
+        - navigation "Välj analysvy" [ref=e258]:
+          - button "Analys Profiler & jämförelser" [pressed] [ref=e259] [cursor=pointer]:
+            - generic [ref=e263]:
+              - generic [ref=e264]: Analys
+              - generic [ref=e265]: Profiler & jämförelser
+          - button "Ranking Hästar & nyckeltal" [ref=e266] [cursor=pointer]:
+            - generic [ref=e271]:
+              - generic [ref=e272]: Ranking
+              - generic [ref=e273]: Hästar & nyckeltal
+          - button "Spel & ROI Resultat & uppföljning" [ref=e274] [cursor=pointer]:
+            - generic [ref=e279]:
+              - generic [ref=e280]: Spel & ROI
+              - generic [ref=e281]: Resultat & uppföljning
+      - generic [ref=e283]:
+        - generic [ref=e285]:
+          - heading "Analys" [level=2] [ref=e292]
+          - paragraph [ref=e293]:
+            - generic [ref=e294]: Laddar datum…
+            - generic [ref=e296]: Färjestad
+            - generic [ref=e297]: v85
+          - generic [ref=e298]:
+            - button "Föregående datum" [disabled] [ref=e299]
+            - button [ref=e303] [cursor=pointer]
+            - button "Nästa datum" [disabled] [ref=e305]
+          - generic [ref=e315]:
+            - heading "Total analys" [level=3] [ref=e316]
+            - paragraph [ref=e317]: Total analys och övergripande beslutsunderlag
+        - generic [ref=e320]:
+          - generic [ref=e324]:
+            - paragraph [ref=e325]: Sju perspektiv
+            - heading "Hästprofil" [level=3] [ref=e326]
+            - paragraph [ref=e327]: Analysperspektiven till en total analys
+          - generic [ref=e331]:
+            - generic [ref=e332]:
+              - heading "Jämför hästar" [level=3] [ref=e333]
+              - paragraph [ref=e334]: Välj hästar i diagrammen
+            - generic [ref=e335]:
+              - button "Visa topp 3" [ref=e336] [cursor=pointer]
+              - button "Visa topp 5" [ref=e337] [cursor=pointer]
+              - button "Visa alla" [pressed] [ref=e338] [cursor=pointer]
+            - list
+    - region [ref=e340]:
+      - generic [ref=e341]:
+        - generic [ref=e342]:
+          - paragraph [ref=e343]: Ditt stöd gör skillnad
+          - heading "Gilla travanalys.se." [level=2] [ref=e345]
+        - generic [ref=e347]:
+          - generic [ref=e352]:
+            - paragraph [ref=e353]: Tack för ditt engagemang
+            - heading "Vi utvecklar Travanalys tillsammans" [level=3] [ref=e354]
+            - paragraph [ref=e355]: Varje gillande ger oss lite extra energi att fortsätta utveckla analyserna och göra verktyget bättre för dig.
+          - generic [ref=e356]:
+            - generic [ref=e357]:
+              - generic [ref=e358]: Antal gillanden
+              - generic [ref=e359]:
+                - generic [ref=e360]: Totalt
+                - text: –
+                - generic [ref=e361]: gillanden
+            - button "Gilla Travanalys" [ref=e362] [cursor=pointer]
+            - status [ref=e365]
+  - button "Öppna Trav-olta chatten" [ref=e368] [cursor=pointer]:
+    - generic [ref=e379]: Fråga Trav-olta
+    - generic [ref=e384]: Oläst meddelande
+  - generic [ref=e385]:
+    - generic [ref=e387]:
+      - generic [ref=e388]:
+        - heading "Prenumerera" [level=2] [ref=e389]
+        - paragraph [ref=e390]: Få uppdateringar via e-post eller telefon. Fyll i minst ett av fälten nedan.
+        - generic [ref=e391]:
+          - generic [ref=e393]:
+            - generic [ref=e394]: E-postadress
+            - textbox "E-postadress" [ref=e395]:
+              - /placeholder: namn@exempel.se
+            - paragraph
+          - generic [ref=e396]:
+            - generic [ref=e397]: Telefonnummer
+            - textbox "Telefonnummer" [ref=e398]:
+              - /placeholder: 070 123 45 67
+            - paragraph
+          - generic [ref=e399]:
+            - generic [ref=e400]:
+              - checkbox "Jag godkänner att mina uppgifter lagras" [ref=e401]
+              - generic [ref=e402]: Jag godkänner att mina uppgifter lagras
+            - paragraph [ref=e403]:
+              - text: Läs om hur vi hanterar uppgifterna i
+              - link "våra villkor" [ref=e404] [cursor=pointer]:
+                - /url: /about
+              - text: .
+            - paragraph
+          - button "Prenumerera" [ref=e405] [cursor=pointer]
+        - status
+      - generic [ref=e406]:
+        - generic [ref=e407]:
+          - term [ref=e412]: Andelsspel
+          - definition [ref=e413]:
+            - generic [ref=e414]: Laddar länkar...
+        - generic [ref=e415]:
+          - link [ref=e416] [cursor=pointer]:
+            - /url: mailto:travanalys@gmail.com
+          - term [ref=e419]: Mejla
+          - definition [ref=e420]:
+            - link "travanalys@gmail.com" [ref=e421] [cursor=pointer]:
+              - /url: mailto:travanalys@gmail.com
+        - generic [ref=e422]:
+          - link [ref=e423] [cursor=pointer]:
+            - /url: https://www.facebook.com/profile.php?id=61555396035366
+          - term [ref=e426]: Facebook
+          - definition:
+            - link:
+              - /url: https://www.facebook.com/profile.php?id=61555396035366
+        - generic [ref=e427]:
+          - link [ref=e428] [cursor=pointer]:
+            - /url: /TravanalysCounterV2.apk
+          - term [ref=e431]: Ladda ner appen
+          - definition [ref=e432]:
+            - link "Endast för Android" [ref=e433] [cursor=pointer]:
+              - /url: /TravanalysCounterV2.apk
+        - generic [ref=e434]:
+          - link [ref=e435] [cursor=pointer]:
+            - /url: https://trav-analys-t3.vercel.app/
+          - term [ref=e438]: Admin
+          - definition:
+            - link:
+              - /url: https://trav-analys-t3.vercel.app/
+    - generic [ref=e439]:
+      - paragraph [ref=e440]: Travanalys.se drivs av NICNOR AB, org.nr 556990-1837.
+      - link "Om oss, företagsuppgifter och villkor" [ref=e441] [cursor=pointer]:
+        - /url: /about
