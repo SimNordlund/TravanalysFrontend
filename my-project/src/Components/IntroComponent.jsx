@@ -130,15 +130,6 @@ export default function IntroComponent() {
               height={1024}
               className="aspect-[3/2] w-full rounded-2xl object-cover"
             />
-            <figcaption className="flex items-center gap-3 px-2 py-3 sm:px-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-indigo-100 bg-indigo-50 text-indigo-600" aria-hidden="true">
-                <BarChart3 className="h-4 w-4" />
-              </span>
-              <div className="min-w-0">
-                <p className="text-xs font-semibold text-slate-700">Statistik möter travsport</p>
-                <p className="mt-0.5 text-xs leading-relaxed text-slate-500">Sju perspektiv till en samlad analys.</p>
-              </div>
-            </figcaption>
           </figure>
         </div>
 
