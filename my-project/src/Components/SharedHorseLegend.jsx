@@ -31,7 +31,6 @@ const SharedHorseLegend = ({
     <div className="chart-panel w-full min-w-0 text-left">
       <div className="mb-5">
         <h3 className="text-base font-bold tracking-tight text-slate-900">Jämför hästar</h3>
-        <p className="mt-1 text-xs leading-5 text-slate-500">Välj hästar i diagrammen</p>
       </div>
       <div className="mb-5 grid grid-cols-3 gap-1.5 rounded-xl bg-slate-50 p-1.5">
         <button
